@@ -1,0 +1,29 @@
+import axiosClient from "./axiosClient";
+import { CommonResponse } from 'types/common.type';
+
+const equipmentLiquidationApi = {
+  getListUnusedEquipment(params: any): Promise<CommonResponse> {
+    for (let i in params) {
+      if (!params[i]) {
+        delete params[i];
+      }
+    }
+    const paramString = new URLSearchParams(params).toString();
+    const url = `equipment_liquidation/list_unused_equipment?${paramString}`;
+    return axiosClient.get(url);
+  },
+  createLiquidationNote(params: object): Promise<CommonResponse> {
+    const url = 'equipment_liquidation/create_liquidation_note';
+    return axiosClient.post(url, params);
+  },
+  getLiquidationDetail(id: number): Promise<CommonResponse> {
+    const url = `equipment_liquidation/get_liquidation_detail?id=${id}`;
+    return axiosClient.get(url);
+  },
+  approveLiquidationNote(params: object): Promise<CommonResponse> {
+    const url = 'equipment_liquidation/approve_liquidation_note';
+    return axiosClient.post(url, params);
+  },
+}
+
+export default equipmentLiquidationApi;
