@@ -1,0 +1,114 @@
+const { PermissionSystem } = require("../enums");
+const err = require("../errors/index");
+const db = require("../models");
+const { errorHandler } = require("../utils/ResponseHandle");
+
+const permission = (permission) => {
+  return async (req, res, next) => {
+    try {
+      const user = req.user;
+      let permissions = await db.Role_Permission.findAll({
+        where: { role_id: user?.role_id }
+      });
+      let is_check = permissions?.filter((item) => item.permission_id === permission)?.length > 0 ? true : false;
+      if(!is_check) return errorHandler(res, err.NOT_AUTHORIZED);
+      req.user = user;
+      next();
+    } catch(error) {
+      return errorHandler(res, error);
+    }
+  }
+}
+
+module.exports = {
+  DASHBOARD_READ: permission(PermissionSystem.DASHBOARD_READ),
+  DEPARTMENT_READ: permission(PermissionSystem.DEPARTMENT_READ),
+  DEPARTMENT_CREATE: permission(PermissionSystem.DEPARTMENT_CREATE),
+  DEPARTMENT_UPDATE: permission(PermissionSystem.DEPARTMENT_UPDATE),
+  DEPARTMENT_DELETE: permission(PermissionSystem.DEPARTMENT_DELETE),
+  SETTING_INFO: permission(PermissionSystem.SETTING_INFO),
+  SETTING_ROLE: permission(PermissionSystem.SETTING_ROLE),
+  USER_CREATE: permission(PermissionSystem.USER_CREATE),
+  USER_READ: permission(PermissionSystem.USER_READ),
+  USER_UPDATE: permission(PermissionSystem.USER_UPDATE),
+  USER_DELETE: permission(PermissionSystem.USER_DELETE),
+  EQUIPMENT_CREATE: permission(PermissionSystem.EQUIPMENT_CREATE), 
+  EQUIPMENT_READ: permission(PermissionSystem.EQUIPMENT_READ),
+  EQUIPMENT_UPDATE: permission(PermissionSystem.EQUIPMENT_UPDATE),
+  EQUIPMENT_DELETE: permission(PermissionSystem.EQUIPMENT_DELETE),
+  GROUP_EQUIPMENT_CREATE: permission(PermissionSystem.GROUP_EQUIPMENT_CREATE), 
+  GROUP_EQUIPMENT_READ: permission(PermissionSystem.GROUP_EQUIPMENT_READ),
+  GROUP_EQUIPMENT_UPDATE: permission(PermissionSystem.GROUP_EQUIPMENT_UPDATE),
+  GROUP_EQUIPMENT_DELETE: permission(PermissionSystem.GROUP_EQUIPMENT_DELETE),
+  TYPE_EQUIPMENT_CREATE: permission(PermissionSystem.TYPE_EQUIPMENT_CREATE), 
+  TYPE_EQUIPMENT_READ: permission(PermissionSystem.TYPE_EQUIPMENT_READ),
+  TYPE_EQUIPMENT_UPDATE: permission(PermissionSystem.TYPE_EQUIPMENT_UPDATE),
+  TYPE_EQUIPMENT_DELETE: permission(PermissionSystem.TYPE_EQUIPMENT_DELETE),
+  UNIT_EQUIPMENT_CREATE: permission.apply(PermissionSystem.UNIT_EQUIPMENT_CREATE), 
+  UNIT_EQUIPMENT_READ: permission(PermissionSystem.UNIT_EQUIPMENT_READ),
+  UNIT_EQUIPMENT_UPDATE: permission(PermissionSystem.UNIT_EQUIPMENT_UPDATE),
+  UNIT_EQUIPMENT_DELETE: permission(PermissionSystem.UNIT_EQUIPMENT_DELETE),
+  STATISTIC_EQUIPMENT: permission(PermissionSystem.STATISTIC_EQUIPMENT),
+  REPAIR_EQUIPMENT_CREATE: permission(PermissionSystem.REPAIR_EQUIPMENT_CREATE), 
+  REPAIR_EQUIPMENT_READ: permission(PermissionSystem.REPAIR_EQUIPMENT_READ),
+  REPAIR_EQUIPMENT_UPDATE: permission(PermissionSystem.REPAIR_EQUIPMENT_UPDATE),
+  REPAIR_EQUIPMENT_DELETE: permission(PermissionSystem.REPAIR_EQUIPMENT_DELETE),
+  REPAIR_EQUIPMENT_APPROVE: permission(PermissionSystem.REPAIR_EQUIPMENT_APPROVE),
+  REPAIR_EQUIPMENT_PRINT: permission(PermissionSystem.REPAIR_EQUIPMENT_PRINT),
+  REPORT_EQUIPMENT_CREATE: permission(PermissionSystem.REPORT_EQUIPMENT_CREATE), 
+  REPORT_EQUIPMENT_READ: permission(PermissionSystem.REPORT_EQUIPMENT_READ),
+  REPORT_EQUIPMENT_APPROVE: permission(PermissionSystem.REPORT_EQUIPMENT_APPROVE), 
+  REPORT_EQUIPMENT_PRINT: permission(PermissionSystem.REPORT_EQUIPMENT_PRINT),
+  REPORT_EQUIPMENT_UPDATE: permission(PermissionSystem.REPORT_EQUIPMENT_UPDATE), 
+  REPORT_EQUIPMENT_DELETE: permission(PermissionSystem.REPORT_EQUIPMENT_DELETE),
+  MAINTAINANCE_EQUIPMENT_CREATE: permission(PermissionSystem.MAINTAINANCE_EQUIPMENT_CREATE), 
+  MAINTAINANCE_EQUIPMENT_READ: permission(PermissionSystem.MAINTAINANCE_EQUIPMENT_READ),
+  MAINTAINANCE_EQUIPMENT_PRINT: permission(PermissionSystem.MAINTAINANCE_EQUIPMENT_PRINT), 
+  MAINTAINANCE_EQUIPMENT_UPDATE: permission(PermissionSystem.MAINTAINANCE_EQUIPMENT_UPDATE),
+  MAINTAINANCE_EQUIPMENT_APPROVE: permission(PermissionSystem.REPORT_EQUIPMENT_APPROVE), 
+  MAINTAINANCE_EQUIPMENT_DELETE: permission(PermissionSystem.MAINTAINANCE_EQUIPMENT_DELETE),
+  INSURANCE_EQUIPMENT_CREATE: permission(PermissionSystem.INSURANCE_EQUIPMENT_CREATE), 
+  INSURANCE_EQUIPMENT_READ: permission(PermissionSystem.INSURANCE_EQUIPMENT_READ),
+  INSURANCE_EQUIPMENT_UPDATE: permission(PermissionSystem.INSURANCE_EQUIPMENT_UPDATE), 
+  INSURANCE_EQUIPMENT_PRINT: permission(PermissionSystem.INSURANCE_EQUIPMENT_PRINT),
+  INSURANCE_EQUIPMENT_APPROVE: permission(PermissionSystem.INSURANCE_EQUIPMENT_APPROVE), 
+  INSURANCE_EQUIPMENT_DELETE: permission(PermissionSystem.INSURANCE_EQUIPMENT_DELETE),
+  ACCREDITATION_EQUIPMENT_CREATE: permission(PermissionSystem.ACCREDITATION_EQUIPMENT_CREATE), 
+  ACCREDITATION_EQUIPMENT_READ: permission(PermissionSystem.ACCREDITATION_EQUIPMENT_READ),
+  ACCREDITATION_EQUIPMENT_UPDATE: permission(PermissionSystem.ACCREDITATION_EQUIPMENT_UPDATE), 
+  ACCREDITATION_EQUIPMENT_PRINT: permission(PermissionSystem.ACCREDITATION_EQUIPMENT_PRINT),
+  ACCREDITATION_EQUIPMENT_APPROVE: permission(PermissionSystem.ACCREDITATION_EQUIPMENT_APPROVE), 
+  ACCREDITATION_EQUIPMENT_DELETE: permission(PermissionSystem.ACCREDITATION_EQUIPMENT_DELETE),
+  TRANFER_EQUIPMENT_CREATE: permission(PermissionSystem.TRANFER_EQUIPMENT_CREATE), 
+  TRANFER_EQUIPMENT_READ: permission(PermissionSystem.TRANFER_EQUIPMENT_READ),
+  TRANFER_EQUIPMENT_UPDATE: permission(PermissionSystem.TRANFER_EQUIPMENT_UPDATE), 
+  TRANFER_EQUIPMENT_PRINT: permission(PermissionSystem.TRANFER_EQUIPMENT_PRINT),
+  TRANFER_EQUIPMENT_APPROVE: permission(PermissionSystem.TRANFER_EQUIPMENT_APPROVE), 
+  TRANFER_EQUIPMENT_DELETE: permission(PermissionSystem.TRANFER_EQUIPMENT_DELETE),
+  LIQUIDATION_EQUIPMENT_CREATE: permission(PermissionSystem.LIQUIDATION_EQUIPMENT_CREATE), 
+  LIQUIDATION_EQUIPMENT_READ: permission(PermissionSystem.LIQUIDATION_EQUIPMENT_READ),
+  LIQUIDATION_EQUIPMENT_UPDATE: permission(PermissionSystem.LIQUIDATION_EQUIPMENT_UPDATE), 
+  LIQUIDATION_EQUIPMENT_PRINT: permission(PermissionSystem.LIQUIDATION_EQUIPMENT_PRINT),
+  LIQUIDATION_EQUIPMENT_APPROVE: permission(PermissionSystem.LIQUIDATION_EQUIPMENT_APPROVE), 
+  LIQUIDATION_EQUIPMENT_DELETE: permission(PermissionSystem.LIQUIDATION_EQUIPMENT_DELETE),
+  IMPORT_EQUIPMENT: permission(PermissionSystem.IMPORT_EQUIPMENT),
+  IMPORT_SUPPLIES: permission(PermissionSystem.IMPORT_SUPPLIES),
+  INVENTORY_EQUIPMENT_CREATE: permission(PermissionSystem.INVENTORY_EQUIPMENT_CREATE), 
+  INVENTORY_EQUIPMENT_READ: permission(PermissionSystem.INVENTORY_EQUIPMENT_READ),
+  INVENTORY_EQUIPMENT_UPDATE: permission(PermissionSystem.INVENTORY_EQUIPMENT_UPDATE), 
+  INVENTORY_EQUIPMENT_PRINT: permission(PermissionSystem.INVENTORY_EQUIPMENT_PRINT),
+  INVENTORY_EQUIPMENT_APPROVE: permission(PermissionSystem.INVENTORY_EQUIPMENT_APPROVE), 
+  INVENTORY_EQUIPMENT_DELETE: permission(PermissionSystem.INVENTORY_EQUIPMENT_DELETE),
+  RADIATION_EQUIPMENT_CREATE: permission(PermissionSystem.RADIATION_EQUIPMENT_CREATE), 
+  RADIATION_EQUIPMENT_READ: permission(PermissionSystem.RADIATION_EQUIPMENT_READ),
+  RADIATION_EQUIPMENT_UPDATE: permission(PermissionSystem.RADIATION_EQUIPMENT_UPDATE), 
+  RADIATION_EQUIPMENT_PRINT: permission(PermissionSystem.RADIATION_EQUIPMENT_PRINT),
+  RADIATION_EQUIPMENT_APPROVE: permission(PermissionSystem.RADIATION_EQUIPMENT_APPROVE), 
+  RADIATION_EQUIPMENT_DELETE: permission(PermissionSystem.RADIATION_EQUIPMENT_DELETE),
+  EXTERNAL_INSPECTION_EQUIPMENT_CREATE: permission(PermissionSystem.EXTERNAL_INSPECTION_EQUIPMENT_CREATE), 
+  EXTERNAL_INSPECTION_EQUIPMENT_READ: permission(PermissionSystem.EXTERNAL_INSPECTION_EQUIPMENT_READ),
+  EXTERNAL_INSPECTION_EQUIPMENT_UPDATE: permission(PermissionSystem.RADIATION_EQUIPMENT_UPDATE), 
+  EXTERNAL_INSPECTION_EQUIPMENT_PRINT: permission(PermissionSystem.EXTERNAL_INSPECTION_EQUIPMENT_PRINT),
+  EXTERNAL_INSPECTION_EQUIPMENT_APPROVE: permission(PermissionSystem.EXTERNAL_INSPECTION_EQUIPMENT_APPROVE), 
+  EXTERNAL_INSPECTION_EQUIPMENT_DELETE: permission(PermissionSystem.EXTERNAL_INSPECTION_EQUIPMENT_DELETE),
+}
