@@ -1,66 +1,81 @@
 export const broken_status = [
   {
     value: 1,
-    label: 'Cao'
+    label: 'Cao',
   },
   {
     value: 2,
-    label: 'Trung bình'
+    label: 'Trung bình',
   },
   {
     value: 3,
-    label: 'Thấp'
+    label: 'Thấp',
   },
-]
+];
 
 export const repaired_status = [
   {
     value: 3,
-    label: 'Sửa được, hoạt động bình thường'
+    label: 'Sửa được, hoạt động bình thường',
   },
   {
     value: 6,
-    label: 'Không sửa được, chờ thanh lý'
-  }
-]
+    label: 'Không sửa được, chờ thanh lý',
+  },
+];
 
 export const liquidation_status = [
   {
     value: 0,
-    label: 'Chờ phê duyệt'
+    label: 'Chờ phê duyệt',
   },
   {
     value: 1,
-    label: 'Đã phê duyệt'
+    label: 'Đã phê duyệt',
   },
   {
     value: 2,
-    label: 'Hủy yêu cầu'
-  }
-]
+    label: 'Hủy yêu cầu',
+  },
+];
 
 export const transfer_status = [
   {
     value: 0,
-    label: 'Chờ phê duyệt'
+    label: 'Chờ phê duyệt',
   },
   {
     value: 1,
-    label: 'Đã phê duyệt'
+    label: 'Đã phê duyệt',
   },
   {
     value: 2,
-    label: 'Hủy yêu cầu'
-  }
-]
+    label: 'Hủy yêu cầu',
+  },
+];
 
 export const inventory_status = [
   {
     value: 0,
-    label: 'Chờ phê duyệt'
+    label: 'Chờ phê duyệt',
   },
   {
     value: 1,
-    label: 'Đã phê duyệt'
+    label: 'Đã phê duyệt',
   },
-]
+];
+
+export const report_status = [
+  {
+    value: 0,
+    label: 'Chờ phê duyệt',
+  },
+  {
+    value: 1,
+    label: 'Đã phê duyệt',
+  },
+  {
+    value: 2,
+    label: 'Hủy yêu cầu',
+  },
+];
