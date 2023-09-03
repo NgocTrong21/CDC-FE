@@ -1,4 +1,4 @@
-import axiosClient from "./axiosClient";
+import axiosClient from './axiosClient';
 import { CommonResponse } from 'types/common.type';
 
 const filterApi = {
@@ -18,23 +18,27 @@ const filterApi = {
     const url = 'department/search';
     return axiosClient.get(url);
   },
-  getCycleProceduceApi (): Promise<CommonResponse> {
+  getProjectApi(): Promise<CommonResponse> {
+    const url = 'project/list';
+    return axiosClient.get(url);
+  },
+  getCycleProceduceApi(): Promise<CommonResponse> {
     const url = '/get_all_cycle_procedure';
     return axiosClient.get(url);
   },
-  getServiceApi (): Promise<CommonResponse> {
+  getServiceApi(): Promise<CommonResponse> {
     const url = 'service/list';
     return axiosClient.get(url);
   },
-  getAllRoleApi (): Promise<CommonResponse> {
+  getAllRoleApi(): Promise<CommonResponse> {
     const url = 'role/list';
     return axiosClient.get(url);
   },
-  getAllUnitApi (): Promise<CommonResponse> {
+  getAllUnitApi(): Promise<CommonResponse> {
     const url = 'category/unit/list';
     return axiosClient.get(url);
   },
-  getAllRiskLevelApi (): Promise<CommonResponse> {
+  getAllRiskLevelApi(): Promise<CommonResponse> {
     const url = 'category/risk_level/list';
     return axiosClient.get(url);
   },
@@ -42,6 +46,6 @@ const filterApi = {
     const url = 'provider/list';
     return axiosClient.get(url);
   },
-}    
+};
 
 export default filterApi;
