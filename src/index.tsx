@@ -10,7 +10,7 @@ import { Provider } from 'react-redux';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as Element);
 root.render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <Provider store={store}>
       <Suspense fallback={<div className="spinner"><Spin size="large" tip="Loading..." /></div>}>
         <FilterContextProvider>
@@ -20,5 +20,5 @@ root.render(
         </FilterContextProvider>
       </Suspense>
     </Provider>
-  </React.StrictMode>
+  // </React.StrictMode>
 );

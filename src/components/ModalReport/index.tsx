@@ -1,11 +1,13 @@
-import { Button, Form, Input, Modal, Radio } from 'antd'
-import equipmentApi from 'api/equipment.api';
+import { Button, DatePicker, Form, Input, Modal, Radio } from 'antd';
+import equipmentRepairApi from 'api/equipment_repair.api';
+import { NotificationContext } from 'contexts/notification.context';
 import moment from 'moment';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { toast } from 'react-toastify';
 
 const ModalReport = (props: any) => {
 
+  const { increaseCount, getAllNotifications } = useContext(NotificationContext);
   const {
     showReportModal,
     setShowReportModal,
@@ -24,23 +26,24 @@ const ModalReport = (props: any) => {
       department_id: dataReport.department_id,
       department: dataReport?.department,
       reporting_person_id: dataReport?.reporting_person_id,
-      broken_report_date: moment(new Date()).format("DD-MM-YYYY"),
-      code: dataReport?.code
     })
   }, [dataReport])
 
   const reportEquipment = (values: any) => {
     setLoading(true);
-    let data: any = {
+    const data: any = {
       ...values,
-      broken_report_date: new Date().toISOString()
+      broken_report_date: moment(new Date(values?.broken_report_date)).toISOString(),
+      isEdit: 0
     }
-    equipmentApi.reportEquipment(data)
+    equipmentRepairApi.reportEquipment(data)
       .then((res: any) => {
         const { success } = res.data;
         if (success) {
           toast.success("Báo hỏng thiết bị thành công!");
           form.resetFields();
+          increaseCount();
+          getAllNotifications();
           callback();
         } else {
           toast.error("Báo hỏng thiết bị thất bại!");
@@ -127,22 +130,24 @@ const ModalReport = (props: any) => {
           label="Ngày báo hỏng"
           name="broken_report_date"
         >
-          <Input disabled className='input' />
+          <DatePicker className="date" />
         </Form.Item>
         <Form.Item
           name="reporting_person_id"
           style={{ display: 'none' }}
         >
-          <Input
-            style={{ display: 'none' }}
-          />
+        </Form.Item>
+        <Form.Item
+          name="report_status"
+          style={{ display: 'none' }}
+        >
         </Form.Item>
         <div className='flex flex-row justify-end gap-4'>
           <Form.Item>
             <Button
               htmlType="submit"
               loading={loading}
-              className='button'
+              className='button-primary'
             >
               Xác nhận
             </Button>
@@ -150,7 +155,7 @@ const ModalReport = (props: any) => {
           <Form.Item>
             <Button
               onClick={() => setShowReportModal(false)}
-              className='button'
+              className='button-primary'
             >
               Đóng
             </Button>

@@ -10,8 +10,16 @@ const equipmentApi = {
     const url = `equipment/detail?id=${id}`;
     return axiosClient.get(url);
   },
+  detailBasic(id: number): Promise<CommonResponse> {
+    const url = `equipment/detail_basic?id=${id}`;
+    return axiosClient.get(url);
+  },
   update(params: object): Promise<CommonResponse> {
     const url = 'equipment/update';
+    return axiosClient.patch(url, params);
+  },
+  unUseEquipment(params: object): Promise<CommonResponse> {
+    const url = 'equipment/un_use_equipment';
     return axiosClient.patch(url, params);
   },
   delete(id: number): Promise<CommonResponse> {
@@ -36,14 +44,6 @@ const equipmentApi = {
   },
   statisticDashboard(): Promise<CommonResponse> {
     const url = 'equipment/statistic_dashboard';
-    return axiosClient.get(url);
-  },
-  reportEquipment(params: object): Promise<CommonResponse> {
-    const url = 'equipment_repair/report';
-    return axiosClient.post(url, params);
-  },
-  getEquipmentRepairInfo(id: number): Promise<CommonResponse> {
-    const url = `equipment_repair/equipment_repair_info?id=${id}`;
     return axiosClient.get(url);
   },
   downloadDocx(): Promise<CommonResponse> {

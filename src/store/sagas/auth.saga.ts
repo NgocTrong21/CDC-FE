@@ -1,14 +1,18 @@
 import { call, put, takeEvery } from '@redux-saga/core/effects';
 import authApi from 'api/auth.api';
-import { ACCESS_TOKEN, CURRENT_USER, REFRESH_TOKEN } from 'constants/auth.constant';
+import {
+  ACCESS_TOKEN,
+  CURRENT_USER,
+  REFRESH_TOKEN,
+} from 'constants/auth.constant';
 import { push } from 'connected-react-router';
 import { authActions } from '../slices/auth.slice';
 export interface ProcessResponseType {
   code: any;
   data: any;
-  message: string,
-  success: Boolean,
-  status: any
+  message: string;
+  success: Boolean;
+  status: any;
 }
 
 function* handleRegister(action: any) {
@@ -16,11 +20,16 @@ function* handleRegister(action: any) {
   try {
     const response: ProcessResponseType = yield call(authApi.register, payload);
     const { message, success } = response?.data;
-    if (success) yield put(authActions.registerRequestFinish('Đã gửi link kích hoạt vào email. Bạn vui lòng kiểm tra email'))
-    else yield put(authActions.registerRequestFinish(message))
+    if (success)
+      yield put(
+        authActions.registerRequestFinish(
+          'Đã gửi link kích hoạt vào email. Bạn vui lòng kiểm tra email'
+        )
+      );
+    else yield put(authActions.registerRequestFinish(message));
   } catch (error: any) {
     console.log(`error`, error?.response);
-    yield put(authActions.registerRequestFinish(""))
+    yield put(authActions.registerRequestFinish(''));
   }
 }
 
@@ -46,7 +55,7 @@ function* handleLogin(action: any) {
 
 function* handleLogout() {
   localStorage.removeItem(ACCESS_TOKEN);
-  localStorage.removeItem(REFRESH_TOKEN)
+  localStorage.removeItem(REFRESH_TOKEN);
   localStorage.removeItem(CURRENT_USER);
   yield put(push('/signin'));
   window.location.reload();
@@ -58,4 +67,4 @@ const authSaga = [
   takeEvery(authActions.logout.type, handleLogout),
 ];
 
-export default authSaga
+export default authSaga;

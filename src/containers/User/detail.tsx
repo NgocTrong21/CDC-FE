@@ -3,9 +3,10 @@ import userApi from 'api/user.api';
 import { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { toast } from 'react-toastify';
-import { convertBase64 } from 'utils/globalFunc.util';
+import { checkPermission, convertBase64, options } from 'utils/globalFunc.util';
 import ava from 'assets/image.png';
 import { FilterContext } from 'contexts/filter.context';
+import { permissions } from 'constants/permission.constant';
 
 const DetailUser = () => {
 
@@ -16,15 +17,6 @@ const DetailUser = () => {
   const [image, setImage] = useState<any>('');
   const [loading, setLoading] = useState<boolean>(false);
   const { roles, departments } = useContext(FilterContext);
-
-  const options = (array: any) => {
-    return array.map((item: any) => {
-      let o: any = {};
-      o.value = item.id;
-      o.label = item.name;
-      return o;
-    })
-  }
 
   const handleChangeImg = async (e: any) => {
     let file = e.target.files[0];
@@ -189,7 +181,7 @@ const DetailUser = () => {
             <Button
               htmlType="submit"
               loading={loading}
-              className='button'
+              className={`button ${checkPermission(permissions.USER_UPDATE) ? '' : 'hidden'}`}
             >
               Cập nhật
             </Button>

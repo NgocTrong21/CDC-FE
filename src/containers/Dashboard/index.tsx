@@ -1,4 +1,12 @@
-import { Card, Divider } from 'antd';
+import {
+  Card,
+  Divider,
+  Pagination,
+  Popconfirm,
+  Row,
+  Table,
+  Tooltip,
+} from 'antd';
 import equipmentApi from 'api/equipment.api';
 import { useState, useEffect } from 'react';
 import news from 'assets/not_handed.png';
@@ -9,12 +17,15 @@ import unused from 'assets/inactive.png';
 import liquidation from 'assets/liquidation.png';
 import { Column, Pie } from '@ant-design/plots';
 import './index.css';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { checkRoleFromData, getCurrentUser } from 'utils/globalFunc.util';
+import User from 'containers/User';
+import Loading from 'components/Loading';
+import { ProfileFilled } from '@ant-design/icons';
 
 const { Meta } = Card;
 
 const Dashboard = () => {
-
   const navigate = useNavigate();
   const [countByStatus, setCountByStatus] = useState<any>([]);
   const [countByDepartment, setCountByDepartment] = useState<any>([]);
@@ -23,9 +34,14 @@ const Dashboard = () => {
   const [sumBroken, setSumBroken] = useState<number>(0);
   const [countRepair, setCountRepair] = useState<any>([]);
   const [sumRepair, setSumRepair] = useState<number>(0);
+  const [loading, setLoading] = useState(false);
+  const isHasRole = checkRoleFromData();
+  const currentUser = getCurrentUser();
 
   const count = async () => {
-    equipmentApi.statisticDashboard()
+    setLoading(true);
+    equipmentApi
+      .statisticDashboard()
       .then((res: any) => {
         const { success, data } = res.data;
         if (success) {
@@ -55,23 +71,38 @@ const Dashboard = () => {
           setCountByStatus(newCountStatus);
           setCountBroken(data.count_broken);
           setCountRepair(data.count_repair);
-          let sumBroken = data?.count_broken?.reduce(function (acc: number, obj: any) { return acc + obj.value; }, 0);
+          let sumBroken = data?.count_broken?.reduce(function (
+            acc: number,
+            obj: any
+          ) {
+            return acc + obj.count;
+          },
+          0);
           setSumBroken(sumBroken);
-          let sumRepair = data?.count_repair?.reduce(function (acc: number, obj: any) { return acc + obj.value; }, 0);
+          let sumRepair = data?.count_repair?.reduce(function (
+            acc: number,
+            obj: any
+          ) {
+            return acc + obj.count;
+          },
+          0);
           setSumRepair(sumRepair);
         }
       })
-  }
+      .catch()
+      .finally(() => setLoading(false));
+  };
 
   useEffect(() => {
     count();
   }, []);
 
-  const data_department = countByDepartment?.length > 0 ? countByDepartment : [];
+  const data_department =
+    countByDepartment?.length > 0 ? countByDepartment : [];
   const config_department: any = {
     data: data_department,
-    xField: 'type',
-    yField: 'value',
+    xField: 'Department.name',
+    yField: 'count',
     label: {
       position: 'middle',
       style: {
@@ -86,10 +117,10 @@ const Dashboard = () => {
       },
     },
     meta: {
-      type: {
+      'Department.name': {
         alias: 'name',
       },
-      value: {
+      count: {
         alias: 'Số lượng thiết bị',
       },
     },
@@ -99,8 +130,8 @@ const Dashboard = () => {
   const config_level: any = {
     appendPadding: 10,
     data: data_level,
-    angleField: 'value',
-    colorField: 'type',
+    angleField: 'count',
+    colorField: 'Equipment_Risk_Level.name',
     radius: 0.9,
     label: {
       type: 'inner',
@@ -115,14 +146,14 @@ const Dashboard = () => {
         type: 'element-active',
       },
     ],
-  }
+  };
 
   const data_broken = countBroken?.length > 0 ? countBroken : [];
   const config_broken: any = {
     appendPadding: 10,
     data: data_broken,
-    angleField: 'value',
-    colorField: 'type',
+    angleField: 'count',
+    colorField: 'Department.name',
     radius: 0.9,
     label: {
       type: 'inner',
@@ -137,14 +168,14 @@ const Dashboard = () => {
         type: 'element-active',
       },
     ],
-  }
+  };
 
   const data_repair = countRepair?.length > 0 ? countRepair : [];
   const config_repair: any = {
     appendPadding: 10,
     data: data_repair,
-    angleField: 'value',
-    colorField: 'type',
+    angleField: 'count',
+    colorField: 'Department.name',
     radius: 0.9,
     label: {
       type: 'inner',
@@ -159,84 +190,124 @@ const Dashboard = () => {
         type: 'element-active',
       },
     ],
-  }
+  };
 
-  return (
+  return loading ? (
+    <Loading />
+  ) : (
     <>
-      <div className="title text-center">DASHBOARD</div>
+      <div className="title text-center uppercase">
+        {isHasRole ? 'Dashboard' : currentUser?.Department?.name}
+      </div>
       <Divider />
       <div>
-        <div className='mb-8'>
-          <div className="title mb-6">Thống kê thiết bị theo trạng thái</div>
-          <div className='grid grid-cols-6'>
-            {
-              countByStatus?.length > 0 && countByStatus.map((item: any) => (
-                <Card
-                  hoverable
-                  style={{ width: 180 }}
-                  cover={<img alt="status" src={item.image} />}
-                  className="count"
-                  onClick={() => navigate(`equipment/list_eq?page_search=1&status_id=${item.status_id}`)}
-                >
-                  <Meta title={item.type} description={`${item.value} thiết bị`} />
-                </Card>
-              ))
-            }
+        {countByStatus.length > 0 && (
+          <div className="mb-8">
+            <div className="title mb-6">Thống kê thiết bị theo trạng thái</div>
+            <div className="grid grid-cols-6">
+              {countByStatus?.length > 0 &&
+                countByStatus.map((item: any) => (
+                  <Card
+                    hoverable
+                    style={{ width: 180 }}
+                    cover={<img alt="status" src={item.image} />}
+                    className="count"
+                    onClick={() =>
+                      navigate(
+                        `equipment/list_eq?page_search=1&status_id=${item.status_id}`
+                      )
+                    }
+                  >
+                    <Meta
+                      title={item?.Equipment_Status?.name}
+                      description={`${item.count} thiết bị`}
+                    />
+                  </Card>
+                ))}
+            </div>
           </div>
-        </div>
-        <div className='mb-8'>
-          <div className="title mb-6">Thống kê thiết bị theo khoa phòng</div>
-          <Card title="Biểu đồ thống kê" hoverable>
-            <Column
-              {...config_department}
+        )}
+        {countByDepartment.length > 0 && (
+          <div className="mb-8">
+            <div className="title mb-6">Thống kê thiết bị theo khoa phòng</div>
+            <Card title="Biểu đồ thống kê" hoverable>
+              <Column
+                {...config_department}
+                onReady={(plot) => {
+                  plot.on('plot:click', (evt: any) => {
+                    const { data } = evt;
+                    navigate(
+                      `/equipment/list_eq?page_search=1&department_id=${data?.data?.department_id}`
+                    );
+                  });
+                }}
+              />
+            </Card>
+          </div>
+        )}
+        {countBroken.length > 0 && (
+          <div className="mb-8">
+            <div className="title mb-6">
+              Thống kê thiết bị đang báo hỏng ({sumBroken} thiết bị)
+            </div>
+            <Pie
+              {...config_broken}
               onReady={(plot) => {
                 plot.on('plot:click', (evt: any) => {
                   const { data } = evt;
-                  navigate(`/equipment/list_eq?page_search=1&department_id=${data?.data?.department_id}`);
+                  navigate(
+                    `/equipment/list_eq?page_search=1&status_id=4&department_id=${data?.data?.department_id}`
+                  );
                 });
               }}
             />
-          </Card>
-        </div>
-        <div className='mb-8'>
-          <div className="title mb-6">Thống kê thiết bị đang báo hỏng ({sumBroken} thiết bị)</div>
-          <Pie
-            {...config_broken}
-            onReady={(plot) => {
-              plot.on('plot:click', (evt: any) => {
-                const { data } = evt;
-                navigate(`/equipment/list_eq?page_search=1&status_id=4&department_id=${data?.data?.department_id}`);
-              });
-            }}
+          </div>
+        )}
+        {countRepair.length > 0 && (
+          <div className="mb-8">
+            <div className="title mb-6">
+              Thống kê thiết bị đang sửa chữa ({sumRepair} thiết bị)
+            </div>
+            <Pie
+              {...config_repair}
+              onReady={(plot) => {
+                plot.on('plot:click', (evt: any) => {
+                  const { data } = evt;
+                  navigate(
+                    `/equipment/list_eq?page_search=1&status_id=5&department_id=${data?.data?.department_id}`
+                  );
+                });
+              }}
+            />
+          </div>
+        )}
+        {countByLevel.length > 0 && (
+          <div className="mb-8">
+            <div className="title mb-6">
+              Thống kê thiết bị theo mức độ rủi ro
+            </div>
+            <Pie
+              {...config_level}
+              onReady={(plot) => {
+                plot.on('plot:click', (evt: any) => {
+                  const { data } = evt;
+                  navigate(
+                    `/equipment/list_eq?page_search=1&risk_level=${data?.data?.risk_level}`
+                  );
+                });
+              }}
+            />
+          </div>
+        )}
+        {!isHasRole && (
+          <User
+            department_id={currentUser?.Department?.id}
+            isDepartment={true}
           />
-        </div>
-        <div className='mb-8'>
-          <div className="title mb-6">Thống kê thiết bị đang sửa chữa ({sumRepair} thiết bị)</div>
-          <Pie
-            {...config_repair}
-            onReady={(plot) => {
-              plot.on('plot:click', (evt: any) => {
-                const { data } = evt;
-                navigate(`/equipment/list_eq?page_search=1&status_id=5&department_id=${data?.data?.department_id}`);
-              });
-            }}
-          />
-        </div>
-        <div className='mb-8'>
-          <div className="title mb-6">Thống kê thiết bị theo mức độ rủi ro</div>
-          <Pie
-            {...config_level}
-            onReady={(plot) => {
-              plot.on('plot:click', (evt: any) => {
-                const { data } = evt;
-                navigate(`/equipment/list_eq?page_search=1&risk_level=${data?.data?.risk_level}`);
-              });
-            }}
-          />
-        </div>
+        )}
       </div>
     </>
-  )
-}
+  );
+};
 
-export default Dashboard
+export default Dashboard;

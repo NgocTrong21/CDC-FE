@@ -18,6 +18,7 @@ const SetRole = () => {
 
   const navigate = useNavigate();
   const [roles, setRoles] = useState<DataType[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const columns: ColumnsType<DataType> = [
     {
@@ -61,6 +62,7 @@ const SetRole = () => {
   ];
 
   const getAllRoles = () => {
+    setLoading(true);
     roleApi.list()
       .then((res: any) => {
         const { success, data } = res.data;
@@ -69,6 +71,7 @@ const SetRole = () => {
         }
       })
       .catch()
+      .finally(() => setLoading(false))
   }
 
   useEffect(() => {
@@ -81,7 +84,7 @@ const SetRole = () => {
         <div className="title">PHÂN QUYỀN HỆ THỐNG</div>
         <div className='flex flex-row gap-6'>
           <Button
-            className="flex-center text-slate-900 gap-2 rounded-3xl border-[#5B69E6] border-2"
+            className="button_excel"
             onClick={() => navigate('/setting/role/create')}
           >
             <PlusCircleFilled />
@@ -96,14 +99,14 @@ const SetRole = () => {
           <Input
             placeholder='Tìm kiếm'
             allowClear
-            className="rounded-lg h-9 border-[#A3ABEB] border-2"
+            className="input"
           />
           <div>
             <FilterFilled />
           </div>
         </div>
       </div>
-      <Table columns={columns} dataSource={roles} className="mt-6 shadow-md" />
+      <Table columns={columns} dataSource={roles} className="mt-6 shadow-md" loading={loading}/>
     </div>
   )
 }
