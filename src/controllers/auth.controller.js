@@ -15,7 +15,11 @@ exports.register = async (req, res) => {
     });
     if (isUser) return errorHandler(res, err.EMAIL_DUPLICATED);
     let hashPassword = bcrypt.hashSync(password, salt);
-    const user = await db.User.create({ email, password: hashPassword, role_id: 9 });
+    const user = await db.User.create({
+      email,
+      password: hashPassword,
+      role_id: 9,
+    });
     const active_token = await sendActiveEmail(req, user);
     user.active_token = active_token;
     await user.save();
@@ -87,16 +91,34 @@ exports.changePassword = async (req, res) => {
       const data = req.body;
       const user = await db.User.findOne({
         where: { id: data.id },
-        raw: false
+        raw: false,
       });
       const hashPassword = bcrypt.hashSync(data.new_password, salt);
       user.password = hashPassword;
       await user.save({ transaction: t });
       return successHandler(res, {}, 201);
-    })
+    });
   } catch (error) {
     debugger;
     console.log("___error___", error);
     return errorHandler(res, error);
   }
-}
+};
+
+exports.refreshToken = async (req, res) => {
+  try {
+    const data = await verifyRefreshToken(req?.body?.refreshToken);
+    const user = await db.User.findOne({
+      where: {
+        is_active: 1,
+        id: data?.data?.id,
+        email: data?.data?.email,
+      },
+    });
+    if (!user) return errorHandler(res, err.USER_NOT_FOUND);
+    const access_token = generateAccessToken(user);
+    return successHandler(res, { access_token }, 200);
+  } catch (error) {
+    return errorHandler(res, error);
+  }
+};

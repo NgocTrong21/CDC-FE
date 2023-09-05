@@ -17,7 +17,9 @@ const serviceRoute = require("./service.route");
 const categoryRoute = require("./category.route");
 const notificationRoute = require("./notification.route");
 const userRoute = require("./user.route");
-const docsRoute = require ("./docs.route");
+const docsRoute = require("./docs.route");
+const equipmentInspectionRoute = require("./equipment_inspection.route");
+const projectRoute = require("./project.route");
 
 const defaultRoutes = [
   {
@@ -51,6 +53,10 @@ const defaultRoutes = [
   {
     path: "/equipment_transfer",
     route: equipmentTransferRoute,
+  },
+  {
+    path: "/equipment_inspection",
+    route: equipmentInspectionRoute,
   },
   {
     path: "/equipment_maintenance",
@@ -87,6 +93,10 @@ const defaultRoutes = [
   {
     path: "/user",
     route: userRoute,
+  },
+  {
+    path: "/project",
+    route: projectRoute,
   },
 ];
 
