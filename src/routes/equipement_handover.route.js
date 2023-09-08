@@ -5,9 +5,28 @@ const authMiddleware = require("../midlewares/auth.middleware");
 const permissionMiddleware = require("../midlewares/permission.middleware");
 const roleMiddleware = require("../midlewares/role.middleware");
 
-router.post("/handover", authMiddleware, roleMiddleware.isAdmin, equipmentHandoverController.handoverEquipment);
-router.post("/send_email_handover_report", authMiddleware, equipmentHandoverController.sendEmailHandoverReport);
-router.get("/list/handover", authMiddleware, permissionMiddleware.EQUIPMENT_READ, equipmentHandoverController.handoverEquipmentList);
-router.get("/handover_info", authMiddleware, permissionMiddleware.EQUIPMENT_READ, equipmentHandoverController.getHandoverInfo);
+router.post(
+  "/handover",
+  authMiddleware,
+  roleMiddleware.isAdmin,
+  equipmentHandoverController.handoverEquipment
+);
+router.post(
+  "/send_email_handover_report",
+  authMiddleware,
+  equipmentHandoverController.sendEmailHandoverReport
+);
+router.get(
+  "/list/handover",
+  authMiddleware,
+  permissionMiddleware.EQUIPMENT_READ,
+  equipmentHandoverController.handoverEquipmentList
+);
+router.get(
+  "/handover_info",
+  authMiddleware,
+  permissionMiddleware.EQUIPMENT_READ,
+  equipmentHandoverController.getHandoverInfo
+);
 
 module.exports = router;
