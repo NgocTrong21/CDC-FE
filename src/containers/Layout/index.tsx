@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Layout, Menu, Row, Avatar, Dropdown, Badge } from 'antd';
+import { Layout, Menu, Row, Avatar, Dropdown, Badge, Space } from 'antd';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   UserOutlined,
@@ -347,82 +347,88 @@ const LayoutSystem = (props: LayoutProps) => {
   console.log(image);
   return (
     <Layout>
-      <Header className="bg-white  px-4 h-[56px] flex flex-row items-center ">
-        <Row
-          className=" justify-between items-center gap-2 "
-          style={{ width: '100%' }}
+      <Header className="bg-white  px-4  flex flex-row items-center justify-between ">
+        {React.createElement(
+          collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
+          {
+            className: 'trigger menu-icon p-[10px]',
+            onClick: () => {
+              setCollapsed(!collapsed);
+            },
+          }
+        )}
+        <div
+          className="flex flex-row items-center cursor-pointer  "
+          onClick={() => navigate('/')}
         >
-          {React.createElement(
-            collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
-            {
-              className: 'trigger mr-24 menu-icon',
-              onClick: () => {
-                setCollapsed(!collapsed);
-              },
-            }
-          )}
-          <div
-            className="flex flex-row items-center cursor-pointer  "
-            onClick={() => navigate('/')}
-          >
-            <img src={logo} alt="logo" className="logo mr-2" />
+          <Space>
+            <img src={logo} alt="logo" className="logo" />
             <div className="font-medium text-base ">
               <h2>Quản lý thiết bị và vật tư y tế CPC HP DEMO</h2>
             </div>
-          </div>
-          <div className="flex flex-row items-center gap-4 cursor-pointer ">
-            {/* <SettingFilled /> */}
-            <Dropdown
-              overlay={menu}
-              placement="bottomRight"
-              arrow
-              trigger={['click']}
-            >
-              <Badge count={count} offset={[-8, 8]}>
-                <BellFilled style={{ fontSize: '20px' }} className="trigger" />
-              </Badge>
-            </Dropdown>
+          </Space>
+        </div>
 
-            <Avatar
-              src={image}
-              icon={<UserOutlined />}
-              className="w-[40px] h-[40px]"
-            />
+        <Space className="h-[40px] flex flex-row items-center">
+          {/* notifications */}
+          <Dropdown
+            overlay={menu}
+            placement="bottomRight"
+            arrow
+            trigger={['click']}
+            className="flex flex-column h-[40px]"
+          >
+            <Badge count={count} className="trigger p-3" offset={[-10, 10]}>
+              <BellFilled
+                style={{ fontSize: '20px' }}
+                className="trigger text-[20px] "
+              />
+            </Badge>
+          </Dropdown>
 
-            <div>{user?.name || user?.email}</div>
-            <Dropdown
-              trigger={['click']}
-              className="trigger "
-              overlay={
-                <Menu className="rounded-lg">
-                  <Menu.Item key="profile">
-                    <Link to="/profile">Tài khoản</Link>
-                  </Menu.Item>
-                  <Menu.Item key="change_password">
-                    <Row onClick={() => setShowChangePasswordModal(true)}>
-                      Thay đổi mật khẩu
-                    </Row>
-                  </Menu.Item>
-                  <Menu.Item key="signout" onClick={handleLogout}>
-                    Đăng xuất
-                  </Menu.Item>
-                </Menu>
-              }
-              placement="bottomRight"
-            >
-              <DownOutlined />
-            </Dropdown>
-          </div>
-        </Row>
+          {/* Avatar */}
+          <Dropdown
+            trigger={['click']}
+            arrow
+            className="trigger items-center flex flex-row h-[40px] "
+            overlay={
+              <Menu className="rounded-lg">
+                <Menu.Item key="profile">
+                  <Link to="/profile">Tài khoản</Link>
+                </Menu.Item>
+                <Menu.Item key="change_password">
+                  <Row onClick={() => setShowChangePasswordModal(true)}>
+                    Thay đổi mật khẩu
+                  </Row>
+                </Menu.Item>
+                <Menu.Item key="signout" onClick={handleLogout}>
+                  Đăng xuất
+                </Menu.Item>
+              </Menu>
+            }
+            placement="bottomRight"
+          >
+            <Space>
+              <Avatar
+                src={image}
+                icon={<UserOutlined />}
+                className="w-[40px] h-[40px] flex flex-row place-content-center"
+              />
+
+              <div className="h-[40px] flex flex-row items-center">
+                {user?.name || user?.email}
+              </div>
+              <DownOutlined className=" flex flex-row " />
+            </Space>
+          </Dropdown>
+        </Space>
       </Header>
-      <Layout className="site-layout ">
+      <Layout className="min-h-screen">
         <Sider
           trigger={null}
-          collapsible
           collapsed={collapsed}
           width="250px"
-          className="bg-white min-h-screen "
-          reverseArrow={true}
+          className="bg-white  p  "
           collapsedWidth={72}
         >
           <Menu
@@ -432,9 +438,10 @@ const LayoutSystem = (props: LayoutProps) => {
             defaultOpenKeys={[`/${pathName[1]}`]}
             items={items}
             triggerSubMenuAction="click"
-            className="font-medium  "
+            className="font-medium "
           />
         </Sider>
+
         <Layout>
           <Content
             style={{
