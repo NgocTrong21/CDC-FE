@@ -22,12 +22,12 @@ router.get(
   permissionMiddleware.LIQUIDATION_EQUIPMENT_READ,
   equipmentLiquidationController.getLiquidationDetail
 );
-router.post(
-  "/approve_liquidation_note",
-  authMiddleware,
-  permissionMiddleware.LIQUIDATION_EQUIPMENT_APPROVE,
-  equipmentLiquidationController.approveLiquidationNote
-);
+// router.post(
+//   "/approve_liquidation_note",
+//   authMiddleware,
+//   permissionMiddleware.LIQUIDATION_EQUIPMENT_APPROVE,
+//   equipmentLiquidationController.approveLiquidationNote
+// );
 router.patch(
   "/approve_liquidation_note",
   authMiddleware,
@@ -44,6 +44,12 @@ router.get(
   "/history_liquidation",
   authMiddleware,
   permissionMiddleware.LIQUIDATION_EQUIPMENT_READ,
+  equipmentLiquidationController.getHistoryLiquidation
+);
+router.get(
+  "/re_handover",
+  authMiddleware,
+  // permissionMiddleware.LIQUIDATION_EQUIPMENT_READ,
   equipmentLiquidationController.getHistoryLiquidation
 );
 
