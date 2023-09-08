@@ -16,13 +16,21 @@ const equipmentLiquidationApi = {
     const url = 'equipment_liquidation/create_liquidation_note';
     return axiosClient.post(url, params);
   },
-  getLiquidationDetail(id: number): Promise<CommonResponse> {
-    const url = `equipment_liquidation/get_liquidation_detail?id=${id}`;
+  getLiquidationDetail(id: number, liquidation_id: number): Promise<CommonResponse> {
+    const url = `equipment_liquidation/get_liquidation_detail?id=${id}&liquidation_id=${liquidation_id}`;
     return axiosClient.get(url);
   },
   approveLiquidationNote(params: object): Promise<CommonResponse> {
     const url = 'equipment_liquidation/approve_liquidation_note';
-    return axiosClient.post(url, params);
+    return axiosClient.patch(url, params);
+  },
+  updateLiquidationNote(params: object): Promise<CommonResponse> {
+    const url = 'equipment_liquidation/update_liquidation_note';
+    return axiosClient.patch(url, params);
+  },
+  getHistoryLiquidation(id: number): Promise<CommonResponse> {
+    const url = `equipment_liquidation/history_liquidation?id=${id}`;
+    return axiosClient.get(url);
   },
 }
 

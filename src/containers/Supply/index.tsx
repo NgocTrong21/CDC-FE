@@ -19,8 +19,7 @@ import { onChangeCheckbox, options } from 'utils/globalFunc.util';
 import categoryApi from 'api/category.api';
 import { FilterContext } from 'contexts/filter.context';
 import useSearchName from 'hooks/useSearchName';
-
-const limit: number = 10;
+import type { PaginationProps } from 'antd';
 
 const TableFooter = ({ paginationProps }: any) => {
   return (
@@ -47,6 +46,7 @@ const Suplly = () => {
   const currentType = query?.type_id;
   const currentLevel = query?.risk_level;
   const [page, setPage] = useState<number>(currentPage || 1);
+  const [limit, setLimit] = useState<number>(10);
   const [total, setTotal] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
   const [name, setName] = useState<string>(currentName);
@@ -55,6 +55,13 @@ const Suplly = () => {
   const [level, setLevel] = useState<any>(currentLevel);
   const [isShowCustomTable, setIsShowCustomTable] = useState<boolean>(false);
   const [types, setTypes] = useState<any>([]);
+
+  const onShowSizeChange: PaginationProps['onShowSizeChange'] = (
+    current,
+    pageSize
+  ) => {
+    setLimit(pageSize);
+  };
 
   const columns: any = [
     {
@@ -187,6 +194,7 @@ const Suplly = () => {
     pageSize: limit,
     showTotal: (total: number) => `Tổng cộng: ${total} thiết bị`,
     onChange: onPaginationChange,
+    onShowSizeChange: onShowSizeChange
   }
 
   const handleDelete = (id: number) => {
@@ -208,6 +216,7 @@ const Suplly = () => {
     setLoading(true);
     supplyApi.list({
       page,
+      limit,
       name,
       type_id: type,
       risk_level: level
@@ -225,7 +234,7 @@ const Suplly = () => {
 
   useEffect(() => {
     getSuppliesList();
-  }, [page, nameSearch, type, level])
+  }, [page, nameSearch, type, level, limit])
 
 
   const onChangeSelect = (key: string, value: any) => {

@@ -12,7 +12,7 @@ const CreateUser = () => {
   const [selectedImage, setSelectedImage] = useState<any>('');
   const [image, setImage] = useState<any>('');
   const [loading, setLoading] = useState<boolean>(false);
-  const { roles , departments} = useContext(FilterContext);
+  const { roles , departments } = useContext(FilterContext);
 
   const options = (array: any) => {
     return array.map((item: any) => {
@@ -157,7 +157,7 @@ const CreateUser = () => {
             <Button 
               htmlType="submit" 
               loading={loading}
-              className='button'
+              className='button-primary'
             >
               Thêm
             </Button>

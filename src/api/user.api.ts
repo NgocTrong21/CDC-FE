@@ -34,6 +34,10 @@ const userApi = {
     const url = `user/search?${paramString}`;
     return axiosClient.get(url);
   },
+  updateProfile(params: object): Promise<CommonResponse> {
+    const url = 'user/update_profile';
+    return axiosClient.patch(url, params);
+  },
   uploadExcel(params: any): Promise<CommonResponse> {
     const url = 'user/upload_excel';
     return axiosClient.post(url, params);
