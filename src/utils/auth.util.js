@@ -8,6 +8,7 @@ const generateAccessToken = (user) => {
     role_id: user.role_id,
     department_id: user.department_id || "",
   };
+
   const access_token = jwt.sign(
     { data: userData },
     process.env.ACCESS_TOKEN_SECRET,

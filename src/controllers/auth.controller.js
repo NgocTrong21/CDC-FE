@@ -5,6 +5,11 @@ const { generateToken } = require("../utils/auth.util");
 const { successHandler, errorHandler } = require("../utils/ResponseHandle");
 const { sendActiveEmail, sendForgotEmail } = require("../utils/sendEmail.util");
 const salt = bcrypt.genSaltSync(10);
+const {
+  generateAccessToken,
+  generateRefreshToken,
+  verifyRefreshToken,
+} = require("../utils/auth.util");
 
 exports.register = async (req, res) => {
   try {
@@ -55,32 +60,34 @@ exports.login = async (req, res) => {
     const { email, password } = req.body;
     const user = await db.User.findOne({
       where: { email },
-      include: {
-        model: db.Role,
-        attributes: ["id", "name"],
-        include: {
-          model: db.Role_Permission,
-          attributes: ["permission_id"],
+      include: [
+        {
+          model: db.Role,
+          attributes: ["id", "name"],
           include: {
-            model: db.Permission,
-            attributes: ["name", "display_name"],
+            model: db.Role_Permission,
+            attributes: ["permission_id"],
+            include: {
+              model: db.Permission,
+              attributes: ["name", "display_name"],
+            },
+            raw: false,
           },
           raw: false,
         },
-        raw: false,
-      },
+        { model: db.Department, attributes: ["id", "name"] },
+      ],
       raw: false,
     });
     if (!user) return errorHandler(res, err.EMAIL_NOT_EXIST);
     let isPassword = await bcrypt.compare(password, user.password);
     if (!isPassword) return errorHandler(res, err.LOGIN_FAILED);
     if (!user.is_active) return errorHandler(res, err.ACCOUNT_DEACTIVE);
-    const { access_token, refresh_token } = generateToken(user);
+    const access_token = generateAccessToken(user);
+    const refresh_token = generateRefreshToken(user);
     delete user.password;
     return successHandler(res, { user, access_token, refresh_token }, 200);
   } catch (error) {
-    debugger;
-    console.log("___error___", error);
     return errorHandler(res, error);
   }
 };

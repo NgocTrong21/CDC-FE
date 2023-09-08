@@ -43,7 +43,11 @@ exports.reportEquipment = async (req, res) => {
     );
 
     await db.sequelize.transaction(async (t) => {
-      const repair_data = await db.Repair.create(data, { transaction: t });
+      const repair_data = await db.Repair.create(
+        { ...data, done: 0 },
+
+        { transaction: t }
+      );
       const dataEmail = {
         ...data,
         id: repair_data?.toJSON()?.id,
@@ -403,6 +407,10 @@ exports.reHandoverEquipment = async (req, res) => {
         return user;
       })
     );
+    console.log(data);
+    if (data?.status_id === 6) {
+      await db.Liquidation.create({ equipment_id: data?.equipment_id });
+    }
     await db.sequelize.transaction(async (t) => {
       await Promise.all([
         await db.Repair.update(
@@ -496,15 +504,12 @@ exports.getBrokenAndRepairEqList = async (req, res) => {
       department_id = department_id_from_token;
     }
 
-    console.log(isHasRole, department_id_from_token);
-
     let filter_equipment = {
       department_id,
       status_id,
       type_id,
     };
 
-    console.log(filter_equipment);
     // phần tìm kiếm theo tên, serial, model, code (nếu có)
     if (name) {
       filter_equipment = {
@@ -517,7 +522,6 @@ exports.getBrokenAndRepairEqList = async (req, res) => {
         ],
       };
     }
-    console.log(filter_equipment);
 
     for (let i in filter_equipment) {
       if (!filter_equipment[i]) {
@@ -553,7 +557,6 @@ exports.getBrokenAndRepairEqList = async (req, res) => {
       ],
       raw: false,
     });
-    console.log(equipments);
     return successHandler(res, { equipments }, 200);
   } catch (error) {
     return errorHandler(res, error);
