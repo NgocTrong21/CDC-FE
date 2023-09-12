@@ -10,9 +10,13 @@ const departmentApi = {
     const url = `department/detail?id=${id}`;
     return axiosClient.get(url);
   },
+  statisticEquipmentByDepartment(id: number): Promise<CommonResponse> {
+    const url = `department/statistic_equipment_by_department?id=${id}`;
+    return axiosClient.get(url);
+  },
   update(params: object): Promise<CommonResponse> {
     const url = 'department/update';
-    return axiosClient.put(url, params);
+    return axiosClient.patch(url, params);
   },
   delete(id: number): Promise<CommonResponse> {
     const url = 'department/delete';

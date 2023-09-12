@@ -144,7 +144,7 @@ const DetailEquipmentType = () => {
             <Button
               htmlType="submit"
               loading={loading}
-              className='button'
+              className='button-primary'
             >
               Cập nhật
             </Button>

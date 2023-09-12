@@ -22,3 +22,30 @@ export const validatePassword = (password: string, setPasswordError: any) => {
       setPasswordError("");
   }
 }
+
+export const formatCurrencyVN = (number: any) => {
+  // Check if the number is negative
+  const isNegative = number < 0;
+
+  // Convert number to absolute value
+  number = Math.abs(number);
+
+  // Format the number with separators
+  const parts = number.toFixed(0).toString().split('.');
+  let formattedNumber = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+  // Add decimal places if available
+  if (parts.length > 1) {
+    formattedNumber += `,${parts[1]}`;
+  }
+
+  // Attach the currency symbol
+  formattedNumber += ' ₫';
+
+  // Add negative sign if applicable
+  if (isNegative) {
+    formattedNumber = `-${formattedNumber}`;
+  }
+
+  return formattedNumber;
+}

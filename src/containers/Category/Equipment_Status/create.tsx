@@ -69,7 +69,7 @@ const CreateEquipmentStatus = () => {
             <Button
               htmlType="submit"
               loading={loading}
-              className='button'
+              className='button-primary'
             >
               Thêm
             </Button>

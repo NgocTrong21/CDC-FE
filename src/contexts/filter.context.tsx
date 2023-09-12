@@ -5,6 +5,7 @@ import { ACCESS_TOKEN, CURRENT_USER } from 'constants/auth.constant';
 interface FilterContextData {
   statuses: Array<object>[];
   departments: Array<object>[];
+  projects: Array<object>[];
   groups: Array<object>[];
   types: Array<object>[];
   cycles: Array<object>[];
@@ -13,12 +14,13 @@ interface FilterContextData {
   units: Array<object>[];
   levels: Array<object>[];
   providers: Array<object>[];
-  user: any
+  user: any;
 }
 
 export const FilterContext = createContext<FilterContextData>({
   statuses: [],
   departments: [],
+  projects: [],
   groups: [],
   types: [],
   cycles: [],
@@ -27,11 +29,11 @@ export const FilterContext = createContext<FilterContextData>({
   units: [],
   levels: [],
   providers: [],
-  user: {}
-})
+  user: {},
+});
 
 interface FilterContextProps {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 
 const FilterContextProvider: React.FC<FilterContextProps> = ({ children }) => {
@@ -43,6 +45,7 @@ const FilterContextProvider: React.FC<FilterContextProps> = ({ children }) => {
   const [services, setServices] = useState([]);
   const [roles, setRoles] = useState([]);
   const [units, setUnits] = useState([]);
+  const [projects, setProjects] = useState([]);
   const [levels, setLevels] = useState([]);
   const [providers, setProviders] = useState([]);
   const access_token: any = localStorage.getItem(ACCESS_TOKEN);
@@ -58,10 +61,22 @@ const FilterContextProvider: React.FC<FilterContextProps> = ({ children }) => {
       filterApi.getTypeEquipmentApi(),
       filterApi.getAllUnitApi(),
       filterApi.getAllRiskLevelApi(),
-      filterApi.getProviderApi()
+      filterApi.getProviderApi(),
+      filterApi.getProjectApi(),
     ])
       .then((res: any) => {
-        const [roles, services, groups, departments, statuses, types, units, levels, providers] = res;
+        const [
+          roles,
+          services,
+          groups,
+          departments,
+          statuses,
+          types,
+          units,
+          levels,
+          providers,
+          projects,
+        ] = res;
         setRoles(roles?.data?.data?.roles);
         setServices(services?.data?.data?.services);
         setGroups(groups?.data?.data?.groups);
@@ -70,16 +85,17 @@ const FilterContextProvider: React.FC<FilterContextProps> = ({ children }) => {
         setTypes(types?.data?.data?.types);
         setUnits(units?.data?.data?.units);
         setLevels(levels?.data?.data?.risk_levels);
-        setProviders(providers?.data?.data?.providers)
+        setProviders(providers?.data?.data?.providers);
+        setProjects(projects?.data?.data?.projects);
       })
-      .catch(error => console.log('error', error))
-  }
+      .catch((error) => console.log('error', error));
+  };
 
   useEffect(() => {
-    if(access_token) {
+    if (access_token) {
       getAllFilter();
     }
-  }, [access_token])
+  }, [access_token]);
 
   const FilterContextData = {
     statuses,
@@ -92,14 +108,15 @@ const FilterContextProvider: React.FC<FilterContextProps> = ({ children }) => {
     units,
     levels,
     providers,
-    user
-  }
+    user,
+    projects,
+  };
 
   return (
     <FilterContext.Provider value={FilterContextData}>
       {children}
     </FilterContext.Provider>
-  )
-}
+  );
+};
 
-export default FilterContextProvider
+export default FilterContextProvider;

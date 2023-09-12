@@ -47,14 +47,8 @@ const NotificationProvider: React.FC<NotificationProps> = ({ children }) => {
       .then((res: any) => {
         const { success, data } = res.data;
         if (success) {
-          setNotification(data.notifications.rows);
-          let count = 0;
-          data.notifications.rows?.forEach((item: any) => {
-            if(item?.is_seen === 0) {
-              count++;
-            }
-          });
-          setCount(count);
+          setNotification(data?.notifications?.rows);
+          setCount(data?.notifications?.count);
         }
       })
       .catch()

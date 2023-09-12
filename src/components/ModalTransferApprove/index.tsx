@@ -33,7 +33,7 @@ const ModalTransferApprove = (props: any) => {
   const handleApproverTransfer = (values: any) => {
     let data = { ...values };
     setLoading(true);
-    equipmentTransferApi.approverTransfer(data)
+    equipmentTransferApi.approveTransferReport(data)
       .then((res: any) => {
         const { success } = res.data;
         if (success) {
@@ -92,10 +92,10 @@ const ModalTransferApprove = (props: any) => {
         </Form.Item>
         <div className='flex flex-row justify-end gap-4'>
           <Form.Item>
-            <Button htmlType="submit" className='button' loading={loading}>Xác nhận</Button>
+            <Button htmlType="submit" className='button-primary' loading={loading}>Xác nhận</Button>
           </Form.Item>
           <Form.Item>
-            <Button onClick={setShowTransferApproveModal} className='button'>Đóng</Button>
+            <Button onClick={setShowTransferApproveModal} className='button-primary'>Đóng</Button>
           </Form.Item>
         </div>
       </Form>

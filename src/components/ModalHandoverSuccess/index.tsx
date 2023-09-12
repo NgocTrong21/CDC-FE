@@ -65,13 +65,13 @@ const ModalHandoverSuccess = (props: any) => {
             <Button
               onClick={() => sendEmailToManager()}
               loading={loading}
-              className='button'
+              className='button-primary'
             >
               Xác nhận
             </Button>
           </Form.Item>
           <Form.Item>
-            <Button onClick={setShowHandoverSuccessModal} className='button'>Đóng</Button>
+            <Button onClick={setShowHandoverSuccessModal} className='button-primary'>Đóng</Button>
           </Form.Item>
         </div>
       </Form>

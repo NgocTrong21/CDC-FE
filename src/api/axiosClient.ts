@@ -55,9 +55,9 @@ axiosClient.interceptors.response.use(
         requestRefreshToken = requestRefreshToken || callRequestRefreshToken();
         const res: any = await requestRefreshToken;
         requestRefreshToken = null;
-        window.localStorage.setItem(ACCESS_TOKEN, res.data.data.token);
-        axios.defaults.headers.common['Authorization'] = 'Bearer ' + res.data.data.token;
-        originalRequest.headers['Authorization'] = 'Bearer ' + res.data.data.token;
+        window.localStorage.setItem(ACCESS_TOKEN, res.data.data.access_token);
+        axios.defaults.headers.common['Authorization'] = 'Bearer ' + res.data.data.access_token;
+        originalRequest.headers['Authorization'] = 'Bearer ' + res.data.data.access_token;
         isRetry = true;
         return axiosClient(originalRequest);
       } catch (err) {

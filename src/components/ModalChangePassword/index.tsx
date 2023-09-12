@@ -70,10 +70,10 @@ const ModalChangePassword = (props: any) => {
         
         <div className='flex flex-row justify-end gap-4'>
           <Form.Item>
-            <Button htmlType="submit" className='button' loading={loading}>Xác nhận</Button>
+            <Button htmlType="submit" className='button-primary' loading={loading}>Xác nhận</Button>
           </Form.Item>
           <Form.Item>
-            <Button onClick={setShowChangePasswordModal} className='button'>Đóng</Button>
+            <Button onClick={setShowChangePasswordModal} className='button-primary'>Đóng</Button>
           </Form.Item>
         </div>
       </Form>

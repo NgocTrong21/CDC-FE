@@ -1,7 +1,5 @@
 import { useContext, useState } from 'react';
-import {
-  FileExcelFilled,
-} from '@ant-design/icons';
+import { FileExcelFilled } from '@ant-design/icons';
 import { Button, Divider, Form, Input, Select } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -10,9 +8,8 @@ import * as xlsx from 'xlsx';
 import { FilterContext } from 'contexts/filter.context';
 
 const ImportEquipmentTypeByExcel = () => {
-
   const navigate = useNavigate();
-  // const [group, setGroup] = useState<number>(); 
+  // const [group, setGroup] = useState<number>();
   // const { groups } = useContext(FilterContext);
   // const options = (array: any) => {
   //   return array.map((item: any) => {
@@ -30,7 +27,8 @@ const ImportEquipmentTypeByExcel = () => {
   // }
 
   const onFinish = () => {
-    userApi.uploadExcel(data)
+    userApi
+      .uploadExcel(data)
       .then((res: any) => {
         const { success, message } = res.data;
         if (success) {
@@ -40,8 +38,8 @@ const ImportEquipmentTypeByExcel = () => {
           toast.error(message);
         }
       })
-      .catch()
-  }
+      .catch();
+  };
 
   const readUploadFile = (e: any) => {
     let newWorkSheet: any = [];
@@ -50,7 +48,7 @@ const ImportEquipmentTypeByExcel = () => {
       const reader = new FileReader();
       reader.onload = (e) => {
         const data: any = e?.target?.result;
-        const workbook = xlsx.read(data, { type: "array" });
+        const workbook = xlsx.read(data, { type: 'array' });
         const sheetName = workbook.SheetNames[0];
         const workSheet = workbook.Sheets[sheetName];
         const json = xlsx.utils.sheet_to_json(workSheet);
@@ -58,27 +56,26 @@ const ImportEquipmentTypeByExcel = () => {
           const name = workSheet[`A${i}`]?.v;
           const alias = workSheet[`B${i}`]?.v;
           const group_id = workSheet[`C${i}`]?.v;
-          newWorkSheet.push({ name, alias, group_id })
+          newWorkSheet.push({ name, alias, group_id });
         }
         setData(newWorkSheet);
       };
       reader.readAsArrayBuffer(e.target.files[0]);
     }
-  }
+  };
 
   return (
     <div>
       <div className="flex-between-center">
         <div className="title">NHẬP DANH SÁCH LOẠI THIẾT BỊ TỪ EXCEL</div>
-        <div className='flex flex-row gap-6'>
+        <div className="flex flex-row gap-6">
           <Button
             className="flex-center text-slate-900 gap-2 rounded-3xl border-[#5B69E6] border-2"
             onClick={() => navigate('/category/group/create')}
           >
             <FileExcelFilled />
-            <div className="font-medium text-md text-[#5B69E6]">EXCEL mẫu</div>
+            <div className="font-medium text-md text-[#5B69E6]">Mẫu Excel</div>
           </Button>
-
         </div>
       </div>
       <Divider />
@@ -86,27 +83,26 @@ const ImportEquipmentTypeByExcel = () => {
         className="flex justify-between"
         onFinish={onFinish}
         form={form}
-        layout='vertical'
+        layout="vertical"
       >
         <div>
-          <Form.Item
-            className="fileUploadInput"
-            name="excel"
-          >
+          <Form.Item className="fileUploadInput" name="excel">
             <Input
               type="file"
-              placeholder='Chọn file excel'
+              placeholder="Chọn file excel"
               onChange={(e: any) => readUploadFile(e)}
             />
             <button>+</button>
           </Form.Item>
-          <Form.Item className='mt-6'>
+          <Form.Item className="mt-6">
             <Button
-              htmlType='submit'
+              htmlType="submit"
               className="flex-center text-slate-900 gap-2 rounded-3xl border-[#5B69E6] border-2"
             >
               <FileExcelFilled />
-              <div className="font-medium text-md text-[#5B69E6]">Nhập Excel</div>
+              <div className="font-medium text-md text-[#5B69E6]">
+                Nhập Excel
+              </div>
             </Button>
           </Form.Item>
         </div>
@@ -134,9 +130,8 @@ const ImportEquipmentTypeByExcel = () => {
           </Form.Item>
         </div> */}
       </Form>
-
     </div>
-  )
-}
+  );
+};
 
-export default ImportEquipmentTypeByExcel
+export default ImportEquipmentTypeByExcel;
