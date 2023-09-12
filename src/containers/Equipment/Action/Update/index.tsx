@@ -65,6 +65,7 @@ const UpdateEquipment = () => {
             model: equipment.model,
             serial: equipment.serial,
             status_id: equipment.status_id,
+            unit: equipment.unit,
             unit_id: equipment.unit_id,
             type_id: equipment.type_id,
             risk_level: equipment.risk_level,
@@ -247,7 +248,7 @@ const UpdateEquipment = () => {
                   options={options(types)}
                 />
               </Form.Item>
-              <Form.Item label="Đơn vị tính" name="unit_id" className="mb-5">
+              {/* <Form.Item label="Đơn vị tính" name="unit_id" className="mb-5">
                 <Select
                   showSearch
                   placeholder="Chọn đơn vị tính"
@@ -259,6 +260,19 @@ const UpdateEquipment = () => {
                       .includes(input.toLowerCase())
                   }
                   options={options(units)}
+                />
+              </Form.Item> */}
+              <Form.Item
+                label="Đơn vị tính"
+                name="unit"
+                required
+                rules={[{ required: true, message: 'Hãy nhập đơn vị tính!' }]}
+                className="mb-5"
+              >
+                <Input
+                  placeholder="Nhập đơn vị tính"
+                  allowClear
+                  className="input"
                 />
               </Form.Item>
 

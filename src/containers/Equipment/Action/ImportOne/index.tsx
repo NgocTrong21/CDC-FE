@@ -166,7 +166,7 @@ const ImportOne = () => {
                 options={options(types)}
               />
             </Form.Item>
-            <Form.Item label="Đơn vị tính" name="unit_id" className="mb-5">
+            {/* <Form.Item label="Đơn vị tính" name="unit_id" className="mb-5">
               <Select
                 showSearch
                 placeholder="Chọn đơn vị tính"
@@ -178,6 +178,19 @@ const ImportOne = () => {
                     .includes(input.toLowerCase())
                 }
                 options={options(units)}
+              />
+            </Form.Item> */}
+            <Form.Item
+              label="Đơn vị tính"
+              name="unit"
+              required
+              rules={[{ required: true, message: 'Hãy nhập đơn vị tính!' }]}
+              className="mb-5"
+            >
+              <Input
+                placeholder="Nhập đơn vị tính"
+                allowClear
+                className="input"
               />
             </Form.Item>
 
@@ -347,6 +360,7 @@ const ImportOne = () => {
                     .toLowerCase()
                     .includes(input.toLowerCase())
                 }
+                options={options(providers)}
               />
             </Form.Item>
             <Form.Item
@@ -468,7 +482,7 @@ const ImportOne = () => {
             </Form.Item>
           </div>
 
-          <div className="grid grid-cols-1 gap-5">
+          {/* <div className="grid grid-cols-1 gap-5">
             <Form.Item label="Dự án" name="project_id" className="mb-5">
               <Select
                 showSearch
@@ -483,7 +497,7 @@ const ImportOne = () => {
                 options={options(projects)}
               />
             </Form.Item>
-          </div>
+          </div> */}
           {/* hết Hàng 8 ===========================================================*/}
 
           {/* Hàng 9 ===========================================================*/}
