@@ -13,12 +13,22 @@ module.exports = (sequelize, DataTypes) => {
       Supply.belongsTo(models.Equipment_Risk_Level, {
         foreignKey: "risk_level",
       });
+      Supply.belongsTo(models.Equipment_Status, {
+        foreignKey: "status_id",
+      });
     }
   }
   Supply.init(
     {
-      name: DataTypes.STRING,
-      code: DataTypes.STRING,
+      name: DataTypes.STRING, // tên
+      code: DataTypes.STRING, // mã số
+      unit: DataTypes.STRING, // đơn vị
+      quantity: DataTypes.INTEGER, // số lượng
+      control_number: DataTypes.STRING, // số kiểm soát
+      manufacturing_country: DataTypes.STRING, //nước sx
+      expiration_date: DataTypes.DATE, //hạn sd
+      note: DataTypes.TEXT, // ghi chú
+
       hash_code: DataTypes.STRING,
       count: DataTypes.INTEGER,
       image: DataTypes.STRING,
@@ -29,13 +39,8 @@ module.exports = (sequelize, DataTypes) => {
       configuration: DataTypes.TEXT,
       import_price: DataTypes.FLOAT,
       usage_procedure: DataTypes.TEXT,
-      expiration_date: DataTypes.DATE,
-      note: DataTypes.TEXT,
-      status_id: DataTypes.INTEGER,
       manufacturer: DataTypes.STRING,
-      manufacturing_country: DataTypes.STRING,
       provider_id: DataTypes.INTEGER,
-      type_id: DataTypes.INTEGER,
       project_id: DataTypes.INTEGER,
     },
     {
