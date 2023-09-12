@@ -107,11 +107,7 @@ const Liquidation = () => {
       show: true,
       widthExcel: 30,
       render: (item: any) => {
-        return (
-          <>
-            {handleReportStatus(item?.Liquidation?.liquidation_status)}
-          </>
-        );
+        return <>{handleReportStatus(item?.Liquidation?.liquidation_status)}</>;
       },
     },
     {
@@ -138,7 +134,7 @@ const Liquidation = () => {
             >
               <Tooltip title="Phiếu yêu cầu thanh lý">
                 <Link
-                  to={`/equipment/liquidation/detail/${item?.id}/${item?.Liquidation?.id}`}
+                  to={`/equipment/liquidation/detail/${item?.id}/${item?.Liquidations[0]?.id}`}
                 >
                   <ProfileFilled />
                 </Link>
