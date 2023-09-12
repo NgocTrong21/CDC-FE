@@ -652,9 +652,11 @@ const Detail = () => {
 
     {
       key_1: 'Đơn vị tính',
-      value_1: `${
-        equipment?.Equipment_Unit?.name ? equipment?.Equipment_Unit?.name : ''
-      }`,
+      value_1: `${equipment?.unit ? equipment?.unit : ''}`,
+      // key_1: 'Đơn vị tính',
+      // value_1: `${
+      //   equipment?.Equipment_Unit?.name ? equipment?.Equipment_Unit?.name : ''
+      // }`,
       // key_2: 'Mức độ rủi ro',
       // value_2: `${
       //   equipment?.Equipment_Risk_Level?.name
