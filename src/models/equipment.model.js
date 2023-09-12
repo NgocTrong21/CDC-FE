@@ -37,6 +37,7 @@ module.exports = (sequelize, DataTypes) => {
       initial_value: DataTypes.INTEGER, // giá trị ban đầu
       annual_depreciation: DataTypes.INTEGER, // khấu hao hàng năm
       residual_value: DataTypes.INTEGER, // Giá trị còn lại
+      unit: DataTypes.STRING, // đơn vị tính nhập chữ
       note: DataTypes.TEXT,
 
       code: DataTypes.STRING,
