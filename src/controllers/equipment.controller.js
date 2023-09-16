@@ -88,6 +88,7 @@ exports.detail = async (req, res) => {
         { model: db.Department, attributes: ["id", "name"] },
         { model: db.Project, attributes: ["id", "name"] },
         { model: db.Provider, attributes: ["id", "name"] },
+        { model: db.Supply_Accompany, attributes: ["id", "name"] },
         {
           model: db.Equipment_Supply,
           attributes: ["equipment_id", "count"],

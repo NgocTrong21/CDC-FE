@@ -9,6 +9,7 @@ const equipmentLiquidationRoute = require("./equipment_liquidation.route");
 const equipmentTransferRoute = require("./equipment_transfer.route");
 const equipmentMaintenanceRoute = require("./equipment_maintenance.route");
 const equipmentInventoryRoute = require("./equipment_inventory.route");
+const supplyAccompanyRoute = require("./supply_accompany.route");
 const supplyRoute = require("./supply.route");
 const permissionRoute = require("./permission.route");
 const departmentRoute = require("./department.route");
@@ -97,6 +98,10 @@ const defaultRoutes = [
   {
     path: "/project",
     route: projectRoute,
+  },
+  {
+    path: "/supply_accompany",
+    route: supplyAccompanyRoute,
   },
 ];
 
