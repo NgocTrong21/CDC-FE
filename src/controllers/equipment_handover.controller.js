@@ -37,6 +37,9 @@ exports.handoverEquipment = async (req, res) => {
       data.file = result?.secure_url;
     }
     await db.sequelize.transaction(async (t) => {
+      if (req?.body?.isSendEmail) {
+        await sendHandoverEquipmentEmail(req, data, users.flat());
+      }
       await Promise.all([
         await db.Handover.create(data, { transaction: t }),
         await db.User_Equipment.bulkCreate(user_equipment, { transaction: t }),
@@ -50,7 +53,6 @@ exports.handoverEquipment = async (req, res) => {
             transaction: t,
           }
         ),
-        await sendHandoverEquipmentEmail(req, data, users.flat()),
         await db.Notification.create(
           {
             user_id: data.handover_create_id,
@@ -87,7 +89,9 @@ exports.sendEmailHandoverReport = async (req, res) => {
         return user;
       })
     );
-    await sendHandoverEquipmentEmail(data, users.flat());
+    if (req?.body?.isSendEmail) {
+      await sendHandoverEquipmentEmail(data, users.flat());
+    }
     return successHandler(res, {}, 201);
   } catch (error) {
     debugger;

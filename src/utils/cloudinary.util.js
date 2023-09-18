@@ -23,7 +23,7 @@ try {
     console.log("============================================================");
   }
 } catch (err) {
-  return err;
+  throw err;
 }
 
 module.exports = cloudinary;

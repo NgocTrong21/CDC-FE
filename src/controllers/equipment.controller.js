@@ -455,6 +455,9 @@ exports.unUseEquipment = async (req, res) => {
       })
     );
     await db.sequelize.transaction(async (t) => {
+      if (req?.body?.isSendEmail) {
+        await sendUnuseEquipmentEmail(req, data, users.flat());
+      }
       await Promise.all([
         await db.Equipment.update(
           { status_id: 6 },
@@ -463,7 +466,7 @@ exports.unUseEquipment = async (req, res) => {
             transaction: t,
           }
         ),
-        await sendUnuseEquipmentEmail(req, data, users.flat()),
+
         await db.Notification.create(
           {
             user_id: data.create_user_id,

@@ -44,8 +44,10 @@ exports.transferEquipment = async (req, res) => {
     await db.sequelize.transaction(async (t) => {
       const transfer_data = await db.Transfer.create(data, { transaction: t });
       const dataEmail = { ...data, id: transfer_data?.toJSON()?.id };
+      if (req?.body?.isSendEmail) {
+        await sendTransferEmail(req, dataEmail, users.flat());
+      }
       await Promise.all([
-        await sendTransferEmail(req, dataEmail, users.flat()),
         await db.Notification.create(
           {
             user_id: data.transfer_create_user_id,
@@ -209,12 +211,15 @@ exports.updateTransferReport = async (req, res) => {
       data.file = result?.secure_url;
     }
     await db.sequelize.transaction(async (t) => {
+      if (req?.body?.isSendEmail) {
+        await sendTransferEmail(req, data, users.flat());
+      }
       await Promise.all([
         await db.Transfer.update(data, {
           where: { equipment_id: data?.equipment_id, id: data?.id },
           transaction: t,
         }),
-        await sendTransferEmail(req, data, users.flat()),
+
         await db.Notification.create(
           {
             user_id: data.transfer_create_user_id,
@@ -279,6 +284,9 @@ exports.approverTransfer = async (req, res) => {
     }
 
     await db.sequelize.transaction(async (t) => {
+      if (req?.body?.isSendEmail) {
+        await sendHandleTransferReportEmail(req, data, users.flat());
+      }
       await Promise.all([
         await db.Transfer.update(data, {
           where: { equipment_id: data?.equipment_id, id: data.id },
@@ -289,7 +297,6 @@ exports.approverTransfer = async (req, res) => {
             { department_id: data?.to_department_id },
             { where: { id: data?.equipment_id }, transaction: t }
           )),
-        await sendHandleTransferReportEmail(req, data, users.flat()),
         await db.Notification.create(
           {
             user_id: data.transfer_approver_id,

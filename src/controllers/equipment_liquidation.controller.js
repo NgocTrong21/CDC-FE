@@ -102,8 +102,10 @@ exports.createLiquidationNote = async (req, res) => {
         transaction: t,
       });
       const dataEmail = { ...data, id: liquidation_data?.toJSON()?.id };
+      if (req?.body?.isSendEmail) {
+        await sendLiquidationRequestEmail(req, dataEmail, users.flat());
+      }
       await Promise.all([
-        await sendLiquidationRequestEmail(req, dataEmail, users.flat()),
         await db.Notification.create(
           {
             user_id: data.create_user_id,
@@ -170,12 +172,15 @@ exports.updateLiquidationReport = async (req, res) => {
       data.file = result?.secure_url;
     }
     await db.sequelize.transaction(async (t) => {
+      if (req?.body?.isSendEmail) {
+        await sendLiquidationRequestEmail(req, data, users.flat());
+      }
       await Promise.all([
         await db.Liquidation.update(data, {
           where: { equipment_id: data?.equipment_id, id: data?.id },
           transaction: t,
         }),
-        await sendLiquidationRequestEmail(req, data, users.flat()),
+
         await db.Notification.create(
           {
             user_id: data.create_user_id,
@@ -230,6 +235,9 @@ exports.approveLiquidationNote = async (req, res) => {
       content = `Phiếu thanh lý thiết bị ${data.name} thuộc ${data.department} đã bị từ chối.`;
     }
     await db.sequelize.transaction(async (t) => {
+      if (req?.body?.isSendEmail) {
+        await sendLiquidationDoneEmail(req, data, users.flat());
+      }
       await Promise.all([
         await db.Liquidation.update(data, {
           where: { equipment_id: data?.equipment_id, id: data.id },
@@ -240,7 +248,7 @@ exports.approveLiquidationNote = async (req, res) => {
             { status_id: 7 },
             { where: { id: data?.equipment_id }, transaction: t }
           )),
-        await sendLiquidationDoneEmail(req, data, users.flat()),
+
         await db.Notification.create(
           {
             user_id: data.approver_id,
