@@ -95,7 +95,7 @@ const Department = () => {
       widthExcel: 20,
     },
     {
-      title: 'Trưởng khoa/Trưởng phòng Vật tư',
+      title: 'Trưởng khoa',
       key: 'head',
       show: true,
       widthExcel: 40,
@@ -106,18 +106,18 @@ const Department = () => {
         return <Row>{user?.name}</Row>;
       },
     },
-    {
-      title: 'Điều dưỡng trưởng/Phụ trách phòng Vật tư',
-      key: 'nurse',
-      show: true,
-      widthExcel: 45,
-      render: (item: any) => {
-        const user = item?.Users?.find(
-          (user: any) => user?.Role?.id === 4 || user?.Role?.id === 8
-        );
-        return <Row>{user?.name}</Row>;
-      },
-    },
+    // {
+    //   title: 'Điều dưỡng trưởng/Phụ trách phòng Vật tư',
+    //   key: 'nurse',
+    //   show: true,
+    //   widthExcel: 45,
+    //   render: (item: any) => {
+    //     const user = item?.Users?.find(
+    //       (user: any) => user?.Role?.id === 4 || user?.Role?.id === 8
+    //     );
+    //     return <Row>{user?.name}</Row>;
+    //   },
+    // },
     {
       title: 'Tác vụ',
       key: 'action',

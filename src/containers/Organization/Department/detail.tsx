@@ -237,7 +237,7 @@ const DetailDepartment = () => {
                 </div>
                 <div className="grid grid-cols-2 gap-5">
                   <Form.Item
-                    label="Trưởng khoa/Trưởng phòng Vật tư"
+                    label="Trưởng khoa"
                     name="head_of_department_id"
                     className="mb-5"
                   >
@@ -247,7 +247,7 @@ const DetailDepartment = () => {
                       options={options(users)}
                     />
                   </Form.Item>
-                  <Form.Item
+                  {/* <Form.Item
                     label="Điều dưỡng trưởng/Phụ trách phòng Vật tư"
                     name="chief_nursing_id"
                     className="mb-5"
@@ -257,7 +257,7 @@ const DetailDepartment = () => {
                       allowClear
                       options={options(users)}
                     />
-                  </Form.Item>
+                  </Form.Item> */}
                 </div>
                 <Form.Item>
                   <Button
@@ -294,7 +294,7 @@ const DetailDepartment = () => {
             </div>
           </div>
 
-          <div className="mb-8">
+          {/* <div className="mb-8">
             <div className="title text-center">
               THỐNG KÊ THIẾT BỊ THEO TRẠNG THÁI
             </div>
@@ -326,11 +326,11 @@ const DetailDepartment = () => {
                 });
               }}
             />
-          </div>
-          <div>
+          </div> */}
+          {/* <div>
             <div className="title text-center">DANH SÁCH NHÂN VIÊN</div>
             <User department_id={id} isDepartment={true} triggerLoading = {triggerLoading}/>
-          </div>
+          </div> */}
         </>
       )}
     </div>

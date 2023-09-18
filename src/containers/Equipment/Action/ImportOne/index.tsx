@@ -1,6 +1,6 @@
 import { ImportOutlined } from '@ant-design/icons';
 import { Button, DatePicker, Divider, Form, Input, Select } from 'antd';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import ava from 'assets/image.png';
 import { convertBase64, options } from 'utils/globalFunc.util';
 import { useNavigate } from 'react-router-dom';
@@ -48,8 +48,7 @@ const ImportOne = () => {
   };
 
   const onFinish = (values: any) => {
-    let data = { ...values, image };
-    console.log(data);
+    let data = { ...values, image, department_id: 1, status_id: 2 };
     setLoading(true);
     equipmentApi
       .create(data)
@@ -84,7 +83,7 @@ const ImportOne = () => {
     <div>
       <div className="flex-between-center">
         <div className="title">NHẬP THIẾT BỊ</div>
-        <Button className="button_excel">
+        {/* <Button className="button_excel">
           <ImportOutlined />
           <div
             className="font-medium text-md text-[#5B69E6]"
@@ -92,7 +91,7 @@ const ImportOne = () => {
           >
             Nhập Excel
           </div>
-        </Button>
+        </Button> */}
       </div>
 
       <Divider />
@@ -106,7 +105,7 @@ const ImportOne = () => {
           onChange={onchange}
         >
           {/* Hàng 1 ===========================================================*/}
-          <div className="grid grid-cols-2 gap-5">
+          <div className="grid grid-cols-3 gap-5">
             <Form.Item
               label="Tên thiết bị"
               name="name"
@@ -120,162 +119,43 @@ const ImportOne = () => {
                 className="input"
               />
             </Form.Item>
-            <Form.Item
-              label="Khoa - Phòng"
-              name="department_id"
-              required
-              rules={[{ required: true, message: 'Hãy chọn khoa phòng!' }]}
-              className="mb-5"
-            >
-              <Select
-                showSearch
-                placeholder="Chọn khoa phòng"
-                optionFilterProp="children"
-                allowClear
-                filterOption={(input, option) =>
-                  (option!.label as unknown as string)
-                    .toLowerCase()
-                    .includes(input.toLowerCase())
+            <Form.Item label="Khoa - Phòng" className="mb-5">
+              <Input
+                className="input"
+                defaultValue={
+                  options(departments).find((item: any) => item.value === 1)
+                    .label
                 }
-                options={options(departments)}
-                onChange={onChangeGroup}
+                disabled
+              />
+            </Form.Item>
+            <Form.Item label="Trạng thái thiết bị" className="mb-5">
+              <Input
+                className="input"
+                defaultValue={
+                  options(statuses).find((item: any) => item.value === 2).label
+                }
+                disabled
               />
             </Form.Item>
           </div>
           {/* Hết hàng 1 ===========================================================*/}
-
-          {/* Hàng 2 ===========================================================*/}
-          <div className="grid grid-cols-3 gap-5">
+          {/* Hàng 4 ===========================================================*/}
+          <div className="grid grid-cols-4 gap-5">
             <Form.Item
-              label="Loại thiết bị"
-              name="type_id"
-              // required
-              // rules={[{ required: true, message: 'Hãy chọn loại thiết bị!' }]}
-              className="mb-5"
-            >
-              <Select
-                showSearch
-                placeholder="Chọn loại thiết bị"
-                optionFilterProp="children"
-                allowClear
-                filterOption={(input, option) =>
-                  (option!.label as unknown as string)
-                    .toLowerCase()
-                    .includes(input.toLowerCase())
-                }
-                options={options(types)}
-              />
-            </Form.Item>
-            {/* <Form.Item label="Đơn vị tính" name="unit_id" className="mb-5">
-              <Select
-                showSearch
-                placeholder="Chọn đơn vị tính"
-                optionFilterProp="children"
-                allowClear
-                filterOption={(input, option) =>
-                  (option!.label as unknown as string)
-                    .toLowerCase()
-                    .includes(input.toLowerCase())
-                }
-                options={options(units)}
-              />
-            </Form.Item> */}
-            <Form.Item
-              label="Đơn vị tính"
-              name="unit"
-              required
-              rules={[{ required: true, message: 'Hãy nhập đơn vị tính!' }]}
-              className="mb-5"
-            >
-              <Input
-                placeholder="Nhập đơn vị tính"
-                allowClear
-                className="input"
-              />
-            </Form.Item>
-
-            {/* <Form.Item label="Mức độ rủi ro" name="risk_level" className="mb-5">
-              <Select
-                showSearch
-                placeholder="Chọn mức độ rủi ro"
-                optionFilterProp="children"
-                allowClear
-                filterOption={(input, option) =>
-                  (option!.label as unknown as string)
-                    .toLowerCase()
-                    .includes(input.toLowerCase())
-                }
-                options={options(levels)}
-              />
-            </Form.Item> */}
-            <Form.Item
-              label="Trạng thái thiết bị"
-              name="status_id"
+              label="Số hiệu TSCĐ"
+              name="fixed_asset_number"
               required
               rules={[
-                { required: true, message: 'Hãy chọn trạng thái thiết bị!' },
+                {
+                  required: true,
+                  message: 'Hãy nhập Số hiệu TSCĐ thiết bị!',
+                },
               ]}
               className="mb-5"
             >
-              <Select
-                showSearch
-                placeholder="Chọn trạng thái thiết bị"
-                optionFilterProp="children"
-                allowClear
-                filterOption={(input, option) =>
-                  (option!.label as unknown as string)
-                    .toLowerCase()
-                    .includes(input.toLowerCase())
-                }
-                options={options(statuses)}
-              />
+              <Input placeholder="Nhập mã TSCĐ" allowClear className="input" />
             </Form.Item>
-          </div>
-          {/* Hết hàng 2 ===========================================================*/}
-
-          {/* Hàng 3 ===========================================================*/}
-          <div className="grid grid-cols-4 gap-5">
-            <Form.Item label="Số lượng" name="quantity" className="mb-5">
-              <Input
-                placeholder="Nhập số lượng thiết bị"
-                allowClear
-                className="input"
-              />
-            </Form.Item>
-            <Form.Item label="Thành tiền" name="initial_value" className="mb-5">
-              <Input
-                placeholder="Nhập thành tiền thiết bị"
-                allowClear
-                className="input"
-              />
-            </Form.Item>
-            <Form.Item
-              label="Khấu hao hàng năm (%)"
-              name="annual_depreciation"
-              className="mb-5"
-            >
-              <Input
-                placeholder="Nhập Khấu hao hàng năm"
-                allowClear
-                className="input"
-              />
-            </Form.Item>
-            <Form.Item
-              label="Giá trị còn lại"
-              name="residual_value"
-              className="mb-5"
-            >
-              <Input
-                placeholder="Nhập giá trị còn lại"
-                allowClear
-                className="input"
-              />
-            </Form.Item>
-          </div>
-          {/* Hết hàng 3 ===========================================================*/}
-
-          {/* Hàng 4 ===========================================================*/}
-          <div className="grid grid-cols-4 gap-5">
             <Form.Item
               label="Model"
               name="model"
@@ -319,40 +199,20 @@ const ImportOne = () => {
                 className="input"
               />
             </Form.Item>
-            <Form.Item
-              label="Số hiệu TSCĐ"
-              name="fixed_asset_number"
-              required
-              rules={[
-                {
-                  required: true,
-                  message: 'Hãy nhập Số hiệu TSCĐ thiết bị!',
-                },
-              ]}
-              className="mb-5"
-            >
-              <Input
-                placeholder="Nhập mã hoá thiết bị"
-                allowClear
-                className="input"
-              />
-            </Form.Item>
           </div>
           {/* Hết hàng 4 ===========================================================*/}
-
-          {/* Hàng 5 ===========================================================*/}
+          {/* Hàng 2 ===========================================================*/}
           <div className="grid grid-cols-4 gap-5">
-            <Form.Item label="Năm sử dụng" name="year_in_use" className="mb-5">
-              <Input
-                placeholder="Nhập năm sử dụng của thiết bị"
-                allowClear
-                className="input"
-              />
-            </Form.Item>
-            <Form.Item label="Nhà cung cấp" name="provider_id" className="mb-5">
+            {/* <Form.Item
+              label="Loại thiết bị"
+              name="type_id"
+              // required
+              // rules={[{ required: true, message: 'Hãy chọn loại thiết bị!' }]}
+              className="mb-5"
+            >
               <Select
                 showSearch
-                placeholder="Chọn nhà cung cấp"
+                placeholder="Chọn loại thiết bị"
                 optionFilterProp="children"
                 allowClear
                 filterOption={(input, option) =>
@@ -360,23 +220,56 @@ const ImportOne = () => {
                     .toLowerCase()
                     .includes(input.toLowerCase())
                 }
-                options={options(providers)}
+                options={options(types)}
               />
             </Form.Item>
+            {/* <Form.Item label="Đơn vị tính" name="unit_id" className="mb-5">
+            </Form.Item> */}
+            {/* <Form.Item label="Đơn vị tính" name="unit_id" className="mb-5">
+              <Select
+                showSearch
+                placeholder="Chọn đơn vị tính"
+                optionFilterProp="children"
+                allowClear
+                filterOption={(input, option) =>
+                  (option!.label as unknown as string)
+                    .toLowerCase()
+                    .includes(input.toLowerCase())
+                }
+                options={options(units)}
+              />
+            </Form.Item> */}
             <Form.Item
-              label="Hãng sản xuất"
-              name="manufacturer_id"
-              // required
-              // rules={[
-              //   {
-              //     required: true,
-              //     message: 'Hãy nhập hãng sản xuất của thiết bị!',
-              //   },
-              // ]}
+              label="Đơn vị tính"
+              name="unit"
+              required
+              rules={[{ required: true, message: 'Hãy nhập đơn vị tính!' }]}
               className="mb-5"
             >
               <Input
-                placeholder="Nhập hãng sản xuất của thiết bị"
+                placeholder="Nhập đơn vị tính"
+                allowClear
+                className="input"
+              />
+            </Form.Item>
+
+            {/* <Form.Item label="Mức độ rủi ro" name="risk_level" className="mb-5">
+              <Select
+                showSearch
+                placeholder="Chọn mức độ rủi ro"
+                optionFilterProp="children"
+                allowClear
+                filterOption={(input, option) =>
+                  (option!.label as unknown as string)
+                    .toLowerCase()
+                    .includes(input.toLowerCase())
+                }
+                options={options(levels)}
+              />
+            </Form.Item> */}
+            <Form.Item label="Năm sử dụng" name="year_in_use" className="mb-5">
+              <Input
+                placeholder="Nhập năm sử dụng của thiết bị"
                 allowClear
                 className="input"
               />
@@ -396,6 +289,85 @@ const ImportOne = () => {
                 className="input"
               />
             </Form.Item>
+          </div>
+          {/* Hết hàng 2 ===========================================================*/}
+
+          {/* Hàng 3 ===========================================================*/}
+          <div className="grid grid-cols-4 gap-5">
+            {/* <Form.Item label="Số lượng" name="quantity" className="mb-5">
+              <Input
+                placeholder="Nhập số lượng thiết bị"
+                allowClear
+                className="input"
+              />
+            </Form.Item> */}
+            <Form.Item label="Thành tiền" name="initial_value" className="mb-5">
+              <Input
+                placeholder="Nhập thành tiền thiết bị"
+                allowClear
+                className="input"
+              />
+            </Form.Item>
+            <Form.Item
+              label="Khấu hao hàng năm (%)"
+              name="annual_depreciation"
+              className="mb-5"
+            >
+              <Input
+                placeholder="Nhập Khấu hao hàng năm"
+                allowClear
+                className="input"
+              />
+            </Form.Item>
+            <Form.Item
+              label="Giá trị còn lại"
+              name="residual_value"
+              className="mb-5"
+            >
+              <Input
+                placeholder="Nhập giá trị còn lại"
+                allowClear
+                className="input"
+              />
+            </Form.Item>
+          </div>
+          {/* Hết hàng 3 ===========================================================*/}
+
+          {/* Hàng 5 ===========================================================*/}
+          <div className="grid grid-cols-4 gap-5">
+            {/* <Form.Item label="Nhà cung cấp" name="provider_id" className="mb-5">
+              <Select
+                showSearch
+                placeholder="Chọn nhà cung cấp"
+                optionFilterProp="children"
+                allowClear
+                filterOption={(input, option) =>
+                  (option!.label as unknown as string)
+                    .toLowerCase()
+                    .includes(input.toLowerCase())
+                }
+                options={options(providers)}
+              />
+            </Form.Item> */}
+            {/* <Form.Item
+              label="Hãng sản xuất"
+              name="manufacturer_id"
+              // required
+              // rules={[
+              //   {
+              //     required: true,
+              //     message: 'Hãy nhập hãng sản xuất của thiết bị!',
+              //   },
+              // ]}
+              className="mb-5"
+            >
+              <Input
+                placeholder="Nhập hãng sản xuất của thiết bị"
+                allowClear
+                className="input"
+              />
+            </Form.Item> */}
+
             {/* <Form.Item
                 label="Năm sản xuất"
                 name="year_of_manufacture"
@@ -418,7 +390,7 @@ const ImportOne = () => {
           {/* hết Hàng 5 ===========================================================*/}
 
           {/* Hàng 6 ===========================================================*/}
-          <div className="grid grid-cols-4 gap-5">
+          {/* <div className="grid grid-cols-4 gap-5">
             <Form.Item
               label="Bảo dưỡng định kỳ (tháng)"
               name="regular_maintenance"
@@ -480,7 +452,7 @@ const ImportOne = () => {
             >
               <DatePicker className="textarea" placeholder="Chọn ngày" />
             </Form.Item>
-          </div>
+          </div> */}
 
           {/* <div className="grid grid-cols-1 gap-5">
             <Form.Item label="Dự án" name="project_id" className="mb-5">
@@ -501,7 +473,7 @@ const ImportOne = () => {
           {/* hết Hàng 8 ===========================================================*/}
 
           {/* Hàng 9 ===========================================================*/}
-          <div className="grid grid-cols-2 gap-5">
+          {/* <div className="grid grid-cols-2 gap-5">
             <Form.Item
               label="Thông số kĩ thuật"
               name="technical_parameter"
@@ -524,9 +496,9 @@ const ImportOne = () => {
                 className="textarea"
               />
             </Form.Item>
-          </div>
-          <div className="grid grid-cols-2 gap-5">
-            <Form.Item
+          </div> */}
+          <div className="grid grid-cols-1 gap-5">
+            {/* <Form.Item
               label="Quy trình sử dụng"
               name="usage_procedure"
               className="mb-5"
@@ -536,9 +508,9 @@ const ImportOne = () => {
                 rows={4}
                 className="textarea"
               />
-            </Form.Item>
+            </Form.Item> */}
             <Form.Item label="Ghi chú" name="note" className="mb-5">
-              <TextArea placeholder="Ghi chứ" rows={4} className="textarea" />
+              <TextArea placeholder="Ghi chú" rows={4} className="textarea" />
             </Form.Item>
           </div>
           {/* hết Hàng 9 ===========================================================*/}

@@ -138,7 +138,7 @@ const Liquidation = () => {
             >
               <Tooltip title="Phiếu yêu cầu thanh lý">
                 <Link
-                  to={`/equipment/liquidation/detail/${item?.id}/${item?.Liquidation?.id}`}
+                  to={`/equipment/liquidation/detail/${item?.id}/${item?.Liquidations[0]?.id}`}
                 >
                   <ProfileFilled />
                 </Link>
