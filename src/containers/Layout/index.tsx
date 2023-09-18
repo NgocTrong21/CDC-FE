@@ -102,17 +102,17 @@ const LayoutSystem = (props: LayoutProps) => {
           permissions.EQUIPMENT_CREATE
         ),
         getItem('Sửa chữa', '/repair', permissions.REPAIR_EQUIPMENT_READ),
-        getItem('Thông báo kiểm định', '7'),
-        getItem(
-          'Bảo dưỡng định kì',
-          '/maintenance',
-          permissions.MAINTAINANCE_EQUIPMENT_READ
-        ),
-        getItem(
-          'Kiểm định',
-          '/inspection',
-          permissions.ACCREDITATION_EQUIPMENT_READ
-        ),
+        // getItem('Thông báo kiểm định', '7'),
+        // getItem(
+        //   'Bảo dưỡng định kì',
+        //   '/maintenance',
+        //   permissions.MAINTAINANCE_EQUIPMENT_READ
+        // ),
+        // getItem(
+        //   'Kiểm định',
+        //   '/inspection',
+        //   permissions.ACCREDITATION_EQUIPMENT_READ
+        // ),
         // getItem('Kiểm xạ', '10', permissions.RADIATION_EQUIPMENT_READ),
         // getItem(
         //   'Ngoại kiểm',

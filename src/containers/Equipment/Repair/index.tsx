@@ -276,11 +276,7 @@ const Repair = () => {
       show: true,
       widthExcel: 30,
       render: (item: any) => {
-        return (
-          <>
-            {handleReportStatus(item?.Repairs[0]?.report_status)}
-          </>
-        );
+        return <>{handleReportStatus(item?.Repairs[0]?.report_status)}</>;
       },
     },
     {
@@ -290,9 +286,7 @@ const Repair = () => {
       widthExcel: 30,
       render: (item: any) => {
         return (
-          <>
-            {handleReportStatus(item?.Repairs[0]?.schedule_repair_status)}
-          </>
+          <>{handleReportStatus(item?.Repairs[0]?.schedule_repair_status)}</>
         );
       },
     },
@@ -690,7 +684,7 @@ const Repair = () => {
         loading={loading}
       />
 
-      <div className="mb-8 mt-10">
+      {/* <div className="mb-8 mt-10">
         <div className="title mb-6">
           Danh sách thiết bị có chi phí sửa chữa cao
         </div>
@@ -702,7 +696,7 @@ const Repair = () => {
           pagination={false}
           loading={loadingUnuse}
         />
-      </div>
+      </div> */}
 
       <ModalReHandover
         equipment={equipment}
