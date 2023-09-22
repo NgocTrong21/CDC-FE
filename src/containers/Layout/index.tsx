@@ -11,6 +11,7 @@ import {
   BarChartOutlined,
   FileDoneOutlined,
   SisternodeOutlined,
+  ShopOutlined,
   ClusterOutlined,
   MenuUnfoldOutlined,
   MenuFoldOutlined,
@@ -70,17 +71,24 @@ const LayoutSystem = (props: LayoutProps) => {
     let isHasPermission: boolean = userPermissions.some(
       (item: any) => item.permission_id === permission
     );
-    if (isHasPermission) {
-      return {
-        key,
-        icon,
-        children,
-        label,
-        type,
-      } as MenuItem;
-    } else {
-      return;
-    }
+    // if (isHasPermission) {
+    //   return {
+    //     key,
+    //     icon,
+    //     children,
+    //     label,
+    //     type,
+    //   } as MenuItem;
+    // } else {
+    //   return;
+    // }
+    return {
+      key,
+      icon,
+      children,
+      label,
+      type,
+    } as MenuItem;
   }
 
   const items: MenuProps['items'] = [
@@ -154,7 +162,42 @@ const LayoutSystem = (props: LayoutProps) => {
         ),
       ]
     ),
-
+    getItem(
+      'Quản lý kho',
+      '/warehouses',
+      permissions.IMPORT_SUPPLIES,
+      <ShopOutlined style={{ fontSize: '20px' }} />,
+      [
+        getItem(
+          'Danh sách kho',
+          '/list_warehouses',
+          permissions.IMPORT_SUPPLIES
+        ),
+        getItem(
+          'Nhập thông tin kho',
+          '/import_warehouse',
+          permissions.IMPORT_SUPPLIES
+        ),
+      ]
+    ),
+    getItem(
+      'Quản lý phiếu',
+      '/order',
+      permissions.IMPORT_SUPPLIES,
+      <ShopOutlined style={{ fontSize: '20px' }} />,
+      [
+        getItem(
+          'Quản lý phiếu nhập',
+          '/inbound_order/list',
+          permissions.IMPORT_SUPPLIES
+        ),
+        getItem(
+          'Quản lý phiếu xuất',
+          '/outbound_order/list',
+          permissions.IMPORT_SUPPLIES
+        ),
+      ]
+    ),
     getItem(
       'Quản lý tổ chức',
       '/organization',
@@ -344,7 +387,6 @@ const LayoutSystem = (props: LayoutProps) => {
     getUserImage();
   }, [user.id]);
 
-  console.log(image);
   return (
     <Layout>
       <Header className="bg-white  px-4  flex flex-row items-center justify-between ">

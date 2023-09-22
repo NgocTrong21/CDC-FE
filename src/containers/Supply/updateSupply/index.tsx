@@ -1,39 +1,16 @@
-import { ImportOutlined } from '@ant-design/icons';
-import { Button, DatePicker, Divider, Form, Input, Select } from 'antd';
+import { Button, Divider, Form, Input, Select } from 'antd';
 import { useEffect, useState, useContext } from 'react';
 import ava from 'assets/image.png';
 import { convertBase64, options } from 'utils/globalFunc.util';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import categoryApi from 'api/category.api';
 import { FilterContext } from 'contexts/filter.context';
-import supplyApi from 'api/suplly.api';
 
-const { Option } = Select;
 const { TextArea } = Input;
 
-const SupplyCreate = () => {
-  const { levels, units, providers } = useContext(FilterContext);
-  const navigate = useNavigate();
-  const [form] = Form.useForm();
-  const [selectedImage, setSelectedImage] = useState<any>('');
+const SupplyUpdate = () => {
+  const { units, providers } = useContext(FilterContext);
   const [image, setImage] = useState<any>('');
-  const [type, setType] = useState(null);
-
-  const getSupplyType = () => {
-    categoryApi
-      .listSypplyType()
-      .then((res: any) => {
-        const { success, data } = res?.data;
-        if (success) {
-          setType(data?.supply_types);
-        }
-      })
-      .catch();
-  };
-  useEffect(() => {
-    getSupplyType();
-  }, []);
+  const [selectedImage, setSelectedImage] = useState<any>('');
+  const [form] = Form.useForm();
 
   const handleChangeImg = async (e: any) => {
     let file = e.target.files[0];
@@ -44,38 +21,12 @@ const SupplyCreate = () => {
       setImage(fileBase64);
     }
   };
-
-  const onFinish = (values: any) => {
-    let data = { ...values, image };
-    supplyApi
-      .create(data)
-      .then((res: any) => {
-        const { success } = res.data;
-        if (success) {
-          toast.success('Thêm mới vật tư thành công!');
-          setImage('');
-          setSelectedImage('');
-          form.resetFields();
-        } else {
-          toast.error('Thêm mới vật tư thất bại!');
-        }
-      })
-      .catch();
-  };
-
+  const onFinish = () => {};
+  useEffect(() => {}, []);
   return (
     <div>
       <div className="flex-between-center">
-        <div className="title">NHẬP VẬT TƯ</div>
-        <Button className="button_excel">
-          <ImportOutlined />
-          <div
-            className="font-medium text-md text-[#5B69E6]"
-            onClick={() => navigate('/supplies/import_excel_sp')}
-          >
-            Nhập Excel
-          </div>
-        </Button>
+        <div className="title">CẬP NHẬT VẬT TƯ</div>
       </div>
       <Divider />
       <div className="flex-between mt-10">
@@ -189,7 +140,7 @@ const SupplyCreate = () => {
           </div>
           <Form.Item>
             <Button className="button-primary" htmlType="submit">
-              Thêm
+              Hoàn thành
             </Button>
           </Form.Item>
         </Form>
@@ -220,4 +171,4 @@ const SupplyCreate = () => {
   );
 };
 
-export default SupplyCreate;
+export default SupplyUpdate;

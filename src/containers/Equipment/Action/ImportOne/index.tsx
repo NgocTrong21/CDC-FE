@@ -119,14 +119,28 @@ const ImportOne = () => {
                 className="input"
               />
             </Form.Item>
-            <Form.Item label="Khoa - Phòng" className="mb-5">
-              <Input
-                className="input"
-                defaultValue={
-                  options(departments).find((item: any) => item.value === 1)
-                    .label
+            <Form.Item
+              label="Khoa - Phòng"
+              className="mb-5"
+              required
+              rules={[
+                {
+                  required: true,
+                  message: 'Hãy chọn khoa phòng!',
+                },
+              ]}
+            >
+              <Select
+                showSearch
+                placeholder="Chọn khoa phòng"
+                optionFilterProp="children"
+                allowClear
+                filterOption={(input, option) =>
+                  (option!.label as unknown as string)
+                    .toLowerCase()
+                    .includes(input.toLowerCase())
                 }
-                disabled
+                options={options(departments)}
               />
             </Form.Item>
             <Form.Item label="Trạng thái thiết bị" className="mb-5">
@@ -141,14 +155,13 @@ const ImportOne = () => {
           </div>
           {/* Hết hàng 1 ===========================================================*/}
           {/* Hàng 4 ===========================================================*/}
-          <div className="grid grid-cols-4 gap-5">
+          <div className="grid grid-cols-3 gap-5">
             <Form.Item
               label="Số hiệu TSCĐ"
               name="fixed_asset_number"
-              required
               rules={[
                 {
-                  required: true,
+                  required: false,
                   message: 'Hãy nhập Số hiệu TSCĐ thiết bị!',
                 },
               ]}
@@ -186,7 +199,7 @@ const ImportOne = () => {
                 className="input"
               />
             </Form.Item>
-            <Form.Item
+            {/* <Form.Item
               label="Mã hóa thiết bị"
               name="hash_code"
               // required
@@ -198,11 +211,11 @@ const ImportOne = () => {
                 allowClear
                 className="input"
               />
-            </Form.Item>
+            </Form.Item> */}
           </div>
           {/* Hết hàng 4 ===========================================================*/}
           {/* Hàng 2 ===========================================================*/}
-          <div className="grid grid-cols-4 gap-5">
+          <div className="grid grid-cols-3 gap-5">
             {/* <Form.Item
               label="Loại thiết bị"
               name="type_id"
@@ -242,8 +255,7 @@ const ImportOne = () => {
             <Form.Item
               label="Đơn vị tính"
               name="unit"
-              required
-              rules={[{ required: true, message: 'Hãy nhập đơn vị tính!' }]}
+              rules={[{ required: false, message: 'Hãy nhập đơn vị tính!' }]}
               className="mb-5"
             >
               <Input
@@ -330,6 +342,23 @@ const ImportOne = () => {
                 className="input"
               />
             </Form.Item>
+            <Form.Item
+              label="Năm sản xuất"
+              name="year_of_manufacture"
+              rules={[
+                {
+                  required: false,
+                  message: 'Hãy nhập năm sản xuất của thiết bị!',
+                },
+              ]}
+              className="mb-5"
+            >
+              <Input
+                placeholder="Nhập năm sản xuất của thiết bị"
+                allowClear
+                className="input"
+              />
+            </Form.Item>
           </div>
           {/* Hết hàng 3 ===========================================================*/}
 
@@ -367,25 +396,6 @@ const ImportOne = () => {
                 className="input"
               />
             </Form.Item> */}
-
-            {/* <Form.Item
-                label="Năm sản xuất"
-                name="year_of_manufacture"
-                required
-                rules={[
-                  {
-                    required: true,
-                    message: 'Hãy nhập năm sản xuất của thiết bị!',
-                  },
-                ]}
-                className="mb-5"
-              >
-                <Input
-                  placeholder="Nhập năm sản xuất của thiết bị"
-                  allowClear
-                  className="input"
-                />
-              </Form.Item> */}
           </div>
           {/* hết Hàng 5 ===========================================================*/}
 
