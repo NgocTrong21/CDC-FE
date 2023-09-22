@@ -11,16 +11,11 @@ interface PrivateProps {
 
 const PrivateRoute = ({ children, permission }: PrivateProps) => {
   const isLoggin: boolean = Boolean(localStorage.getItem(ACCESS_TOKEN));
-  console.log(isLoggin);
   const userDetail: any = localStorage.getItem(CURRENT_USER) || '{}';
-  console.log(userDetail);
-
   const userPermissons: any = JSON.parse(userDetail)?.Role?.Role_Permissions;
-  console.log(userPermissons);
   const checkPermission: boolean = userPermissons?.find(
     (userPermisson: any) => userPermisson?.permission_id === permission
   );
-  console.log(checkPermission);
 
   return isLoggin ? (
     <>

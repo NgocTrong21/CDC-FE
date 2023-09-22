@@ -73,6 +73,11 @@ import DetailInspection from 'containers/Equipment/Inspection/DetailInspection';
 import HistoryTransfer from 'containers/Equipment/Transfer/HistoryTransfer';
 import HistoryLiquidation from 'containers/Equipment/Liquidation/HistoryLiquidation';
 import DetailLiquidation from 'containers/Equipment/Liquidation/detail';
+import SupplyUpdate from 'containers/Supply/updateSupply';
+import Warehouses from 'containers/Warehouse/ListWarehouses';
+import ImportWarehouse from 'containers/Warehouse/ImportWarehouse';
+import UpdateWarehouse from 'containers/Warehouse/UpdateWarehouse';
+import InboundOrderList from 'containers/InboundOrder/InboundOrderList';
 
 const TRACKING_ID = process.env.REACT_APP_TRACKING_ID || '';
 ReactGA.initialize(TRACKING_ID);
@@ -138,7 +143,7 @@ const App = () => {
               </PrivateRoute>
             }
           />
-          <Route
+          {/* <Route
             path="/equipment/import_supply/:id"
             element={
               <PrivateRoute permission={permissions.EQUIPMENT_CREATE}>
@@ -153,7 +158,7 @@ const App = () => {
                 <ImportSupplies />
               </PrivateRoute>
             }
-          />
+          /> */}
 
           {/* Equipment Repair Routes */}
           <Route
@@ -335,6 +340,46 @@ const App = () => {
           />
 
           {/* Supply Routes */}
+          {/* <Route
+            path="/supplies/list_sp"
+            element={
+              <PrivateRoute permission={permissions.IMPORT_SUPPLIES}>
+                <Suplly />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/supplies/import_excel_sp"
+            element={
+              <PrivateRoute permission={permissions.IMPORT_SUPPLIES}>
+                <SupplyImportExcel />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/supplies/detail/:id"
+            element={
+              <PrivateRoute permission={permissions.IMPORT_SUPPLIES}>
+                <SupplyDetail />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/supplies/create_sp"
+            element={
+              <PrivateRoute permission={permissions.IMPORT_SUPPLIES}>
+                <SupplyCreate />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/supplies/list_equipment_corresponding/:id"
+            element={
+              <PrivateRoute permission={permissions.IMPORT_SUPPLIES}>
+                <ListEqCorresponding />
+              </PrivateRoute>
+            }
+          /> */}
           <Route
             path="/supplies/list_sp"
             element={
@@ -375,7 +420,14 @@ const App = () => {
               </PrivateRoute>
             }
           />
-
+          <Route
+            path="/supplies/update/:id"
+            element={
+              <PrivateRoute permission={permissions.IMPORT_SUPPLIES}>
+                <SupplyUpdate />
+              </PrivateRoute>
+            }
+          />
           {/* Statistic Routes */}
           <Route
             path="/statistic/department"
@@ -644,7 +696,56 @@ const App = () => {
               </PrivateRoute>
             }
           />
-
+          {/* Warehouse Routes */}
+          <Route
+            path="/warehouses/list_warehouses"
+            element={
+              <PrivateRoute permission={permissions.IMPORT_SUPPLIES}>
+                <Warehouses />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/warehouses/import_warehouse"
+            element={
+              <PrivateRoute permission={permissions.IMPORT_SUPPLIES}>
+                <ImportWarehouse />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/warehouses/update_warehouse/:id"
+            element={
+              <PrivateRoute permission={permissions.IMPORT_SUPPLIES}>
+                <UpdateWarehouse />
+              </PrivateRoute>
+            }
+          />
+          {/* Inbound Order*/}
+          <Route
+            path="order/inbound_order/list"
+            element={
+              <PrivateRoute permission={permissions.IMPORT_SUPPLIES}>
+                <InboundOrderList />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="order/inbound_order/import"
+            element={
+              <PrivateRoute permission={permissions.IMPORT_SUPPLIES}>
+                <UpdateWarehouse />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="order/inbound_order/update/:id"
+            element={
+              <PrivateRoute permission={permissions.IMPORT_SUPPLIES}>
+                <UpdateWarehouse />
+              </PrivateRoute>
+            }
+          />
           {/* Auth Routes */}
           <Route path="/signin" element={<Signin />} />
           <Route path="/signup" element={<Signup />} />
