@@ -61,7 +61,7 @@ const TableFooter = ({ paginationProps }: any) => {
   );
 };
 
-const InboundOrderList = () => {
+const OutboundOrderList = () => {
   const navigate = useNavigate();
   const { increaseCount, getAllNotifications } =
     useContext(NotificationContext);
@@ -166,7 +166,7 @@ const InboundOrderList = () => {
               }`}
             >
               <Tooltip title="Cập nhật phiếu">
-                <Link to={`/order/outbound_order/update/${item.id}`}>
+                <Link to={`/order/inbound_order/update/${item.id}`}>
                   <EditFilled />
                 </Link>
               </Tooltip>
@@ -258,7 +258,7 @@ const InboundOrderList = () => {
   return (
     <div>
       <div className="flex-between-center">
-        <div className="title">DANH SÁCH PHIẾU NHẬP</div>
+        <div className="title">DANH SÁCH PHIẾU XUẤT</div>
       </div>
       <Divider />
       <div className="flex justify-between">
@@ -274,12 +274,12 @@ const InboundOrderList = () => {
         <Button
           className="button_excel"
           onClick={() => {
-            navigate('/order/inbound_order/import');
+            navigate('/order/outbound_order/import');
           }}
         >
           <PlusCircleFilled />
           <div className="font-medium text-md text-[#5B69E6]">
-            Tạo phiếu nhập mới
+            Tạo phiếu xuất mới
           </div>
         </Button>
       </div>
@@ -341,4 +341,4 @@ const InboundOrderList = () => {
   );
 };
 
-export default InboundOrderList;
+export default OutboundOrderList;
