@@ -78,6 +78,11 @@ import Warehouses from 'containers/Warehouse/ListWarehouses';
 import ImportWarehouse from 'containers/Warehouse/ImportWarehouse';
 import UpdateWarehouse from 'containers/Warehouse/UpdateWarehouse';
 import InboundOrderList from 'containers/InboundOrder/InboundOrderList';
+import InboundOrderCreate from 'containers/InboundOrder/InboundOrderCreate';
+import InboundOrderUpdate from 'containers/InboundOrder/InboundOrderUpdate';
+import OutboundOrderList from 'containers/OutboundOrder/OutboundOrderList';
+import OutboundOrderCreate from 'containers/OutboundOrder/OutboundOrderCreate';
+import OutboundOrderUpdate from 'containers/OutboundOrder/OutboundOrderUpdate';
 
 const TRACKING_ID = process.env.REACT_APP_TRACKING_ID || '';
 ReactGA.initialize(TRACKING_ID);
@@ -723,7 +728,7 @@ const App = () => {
           />
           {/* Inbound Order*/}
           <Route
-            path="order/inbound_order/list"
+            path="order/inbound_order"
             element={
               <PrivateRoute permission={permissions.IMPORT_SUPPLIES}>
                 <InboundOrderList />
@@ -734,7 +739,7 @@ const App = () => {
             path="order/inbound_order/import"
             element={
               <PrivateRoute permission={permissions.IMPORT_SUPPLIES}>
-                <UpdateWarehouse />
+                <InboundOrderCreate />
               </PrivateRoute>
             }
           />
@@ -742,7 +747,32 @@ const App = () => {
             path="order/inbound_order/update/:id"
             element={
               <PrivateRoute permission={permissions.IMPORT_SUPPLIES}>
-                <UpdateWarehouse />
+                <InboundOrderUpdate />
+              </PrivateRoute>
+            }
+          />
+          {/* Outbound Order*/}
+          <Route
+            path="order/outbound_order"
+            element={
+              <PrivateRoute permission={permissions.IMPORT_SUPPLIES}>
+                <OutboundOrderList />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="order/outbound_order/import"
+            element={
+              <PrivateRoute permission={permissions.IMPORT_SUPPLIES}>
+                <OutboundOrderCreate />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="order/outbound_order/update/:id"
+            element={
+              <PrivateRoute permission={permissions.IMPORT_SUPPLIES}>
+                <OutboundOrderUpdate />
               </PrivateRoute>
             }
           />

@@ -15,6 +15,7 @@ import {
   ClusterOutlined,
   MenuUnfoldOutlined,
   MenuFoldOutlined,
+  FileTextOutlined,
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import logo from 'assets/logo.png';
@@ -184,16 +185,16 @@ const LayoutSystem = (props: LayoutProps) => {
       'Quản lý phiếu',
       '/order',
       permissions.IMPORT_SUPPLIES,
-      <ShopOutlined style={{ fontSize: '20px' }} />,
+      <FileTextOutlined style={{ fontSize: '20px' }} />,
       [
         getItem(
           'Quản lý phiếu nhập',
-          '/inbound_order/list',
+          '/inbound_order',
           permissions.IMPORT_SUPPLIES
         ),
         getItem(
           'Quản lý phiếu xuất',
-          '/outbound_order/list',
+          '/outbound_order',
           permissions.IMPORT_SUPPLIES
         ),
       ]
