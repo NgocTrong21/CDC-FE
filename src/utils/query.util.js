@@ -16,7 +16,6 @@ module.exports.getList = async (
         delete filter[i];
       }
     }
-    console.log("page: " + page);
     let data;
     let query;
     if (attributes.length > 0) {
@@ -39,12 +38,10 @@ module.exports.getList = async (
         offset: page > 1 ? limit * (page - 1) : 0,
         ...query,
       });
-      console.log("pagr: " + data);
     } else {
       data = await db[model].findAll({
         ...query,
       });
-      console.log("pagr2s2s: " + data);
     }
     return data;
   } catch (error) {
