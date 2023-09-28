@@ -6,6 +6,8 @@ module.exports = (sequelize, DataTypes) => {
       Provider.hasMany(models.Provider_Service, { foreignKey: "provider_id" });
       Provider.hasMany(models.Repair, { foreignKey: "provider_id" });
       Provider.hasMany(models.Inspection, { foreignKey: "provider_id" });
+      Provider.hasMany(models.Inbound_Order, { foreignKey: "provider_id" });
+      Provider.hasMany(models.Supply, { foreignKey: "provider_id" });
     }
   }
   Provider.init(
