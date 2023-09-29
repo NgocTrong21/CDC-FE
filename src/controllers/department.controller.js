@@ -145,11 +145,11 @@ exports.search = async (req, res) => {
     const include = [
       {
         model: db.User,
-        where: {
-          role_id: {
-            [Op.or]: [4, 5, 6, 7, 8],
-          },
-        },
+        // where: {
+        //   role_id: {
+        //     [Op.or]: [4, 5, 6, 7, 8],
+        //   },
+        // },
         attributes: ["id", "name"],
         include: [{ model: db.Role, attributes: ["id", "name", "alias"] }],
       },

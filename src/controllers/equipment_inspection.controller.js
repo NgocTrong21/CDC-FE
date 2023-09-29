@@ -111,8 +111,10 @@ exports.inspectEquipment = async (req, res) => {
         transaction: t,
       });
       const dataEmail = { ...data, id: inspection_data?.toJSON()?.id };
+      if (req?.body?.isSendEmail) {
+        await sendInspectionEmail(req, dataEmail, users.flat());
+      }
       await Promise.all([
-        await sendInspectionEmail(req, dataEmail, users.flat()),
         await db.Notification.create(
           {
             user_id: data.inspection_create_user_id,
@@ -202,12 +204,15 @@ exports.approveInspectionReport = async (req, res) => {
     }
 
     await db.sequelize.transaction(async (t) => {
+      if (req?.body?.isSendEmail) {
+        await sendHandleInspectionEmail(req, data, users.flat());
+      }
       await Promise.all([
         await db.Inspection.update(data, {
           where: { equipment_id: data?.equipment_id, id: data?.id },
           transaction: t,
         }),
-        await sendHandleInspectionEmail(req, data, users.flat()),
+
         await db.Notification.create(
           {
             user_id: data.inspection_approve_user_id,
@@ -251,12 +256,15 @@ exports.updateInspectionReport = async (req, res) => {
       data.file = result?.secure_url;
     }
     await db.sequelize.transaction(async (t) => {
+      if (req?.body?.isSendEmail) {
+        await sendInspectionEmail(req, data, users.flat());
+      }
       await Promise.all([
         await db.Inspection.update(data, {
           where: { equipment_id: data?.equipment_id, id: data?.id },
           transaction: t,
         }),
-        await sendInspectionEmail(req, data, users.flat()),
+
         await db.Notification.create(
           {
             user_id: data.inspection_create_user_id,

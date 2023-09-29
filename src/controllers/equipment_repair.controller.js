@@ -52,8 +52,10 @@ exports.reportEquipment = async (req, res) => {
         ...data,
         id: repair_data?.toJSON()?.id,
       };
+      if (req?.body?.isSendEmail) {
+        await sendReportEquipmentMail(req, users.flat(), dataEmail);
+      }
       await Promise.all([
-        await sendReportEquipmentMail(req, users.flat(), dataEmail),
         await db.Equipment.update(
           { status_id: 4 },
           {
@@ -115,14 +117,15 @@ exports.approveBrokenReport = async (req, res) => {
       });
       content = `Phiếu báo hỏng của thiết bị ${data.name} thuộc khoa phòng ${data.department} đã bị từ chối.`;
     }
-
+    if (req?.body?.isSendEmail) {
+      await sendHandleReportEquipmentEmail(req, data, users.flat());
+    }
     await db.sequelize.transaction(async (t) => {
       await Promise.all([
         await db.Repair.update(data, {
           where: { equipment_id: data?.equipment_id, id: data?.id },
           transaction: t,
         }),
-        await sendHandleReportEquipmentEmail(req, data, users.flat()),
         await db.Notification.create(
           {
             user_id: data.approve_report_person_id,
@@ -160,13 +163,15 @@ exports.updateBrokenReport = async (req, res) => {
         return user;
       })
     );
+    if (req?.body?.isSendEmail) {
+      await sendReportEquipmentMail(req, users.flat(), data);
+    }
     await db.sequelize.transaction(async (t) => {
       await Promise.all([
         await db.Repair.update(data, {
           where: { equipment_id: data?.equipment_id, id: data?.id },
           transaction: t,
         }),
-        await sendReportEquipmentMail(req, users.flat(), data),
         await db.Notification.create(
           {
             user_id: data.reporting_person_id,
@@ -203,13 +208,15 @@ exports.createScheduleRepair = async (req, res) => {
         return user;
       })
     );
+    if (req?.body?.isSendEmail) {
+      await sendScheduleRepairEmail(req, data, users.flat());
+    }
     await db.sequelize.transaction(async (t) => {
       await Promise.all([
         await db.Repair.update(data, {
           where: { equipment_id: data?.equipment_id, id: data?.id },
           transaction: t,
         }),
-        await sendScheduleRepairEmail(req, data, users.flat()),
         await db.Notification.create(
           {
             user_id: data.schedule_create_user_id,
@@ -249,12 +256,14 @@ exports.updateScheduleRepair = async (req, res) => {
     );
 
     await db.sequelize.transaction(async (t) => {
+      if (req?.body?.isSendEmail) {
+        await sendScheduleRepairEmail(req, data, users.flat());
+      }
       await Promise.all([
         await db.Repair.update(data, {
           where: { equipment_id: data?.equipment_id, id: data?.id },
           transaction: t,
         }),
-        await sendScheduleRepairEmail(req, data, users.flat()),
         await db.Notification.create(
           {
             user_id: data.schedule_create_user_id,
@@ -311,12 +320,15 @@ exports.approveScheduleRepair = async (req, res) => {
     }
 
     await db.sequelize.transaction(async (t) => {
+      if (req?.body?.isSendEmail) {
+        await sendHandleScheduleRepairEmail(req, data, users.flat());
+      }
       await Promise.all([
         await db.Repair.update(data, {
           where: { equipment_id: data?.equipment_id, id: data?.id },
           transaction: t,
         }),
-        await sendHandleScheduleRepairEmail(req, data, users.flat()),
+
         data.schedule_repair_status === 1 &&
           (await db.Equipment.update(
             { status_id: 5 },
@@ -365,12 +377,14 @@ exports.acceptanceRepair = async (req, res) => {
       data.file = result?.secure_url;
     }
     await db.sequelize.transaction(async (t) => {
+      if (req?.body?.isSendEmail) {
+        await sendAcceptanceRepairEmail(req, data, users.flat());
+      }
       await Promise.all([
         await db.Repair.update(data, {
           where: { equipment_id: data?.equipment_id, id: data?.id },
           transaction: t,
         }),
-        await sendAcceptanceRepairEmail(req, data, users.flat()),
         await db.Notification.create(
           {
             user_id: data.test_user_id,

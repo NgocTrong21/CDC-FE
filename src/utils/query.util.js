@@ -33,9 +33,10 @@ module.exports.getList = async (
       };
     }
     if (page) {
+      const offset = page > 1 ? limit * (page - 1) : 0;
       data = await db[model].findAndCountAll({
         limit: limit,
-        offset: page > 1 ? limit * (page - 1) : 0,
+        offset,
         ...query,
       });
     } else {
