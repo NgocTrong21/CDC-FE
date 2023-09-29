@@ -20,9 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       Equipment.hasMany(models.Supply_Accompany, {
         foreignKey: "equipment_id",
       });
-      Equipment.hasMany(models.Equipment_Supply, {
-        foreignKey: "equipment_id",
-      });
+
       Equipment.hasMany(models.Inventory, { foreignKey: "equipment_id" });
     }
   }

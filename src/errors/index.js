@@ -279,6 +279,14 @@ module.exports.EQUIPMENT_NOT_FOUND = {
   code: 1032,
   messageCode: "EQUIPMENT_NOT_FOUND",
 };
+module.exports.INBOUND_ORDER_NOT_FOUND = {
+  status: 500,
+  success: false,
+  data: null,
+  message: "Không tìm thấy đơn nhập trên hệ thống",
+  code: 1032,
+  messageCode: "INBOUND_ORDER_NOT_FOUND",
+};
 module.exports.RISK_LEVEL_NOT_FOUND = {
   status: 500,
   success: false,

@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Warehouse.init(
     {
-      name: DataTypes.INTEGER,
+      name: DataTypes.STRING,
       code: DataTypes.STRING,
       storekeeper: DataTypes.STRING,
       note: DataTypes.TEXT,
