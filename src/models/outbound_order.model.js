@@ -23,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Outbound_Order.init(
     {
+      code: DataTypes.STRING,
       receiver: DataTypes.STRING,
       receiver_phone: DataTypes.STRING,
       estimated_shipping_date: DataTypes.DATE,

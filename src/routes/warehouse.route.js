@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const inboundOrderController = require("../controllers/inbound_order.controller");
+const warehouseController = require("../controllers/warehouse.controller");
 const authMiddleware = require("../midlewares/auth.middleware");
 const permissionMiddleware = require("../midlewares/permission.middleware");
 const roleMiddleware = require("../midlewares/role.middleware");
@@ -9,31 +9,31 @@ router.post(
   "/create",
   authMiddleware,
   roleMiddleware.isAdmin,
-  inboundOrderController.create
+  warehouseController.create
 );
 router.get(
   "/detail",
   authMiddleware,
   roleMiddleware.isAdmin,
-  inboundOrderController.detail
+  warehouseController.detail
 );
 router.post(
   "/update",
   authMiddleware,
   roleMiddleware.isAdmin,
-  inboundOrderController.update
+  warehouseController.update
 );
 router.get(
   "/search",
   authMiddleware,
   roleMiddleware.isAdmin,
-  inboundOrderController.search
+  warehouseController.search
 );
 router.delete(
   "/delete",
   authMiddleware,
   roleMiddleware.isAdmin,
-  inboundOrderController.delete
+  warehouseController.delete
 );
 
 module.exports = router;

@@ -212,29 +212,6 @@ router.post(
 );
 router.get("/repair_status/list", categoryController.listRepairStatus);
 
-//Supply_Type API
-router.post("/supplies_type/create", categoryController.createSupllyType);
-router.get(
-  "/supplies_type/list",
-  authMiddleware,
-  categoryController.listSupllyType
-);
-router.get(
-  "/supplies_type/detail",
-  authMiddleware,
-  categoryController.detailSupllyType
-);
-router.put(
-  "/supplies_type/update",
-  authMiddleware,
-  categoryController.updateSupllyType
-);
-router.delete(
-  "/supplies_type/delete",
-  authMiddleware,
-  categoryController.deleteSupllyType
-);
-
 router.get("/group/list", categoryController.listGroup);
 router.get("/group/detail", authMiddleware, categoryController.detailGroup);
 

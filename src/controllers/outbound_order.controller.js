@@ -7,9 +7,9 @@ const { getList } = require("../utils/query.util");
 exports.create = async (req, res) => {
   try {
     const { data, supplies } = req.body;
-    let inbound_order;
+    let outbound_order;
     await db.sequelize.transaction(async (t) => {
-      inbound_order = await db.Inbound_Order.create(
+      outbound_order = await db.Outbound_Order.create(
         { ...data, status_id: 1 },
         {
           transaction: t,
@@ -17,18 +17,18 @@ exports.create = async (req, res) => {
       );
 
       for (const supply of supplies) {
-        await db.Supply_Inbound_Order.create(
+        await db.Supply_Outbound_Order.create(
           {
             ...supply,
-            inbound_order_id: inbound_order.id,
+            outbound_order_id: outbound_order.id,
           },
           { transaction: t }
         );
       }
     });
-    await db.Inbound_Order.update(
-      { code: "CDC.IO.000" + inbound_order.id },
-      { where: { id: inbound_order.id } }
+    await db.Outbound_Order.update(
+      { code: "CDC.OO.000" + outbound_order.id },
+      { where: { id: outbound_order.id } }
     );
     return successHandler(res, {}, 200);
   } catch (error) {
@@ -39,11 +39,11 @@ exports.create = async (req, res) => {
 exports.detail = async (req, res) => {
   try {
     let { id } = req?.query;
-    const inbound_order = await db.Inbound_Order.findOne({
+    const outbound_order = await db.Outbound_Order.findOne({
       where: { id },
       include: [
         {
-          model: db.Supply_Inbound_Order,
+          model: db.Supply_Outbound_Order,
           attributes: [
             "id",
             "order_quantity",
@@ -60,7 +60,7 @@ exports.detail = async (req, res) => {
       ],
       raw: false,
     });
-    return successHandler(res, { inbound_order }, 200);
+    return successHandler(res, { outbound_order }, 200);
   } catch (error) {
     return errorHandler(res, error);
   }
@@ -70,22 +70,22 @@ exports.update = async (req, res) => {
   try {
     const { data, supplies } = req.body;
     await db.sequelize.transaction(async (t) => {
-      const isHas = await db.Inbound_Order.findOne({
+      const isHas = await db.Outbound_Order.findOne({
         where: { id: data?.id },
       });
       if (!isHas) return errorHandler(res, err.ORDER_NOT_FOUND);
-      await db.Inbound_Order.update(data, {
+      await db.Outbound_Order.update(data, {
         where: { id: data?.id },
         transaction: t,
       });
-      await db.Supply_Inbound_Order.destroy({
-        where: { inbound_order_id: data?.id },
+      await db.Supply_Outbound_Order.destroy({
+        where: { outbound_order_id: data?.id },
       });
       for (const supply of supplies) {
-        await db.Supply_Inbound_Order.create(
+        await db.Supply_Outbound_Order.create(
           {
             ...supply,
-            inbound_order_id: isHas.id,
+            outbound_order_id: isHas.id,
           },
           { transaction: t }
         );
@@ -100,14 +100,14 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
   try {
-    const isHas = await db.Inbound_Order.findOne({
+    const isHas = await db.Outbound_Order.findOne({
       where: { id: req.body.id },
     });
     if (!isHas) return errorHandler(res, err.ORDER_NOT_FOUND);
-    await db.Supply_Inbound_Order.destroy({
-      where: { inbound_order_id: req.body.id },
+    await db.Supply_Outbound_Order.destroy({
+      where: { outbound_order_id: req.body.id },
     });
-    await db.Inbound_Order.destroy({
+    await db.Outbound_Order.destroy({
       where: { id: req.body.id },
     });
     return successHandler(res, {}, 200);
@@ -118,7 +118,7 @@ exports.delete = async (req, res) => {
 
 exports.search = async (req, res) => {
   try {
-    let { limit, page, name, status_id, provider_id, warehouse_id } =
+    let { limit, page, name, status_id, customer_id, warehouse_id } =
       req?.query;
 
     // const { isHasRole, department_id_from_token } = await checkRoleFromToken(
@@ -131,7 +131,7 @@ exports.search = async (req, res) => {
 
     let filter = {
       status_id,
-      provider_id,
+      customer_id,
       warehouse_id,
     };
 
@@ -143,22 +143,22 @@ exports.search = async (req, res) => {
     }
     let include = [
       { model: db.Warehouse, attributes: ["id", "name"] },
-      { model: db.Provider, attributes: ["id", "name"] },
+      { model: db.Customer, attributes: ["id", "name"] },
       {
         model: db.Order_Note_Status,
         attributes: ["id", "name"],
       },
     ];
-    let inbound_orders = await getList(
+    let outbound_orders = await getList(
       +limit,
       page,
       filter,
-      "Inbound_Order",
+      "Outbound_Order",
       include
     );
     return successHandler(
       res,
-      { inbound_orders, count: inbound_orders.length },
+      { outbound_orders, count: outbound_orders.length },
       200
     );
   } catch (error) {
