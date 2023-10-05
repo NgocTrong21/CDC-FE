@@ -1,13 +1,19 @@
-import { Button, Divider, Form, Input, Select } from 'antd';
+import { Button, DatePicker, Divider, Form, Input, Select } from 'antd';
 import { useEffect, useState, useContext } from 'react';
 import ava from 'assets/image.png';
 import { convertBase64, options } from 'utils/globalFunc.util';
 import { FilterContext } from 'contexts/filter.context';
+import supplyApi from 'api/suplly.api';
+import { useNavigate, useParams } from 'react-router-dom';
+import moment from 'moment';
+import { toast } from 'react-toastify';
 
 const { TextArea } = Input;
 
 const SupplyUpdate = () => {
-  const { units, providers } = useContext(FilterContext);
+  const params = useParams();
+  const navigate = useNavigate();
+  const { id } = params;
   const [image, setImage] = useState<any>('');
   const [selectedImage, setSelectedImage] = useState<any>('');
   const [form] = Form.useForm();
@@ -21,8 +27,42 @@ const SupplyUpdate = () => {
       setImage(fileBase64);
     }
   };
-  const onFinish = () => {};
-  useEffect(() => {}, []);
+  const onFinish = (values: any) => {
+    let data = { ...values, expiration_date: moment(new Date(values?.expiration_date)).toISOString(), image };
+    supplyApi
+      .update(data)
+      .then((res: any) => {
+        const { success } = res.data;
+        if (success) {
+          toast.success('Cập nhật vật tư thành công!');
+          setImage('');
+          setSelectedImage('');
+          form.resetFields();
+          navigate(`/supplies/list_sp`);
+        } else {
+          toast.error('Cập nhật vật tư thất bại!');
+        }
+      })
+      .catch();
+  };
+  const getDetailEquipment = (id: any) => {
+    supplyApi.detail(id)
+      .then((res: any) => {
+        const { success, data } = res.data;
+        if (success) {
+          console.log(data.supply);
+          const { id, name, code, expiration_date, lot_number, manufacturing_country, provider, unit, unit_price, note } = data.supply
+          form.setFieldsValue({
+            id, name, code, lot_number, manufacturing_country, provider, unit, unit_price, expiration_date: moment(expiration_date), note
+          })
+        }
+      })
+      .catch()
+  }
+
+  useEffect(() => {
+    getDetailEquipment(id);
+  }, [id]);
   return (
     <div>
       <div className="flex-between-center">
@@ -38,6 +78,9 @@ const SupplyUpdate = () => {
           onFinish={onFinish}
         >
           <div className="grid grid-cols-2 gap-5">
+            <Form.Item name="id" className="mb-5 hidden ">
+              <Input className="input" />
+            </Form.Item>
             <Form.Item
               label="Tên vật tư"
               name="name"
@@ -54,8 +97,6 @@ const SupplyUpdate = () => {
             <Form.Item
               label="Mã vật tư"
               name="code"
-              required
-              rules={[{ required: true, message: 'Hãy nhập mã vật tư!' }]}
               className="mb-5"
             >
               <Input
@@ -64,32 +105,36 @@ const SupplyUpdate = () => {
                 className="input"
               />
             </Form.Item>
+            <Form.Item
+              label="Số lô"
+              name="lot_number"
+              className="mb-5"
+            >
+              <Input
+                placeholder="Nhập số lô"
+                allowClear
+                className="input"
+              />
+            </Form.Item>
+            <Form.Item label="Hạn sử dụng" name="expiration_date">
+              <DatePicker className="date" />
+            </Form.Item>
           </div>
-          <div className="grid grid-cols-2 gap-5"></div>
           <div className="grid grid-cols-3 gap-5">
             <Form.Item
               label="Đơn vị tính"
-              name="unit_id"
-              required
-              rules={[{ required: true, message: 'Hãy chọn đơn vị tính!' }]}
+              name="unit"
               className="mb-5"
             >
-              <Select
-                showSearch
-                placeholder="Chọn đơn vị tính"
-                optionFilterProp="children"
+              <Input
+                placeholder="Nhập đơn vị tính"
                 allowClear
-                filterOption={(input, option) =>
-                  (option!.label as unknown as string)
-                    .toLowerCase()
-                    .includes(input.toLowerCase())
-                }
-                options={options(units)}
+                className="input"
               />
             </Form.Item>
-            <Form.Item label="Giá nhập" name="import_price" className="mb-5">
+            <Form.Item label="Đơn giá" name="unit_price" className="mb-5">
               <Input
-                placeholder="Nhập giá vật tư"
+                placeholder="Nhập đơn giá vật tư"
                 allowClear
                 className="input"
               />
@@ -105,37 +150,14 @@ const SupplyUpdate = () => {
             </Form.Item>
           </div>
           <div className="grid grid-cols-3 gap-5">
-            <Form.Item label="Nhà cung cấp" name="provider_id" className="mb-5">
-              <Select
-                showSearch
-                placeholder="Chọn nhà cung cấp"
-                optionFilterProp="children"
-                allowClear
-                filterOption={(input, option) =>
-                  (option!.label as unknown as string)
-                    .toLowerCase()
-                    .includes(input.toLowerCase())
-                }
-                options={options(providers)}
-              />
-            </Form.Item>
-            <Form.Item
-              label="Hãng sản xuất"
-              name="manufacturer"
-              required
-              rules={[{ required: true, message: 'Hãy nhập hãng sản xuất!' }]}
-              className="mb-5"
-            >
-              <Input
-                placeholder="Nhập hãng sản xuất"
-                allowClear
-                className="input"
-              />
+            <Form.Item label="Nhà cung cấp" name="provider" className="mb-5">
+              <Input placeholder="Nhập nhà cung cấp" allowClear className="input" />
             </Form.Item>
           </div>
+
           <div className="grid grid-cols-2 gap-5">
             <Form.Item label="Ghi chú" name="note" className="mb-5">
-              <TextArea placeholder="Ghi chứ" rows={4} className="textarea" />
+              <TextArea placeholder="Ghi chú" rows={4} className="textarea" />
             </Form.Item>
           </div>
           <Form.Item>

@@ -1,4 +1,4 @@
-import axiosClient from "./axiosClient";
+import axiosClient from './axiosClient';
 import { CommonResponse } from 'types/common.type';
 
 const supplyApi = {
@@ -26,6 +26,10 @@ const supplyApi = {
     const url = 'supplies/create';
     return axiosClient.post(url, params);
   },
+  update(params: object): Promise<CommonResponse> {
+    const url = 'supplies/update';
+    return axiosClient.patch(url, params);
+  },
   detail(id: number): Promise<CommonResponse> {
     const url = `supplies/detail?id=${id}`;
     return axiosClient.get(url);
@@ -33,7 +37,7 @@ const supplyApi = {
   delete(id: number): Promise<CommonResponse> {
     const url = 'supplies/delete';
     return axiosClient.delete(url, {
-      data: { id }
+      data: { id },
     });
   },
   importSupplyForEquipment(params: object): Promise<CommonResponse> {
@@ -52,6 +56,6 @@ const supplyApi = {
     const url = 'supplies/import_by_excel';
     return axiosClient.post(url, params);
   },
-}
+};
 
 export default supplyApi;

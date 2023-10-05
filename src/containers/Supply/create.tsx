@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import categoryApi from 'api/category.api';
 import { FilterContext } from 'contexts/filter.context';
 import supplyApi from 'api/suplly.api';
+import moment from 'moment';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -18,22 +19,6 @@ const SupplyCreate = () => {
   const [form] = Form.useForm();
   const [selectedImage, setSelectedImage] = useState<any>('');
   const [image, setImage] = useState<any>('');
-  const [type, setType] = useState(null);
-
-  const getSupplyType = () => {
-    categoryApi
-      .listSypplyType()
-      .then((res: any) => {
-        const { success, data } = res?.data;
-        if (success) {
-          setType(data?.supply_types);
-        }
-      })
-      .catch();
-  };
-  useEffect(() => {
-    getSupplyType();
-  }, []);
 
   const handleChangeImg = async (e: any) => {
     let file = e.target.files[0];
@@ -46,7 +31,8 @@ const SupplyCreate = () => {
   };
 
   const onFinish = (values: any) => {
-    let data = { ...values, image };
+    let data = { ...values, expiration_date: moment(new Date(values?.expiration_date)).toISOString(), image };
+    console.log('check data', data);
     supplyApi
       .create(data)
       .then((res: any) => {
@@ -63,6 +49,19 @@ const SupplyCreate = () => {
       .catch();
   };
 
+  // {
+  //   name: DataTypes.STRING, // tên
+  //   code: DataTypes.STRING, // mã số
+  //   unit: DataTypes.STRING, // đơn vị tính
+  //   quantity: DataTypes.INTEGER, // số lượng
+  //   unit_price: DataTypes.INTEGER, // đơn giá
+  //   control_number: DataTypes.STRING, // số kiểm soát
+  //   lot_number: DataTypes.STRING, // số lô
+  //   manufacturing_country: DataTypes.STRING, //nước sx
+  //   expiration_date: DataTypes.DATE, //hạn sd
+  //   provider: DataTypes.STRING, //hạn sd
+  //   note: DataTypes.TEXT, // ghi chú
+  // },
   return (
     <div>
       <div className="flex-between-center">
@@ -103,8 +102,6 @@ const SupplyCreate = () => {
             <Form.Item
               label="Mã vật tư"
               name="code"
-              required
-              rules={[{ required: true, message: 'Hãy nhập mã vật tư!' }]}
               className="mb-5"
             >
               <Input
@@ -113,32 +110,36 @@ const SupplyCreate = () => {
                 className="input"
               />
             </Form.Item>
+            <Form.Item
+              label="Số lô"
+              name="lot_number"
+              className="mb-5"
+            >
+              <Input
+                placeholder="Nhập số lô"
+                allowClear
+                className="input"
+              />
+            </Form.Item>
+            <Form.Item label="Hạn sử dụng" name="expiration_date">
+              <DatePicker className="date" />
+            </Form.Item>
           </div>
-          <div className="grid grid-cols-2 gap-5"></div>
           <div className="grid grid-cols-3 gap-5">
             <Form.Item
               label="Đơn vị tính"
-              name="unit_id"
-              required
-              rules={[{ required: true, message: 'Hãy chọn đơn vị tính!' }]}
+              name="unit"
               className="mb-5"
             >
-              <Select
-                showSearch
-                placeholder="Chọn đơn vị tính"
-                optionFilterProp="children"
+              <Input
+                placeholder="Nhập đơn vị tính"
                 allowClear
-                filterOption={(input, option) =>
-                  (option!.label as unknown as string)
-                    .toLowerCase()
-                    .includes(input.toLowerCase())
-                }
-                options={options(units)}
+                className="input"
               />
             </Form.Item>
-            <Form.Item label="Giá nhập" name="import_price" className="mb-5">
+            <Form.Item label="Đơn giá" name="unit_price" className="mb-5">
               <Input
-                placeholder="Nhập giá vật tư"
+                placeholder="Nhập đơn giá vật tư"
                 allowClear
                 className="input"
               />
@@ -154,37 +155,14 @@ const SupplyCreate = () => {
             </Form.Item>
           </div>
           <div className="grid grid-cols-3 gap-5">
-            <Form.Item label="Nhà cung cấp" name="provider_id" className="mb-5">
-              <Select
-                showSearch
-                placeholder="Chọn nhà cung cấp"
-                optionFilterProp="children"
-                allowClear
-                filterOption={(input, option) =>
-                  (option!.label as unknown as string)
-                    .toLowerCase()
-                    .includes(input.toLowerCase())
-                }
-                options={options(providers)}
-              />
-            </Form.Item>
-            <Form.Item
-              label="Hãng sản xuất"
-              name="manufacturer"
-              required
-              rules={[{ required: true, message: 'Hãy nhập hãng sản xuất!' }]}
-              className="mb-5"
-            >
-              <Input
-                placeholder="Nhập hãng sản xuất"
-                allowClear
-                className="input"
-              />
+            <Form.Item label="Nhà cung cấp" name="provider" className="mb-5">
+              <Input placeholder="Nhập nhà cung cấp" allowClear className="input" />
             </Form.Item>
           </div>
+
           <div className="grid grid-cols-2 gap-5">
             <Form.Item label="Ghi chú" name="note" className="mb-5">
-              <TextArea placeholder="Ghi chứ" rows={4} className="textarea" />
+              <TextArea placeholder="Ghi chú" rows={4} className="textarea" />
             </Form.Item>
           </div>
           <Form.Item>
