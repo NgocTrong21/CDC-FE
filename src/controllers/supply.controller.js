@@ -30,6 +30,33 @@ exports.create = async (req, res) => {
   }
 };
 
+exports.update = async (req, res) => {
+  try {
+    const data = req?.body;
+    await db.sequelize.transaction(async (t) => {
+      const isHas = await db.Supply.findOne({
+        where: { id: data?.id },
+        raw: false,
+      });
+      if (!isHas) return errorHandler(res, err.EQUIPMENT_NOT_FOUND);
+      if (data?.image) {
+        const result = await cloudinary.uploader.upload(data?.image, {
+          folder: "supplies",
+        });
+        await db.Supply.update(
+          { ...data, image: result?.secure_url },
+          {where: { id: data?.id }, transaction: t }
+        );
+      } else {
+        await db.Supply.update(data, {where: { id: data?.id }, transaction: t });
+      }
+      return successHandler(res, {}, 201);
+    });
+  } catch (error) {
+    return errorHandler(res, error);
+  }
+}
+
 exports.list = async (req, res) => {
   try {
     let { limit, page, name, risk_level, type_id } = req?.query;
@@ -53,8 +80,8 @@ exports.list = async (req, res) => {
     }
     let include = [
       // { model: db.Supply_Type, attributes: ["id", "name"] },
-      { model: db.Equipment_Unit, attributes: ["id", "name"] },
-      { model: db.Equipment_Risk_Level, attributes: ["id", "name"] },
+      // { model: db.Equipment_Unit, attributes: ["id", "name"] },
+      // { model: db.Equipment_Risk_Level, attributes: ["id", "name"] },
     ];
     console.log(page, limit);
     let supplies = await getList(+limit, page, filter, "Supply", include);
@@ -73,11 +100,11 @@ exports.detail = async (req, res) => {
     let { id } = req?.query;
     const supply = await db.Supply.findOne({
       where: { id },
-      include: [
-        { model: db.Supply_Type, attributes: ["id", "name"] },
-        { model: db.Equipment_Unit, attributes: ["id", "name"] },
-        { model: db.Equipment_Risk_Level, attributes: ["id", "name"] },
-      ],
+      // include: [
+      //   { model: db.Supply_Type, attributes: ["id", "name"] },
+      //   { model: db.Equipment_Unit, attributes: ["id", "name"] },
+      //   { model: db.Equipment_Risk_Level, attributes: ["id", "name"] },
+      // ],
       raw: false,
     });
     return successHandler(res, { supply }, 200);

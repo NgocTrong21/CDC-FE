@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
       unit: DataTypes.STRING, // đơn vị tính
       quantity: DataTypes.INTEGER, // số lượng
       unit_price: DataTypes.INTEGER, // đơn giá
-      control_number: DataTypes.STRING, // số kiểm soát
+      // control_number: DataTypes.STRING, // số kiểm soát
       lot_number: DataTypes.STRING, // số lô
       manufacturing_country: DataTypes.STRING, //nước sx
       expiration_date: DataTypes.DATE, //hạn sd
