@@ -6,6 +6,7 @@ const permissionMiddleware = require("../midlewares/permission.middleware");
 const roleMiddleware = require("../midlewares/role.middleware");
 
 router.post("/create", authMiddleware, roleMiddleware.isAdmin, supplyController.create);
+router.patch("/update", authMiddleware, roleMiddleware.isAdmin, supplyController.update);
 router.get('/list', authMiddleware, supplyController.list);
 router.get("/detail", authMiddleware, supplyController.detail);
 router.delete("/delete", authMiddleware, roleMiddleware.isAdmin, supplyController.delete);

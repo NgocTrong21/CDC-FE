@@ -16,7 +16,7 @@ module.exports.getList = async (
         delete filter[i];
       }
     }
-    let data = [];
+    let data;
     let query;
     if (attributes.length > 0) {
       query = {
@@ -39,12 +39,10 @@ module.exports.getList = async (
         offset,
         ...query,
       });
-      console.log("pagr: " + data);
     } else {
       data = await db[model].findAll({
         ...query,
       });
-      console.log("pagr2s2s: " + data);
     }
     return data;
   } catch (error) {

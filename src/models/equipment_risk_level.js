@@ -6,7 +6,6 @@ module.exports = (sequelize, DataTypes) => {
       Equipment_Risk_Level.hasMany(models.Equipment, {
         foreignKey: "risk_level",
       });
-      Equipment_Risk_Level.hasMany(models.Supply, { foreignKey: "risk_level" });
     }
   }
   Equipment_Risk_Level.init(

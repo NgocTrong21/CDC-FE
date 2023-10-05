@@ -7,7 +7,7 @@ const cloudinary_config = cloudinary.config({
 });
 // Log the configuration
 
-try {
+
   if (
     cloudinary_config.api_key != undefined &&
     cloudinary_config.api_secret != undefined &&
@@ -22,8 +22,6 @@ try {
     console.log("Cloudinary configuration: Failed");
     console.log("============================================================");
   }
-} catch (err) {
-  throw err;
-}
+
 
 module.exports = cloudinary;

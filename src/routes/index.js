@@ -21,6 +21,9 @@ const userRoute = require("./user.route");
 const docsRoute = require("./docs.route");
 const equipmentInspectionRoute = require("./equipment_inspection.route");
 const projectRoute = require("./project.route");
+const inboundOrderRoute = require("./inbound_order.route");
+const outboundOrderRoute = require("./outbound_order.route");
+const warehouseRoute = require("./warehouse.route");
 
 const defaultRoutes = [
   {
@@ -102,6 +105,18 @@ const defaultRoutes = [
   {
     path: "/supply_accompany",
     route: supplyAccompanyRoute,
+  },
+  {
+    path: "/inbound_order",
+    route: inboundOrderRoute,
+  },
+  {
+    path: "/outbound_order",
+    route: outboundOrderRoute,
+  },
+  {
+    path: "/warehouse",
+    route: warehouseRoute,
   },
 ];
 

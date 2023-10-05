@@ -279,6 +279,22 @@ module.exports.EQUIPMENT_NOT_FOUND = {
   code: 1032,
   messageCode: "EQUIPMENT_NOT_FOUND",
 };
+module.exports.ORDER_NOT_FOUND = {
+  status: 500,
+  success: false,
+  data: null,
+  message: "Không tìm thấy đơn trên hệ thống",
+  code: 1032,
+  messageCode: "ORDER_NOT_FOUND",
+};
+module.exports.WAREHOUSE_NOT_FOUND = {
+  status: 500,
+  success: false,
+  data: null,
+  message: "Không tìm thấy kho trên hệ thống",
+  code: 1032,
+  messageCode: "WAREHOUSE_NOT_FOUND",
+};
 module.exports.RISK_LEVEL_NOT_FOUND = {
   status: 500,
   success: false,
