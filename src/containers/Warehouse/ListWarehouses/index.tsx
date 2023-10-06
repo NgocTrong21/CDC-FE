@@ -22,6 +22,8 @@ import useQuery from 'hooks/useQuery';
 import providerApi from 'api/provider.api';
 import ExportToExcel from 'components/Excel';
 import { resolveDataExcel } from 'utils/globalFunc.util';
+import warehouseApi from 'api/warehouse.api';
+import { toast } from 'react-toastify';
 
 const limit: number = 10;
 
@@ -41,7 +43,7 @@ const Warehouses = () => {
   const query = useQuery();
   const currentPage = query?.page;
   const currentName = query?.name;
-  const [providers, setProviders] = useState([]);
+  const [warehouses, setWarehouses] = useState([]);
   const [page, setPage] = useState<number>(currentPage);
   const [total, setTotal] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
@@ -52,17 +54,57 @@ const Warehouses = () => {
   const [name, setName] = useState<string>(currentName);
   const nameSearch = useDebounce(name, 500);
   const [isShowCustomTable, setIsShowCustomTable] = useState<boolean>(false);
+  const seachWarehouses = (params: any) => {
+    const { nameSearch, limit, page } = params;
+    setLoading(true);
+    warehouseApi.search({
+      name: nameSearch,
+      limit,
+      page,
+    })
+      .then((res) => {
+        const { success, data } = res.data;
+        if (success) {
+          setWarehouses(data.warehouses);
+          setTotal(data.count);
+        }
+      })
+      .catch()
+      .finally(() => setLoading(false));
+  }
 
+  useEffect(() => {
+    seachWarehouses({
+      nameSearch,
+      page,
+      limit
+    });
+  }, [page, nameSearch]);
+  const handleDelete = (id: number) => {
+    warehouseApi
+      .delete(id)
+      .then((res: any) => {
+        const { success, message } = res.data;
+        if (success) {
+          seachWarehouses({
+            nameSearch,
+            page,
+            limit
+          })
+          toast.success('Xóa thành công!');
+        } else {
+          toast.error(message);
+        }
+      })
+      .catch((error) => toast.error(error));
+  };
   const columns: any = [
     {
-      title: 'Ảnh đại diện',
-      key: 'image',
-      dataIndex: 'image',
-      show: false,
-      widthExcel: 25,
-      render: (item: any) => (
-        <img src={image} alt="logo" className="w-20 h-20" />
-      ),
+      title: 'Mã kho',
+      key: 'code',
+      dataIndex: 'code',
+      show: true,
+      widthExcel: 20,
     },
     {
       title: 'Tên hiển thị',
@@ -71,31 +113,10 @@ const Warehouses = () => {
       show: true,
       widthExcel: 25,
     },
-    // {
-    //   title: 'Mã số thuế',
-    //   key: 'tax_code',
-    //   dataIndex: 'tax_code',
-    //   show: true,
-    //   widthExcel: 20,
-    // },
-    // {
-    //   title: 'Email',
-    //   key: 'email',
-    //   dataIndex: 'email',
-    //   show: true,
-    //   widthExcel: 30,
-    // },
     {
-      title: 'Liên hệ',
-      key: 'hotline',
-      dataIndex: 'hotline',
-      show: true,
-      widthExcel: 20,
-    },
-    {
-      title: 'Người liên hệ',
-      key: 'contact_person',
-      dataIndex: 'contact_person',
+      title: 'Thủ kho',
+      key: 'storekeeper',
+      dataIndex: 'storekeeper',
       show: true,
       widthExcel: 25,
     },
@@ -103,20 +124,6 @@ const Warehouses = () => {
       title: 'Ghi chú',
       key: 'note',
       dataIndex: 'note',
-      show: false,
-      widthExcel: 25,
-    },
-    {
-      title: 'Địa chỉ',
-      key: 'address',
-      dataIndex: 'address',
-      show: true,
-      widthExcel: 25,
-    },
-    {
-      title: 'Thủ kho',
-      key: 'warehouse_keeper',
-      dataIndex: 'warehouse_keeper',
       show: true,
       widthExcel: 25,
     },
@@ -134,7 +141,7 @@ const Warehouses = () => {
           <Tooltip title="Xóa">
             <Popconfirm
               title="Bạn muốn xóa kho này?"
-              onConfirm={() => {}}
+              onConfirm={() => { handleDelete(item.id) }}
               okText="Xóa"
               cancelText="Hủy"
             >
@@ -147,7 +154,7 @@ const Warehouses = () => {
   ];
   const [columnTable, setColumnTable] = useState<any>(columns);
 
-  const handleDeleteWarehouse = (id: number) => {};
+  const handleDeleteWarehouse = (id: number) => { };
 
   const onPaginationChange = (page: number, pageSize: number) => {
     setPage(page);
@@ -158,42 +165,10 @@ const Warehouses = () => {
     current: page,
     total: total,
     pageSize: limit,
-    showTotal: (total: number) => `Tổng cộng: ${total} Nhà cung cấp`,
+    showTotal: (total: number) => `Tổng cộng: ${total} Kho`,
     onChange: onPaginationChange,
   };
 
-  const getAllProviders = async (page: number) => {
-    setLoading(true);
-    providerApi
-      .list(page)
-      .then((res: any) => {
-        const { success, data } = res.data;
-        if (success) {
-          setProviders(data.providers.rows);
-          setTotal(data.providers.count);
-        }
-      })
-      .catch()
-      .finally(() => setLoading(false));
-  };
-
-  useEffect(() => {
-    getAllProviders(page);
-  }, [page, currentPage]);
-
-  const searchProviders = async (name: string) => {
-    if (name) {
-      providerApi
-        .search(name)
-        .then((res: any) => {
-          const { success, data } = res.data;
-          if (success) {
-            setProviders(data.providers);
-          }
-        })
-        .catch();
-    }
-  };
 
   const onChangeSearch = (e: any) => {
     setName(e.target.value);
@@ -206,10 +181,6 @@ const Warehouses = () => {
       navigate(`${pathName}?page=1`);
     }
   };
-
-  useEffect(() => {
-    searchProviders(nameSearch);
-  }, [nameSearch]);
 
   const onChangeCheckbox = (item: any, e: any) => {
     let newColumns: any = columnTable.map((column: any) => {
@@ -240,6 +211,7 @@ const Warehouses = () => {
     resolveDataExcel(data, 'Danh sách nhà cung cấp', columnTable);
     setLoadingDownload(false);
   };
+  console.log('check warehouses', warehouses);
 
   return (
     <div>
@@ -292,7 +264,7 @@ const Warehouses = () => {
       </div>
       <Table
         columns={columnTable.filter((item: any) => item.show)}
-        dataSource={providers}
+        dataSource={warehouses}
         className="mt-6 shadow-md"
         footer={() =>
           showFooter && <TableFooter paginationProps={pagination} />
