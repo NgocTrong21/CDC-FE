@@ -27,7 +27,6 @@ import useDebounce from 'hooks/useDebounce';
 import supplyApi from 'api/suplly.api';
 import { toast } from 'react-toastify';
 import { onChangeCheckbox } from 'utils/globalFunc.util';
-import categoryApi from 'api/category.api';
 
 import type { PaginationProps } from 'antd';
 
@@ -64,63 +63,11 @@ const Suplly = () => {
   const [types, setTypes] = useState<any>([]);
 
   const onShowSizeChange: PaginationProps['onShowSizeChange'] = (
-    current,
+    _current,
     pageSize
   ) => {
     setLimit(pageSize);
   };
-
-  const mockData = [
-    {
-      code: '1',
-      name: 'vat tu',
-      count: '100',
-      manufacturer: 'Sony',
-      manufacturing_country: 'Han Quoc',
-    },
-    {
-      code: '2',
-      name: 'vat tu',
-      count: '100',
-      manufacturer: 'Sony',
-      manufacturing_country: 'Han Quoc',
-    },
-    {
-      code: '2',
-      name: 'vat tu',
-      count: '100',
-      manufacturer: 'Sony',
-      manufacturing_country: 'Han Quoc',
-    },
-    {
-      code: '3',
-      name: 'vat tu',
-      count: '100',
-      manufacturer: 'Sony',
-      manufacturing_country: 'Han Quoc',
-    },
-    {
-      code: '4',
-      name: 'vat tu',
-      count: '100',
-      manufacturer: 'Sony',
-      manufacturing_country: 'Han Quoc',
-    },
-    {
-      code: '5',
-      name: 'vat tu',
-      count: '100',
-      manufacturer: 'Sony',
-      manufacturing_country: 'Han Quoc',
-    },
-    {
-      code: '6',
-      name: 'vat tu',
-      count: '100',
-      manufacturer: 'Sony',
-      manufacturing_country: 'Han Quoc',
-    },
-  ];
 
   const columns: any = [
     {
@@ -141,6 +88,12 @@ const Suplly = () => {
       show: true,
     },
     {
+      title: 'Số lô',
+      dataIndex: 'lot_number',
+      key: 'lot_number',
+      show: true,
+    },
+    {
       title: 'Tên vật tư',
       dataIndex: 'name',
       key: 'name',
@@ -149,8 +102,8 @@ const Suplly = () => {
     {
       title: 'Đơn vị tính',
       key: 'unit',
+      dataIndex: 'unit',
       show: true,
-      render: (item: any) => <div>{item?.Equipment_Unit?.name}</div>,
     },
     {
       title: 'Số lượng',
@@ -159,10 +112,16 @@ const Suplly = () => {
       show: true,
     },
     {
-      title: 'Hãng sản xuất',
-      key: 'manufacturer',
+      title: 'Đơn giá',
+      key: 'unit_price',
+      dataIndex: 'unit_price',
       show: true,
-      dataIndex: 'manufacturer',
+    },
+    {
+      title: 'Nhà cung cấp',
+      key: 'provider',
+      show: true,
+      dataIndex: 'provider',
     },
     {
       title: 'Xuất sứ',
@@ -262,26 +221,9 @@ const Suplly = () => {
       .catch()
       .finally(() => setLoading(false));
   };
-
   useEffect(() => {
     getSuppliesList();
-  }, [page, nameSearch, type, level, limit]);
-
-  const getSupplyType = () => {
-    categoryApi
-      .listSypplyType()
-      .then((res: any) => {
-        const { success, data } = res?.data;
-        if (success) {
-          setTypes(data?.supply_types);
-        }
-      })
-      .catch();
-  };
-  useEffect(() => {
-    getSupplyType();
-  }, []);
-
+  }, [limit, page])
   return (
     <div>
       <div className="flex-between-center">
@@ -333,13 +275,13 @@ const Suplly = () => {
             allowClear
             value={name}
             className="input w-1/2"
-            onChange={() => {}}
+            onChange={() => { }}
           />
         </div>
       </div>
       <Table
         columns={columnTable.filter((item: any) => item.show)}
-        dataSource={mockData}
+        dataSource={supllies}
         className="mt-6 shadow-md"
         footer={() => <TableFooter paginationProps={pagination} />}
         pagination={false}

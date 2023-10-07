@@ -5,6 +5,8 @@ import { convertBase64 } from 'utils/globalFunc.util';
 import { toast } from 'react-toastify';
 import { FilterContext } from 'contexts/filter.context';
 import providerApi from 'api/provider.api';
+import TextArea from 'antd/lib/input/TextArea';
+import warehouseApi from 'api/warehouse.api';
 
 const ImportWarehouse = () => {
   const [form] = Form.useForm();
@@ -22,7 +24,22 @@ const ImportWarehouse = () => {
     }
   };
 
-  const onFinish = () => {};
+  const onFinish = (values: any) => {
+    console.log('check values', values);
+    warehouseApi.create({ data: values })
+      .then((res: any) => {
+        const { success } = res.data;
+        if (success) {
+          toast.success('Thêm mới kho thành công!');
+          setImage('');
+          setSelectedImage('');
+          form.resetFields();
+        } else {
+          toast.error('Thêm mới kho thất bại!');
+        }
+      })
+      .catch();
+  };
 
   return (
     <div>
@@ -52,9 +69,9 @@ const ImportWarehouse = () => {
                 className="rounded-lg h-9 border-[#A3ABEB] border-2"
               />
             </Form.Item>
-            <Form.Item label="Mã số thuế" name="tax_code" className="mb-5">
+            <Form.Item label="Mã kho" name="code" className="mb-5">
               <Input
-                placeholder="Nhập mã số thuế"
+                placeholder="Nhập mã kho"
                 allowClear
                 className="rounded-lg h-9 border-[#A3ABEB] border-2"
               />
@@ -62,88 +79,11 @@ const ImportWarehouse = () => {
           </div>
 
           <div className="grid grid-cols-2 gap-5">
-            {/* <Form.Item
-              label="Lĩnh vực hoạt động"
-              name="services"
-              required
-              rules={[
-                { required: true, message: 'Hãy chọn lĩnh vực hoạt động!' },
-              ]}
-              className="mb-5"
-            >
-              <Select
-                mode="multiple"
-                style={{ width: '100%' }}
-                placeholder="Hãy chọn lĩnh vực hoạt động"
-                options={options}
-              />
-            </Form.Item> */}
-            <Form.Item
-              label="Tên nhà cung cấp"
-              name="name"
-              required
-              rules={[
-                { required: true, message: 'Hãy nhập tên nhà cung cấp!' },
-              ]}
-              className="mb-5"
-            >
-              <Input
-                placeholder="Nhập tên nhà cung cấp"
-                allowClear
-                className="rounded-lg h-9 border-[#A3ABEB] border-2"
-              />
-            </Form.Item>
-            <Form.Item
-              label="Email"
-              name="email"
-              //   required
-              //   rules={[
-              //     { required: true, message: 'Hãy nhập email!' },
-              //     { type: 'email', message: 'Nhập đúng định dạng email' },
-              //   ]}
-              className="mb-5"
-            >
-              <Input
-                placeholder="Nhập email"
-                allowClear
-                className="rounded-lg h-9 border-[#A3ABEB] border-2"
-              />
-            </Form.Item>
-          </div>
-          <div className="grid grid-cols-2 gap-5">
-            <Form.Item
-              label="Liên hệ"
-              name="hotline"
-              // required
-              // rules={[{ required: true, message: 'Hãy nhập liên hệ!' }]}
-              className="mb-5"
-            >
-              <Input
-                placeholder="Nhập liên hệ"
-                allowClear
-                className="rounded-lg h-9 border-[#A3ABEB] border-2"
-              />
-            </Form.Item>
-            <Form.Item
-              label="Địa chỉ nhà cung cấp"
-              name="address"
-              // required
-              // rules={[{ required: true, message: 'Hãy nhập địa chỉ!' }]}
-              className="mb-5"
-            >
-              <Input
-                placeholder="Nhập địa chỉ"
-                allowClear
-                className="rounded-lg h-9 border-[#A3ABEB] border-2"
-              />
-            </Form.Item>
           </div>
           <div className="grid grid-cols-2 gap-5">
             <Form.Item
               label="Thủ kho"
-              name="warehouse_keeper"
-              // required
-              // rules={[{ required: true, message: 'Hãy nhập liên hệ!' }]}
+              name="storekeeper"
               className="mb-5"
             >
               <Input
@@ -152,18 +92,8 @@ const ImportWarehouse = () => {
                 className="rounded-lg h-9 border-[#A3ABEB] border-2"
               />
             </Form.Item>
-            <Form.Item
-              label="Ghi chú"
-              name="note"
-              // required
-              // rules={[{ required: true, message: 'Hãy nhập địa chỉ!' }]}
-              className="mb-5"
-            >
-              <Input
-                placeholder="Nhập ghi chú"
-                allowClear
-                className="rounded-lg h-9 border-[#A3ABEB] border-2"
-              />
+            <Form.Item label="Ghi chú" name="note" className="mb-5">
+              <TextArea placeholder="Ghi chú" rows={5} className="textarea" />
             </Form.Item>
           </div>
           <Form.Item>
