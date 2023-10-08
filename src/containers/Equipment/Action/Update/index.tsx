@@ -65,6 +65,7 @@ const UpdateEquipment = () => {
             model: equipment.model,
             serial: equipment.serial,
             status_id: equipment.status_id,
+            unit: equipment.unit,
             unit_id: equipment.unit_id,
             type_id: equipment.type_id,
             risk_level: equipment.risk_level,
@@ -149,15 +150,6 @@ const UpdateEquipment = () => {
     <div>
       <div className="flex-between-center">
         <div className="title">CẬP NHẬT THIẾT BỊ</div>
-        <Button className="button_excel">
-          <ImportOutlined />
-          <div
-            className="font-medium text-md text-[#5B69E6]"
-            onClick={() => navigate('/equipment/import_excel_eq')}
-          >
-            Nhập Excel
-          </div>
-        </Button>
       </div>
 
       <Divider />
@@ -178,7 +170,7 @@ const UpdateEquipment = () => {
               <Input className="input" />
             </Form.Item>
 
-            <div className="grid grid-cols-2 gap-5">
+            <div className="grid grid-cols-3 gap-5">
               <Form.Item
                 label="Tên thiết bị"
                 name="name"
@@ -195,8 +187,6 @@ const UpdateEquipment = () => {
               <Form.Item
                 label="Khoa - Phòng"
                 name="department_id"
-                required
-                rules={[{ required: true, message: 'Hãy chọn khoa phòng!' }]}
                 className="mb-5"
               >
                 <Select
@@ -210,76 +200,9 @@ const UpdateEquipment = () => {
                       .includes(input.toLowerCase())
                   }
                   options={options(departments)}
+                  disabled
                 />
               </Form.Item>
-            </div>
-            <div className="grid grid-cols-3 gap-5">
-              {/* <Form.Item label="Nhóm thiết bị" name="group_id" className='mb-5'>
-              <Select
-                showSearch
-                placeholder="Chọn nhóm thiết bị"
-                optionFilterProp="children"
-                allowClear
-                filterOption={(input, option) =>
-                  (option!.label as unknown as string).toLowerCase().includes(input.toLowerCase())
-                }
-                options={options(groups)}
-                onChange={onChangeGroup}
-              />
-            </Form.Item> */}
-              <Form.Item
-                label="Loại thiết bị"
-                name="type_id"
-                // required
-                // rules={[{ required: true, message: 'Hãy chọn loại thiết bị!' }]}
-                className="mb-5"
-              >
-                <Select
-                  showSearch
-                  placeholder="Chọn loại thiết bị"
-                  optionFilterProp="children"
-                  allowClear
-                  filterOption={(input, option) =>
-                    (option!.label as unknown as string)
-                      .toLowerCase()
-                      .includes(input.toLowerCase())
-                  }
-                  options={options(types)}
-                />
-              </Form.Item>
-              <Form.Item label="Đơn vị tính" name="unit_id" className="mb-5">
-                <Select
-                  showSearch
-                  placeholder="Chọn đơn vị tính"
-                  optionFilterProp="children"
-                  allowClear
-                  filterOption={(input, option) =>
-                    (option!.label as unknown as string)
-                      .toLowerCase()
-                      .includes(input.toLowerCase())
-                  }
-                  options={options(units)}
-                />
-              </Form.Item>
-
-              {/* <Form.Item
-                label="Mức độ rủi ro"
-                name="risk_level"
-                className="mb-5"
-              >
-                <Select
-                  showSearch
-                  placeholder="Chọn mức độ rủi ro"
-                  optionFilterProp="children"
-                  allowClear
-                  filterOption={(input, option) =>
-                    (option!.label as unknown as string)
-                      .toLowerCase()
-                      .includes(input.toLowerCase())
-                  }
-                  options={options(levels)}
-                />
-              </Form.Item> */}
               <Form.Item
                 label="Trạng thái thiết bị"
                 name="status_id"
@@ -300,52 +223,29 @@ const UpdateEquipment = () => {
                       .includes(input.toLowerCase())
                   }
                   options={options(statuses)}
+                  disabled
                 />
               </Form.Item>
             </div>
             <div className="grid grid-cols-4 gap-5">
-              <Form.Item label="Số lượng" name="quantity" className="mb-5">
-                <Input
-                  placeholder="Nhập số lượng thiết bị"
-                  allowClear
-                  className="input"
-                />
-              </Form.Item>
               <Form.Item
-                label="Thành tiền"
-                name="initial_value"
+                label="Số hiệu TSCĐ"
+                name="fixed_asset_number"
+                required
+                rules={[
+                  {
+                    required: true,
+                    message: 'Hãy nhập Số hiệu TSCĐ thiết bị!',
+                  },
+                ]}
                 className="mb-5"
               >
                 <Input
-                  placeholder="Nhập thành tiền thiết bị"
+                  placeholder="Nhập mã hoá thiết bị"
                   allowClear
                   className="input"
                 />
               </Form.Item>
-              <Form.Item
-                label="Khấu hao hàng năm (%)"
-                name="annual_depreciation"
-                className="mb-5"
-              >
-                <Input
-                  placeholder="Nhập Khấu hao hàng năm"
-                  allowClear
-                  className="input"
-                />
-              </Form.Item>
-              <Form.Item
-                label="Giá trị còn lại"
-                name="residual_value"
-                className="mb-5"
-              >
-                <Input
-                  placeholder="Nhập giá trị còn lại"
-                  allowClear
-                  className="input"
-                />
-              </Form.Item>
-            </div>
-            <div className="grid grid-cols-4 gap-5">
               <Form.Item
                 label="Model"
                 name="model"
@@ -389,25 +289,132 @@ const UpdateEquipment = () => {
                   className="input"
                 />
               </Form.Item>
+            </div>
+            <div className="grid grid-cols-4 gap-5">
+              {/* <Form.Item label="Nhóm thiết bị" name="group_id" className='mb-5'>
+              <Select
+                showSearch
+                placeholder="Chọn nhóm thiết bị"
+                optionFilterProp="children"
+                allowClear
+                filterOption={(input, option) =>
+                  (option!.label as unknown as string).toLowerCase().includes(input.toLowerCase())
+                }
+                options={options(groups)}
+                onChange={onChangeGroup}
+              />
+            </Form.Item> */}
+              {/* <Form.Item
+                label="Loại thiết bị"
+                name="type_id"
+                // required
+                // rules={[{ required: true, message: 'Hãy chọn loại thiết bị!' }]}
+                className="mb-5"
+              >
+                <Select
+                  showSearch
+                  placeholder="Chọn loại thiết bị"
+                  optionFilterProp="children"
+                  allowClear
+                  filterOption={(input, option) =>
+                    (option!.label as unknown as string)
+                      .toLowerCase()
+                      .includes(input.toLowerCase())
+                  }
+                  options={options(types)}
+                />
+              </Form.Item>
+              {/* <Form.Item label="Đơn vị tính" name="unit_id" className="mb-5">
+              </Form.Item> */}
+              {/* <Form.Item label="Đơn vị tính" name="unit_id" className="mb-5">
+                <Select
+                  showSearch
+                  placeholder="Chọn đơn vị tính"
+                  optionFilterProp="children"
+                  allowClear
+                  filterOption={(input, option) =>
+                    (option!.label as unknown as string)
+                      .toLowerCase()
+                      .includes(input.toLowerCase())
+                  }
+                  options={options(units)}
+                />
+              </Form.Item> */}
               <Form.Item
-                label="Số hiệu TSCĐ"
-                name="fixed_asset_number"
+                label="Đơn vị tính"
+                name="unit"
                 required
-                rules={[
-                  {
-                    required: true,
-                    message: 'Hãy nhập Số hiệu TSCĐ thiết bị!',
-                  },
-                ]}
+                rules={[{ required: true, message: 'Hãy nhập đơn vị tính!' }]}
                 className="mb-5"
               >
                 <Input
-                  placeholder="Nhập mã hoá thiết bị"
+                  placeholder="Nhập đơn vị tính"
                   allowClear
                   className="input"
                 />
               </Form.Item>
+              <Form.Item
+                label="Thành tiền"
+                name="initial_value"
+                className="mb-5"
+              >
+                <Input
+                  placeholder="Nhập thành tiền thiết bị"
+                  allowClear
+                  className="input"
+                />
+              </Form.Item>
+              <Form.Item
+                label="Khấu hao hàng năm (%)"
+                name="annual_depreciation"
+                className="mb-5"
+              >
+                <Input
+                  placeholder="Nhập Khấu hao hàng năm"
+                  allowClear
+                  className="input"
+                />
+              </Form.Item>
+              <Form.Item
+                label="Giá trị còn lại"
+                name="residual_value"
+                className="mb-5"
+              >
+                <Input
+                  placeholder="Nhập giá trị còn lại"
+                  allowClear
+                  className="input"
+                />
+              </Form.Item>
+              {/* <Form.Item
+                label="Mức độ rủi ro"
+                name="risk_level"
+                className="mb-5"
+              >
+                <Select
+                  showSearch
+                  placeholder="Chọn mức độ rủi ro"
+                  optionFilterProp="children"
+                  allowClear
+                  filterOption={(input, option) =>
+                    (option!.label as unknown as string)
+                      .toLowerCase()
+                      .includes(input.toLowerCase())
+                  }
+                  options={options(levels)}
+                />
+              </Form.Item> */}
             </div>
+            <div className="grid grid-cols-4 gap-5">
+              {/* <Form.Item label="Số lượng" name="quantity" className="mb-5">
+                <Input
+                  placeholder="Nhập số lượng thiết bị"
+                  allowClear
+                  className="input"
+                />
+              </Form.Item> */}
+            </div>
+
             <div className="grid grid-cols-4 gap-5">
               <Form.Item
                 label="Năm sử dụng"
@@ -420,7 +427,7 @@ const UpdateEquipment = () => {
                   className="input"
                 />
               </Form.Item>
-              <Form.Item
+              {/* <Form.Item
                 label="Nhà cung cấp"
                 name="provider_id"
                 className="mb-5"
@@ -437,8 +444,8 @@ const UpdateEquipment = () => {
                   }
                   options={options(providers)}
                 />
-              </Form.Item>
-              <Form.Item
+              </Form.Item> */}
+              {/* <Form.Item
                 label="Hãng sản xuất"
                 name="manufacturer_id"
                 // required
@@ -455,7 +462,7 @@ const UpdateEquipment = () => {
                   allowClear
                   className="input"
                 />
-              </Form.Item>
+              </Form.Item> */}
               <Form.Item
                 label="Nước sản xuất"
                 name="manufacturing_country_id"
@@ -470,6 +477,23 @@ const UpdateEquipment = () => {
                   allowClear
                   className="input"
                 />
+              </Form.Item>
+              <Form.Item
+                label="Ngày nhập kho"
+                name="warehouse_import_date"
+                className="mb-5"
+              >
+                <DatePicker
+                  className="input w-[-webkit-fill-available]"
+                  placeholder="Chọn ngày"
+                />
+              </Form.Item>
+              <Form.Item
+                label="Ngày bàn giao"
+                name="handover_date"
+                className="mb-5"
+              >
+                <DatePicker className="textarea" placeholder="Chọn ngày" />
               </Form.Item>
               {/* <Form.Item
                 label="Năm sản xuất"
@@ -514,7 +538,7 @@ const UpdateEquipment = () => {
               </Form.Item> */}
             </div>
             <div className="grid grid-cols-4 gap-5">
-              <Form.Item
+              {/* <Form.Item
                 label="Bảo dưỡng định kỳ (tháng)"
                 name="regular_maintenance"
                 className="mb-5"
@@ -534,7 +558,7 @@ const UpdateEquipment = () => {
                   <Option value="12">12 tháng</Option>
                   <Option value="24">24 tháng</Option>
                 </Select>
-              </Form.Item>
+              </Form.Item> */}
 
               {/* <Form.Item
                 label="Ngày bảo dưỡng gần nhất"
@@ -547,7 +571,7 @@ const UpdateEquipment = () => {
                   format={dateFormat}
                 />
               </Form.Item> */}
-              <Form.Item
+              {/* <Form.Item
                 label="Kiểm định định kỳ (tháng)"
                 name="regular_inspection"
                 className="mb-5"
@@ -567,7 +591,7 @@ const UpdateEquipment = () => {
                   <Option value="12">12 tháng</Option>
                   <Option value="24">24 tháng</Option>
                 </Select>
-              </Form.Item>
+              </Form.Item> */}
               {/* <Form.Item
                 label="Ngày kiểm định gần nhất"
                 name="lastest_inspection"
@@ -589,23 +613,6 @@ const UpdateEquipment = () => {
                   placeholder="Chọn ngày"
                 />
               </Form.Item> */}
-              <Form.Item
-                label="Ngày nhập kho"
-                name="warehouse_import_date"
-                className="mb-5"
-              >
-                <DatePicker
-                  className="input w-[-webkit-fill-available]"
-                  placeholder="Chọn ngày"
-                />
-              </Form.Item>
-              <Form.Item
-                label="Ngày bàn giao"
-                name="handover_date"
-                className="mb-5"
-              >
-                <DatePicker className="textarea" placeholder="Chọn ngày" />
-              </Form.Item>
             </div>
             <div className="grid grid-cols-4 gap-5">
               {/* <Form.Item
@@ -664,7 +671,7 @@ const UpdateEquipment = () => {
                 />
               </Form.Item> */}
             </div>
-            <div className="grid grid-cols-1 gap-5">
+            {/* <div className="grid grid-cols-1 gap-5">
               <Form.Item label="Dự án" name="project_id" className="mb-5">
                 <Select
                   showSearch
@@ -679,9 +686,9 @@ const UpdateEquipment = () => {
                   options={options(projects)}
                 />
               </Form.Item>
-            </div>
-            <div className="grid grid-cols-2 gap-5">
-              <Form.Item
+            </div> */}
+            <div className="grid grid-cols-1 gap-5">
+              {/* <Form.Item
                 label="Thông số kĩ thuật"
                 name="technical_parameter"
                 className="mb-5"
@@ -715,7 +722,7 @@ const UpdateEquipment = () => {
                   rows={4}
                   className="textarea"
                 />
-              </Form.Item>
+              </Form.Item> */}
               <Form.Item label="Ghi chú" name="note" className="mb-5">
                 <TextArea placeholder="Ghi chứ" rows={4} className="textarea" />
               </Form.Item>

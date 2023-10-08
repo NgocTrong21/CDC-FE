@@ -126,7 +126,7 @@ const Inventory = () => {
         const { success, data } = res.data;
         if (success) {
           setDepartments(data.departments.rows);
-          setTotal(data.departments.count);
+          setTotal(data.count);
         }
       })
       .catch()

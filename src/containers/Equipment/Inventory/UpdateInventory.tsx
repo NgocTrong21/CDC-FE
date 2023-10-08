@@ -109,7 +109,7 @@ const UpdateInventory = () => {
           <TextArea className='input' rows={4} />
         </Form.Item>
         <Form.Item>
-          <Button className='button' htmlType='submit' loading={loading}>Cập nhật</Button>
+          <Button className='button-primary' htmlType='submit' loading={loading}>Cập nhật</Button>
         </Form.Item>
       </Form>
     </div>

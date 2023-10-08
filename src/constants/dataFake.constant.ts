@@ -24,36 +24,6 @@ export const repaired_status = [
   },
 ];
 
-export const liquidation_status = [
-  {
-    value: 0,
-    label: 'Chờ phê duyệt',
-  },
-  {
-    value: 1,
-    label: 'Đã phê duyệt',
-  },
-  {
-    value: 2,
-    label: 'Hủy yêu cầu',
-  },
-];
-
-export const transfer_status = [
-  {
-    value: 0,
-    label: 'Chờ phê duyệt',
-  },
-  {
-    value: 1,
-    label: 'Đã phê duyệt',
-  },
-  {
-    value: 2,
-    label: 'Hủy yêu cầu',
-  },
-];
-
 export const inventory_status = [
   {
     value: 0,

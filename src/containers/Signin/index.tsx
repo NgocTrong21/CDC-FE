@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import bg from 'assets/bg.jpg';
 import { PoweroffOutlined } from '@ant-design/icons';
 import Text from 'antd/lib/typography/Text';
@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { authActions, LoginPayLoad, selectIsLoading, selectMessageLogin } from 'store/slices/auth.slice';
 import { useDispatch, useSelector } from 'react-redux';
 import { Alert, Button, Input, Form } from 'antd';
+import ReactGA from "react-ga";
 
 const Signin: React.FC = () => {
 
@@ -14,7 +15,17 @@ const Signin: React.FC = () => {
   const isLoading = useSelector(selectIsLoading);
   const messageLogin = useSelector(selectMessageLogin);
 
+  useEffect(() => {
+    ReactGA.pageview(window.location.pathname + window.location.search);
+  }, [])
+
   const handleLogin = (values: LoginPayLoad) => {
+    ReactGA.event({
+      category: "auth",
+      action: "login",
+      label: values.email,
+      value: 1
+    })
     dispatch(authActions.login(values))
   }
 

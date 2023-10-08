@@ -111,8 +111,8 @@ const ImportEquipmentByExcel = () => {
     let n: any = data.map((item: any, index: number) => ({
       line: index + 2,
       ...item,
-      department_id: department,
-      status_id: status,
+      department_id: 1,
+      status_id: 2,
     }));
     setLoading(true);
     equipmentApi
@@ -262,14 +262,16 @@ const ImportEquipmentByExcel = () => {
           </div>
           <div>
             <div className="grid grid-cols-2 gap-4">
-              <Form.Item
-                label="Khoa Phòng"
-                name="department"
-                className="mb-5"
-                required
-                rules={[{ required: true, message: 'Hãy chọn khoa Phòng!' }]}
-              >
-                <Select
+              <Form.Item label="Khoa Phòng" name="department" className="mb-5">
+                <Input
+                  className="input"
+                  defaultValue={
+                    options(departments).find((item: any) => item.value === 1)
+                      .label
+                  }
+                  disabled
+                />
+                {/* <Select
                   showSearch
                   placeholder="Chọn Khoa - Phòng"
                   optionFilterProp="children"
@@ -283,18 +285,22 @@ const ImportEquipmentByExcel = () => {
                   }
                   options={options(departments)}
                   onChange={(value: any) => onChange('department', value)}
-                />
+                /> */}
               </Form.Item>
               <Form.Item
                 label="Trạng thái thiết bị"
                 name="status"
                 className="mb-5"
-                required
-                rules={[
-                  { required: true, message: 'Hãy chọn trạng thái thiết bị!' },
-                ]}
               >
-                <Select
+                <Input
+                  className="input"
+                  defaultValue={
+                    options(statuses).find((item: any) => item.value === 2)
+                      .label
+                  }
+                  disabled
+                />
+                {/* <Select
                   showSearch
                   placeholder="Chọn Trạng thái"
                   optionFilterProp="children"
@@ -307,7 +313,7 @@ const ImportEquipmentByExcel = () => {
                   className="select-custom"
                   options={options(statuses)}
                   onChange={(value: any) => onChange('status', value)}
-                />
+                /> */}
               </Form.Item>
             </div>
           </div>

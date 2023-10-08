@@ -27,7 +27,7 @@ import {
   formatCurrency,
   checkPermission,
 } from 'utils/globalFunc.util';
-// import equipmentInspectionApi from 'api/equipment_inspection.api';
+import equipmentInspectionApi from 'api/equipment_inspection.api';
 import { formatCurrencyVN } from 'utils/validateFunc.util';
 import equipmentTransferApi from 'api/equipment_transfer.api';
 import { permissions } from 'constants/permission.constant';
@@ -544,41 +544,41 @@ const Detail = () => {
       .catch();
   };
 
-  // const getHistoryInspection = (id: any) => {
-  //   equipmentInspectionApi
-  //     .getHistoryInspection(id)
-  //     .then((res: any) => {
-  //       const { success, data } = res?.data;
-  //       if (success) {
-  //         setInspection(data.inspection);
-  //       }
-  //     })
-  //     .catch();
-  // };
+  const getHistoryInspection = (id: any) => {
+    equipmentInspectionApi
+      .getHistoryInspection(id)
+      .then((res: any) => {
+        const { success, data } = res?.data;
+        if (success) {
+          setInspection(data.inspection);
+        }
+      })
+      .catch();
+  };
 
-  // const getHistoryTransfer = (id: any) => {
-  //   equipmentTransferApi
-  //     .getHistoryTransfer(id)
-  //     .then((res: any) => {
-  //       const { success, data } = res?.data;
-  //       if (success) {
-  //         setTransfer(data.transfer);
-  //       }
-  //     })
-  //     .catch();
-  // };
+  const getHistoryTransfer = (id: any) => {
+    equipmentTransferApi
+      .getHistoryTransfer(id)
+      .then((res: any) => {
+        const { success, data } = res?.data;
+        if (success) {
+          setTransfer(data.transfer);
+        }
+      })
+      .catch();
+  };
 
-  // const getHistoryLiquidation = (id: any) => {
-  //   equipmentLiquidationApi
-  //     .getHistoryLiquidation(id)
-  //     .then((res: any) => {
-  //       const { success, data } = res?.data;
-  //       if (success) {
-  //         setLiquidation(data.liquidation);
-  //       }
-  //     })
-  //     .catch();
-  // };
+  const getHistoryLiquidation = (id: any) => {
+    equipmentLiquidationApi
+      .getHistoryLiquidation(id)
+      .then((res: any) => {
+        const { success, data } = res?.data;
+        if (success) {
+          setLiquidation(data.liquidation);
+        }
+      })
+      .catch();
+  };
 
   const downloadHandoverInfo = (item: any) => {
     let equipment = {
@@ -599,9 +599,9 @@ const Detail = () => {
     getDetailEquipment(id);
     getHistoryRepair(id);
     getHandoverInfo(id);
-    // getHistoryInspection(id);
-    // getHistoryTransfer(id);
-    // getHistoryLiquidation(id);
+    getHistoryInspection(id);
+    getHistoryTransfer(id);
+    getHistoryLiquidation(id);
   }, [id]);
 
   const data: DataType[] = [
@@ -652,9 +652,11 @@ const Detail = () => {
 
     {
       key_1: 'Đơn vị tính',
-      value_1: `${
-        equipment?.Equipment_Unit?.name ? equipment?.Equipment_Unit?.name : ''
-      }`,
+      value_1: `${equipment?.unit ? equipment?.unit : ''}`,
+      // key_1: 'Đơn vị tính',
+      // value_1: `${
+      //   equipment?.Equipment_Unit?.name ? equipment?.Equipment_Unit?.name : ''
+      // }`,
       // key_2: 'Mức độ rủi ro',
       // value_2: `${
       //   equipment?.Equipment_Risk_Level?.name

@@ -1,20 +1,21 @@
 import { Button, Divider, Form, Input, Select } from 'antd';
 import userApi from 'api/user.api';
 import { FilterContext } from 'contexts/filter.context';
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { convertBase64, options } from 'utils/globalFunc.util';
 import ava from 'assets/image.png';
 import { CURRENT_USER } from 'constants/auth.constant';
+import Loading from 'components/Loading';
 
 const Profile = () => {
-
   const user: any = JSON.parse(localStorage.getItem(CURRENT_USER) || '');
   const { id } = user;
   const [form] = Form.useForm();
   const [selectedImage, setSelectedImage] = useState<any>('');
   const [image, setImage] = useState<any>('');
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loadingUpdate, setLoadingUpdate] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
   const { roles, departments } = useContext(FilterContext);
   const [error, setError] = useState<any>();
 
@@ -26,13 +27,16 @@ const Profile = () => {
       setSelectedImage(img);
       setImage(fileBase64);
     }
-  }
+  };
 
   const getDetail = () => {
-    userApi.getProfile(id)
+    setLoading(true);
+    userApi
+      .getProfile(id)
       .then((res: any) => {
         const { success, data } = res.data;
         let user = data?.user;
+        console.log(res.data.success);
         if (success) {
           form.setFieldsValue({
             id: user?.id,
@@ -41,100 +45,106 @@ const Profile = () => {
             email: user?.email,
             address: user?.address,
             role_id: user?.role_id,
-            department_id: user?.department_id
-          })
+            department_id: user?.department_id,
+            image: user?.image,
+          });
           setError('');
+          // setUser('');
+          setImage(user.image);
         } else {
           toast.error('Bạn không có quyền truy cập tài khoản này!');
           setError('Bạn không có quyền truy cập tài khoản này!');
         }
       })
       .catch()
-  }
+      .finally(() => setLoading(false));
+  };
 
   const onFinish = (values: any) => {
-    setLoading(true);
-    userApi.update(values)
+    const data = { ...values, image };
+    setLoadingUpdate(true);
+    userApi
+      .updateProfile(data)
       .then((res) => {
         const { success } = res.data;
         if (success) {
-          toast.success("Cập nhật thông tin thành công!");
+          toast.success('Cập nhật thông tin thành công!');
         } else {
-          toast.error("Cập nhật thông tin thất bại!");
+          toast.error('Cập nhật thông tin thất bại!');
         }
       })
       .catch()
-      .finally(() => setLoading(false))
-  }
+      .finally(() => setLoadingUpdate(false));
+  };
 
   useEffect(() => {
     getDetail();
-  }, [id])
+  }, [id]);
+
+  console.log(error);
 
   return (
-    error === '' ?
-      <div>
-        <div className="flex-between-center">
-          <div className="title">Thông tin tài khoản</div>
-        </div>
-        <Divider />
-        <div className='flex-between mt-10'>
+    <div>
+      <div className="flex-between-center">
+        <div className="title">Thông tin tài khoản</div>
+      </div>
+      <Divider />
+      {loading ? (
+        <Loading />
+      ) : (
+        <div className="flex-between mt-10">
           <Form
             form={form}
-            className='basis-2/3'
+            className="basis-3/4"
             layout="vertical"
             size="large"
             onFinish={onFinish}
           >
-            <Form.Item
-              name="id"
-              required
-              style={{ display: "none" }}
-            >
-              <Input style={{ display: "none" }} />
+            <Form.Item name="id" required style={{ display: 'none' }}>
+              <Input style={{ display: 'none' }} />
             </Form.Item>
-            <div className='grid grid-cols-2 gap-5'>
+            <div className="grid grid-cols-2 gap-5">
               <Form.Item
                 label="Tên người dùng"
                 name="name"
                 required
-                rules={[{ required: true, message: 'Hãy nhập tên người dùng!' }]}
-                className='mb-5'
+                rules={[
+                  { required: true, message: 'Hãy nhập tên người dùng!' },
+                ]}
+                className="mb-5"
               >
                 <Input
                   placeholder="Nhập tên người dùng"
                   allowClear
-                  className='rounded-lg h-9 border-[#A3ABEB] border-2'
+                  className="rounded-lg h-9 border-[#A3ABEB] border-2"
                 />
               </Form.Item>
               <Form.Item
                 label="Email"
                 name="email"
-                className='mb-5'
+                className="mb-5"
                 required
                 rules={[
                   { required: true, message: 'Hãy nhập email!' },
-                  { type: 'email', message: 'Nhập đúng định dạng email' }
+                  { type: 'email', message: 'Nhập đúng định dạng email' },
                 ]}
               >
                 <Input
                   placeholder="Nhập email"
                   allowClear
-                  className='rounded-lg h-9 border-[#A3ABEB] border-2'
+                  className="rounded-lg h-9 border-[#A3ABEB] border-2"
                   disabled
                 />
               </Form.Item>
             </div>
 
-            <div className='grid grid-cols-2 gap-5'>
+            <div className="grid grid-cols-2 gap-5">
               <Form.Item
                 label="Khoa Phòng"
                 name="department_id"
-                required
-                rules={[
-                  { required: true, message: 'Hãy chọn Khoa phòng!' },
-                ]}
-                className='mb-5'
+                // required
+                // rules={[{ required: true, message: 'Hãy chọn Khoa phòng!' }]}
+                className="mb-5"
               >
                 <Select
                   placeholder="Chọn Khoa Phòng"
@@ -146,10 +156,8 @@ const Profile = () => {
                 label="Chức vụ"
                 name="role_id"
                 required
-                rules={[
-                  { required: true, message: 'Hãy chọn Chức vụ!' },
-                ]}
-                className='mb-5'
+                rules={[{ required: true, message: 'Hãy chọn Chức vụ!' }]}
+                className="mb-5"
               >
                 <Select
                   style={{ width: '100%' }}
@@ -159,74 +167,64 @@ const Profile = () => {
                 />
               </Form.Item>
             </div>
-            <div className='grid grid-cols-2 gap-5'>
-              <Form.Item
-                label="Số điện thoại"
-                name="phone"
-                className='mb-5'
-              >
+            <div className="grid grid-cols-2 gap-5">
+              <Form.Item label="Số điện thoại" name="phone" className="mb-5">
                 <Input
                   placeholder="Nhập số điện thoại"
                   allowClear
-                  className='rounded-lg h-9 border-[#A3ABEB] border-2'
+                  className="rounded-lg h-9 border-[#A3ABEB] border-2"
                 />
               </Form.Item>
-              <Form.Item
-                label="Địa chỉ"
-                name="address"
-                className='mb-5'
-              >
+              <Form.Item label="Địa chỉ" name="address" className="mb-5">
                 <Input
                   placeholder="Nhập địa chỉ"
                   allowClear
-                  className='rounded-lg h-9 border-[#A3ABEB] border-2'
+                  className="rounded-lg h-9 border-[#A3ABEB] border-2"
                 />
               </Form.Item>
             </div>
             <Form.Item>
               <Button
                 htmlType="submit"
-                loading={loading}
-                className='button'
+                loading={loadingUpdate}
+                className="button-primary"
               >
                 Cập nhật
               </Button>
             </Form.Item>
           </Form>
-          <div className='basis-1/3 mt-4 flex flex-col items-center'>
-            <div className='text-center mb-4'>Ảnh đại diện</div>
-            <div className="preview-content">
-              <input
-                type="file"
-                hidden
-                className="form-control"
-                id="inputImage"
-                onChange={(e: any) => handleChangeImg(e)}
-              />
-              <label className="text-center" htmlFor="inputImage">
-                {
-                  image === '' ?
-                    <img
-                      src={ava}
-                      alt="ava"
-                      className='w-52 h-52'
-                    /> :
-                    <div
-                      className="w-52 h-52 bg-center bg-no-repeat bg-cover"
-                      style={{ backgroundImage: `url(${selectedImage})` }}
-                    >
-                    </div>
-                }
-              </label>
+          <div className="flex flex-col gap-4 items-center basis-1/4 ">
+            <div className="text-center leading-9 ">Hình ảnh người dùng</div>
 
-            </div>
+            {selectedImage === '' ? (
+              <img
+                src={image !== null ? image : ava}
+                alt="Hình ảnh người dùng"
+                className="w-52 h-52  rounded-full bg-center bg-no-repeat bg-cover"
+              />
+            ) : (
+              <div
+                className="w-52 h-52 rounded-full bg-center bg-no-repeat bg-cover"
+                style={{ backgroundImage: `url(${selectedImage})` }}
+              ></div>
+            )}
+            {/* </label> */}
+            <div className="mt-6">Thay đổi hình ảnh người dùng</div>
+            <input
+              type="file"
+              className="block file:bg-violet-100 file:text-violet-700 text-slate-500 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold hover:file:bg-violet-200"
+              id="inputImage"
+              onChange={(e: any) => handleChangeImg(e)}
+            />
           </div>
         </div>
-      </div> :
-      <div className="flex-between-center">
-        <div className="title">{error}</div>
-      </div>
-  )
-}
+      )}
+    </div>
+    // ) : (
+    //   <div className="flex-between-center">
+    //     <div className="title">{error}</div>
+    //   </div>
+  );
+};
 
-export default Profile
+export default Profile;

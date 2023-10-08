@@ -267,7 +267,7 @@ const ImportSupply = () => {
             </Form.Item>
           </div>
           <Form.Item>
-            <Button className='button' htmlType="submit">Thêm</Button>
+            <Button className='button-primary' htmlType="submit">Thêm</Button>
           </Form.Item>
         </Form>
         <div className='basis-1/3 mt-4 flex flex-col items-center'>

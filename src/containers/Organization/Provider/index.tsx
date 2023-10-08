@@ -1,11 +1,21 @@
 import { useEffect, useState } from 'react';
 import {
-  DeleteFilled, EyeFilled, FilterFilled, 
-  PlusCircleFilled, SelectOutlined,
+  DeleteFilled,
+  EyeFilled,
+  FilterFilled,
+  PlusCircleFilled,
+  SelectOutlined,
 } from '@ant-design/icons';
-import { Button, Checkbox, Divider, 
-  Input, Pagination, Popconfirm, 
-  Row, Table, Tooltip 
+import {
+  Button,
+  Checkbox,
+  Divider,
+  Input,
+  Pagination,
+  Popconfirm,
+  Row,
+  Table,
+  Tooltip,
 } from 'antd';
 import useDebounce from 'hooks/useDebounce';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -14,26 +24,20 @@ import useQuery from 'hooks/useQuery';
 import providerApi from 'api/provider.api';
 import { toast } from 'react-toastify';
 import ExportToExcel from 'components/Excel';
-import { getDataExcel, getFields } from 'utils/globalFunc.util';
+import { resolveDataExcel } from 'utils/globalFunc.util';
 
 const limit: number = 10;
 
-const TableFooter = ({
-  paginationProps
-}: any) => {
-
+const TableFooter = ({ paginationProps }: any) => {
   return (
-    <Row
-      justify='space-between'
-    >
+    <Row justify="space-between">
       <div></div>
       <Pagination {...paginationProps} />
     </Row>
-  )
-}
+  );
+};
 
 const Provider = () => {
-
   const navigate = useNavigate();
   const location = useLocation();
   const pathName: any = location?.pathname;
@@ -44,7 +48,10 @@ const Provider = () => {
   const [page, setPage] = useState<number>(currentPage);
   const [total, setTotal] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
-  const [showFooter, setShowFooter] = useState<boolean>(currentName ? false : true);
+  const [loadingDownload, setLoadingDownload] = useState<boolean>(false);
+  const [showFooter, setShowFooter] = useState<boolean>(
+    currentName ? false : true
+  );
   const [name, setName] = useState<string>(currentName);
   const nameSearch = useDebounce(name, 500);
   const [isShowCustomTable, setIsShowCustomTable] = useState<boolean>(false);
@@ -57,12 +64,8 @@ const Provider = () => {
       show: false,
       widthExcel: 25,
       render: (item: any) => (
-        <img
-          src={image}
-          alt="logo"
-          className='w-20 h-20'
-        />
-      )
+        <img src={image} alt="logo" className="w-20 h-20" />
+      ),
     },
     {
       title: 'Tên hiển thị',
@@ -106,13 +109,11 @@ const Provider = () => {
       widthExcel: 30,
       render: (item: any) => (
         <>
-          {
-            item?.Provider_Services?.map((x: any) => (
-              <div>{x?.Service.name}</div>
-            ))
-          }
+          {item?.Provider_Services?.map((x: any) => (
+            <div>{x?.Service.name}</div>
+          ))}
         </>
-      )
+      ),
     },
     {
       title: 'Ghi chú',
@@ -134,10 +135,12 @@ const Provider = () => {
       show: true,
       render: (item: any) => (
         <div>
-          <Tooltip title='Chi tiết nhà cung cấp' className='mr-4'>
-            <Link to={`/organization/provider/detail/${item.id}`}><EyeFilled /></Link>
+          <Tooltip title="Chi tiết nhà cung cấp" className="mr-4">
+            <Link to={`/organization/provider/detail/${item.id}`}>
+              <EyeFilled />
+            </Link>
           </Tooltip>
-          <Tooltip title='Xóa'>
+          <Tooltip title="Xóa">
             <Popconfirm
               title="Bạn muốn xóa nhà cung cấp này?"
               onConfirm={() => handleDeleteProvider(item.id)}
@@ -154,24 +157,24 @@ const Provider = () => {
   const [columnTable, setColumnTable] = useState<any>(columns);
 
   const handleDeleteProvider = (id: number) => {
-    providerApi.delete(id)
+    providerApi
+      .delete(id)
       .then((res: any) => {
         const { success, message } = res.data;
         if (success) {
           getAllProviders(currentPage);
-          toast.success("Xóa thành công!");
-
+          toast.success('Xóa thành công!');
         } else {
           toast.error(message);
         }
       })
-      .catch(error => toast.error(error))
-  }
+      .catch((error) => toast.error(error));
+  };
 
   const onPaginationChange = (page: number, pageSize: number) => {
     setPage(page);
     navigate(`${pathName}?page=${page}`);
-  }
+  };
 
   const pagination = {
     current: page,
@@ -179,11 +182,12 @@ const Provider = () => {
     pageSize: limit,
     showTotal: (total: number) => `Tổng cộng: ${total} Nhà cung cấp`,
     onChange: onPaginationChange,
-  }
+  };
 
   const getAllProviders = async (page: number) => {
     setLoading(true);
-    providerApi.list(page)
+    providerApi
+      .list(page)
       .then((res: any) => {
         const { success, data } = res.data;
         if (success) {
@@ -192,8 +196,8 @@ const Provider = () => {
         }
       })
       .catch()
-      .finally(() => setLoading(false))
-  }
+      .finally(() => setLoading(false));
+  };
 
   useEffect(() => {
     getAllProviders(page);
@@ -201,81 +205,75 @@ const Provider = () => {
 
   const searchProviders = async (name: string) => {
     if (name) {
-      providerApi.search(name)
+      providerApi
+        .search(name)
         .then((res: any) => {
           const { success, data } = res.data;
           if (success) {
             setProviders(data.providers);
           }
         })
-        .catch()
+        .catch();
     }
-  }
+  };
 
   const onChangeSearch = (e: any) => {
     setName(e.target.value);
-    if (e.target.value !== "") {
+    if (e.target.value !== '') {
       setShowFooter(false);
-      navigate(`${pathName}?keyword=${e.target.value}`)
+      navigate(`${pathName}?keyword=${e.target.value}`);
     } else {
       setShowFooter(true);
       setPage(1);
       navigate(`${pathName}?page=1`);
     }
-  }
+  };
 
   useEffect(() => {
     searchProviders(nameSearch);
-  }, [nameSearch])
+  }, [nameSearch]);
 
   const onChangeCheckbox = (item: any, e: any) => {
     let newColumns: any = columnTable.map((column: any) => {
       if (item.title === column.title) {
         column.show = e.target.checked;
-      };
+      }
       return column;
     });
     setColumnTable(newColumns);
-  }
+  };
 
-  const downloadProviderList = () => {
-    let fields: any = getFields(columnTable);
-    let data = providers
-      .map((x: any) => ({
-        name: x.name,
-        tax_code: x.tax_code,
-        email: x.email,
-        hotline: x.hotline,
-        contact_person: x.contact_person,
-        note: x.note,
-        address: x.address,
-        services: x?.Provider_Services.forEach((item: any) => {
-          return `${item?.Service?.name}, `
-        })
-      }))
-    let objectKey = Object.keys(data[0]);
-    let newData: any = getDataExcel(data, objectKey, fields);
-    const workSheetColumnName = fields?.map((item: any) => ({title: item?.title, width: item?.width}));
-    const workSheetName = 'Danh sách nhà cung cấp';
-    const fileName = `Danh sách nhà cung cấp ${new Date().toISOString().substring(0, 10)}`;
-    const finalData: any = [workSheetColumnName, ...newData];
-  
-    return {
-      data: finalData,
-      sheetName: workSheetName,
-      fileName,
-      headerName: workSheetName
-    }
-  }
+  const downloadProviderList = async () => {
+    setLoadingDownload(true);
+    const res = await providerApi.search(name);
+    const { providers } = res?.data?.data;
+    const data = providers.map((x: any) => ({
+      name: x.name,
+      tax_code: x.tax_code,
+      email: x.email,
+      hotline: x.hotline,
+      contact_person: x.contact_person,
+      note: x.note,
+      address: x.address,
+      services: x?.Provider_Services.forEach((item: any) => {
+        return `${item?.Service?.name}, `;
+      }),
+    }));
+    resolveDataExcel(data, 'Danh sách nhà cung cấp', columnTable);
+    setLoadingDownload(false);
+  };
 
   return (
     <div>
       <div className="flex-between-center">
         <div className="title">DANH SÁCH NHÀ CUNG CẤP</div>
-        <div className='flex flex-row gap-6'>
-          <ExportToExcel getData={downloadProviderList}/>
+        <div className="flex flex-row gap-6">
+          <ExportToExcel
+            callback={downloadProviderList}
+            loading={loadingDownload}
+          />
           <Button
-            className="flex-center text-slate-900 gap-2 rounded-3xl border-[#5B69E6] border-2"
+            className="button_excel"
             onClick={() => navigate('/organization/provider/create')}
           >
             <PlusCircleFilled />
@@ -286,17 +284,18 @@ const Provider = () => {
       <Divider />
       <div className="flex justify-between flex-col">
         <div
-          className='flex flex-row gap-4 items-center mb-4'
+          className="flex flex-row gap-4 items-center mb-4"
           onClick={() => setIsShowCustomTable(!isShowCustomTable)}
         >
           <SelectOutlined />
-          <div className='font-medium text-center cursor-pointer text-base'>Tùy chọn trường hiển thị</div>
+          <div className="font-medium text-center cursor-pointer text-base">
+            Tùy chọn trường hiển thị
+          </div>
         </div>
-        {
-          isShowCustomTable &&
-          <div className='flex flex-row gap-4'>
-            {
-              columnTable.length > 0 && columnTable.map((item: any) => (
+        {isShowCustomTable && (
+          <div className="flex flex-row gap-4">
+            {columnTable.length > 0 &&
+              columnTable.map((item: any) => (
                 <div>
                   <Checkbox
                     defaultChecked={item?.show}
@@ -304,13 +303,12 @@ const Provider = () => {
                   />
                   <div>{item?.title}</div>
                 </div>
-              ))
-            }
+              ))}
           </div>
-        }
+        )}
         <div className="flex-between-center gap-4 p-4">
           <Input
-            placeholder='Tìm kiếm nhà cung cấp'
+            placeholder="Tìm kiếm nhà cung cấp"
             allowClear
             value={name}
             className="rounded-lg h-9 border-[#A3ABEB] border-2"
@@ -332,7 +330,7 @@ const Provider = () => {
         loading={loading}
       />
     </div>
-  )
-}
+  );
+};
 
-export default Provider
+export default Provider;
