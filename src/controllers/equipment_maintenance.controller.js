@@ -7,19 +7,19 @@ const { getList } = require("../utils/query.util");
 exports.getListMaintenanceEquipment = async (req, res) => {
   try {
     let { limit = 10, page, status_id, department_id, name } = req?.query;
-    let filter = { 
-      department_id, 
+    let filter = {
+      department_id,
       status_id,
       regular_maintenance: {
-        [Op.ne]: 0
-      }
+        [Op.ne]: 0,
+      },
     };
     for (let i in filter) {
       if (!filter[i]) {
         delete filter[i];
       }
     }
-    if(name) {
+    if (name) {
       filter = {
         ...filter,
         [Op.or]: [
@@ -28,17 +28,13 @@ exports.getListMaintenanceEquipment = async (req, res) => {
           { serial: { [Op.like]: `%${name}%` } },
           { code: { [Op.like]: `%${name}%` } },
         ],
-      }
+      };
     }
 
-    let include = [
-      { model: db.Department, attributes: ['id', 'name'] }
-    ]
-    let equipments = await getList(limit, page, filter, 'Equipment', include);
+    let include = [{ model: db.Department, attributes: ["id", "name"] }];
+    let equipments = await getList(limit, page, filter, "Equipment", include);
     return successHandler(res, { equipments, count: equipments.length }, 200);
-  } catch(error) {
-    debugger;
-    console.log("___error___", error);
+  } catch (error) {
     return errorHandler(res, error);
   }
-}
+};

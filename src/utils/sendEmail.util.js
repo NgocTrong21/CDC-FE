@@ -14,7 +14,6 @@ const smtpTrans = nodemailer.createTransport({
 
 smtpTrans.verify(function (error, success) {
   if (error) {
-    console.log(error);
   } else {
     console.log("Nodemailer connection: OK, user: " + process.env.EMAIL_USER);
     console.log("============================================================");

@@ -63,7 +63,6 @@ exports.getListUnusedEquipment = async (req, res) => {
     );
     return successHandler(res, { equipments, count: equipments.length }, 200);
   } catch (error) {
-    console.log("error", error);
     return errorHandler(res, error);
   }
 };
@@ -120,7 +119,6 @@ exports.createLiquidationNote = async (req, res) => {
       return successHandler(res, {}, 201);
     });
   } catch (error) {
-    console.log("error", error);
     return errorHandler(res, error);
   }
 };
@@ -263,7 +261,6 @@ exports.approveLiquidationNote = async (req, res) => {
       return successHandler(res, {}, 201);
     });
   } catch (error) {
-    console.log(error);
     return errorHandler(res, error);
   }
 };

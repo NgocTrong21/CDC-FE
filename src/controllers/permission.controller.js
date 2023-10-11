@@ -11,8 +11,6 @@ exports.create = async (req, res) => {
     });
     return successHandler(res, { permission }, 200);
   } catch (error) {
-    debugger;
-    console.log("___error___", error);
     return errorHandler(res, error);
   }
 };
@@ -23,8 +21,6 @@ exports.createGroup = async (req, res) => {
     let permission = await db.Permission_Group.create({ name, display_name });
     return successHandler(res, { permission }, 200);
   } catch (error) {
-    debugger;
-    console.log("___error___", error);
     return errorHandler(res, error);
   }
 };
@@ -46,8 +42,6 @@ exports.list = async (req, res) => {
     );
     return successHandler(res, { permissions: p }, 200);
   } catch (error) {
-    debugger;
-    console.log("___error___", error);
     return errorHandler(res, error);
   }
 };
@@ -58,8 +52,6 @@ exports.setPermissionForRole = async (req, res) => {
     await db.Role_Permission.create({ permission_id, role_id });
     return successHandler(res, {}, 200);
   } catch (error) {
-    debugger;
-    console.log("___error___", error);
     return errorHandler(res, error);
   }
 };
@@ -132,8 +124,6 @@ exports.updatePermissionForRole = async (req, res) => {
       return successHandler(res, {}, 201);
     });
   } catch (error) {
-    debugger;
-    console.log("___error___", error);
     return errorHandler(res, error);
   }
 };
