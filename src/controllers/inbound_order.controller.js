@@ -26,11 +26,80 @@ exports.create = async (req, res) => {
         );
       }
     });
-    await db.Inbound_Order.update(
-      { code: "CDC.IO.000" + inbound_order.id },
-      { where: { id: inbound_order.id } }
-    );
+
     return successHandler(res, {}, 200);
+  } catch (error) {
+    return errorHandler(res, error);
+  }
+};
+exports.accept = async (req, res) => {
+  try {
+    const { data } = req.body;
+    const inbound_order = await db.Inbound_Order.findOne({
+      where: {
+        id: data.id,
+      },
+      include: [
+        {
+          model: db.Supply_Inbound_Order,
+          attributes: ["supply_id", "quantity"],
+        },
+      ],
+      raw: false,
+    });
+    if (inbound_order.status_id !== 1) {
+      return errorHandler(res, err.ORDER_APPROVED);
+    } else {
+      await db.sequelize.transaction(async (t) => {
+        if (data.status === "accept") {
+          await db.Inbound_Order.update(
+            {
+              status_id: 2,
+              approve_date: data.date,
+            },
+            { where: { id: data.id }, transaction: t }
+          );
+          for (const item of inbound_order.Supply_Inbound_Orders) {
+            const isHas = await db.Warehouse_Supply.findOne({
+              where: {
+                supply_id: item.supply_id,
+                warehouse_id: inbound_order.warehouse_id,
+              },
+            });
+            if (!isHas) {
+              await db.Warehouse_Supply.create(
+                {
+                  supply_id: item.supply_id,
+                  quantity: item.quantity,
+                  warehouse_id: inbound_order.warehouse_id,
+                },
+                { transaction: t }
+              );
+            } else {
+              await db.Warehouse_Supply.update(
+                { quantity: Number(isHas.quantity) + Number(item.quantity) },
+                {
+                  where: {
+                    id: isHas.id,
+                  },
+                  transaction: t,
+                }
+              );
+            }
+          }
+        } else if (data.status === "reject") {
+          await db.Inbound_Order.update(
+            {
+              status_id: 3,
+              approve_date: data.date,
+            },
+            { where: { id: data.id }, transaction: t }
+          );
+        }
+      });
+
+      return successHandler(res, {}, 200);
+    }
   } catch (error) {
     return errorHandler(res, error);
   }
@@ -44,16 +113,11 @@ exports.detail = async (req, res) => {
       include: [
         {
           model: db.Supply_Inbound_Order,
-          attributes: [
-            "id",
-            "order_quantity",
-            "defective_quantity",
-            "actual_quantity",
-          ],
+          attributes: ["id", "quantity"],
           include: [
             {
               model: db.Supply,
-              attributes: ["id", "name", "quantity", "unit_price"],
+              attributes: ["id", "name", "unit_price"],
             },
           ],
         },
@@ -118,8 +182,7 @@ exports.delete = async (req, res) => {
 
 exports.search = async (req, res) => {
   try {
-    let { limit, page, name, status_id, provider_id, warehouse_id } =
-      req?.query;
+    let { limit, page, name, status_id, warehouse_id } = req?.query;
 
     // const { isHasRole, department_id_from_token } = await checkRoleFromToken(
     //   req
@@ -131,7 +194,6 @@ exports.search = async (req, res) => {
 
     let filter = {
       status_id,
-      provider_id,
       warehouse_id,
     };
 
@@ -143,7 +205,6 @@ exports.search = async (req, res) => {
     }
     let include = [
       { model: db.Warehouse, attributes: ["id", "name"] },
-      { model: db.Provider, attributes: ["id", "name"] },
       {
         model: db.Order_Note_Status,
         attributes: ["id", "name"],
