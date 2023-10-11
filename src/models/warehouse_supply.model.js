@@ -14,7 +14,6 @@ module.exports = (sequelize, DataTypes) => {
   Warehouse_Supply.init(
     {
       quantity: DataTypes.INTEGER,
-      lot_number: DataTypes.STRING,
       note: DataTypes.TEXT,
     },
     {

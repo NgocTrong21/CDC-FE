@@ -9,12 +9,6 @@ module.exports = (sequelize, DataTypes) => {
       Order_Note_Status.hasMany(models.Outbound_Order, {
         foreignKey: "status_id",
       });
-      Order_Note_Status.hasMany(models.Receipt_Note, {
-        foreignKey: "status_id",
-      });
-      Order_Note_Status.hasMany(models.Issuing_Note, {
-        foreignKey: "status_id",
-      });
     }
   }
   Order_Note_Status.init(
