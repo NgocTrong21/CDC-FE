@@ -343,6 +343,14 @@ module.exports.SUPPLY_NOT_FOUND = {
   code: 1037,
   messageCode: "SUPPLY_NOT_FOUND",
 };
+module.exports.QUANTITY_NOT_ENOUGH = {
+  status: 200,
+  success: false,
+  data: null,
+  message: "Số lượng vật tư trên hệ thống không đủ",
+  code: 1037,
+  messageCode: "QUANTITY_NOT_ENOUGH",
+};
 module.exports.SUPPLY_DUPLICATED = {
   status: 200,
   success: false,
