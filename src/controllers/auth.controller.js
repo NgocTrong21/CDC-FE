@@ -30,8 +30,6 @@ exports.register = async (req, res) => {
     await user.save();
     return successHandler(res, null, 200);
   } catch (error) {
-    debugger;
-    console.log("___error___", error);
     return errorHandler(res, error);
   }
 };
@@ -49,8 +47,6 @@ exports.active = async (req, res) => {
     await user.save();
     return successHandler(res, { user }, 200);
   } catch (error) {
-    debugger;
-    console.log("___error___", error);
     return errorHandler(res, error);
   }
 };
@@ -106,8 +102,6 @@ exports.changePassword = async (req, res) => {
       return successHandler(res, {}, 201);
     });
   } catch (error) {
-    debugger;
-    console.log("___error___", error);
     return errorHandler(res, error);
   }
 };

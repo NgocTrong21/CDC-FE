@@ -135,6 +135,14 @@ module.exports.ACCOUNT_ACTIVED = {
   code: 1014,
   messageCode: "ACCOUNT_ACTIVED ",
 };
+module.exports.ORDER_APPROVED = {
+  status: 200,
+  success: false,
+  data: null,
+  message: "Đơn đã được phê duyệt",
+  code: 1014,
+  messageCode: "ORDER_APPROVED",
+};
 module.exports.TOKEN_WRONG = {
   status: 200,
   success: false,

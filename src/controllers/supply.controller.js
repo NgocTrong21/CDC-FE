@@ -7,61 +7,43 @@ const cloudinary = require("../utils/cloudinary.util");
 
 exports.create = async (req, res) => {
   try {
-    let data = req?.body;
+    const { data } = req.body;
     await db.sequelize.transaction(async (t) => {
-      if (data?.image) {
-        const result = await cloudinary.uploader.upload(data?.image, {
-          folder: "supplies",
-        });
-        await db.Supply.create(
-          { ...data, image: result?.secure_url },
-          { transaction: t }
-        );
-      } else {
-        await db.Supply.create(data, { transaction: t });
-      }
+      await db.Supply.create(data, { transaction: t });
 
       return successHandler(res, {}, 201);
     });
   } catch (error) {
-    debugger;
-    console.log("___error___", error);
     return errorHandler(res, error);
   }
 };
 
 exports.update = async (req, res) => {
   try {
-    const data = req?.body;
+    const { data } = req.body;
     await db.sequelize.transaction(async (t) => {
       const isHas = await db.Supply.findOne({
         where: { id: data?.id },
         raw: false,
       });
       if (!isHas) return errorHandler(res, err.EQUIPMENT_NOT_FOUND);
-      if (data?.image) {
-        const result = await cloudinary.uploader.upload(data?.image, {
-          folder: "supplies",
-        });
-        await db.Supply.update(
-          { ...data, image: result?.secure_url },
-          {where: { id: data?.id }, transaction: t }
-        );
-      } else {
-        await db.Supply.update(data, {where: { id: data?.id }, transaction: t });
-      }
+
+      await db.Supply.update(data, {
+        where: { id: data?.id },
+        transaction: t,
+      });
       return successHandler(res, {}, 201);
     });
   } catch (error) {
     return errorHandler(res, error);
   }
-}
+};
 
 exports.list = async (req, res) => {
   try {
-    let { limit, page, name, risk_level, type_id } = req?.query;
+    let { limit, page, name } = req?.query;
 
-    let filter = { risk_level, type_id };
+    let filter = {};
     for (let i in filter) {
       if (!filter[i]) {
         delete filter[i];
@@ -72,45 +54,28 @@ exports.list = async (req, res) => {
         ...filter,
         [Op.or]: [
           { name: { [Op.like]: `%${name}%` } },
-          { control_number: { [Op.like]: `%${name}%` } },
-          // { serial: { [Op.like]: `%${name}%` } },
           { code: { [Op.like]: `%${name}%` } },
         ],
       };
     }
-    let include = [
-      // { model: db.Supply_Type, attributes: ["id", "name"] },
-      // { model: db.Equipment_Unit, attributes: ["id", "name"] },
-      // { model: db.Equipment_Risk_Level, attributes: ["id", "name"] },
-    ];
-    console.log(page, limit);
+    let include = [];
     let supplies = await getList(+limit, page, filter, "Supply", include);
-    console.log(supplies);
 
     return successHandler(res, { supplies, count: supplies.length }, 200);
   } catch (error) {
-    debugger;
-    console.log("___error___", error);
     return errorHandler(res, error);
   }
 };
 
 exports.detail = async (req, res) => {
   try {
-    let { id } = req?.query;
+    const { id } = req.query;
     const supply = await db.Supply.findOne({
       where: { id },
-      // include: [
-      //   { model: db.Supply_Type, attributes: ["id", "name"] },
-      //   { model: db.Equipment_Unit, attributes: ["id", "name"] },
-      //   { model: db.Equipment_Risk_Level, attributes: ["id", "name"] },
-      // ],
       raw: false,
     });
     return successHandler(res, { supply }, 200);
   } catch (error) {
-    debugger;
-    console.log("___error___", error);
     return errorHandler(res, error);
   }
 };
@@ -129,8 +94,6 @@ exports.delete = async (req, res) => {
       return successHandler(res, {}, 201);
     });
   } catch (error) {
-    debugger;
-    console.log("___error___", error);
     return errorHandler(res, error);
   }
 };
@@ -171,8 +134,6 @@ exports.importSupplyForEquipment = async (req, res) => {
       return successHandler(res, {}, 201);
     });
   } catch (error) {
-    debugger;
-    console.log("___error___", error);
     return errorHandler(res, error);
   }
 };
@@ -215,8 +176,6 @@ exports.importSuppliesForEquipment = async (req, res) => {
       return successHandler(res, {}, 201);
     });
   } catch (error) {
-    debugger;
-    console.log("___error___", error);
     return errorHandler(res, error);
   }
 };
@@ -273,8 +232,6 @@ exports.listEquipmentSupply = async (req, res) => {
     });
     return successHandler(res, { equipments }, 200);
   } catch (error) {
-    debugger;
-    console.log("___error___", error);
     return errorHandler(res, error);
   }
 };
@@ -300,8 +257,6 @@ exports.listSupplyOfEquipment = async (req, res) => {
     });
     return successHandler(res, { supplies }, 200);
   } catch (error) {
-    debugger;
-    console.log("___error___", error);
     return errorHandler(res, error);
   }
 };
@@ -313,8 +268,6 @@ exports.importByExcel = async (req, res) => {
       return successHandler(res, {}, 200);
     });
   } catch (error) {
-    debugger;
-    console.log("___error___", error);
     return errorHandler(res, error);
   }
 };

@@ -35,5 +35,10 @@ router.delete(
   roleMiddleware.isAdmin,
   inboundOrderController.delete
 );
-
+router.post(
+  "/accept",
+  authMiddleware,
+  roleMiddleware.isAdmin,
+  inboundOrderController.accept
+);
 module.exports = router;

@@ -421,7 +421,6 @@ exports.reHandoverEquipment = async (req, res) => {
         return user;
       })
     );
-    console.log(data);
     if (data?.status_id === 6) {
       await db.Liquidation.create({ equipment_id: data?.equipment_id });
     }

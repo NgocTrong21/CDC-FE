@@ -94,8 +94,6 @@ exports.sendEmailHandoverReport = async (req, res) => {
     }
     return successHandler(res, {}, 201);
   } catch (error) {
-    debugger;
-    console.log("___error___", error);
     return errorHandler(res, error);
   }
 };
@@ -129,8 +127,6 @@ exports.handoverEquipmentList = async (req, res) => {
     let equipments = await getList(limit, page, filter, "Handover", include);
     return successHandler(res, { equipments, count: equipments.length }, 200);
   } catch (error) {
-    debugger;
-    console.log("___error___", error);
     return errorHandler(res, error);
   }
 };
@@ -154,8 +150,6 @@ exports.getHandoverInfo = async (req, res) => {
     });
     return successHandler(res, { handover_info }, 200);
   } catch (error) {
-    debugger;
-    console.log("___error___", error);
     return errorHandler(res, error);
   }
 };

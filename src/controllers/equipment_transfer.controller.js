@@ -144,7 +144,6 @@ exports.search = async (req, res) => {
     );
     return successHandler(res, { equipments, count: equipments.length }, 200);
   } catch (error) {
-    console.log("error", error);
     return errorHandler(res, error);
   }
 };
@@ -311,7 +310,6 @@ exports.approverTransfer = async (req, res) => {
       return successHandler(res, {}, 201);
     });
   } catch (error) {
-    console.log("error", error);
     return errorHandler(res, error);
   }
 };
@@ -400,8 +398,6 @@ exports.list = async (req, res) => {
     });
     return successHandler(res, { equipments, count: equipments.length }, 200);
   } catch (error) {
-    debugger;
-    console.log("___error___", error);
     return errorHandler(res, error);
   }
 };

@@ -6,6 +6,7 @@ module.exports = (sequelize, DataTypes) => {
       Supply_Inbound_Order.belongsTo(models.Inbound_Order, {
         foreignKey: "inbound_order_id",
       });
+
       Supply_Inbound_Order.belongsTo(models.Supply, {
         foreignKey: "supply_id",
       });
@@ -13,9 +14,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Supply_Inbound_Order.init(
     {
-      order_quantity: DataTypes.INTEGER,
-      actual_quantity: DataTypes.INTEGER,
-      defective_quantity: DataTypes.INTEGER,
+      quantity: DataTypes.INTEGER,
     },
     {
       sequelize,
