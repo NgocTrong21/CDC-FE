@@ -7,7 +7,7 @@ const { getList } = require("../utils/query.util");
 exports.create = async (req, res) => {
   try {
     const { data, supplies } = req.body;
-    let inbound_order;
+        let inbound_order;
     await db.sequelize.transaction(async (t) => {
       inbound_order = await db.Inbound_Order.create(
         { ...data, status_id: 1 },
@@ -34,7 +34,7 @@ exports.create = async (req, res) => {
 };
 exports.accept = async (req, res) => {
   try {
-    const { data } = req.body;
+    const data = req.body;
     const inbound_order = await db.Inbound_Order.findOne({
       where: {
         id: data.id,

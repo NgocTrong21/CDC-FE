@@ -7,7 +7,7 @@ const cloudinary = require("../utils/cloudinary.util");
 
 exports.create = async (req, res) => {
   try {
-    const { data } = req.body;
+    const data = req.body;
     await db.sequelize.transaction(async (t) => {
       await db.Supply.create(data, { transaction: t });
 
@@ -20,7 +20,7 @@ exports.create = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
-    const { data } = req.body;
+    const data = req.body;
     await db.sequelize.transaction(async (t) => {
       const isHas = await db.Supply.findOne({
         where: { id: data?.id },
