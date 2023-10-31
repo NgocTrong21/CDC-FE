@@ -6,8 +6,19 @@ const { getList } = require("../utils/query.util");
 
 exports.create = async (req, res) => {
   try {
-    const { data, supplies } = req.body;
+    const { data, supplies } = req?.body;
     let outbound_order;
+    for (const supply of supplies) {
+      let isHas = await db.Supply.findOne({
+        where: {
+          id: supply.supply_id,
+        },
+        raw: false,
+      });
+      if (!isHas) {
+        return errorHandler(res, err.SUPPLY_NOT_FOUND);
+      }
+    }
     await db.sequelize.transaction(async (t) => {
       outbound_order = await db.Outbound_Order.create(
         { ...data, status_id: 1 },
@@ -17,20 +28,102 @@ exports.create = async (req, res) => {
       );
 
       for (const supply of supplies) {
-        await db.Supply_Outbound_Order.create(
-          {
-            ...supply,
-            outbound_order_id: outbound_order.id,
-          },
-          { transaction: t }
-        );
+        const isHas = await db.Warehouse_Supply.findOne({
+          where: { supply_id: supply.supply_id },
+        });
+        if (isHas.quantity < supply.quantity) {
+          return errorHandler(res, err.QUANTITY_NOT_ENOUGH);
+        } else {
+          await db.Supply_Outbound_Order.create(
+            {
+              ...supply,
+              outbound_order_id: outbound_order.id,
+            },
+            { transaction: t }
+          );
+        }
       }
     });
-    await db.Outbound_Order.update(
-      { code: "CDC.OO.000" + outbound_order.id },
-      { where: { id: outbound_order.id } }
-    );
+
     return successHandler(res, {}, 200);
+  } catch (error) {
+    return errorHandler(res, error);
+  }
+};
+exports.accept = async (req, res) => {
+  try {
+    const { data } = req.body;
+    const now = Date.now();
+    const outbound_order = await db.Outbound_Order.findOne({
+      where: {
+        id: data.id,
+      },
+      include: [
+        {
+          model: db.Supply_Outbound_Order,
+          attributes: ["supply_id", "quantity"],
+        },
+      ],
+      raw: false,
+    });
+    if (!outbound_order) return errorHandler(res, err.ORDER_NOT_FOUND);
+    for (const item of outbound_order.Supply_Outbound_Orders) {
+      let isHas = await db.Warehouse_Supply.findOne({
+        where: {
+          supply_id: item.supply_id,
+          warehouse_id: outbound_order.warehouse_id,
+        },
+      });
+      if (isHas.quantity < item.quantity) {
+        return errorHandler(res, err.QUANTITY_NOT_ENOUGH);
+      }
+    }
+    if (outbound_order.status_id !== 1) {
+      return errorHandler(res, err.ORDER_APPROVED);
+    } else {
+      await db.sequelize.transaction(async (t) => {
+        if (data.status === "accept") {
+          await db.Outbound_Order.update(
+            {
+              status_id: 2,
+              approve_date: now,
+            },
+            { where: { id: data.id }, transaction: t }
+          );
+          for (const item of outbound_order.Supply_Outbound_Orders) {
+            const isHas = await db.Warehouse_Supply.findOne({
+              where: {
+                supply_id: item.supply_id,
+                warehouse_id: outbound_order.warehouse_id,
+              },
+            });
+            if (!isHas) {
+              return errorHandler(res, err.SUPPLY_NOT_FOUND);
+            } else {
+              await db.Warehouse_Supply.update(
+                { quantity: Number(isHas.quantity) - Number(item.quantity) },
+                {
+                  where: {
+                    id: isHas.id,
+                  },
+                  transaction: t,
+                }
+              );
+            }
+          }
+        } else if (data.status === "reject") {
+          await db.Outbound_Order.update(
+            {
+              status_id: 3,
+              approve_date: now,
+            },
+            { where: { id: data.id }, transaction: t }
+          );
+        }
+      });
+
+      return successHandler(res, {}, 200);
+    }
   } catch (error) {
     return errorHandler(res, error);
   }
@@ -44,22 +137,18 @@ exports.detail = async (req, res) => {
       include: [
         {
           model: db.Supply_Outbound_Order,
-          attributes: [
-            "id",
-            "order_quantity",
-            "defective_quantity",
-            "actual_quantity",
-          ],
+          attributes: ["id", "quantity"],
           include: [
             {
               model: db.Supply,
-              attributes: ["id", "name", "quantity", "unit_price"],
+              attributes: ["id", "name", "unit_price"],
             },
           ],
         },
       ],
       raw: false,
     });
+    if (!outbound_order) return errorHandler(res, err.ORDER_NOT_FOUND);
     return successHandler(res, { outbound_order }, 200);
   } catch (error) {
     return errorHandler(res, error);
@@ -118,20 +207,10 @@ exports.delete = async (req, res) => {
 
 exports.search = async (req, res) => {
   try {
-    let { limit, page, name, status_id, customer_id, warehouse_id } =
-      req?.query;
-
-    // const { isHasRole, department_id_from_token } = await checkRoleFromToken(
-    //   req
-    // );
-
-    // if (!isHasRole) {
-    //   department_id = department_id_from_token;
-    // }
+    let { limit, page, name, status_id, warehouse_id } = req?.query;
 
     let filter = {
       status_id,
-      customer_id,
       warehouse_id,
     };
 
@@ -143,13 +222,12 @@ exports.search = async (req, res) => {
     }
     let include = [
       { model: db.Warehouse, attributes: ["id", "name"] },
-      { model: db.Customer, attributes: ["id", "name"] },
       {
         model: db.Order_Note_Status,
         attributes: ["id", "name"],
       },
     ];
-    let outbound_orders = await getList(
+    let inbound_orders = await getList(
       +limit,
       page,
       filter,
@@ -158,7 +236,7 @@ exports.search = async (req, res) => {
     );
     return successHandler(
       res,
-      { outbound_orders, count: outbound_orders.length },
+      { inbound_orders, count: inbound_orders.length },
       200
     );
   } catch (error) {
