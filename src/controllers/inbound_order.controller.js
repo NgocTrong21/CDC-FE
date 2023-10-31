@@ -34,7 +34,8 @@ exports.create = async (req, res) => {
 };
 exports.accept = async (req, res) => {
   try {
-    const data = req.body;
+    const { data } = req.body;
+    const now = Date.now();
     const inbound_order = await db.Inbound_Order.findOne({
       where: {
         id: data.id,
@@ -47,6 +48,7 @@ exports.accept = async (req, res) => {
       ],
       raw: false,
     });
+    if (!inbound_order) return errorHandler(res, err.ORDER_NOT_FOUND);
     if (inbound_order.status_id !== 1) {
       return errorHandler(res, err.ORDER_APPROVED);
     } else {
@@ -55,7 +57,7 @@ exports.accept = async (req, res) => {
           await db.Inbound_Order.update(
             {
               status_id: 2,
-              approve_date: data.date,
+              approve_date: now,
             },
             { where: { id: data.id }, transaction: t }
           );
@@ -91,7 +93,7 @@ exports.accept = async (req, res) => {
           await db.Inbound_Order.update(
             {
               status_id: 3,
-              approve_date: data.date,
+              approve_date: now,
             },
             { where: { id: data.id }, transaction: t }
           );
@@ -124,6 +126,7 @@ exports.detail = async (req, res) => {
       ],
       raw: false,
     });
+    if (!inbound_order) return errorHandler(res, err.ORDER_NOT_FOUND);
     return successHandler(res, { inbound_order }, 200);
   } catch (error) {
     return errorHandler(res, error);
@@ -183,14 +186,6 @@ exports.delete = async (req, res) => {
 exports.search = async (req, res) => {
   try {
     let { limit, page, name, status_id, warehouse_id } = req?.query;
-
-    // const { isHasRole, department_id_from_token } = await checkRoleFromToken(
-    //   req
-    // );
-
-    // if (!isHasRole) {
-    //   department_id = department_id_from_token;
-    // }
 
     let filter = {
       status_id,
