@@ -227,7 +227,7 @@ exports.search = async (req, res) => {
         attributes: ["id", "name"],
       },
     ];
-    let inbound_orders = await getList(
+    let outbound_orders = await getList(
       +limit,
       page,
       filter,
@@ -236,7 +236,7 @@ exports.search = async (req, res) => {
     );
     return successHandler(
       res,
-      { inbound_orders, count: inbound_orders.length },
+      { outbound_orders, count: outbound_orders.length },
       200
     );
   } catch (error) {

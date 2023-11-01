@@ -32,6 +32,24 @@ exports.detail = async (req, res) => {
   }
 };
 
+exports.suppliesByWarehouse = async (req, res) => {
+  try {
+    let { id } = req?.query;
+    const supplies = await db.Warehouse_Supply.findAll({
+      where: { warehouse_id:  id},
+        include: [
+          {
+            model: db.Supply,
+          },
+        ],
+      raw: false,
+    });
+    return successHandler(res, { supplies }, 200);
+  } catch (error) {
+    return errorHandler(res, error);
+  }
+};
+
 exports.update = async (req, res) => {
   try {
     const { data } = req.body;
@@ -95,3 +113,5 @@ exports.search = async (req, res) => {
     return errorHandler(res, error);
   }
 };
+
+

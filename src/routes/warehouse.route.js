@@ -17,6 +17,12 @@ router.get(
   roleMiddleware.isAdmin,
   warehouseController.detail
 );
+router.get(
+  "/supplies_by_warehouse",
+  authMiddleware,
+  roleMiddleware.isAdmin,
+  warehouseController.suppliesByWarehouse
+);
 router.post(
   "/update",
   authMiddleware,
