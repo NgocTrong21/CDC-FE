@@ -14,7 +14,13 @@ import {
   Typography,
 } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
-import { useRef, useState } from 'react';
+import outboundOrderApi from 'api/outbound_order';
+import supplyApi from 'api/suplly.api';
+import warehouseApi from 'api/warehouse.api';
+import moment from 'moment';
+import { useEffect, useRef, useState } from 'react';
+import { toast } from 'react-toastify';
+import { options } from 'utils/globalFunc.util';
 
 const mockDataSuppliers = [
   {
@@ -47,12 +53,42 @@ const mockDataSuppliers = [
 ];
 
 const OutboundOrderCreate = () => {
-  const count = useRef(3);
+  const count = useRef(1);
+  const [form] = Form.useForm();
   const { Column } = Table;
-  const [dataSource, setDataSource] = useState(mockDataSuppliers);
+  const [dataSource, setDataSource] = useState<any>([{
+    key: count.current,
+    supplierCode: '',
+    supplierName: '',
+    orderQuantity: 0,
+    unitPrice: 0,
+    totalValue: 0,
+    description: '',
+  }]);
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
+  const [warehouses, setWarehouses] = useState([]);
+  const [supllies, setSupplies] = useState<any>([]);
+
+  const [loading, setLoading] = useState<boolean>(false);
+  const seachWarehouses = (params: any) => {
+    setLoading(true);
+    warehouseApi.search({
+    })
+      .then((res) => {
+        const { success, data } = res.data;
+        if (success) {
+          setWarehouses(data.warehouses);
+        }
+      })
+      .catch()
+      .finally(() => setLoading(false));
+  }
+  useEffect(() => {
+    seachWarehouses({});
+  }, [])
+
   const addRow = () => {
     count.current++;
     const defaultValue = {
@@ -70,7 +106,7 @@ const OutboundOrderCreate = () => {
     if (dataSource?.length > 0 && selectedItems?.length > 0) {
       let copyData = dataSource;
       setDataSource(
-        copyData.filter((item) => !selectedItems.includes(item?.key as number))
+        copyData.filter((item: any) => !selectedItems.includes(item?.key as number))
       );
       setCurrentPage(1);
       setSelectedItems([]);
@@ -89,18 +125,102 @@ const OutboundOrderCreate = () => {
       return [];
     }
   };
+  const handleSelectItem = (value: string, index: number, record: any) => {
+    if (supllies && supllies?.length > 0) {
+      const actualIndex = (currentPage - 1) * pageSize + index;
+      let listData = [...dataSource];
+      const selectedItem = supllies?.find((item: any) => item?.id === value);
+      console.log('check selected', selectedItem);
+
+      listData.splice(actualIndex, 1, {
+        ...record,
+        id: selectedItem?.id,
+        supplierCode: selectedItem?.code,
+        supplierName: selectedItem?.name,
+        unitPrice: selectedItem?.unit_price,
+        description: selectedItem?.note,
+        unit: selectedItem?.unit
+      })
+
+      setDataSource(listData)
+    }
+  }
+  const handleSetSupplies = (warehouseId: number) => {
+    warehouseApi.suppliesByWarehouse(warehouseId)
+      .then((res: any) => {
+        const { success, data } = res.data;
+        if (success) {
+          const dataSupplies = data.supplies.map((item: any) => item.Supply)
+          setSupplies(dataSupplies);
+        }
+      })
+      .catch()
+      .finally(() => setLoading(false));
+  }
+  const handleChangeOrderQuantity = (value: number, index: number, record: any) => {
+    const actualIndex = (currentPage - 1) * pageSize + index;
+    const listData = [...dataSource];
+    const orderQuantity = value || 0;
+    const unitValue = listData[actualIndex]?.unitPrice as number;
+    const totalValue = (orderQuantity * unitValue) || 0;
+    listData[actualIndex] = {
+      ...listData[actualIndex],
+      orderQuantity,
+      totalValue: totalValue || 0,
+    };
+    setDataSource(listData);
+  }
+  const onFormSubmit = async (data: any) => {
+    if (data) {
+      console.log('check data outbound', ({
+        data: {
+          receiver: data?.receiver,
+          receiver_phone: data?.receiver_phone,
+          warehouse_id: data?.warehouse_id,
+          estimated_shipping_date: moment(new Date(data?.estimated_shipping_date)).toISOString(),
+          note: data?.note,
+          customer: data?.customer,
+        },
+        supplies: dataSource?.map((item: any) => ({
+          supply_id: item?.id,
+          quantity: parseInt(item?.orderQuantity) || 0,
+        })),
+      }));
+
+      outboundOrderApi.create({
+        data: {
+          receiver: data?.receiver,
+          receiver_phone: data?.receiver_phone,
+          warehouse_id: data?.warehouse_id,
+          estimated_shipping_date: moment(new Date(data?.estimated_shipping_date)).toISOString(),
+          note: data?.note,
+          customer: data?.customer,
+        },
+        supplies: dataSource?.map((item: any) => ({
+          supply_id: item?.id,
+          quantity: parseInt(item?.orderQuantity) || 0,
+        })),
+      }).then(() => {
+        toast.success('Tạo đơn xuất thành công');
+      }).catch(() => {
+        toast.error('Tạo đơn xuất thất bại!');
+      });
+    }
+  };
   return (
     <Layout>
-      <Form size="middle" layout="vertical" autoComplete="off">
+      <Form size="middle" layout="vertical" autoComplete="off" form={form}>
         <Layout>
           <Row align="middle" justify="space-between">
             <Typography.Title level={4}>Tạo phiếu xuất</Typography.Title>
             <Row>
               <Space>
-                <Button type="primary" className="rounded-md" htmlType="submit">
+                <Button type="primary" className="rounded-md">
                   Đóng
                 </Button>
-                <Button className="button-primary" htmlType="submit">
+                <Button className="button-primary" onClick={() => {
+                  onFormSubmit(form.getFieldsValue())
+                }}>
                   Lưu
                 </Button>
               </Space>
@@ -114,16 +234,25 @@ const OutboundOrderCreate = () => {
                 </Row>
                 <Row justify="space-between">
                   <Col span={12}>
-                    <Form.Item label="Kho hàng">
-                      <Select />
+                    <Form.Item
+                      label="Kho hàng"
+                      name="warehouse_id"
+                      required
+                      rules={[{ required: true, message: 'Hãy chọn kho!' }]}
+                    >
+                      <Select
+                        placeholder="Kho hàng"
+                        options={options(warehouses)}
+                        onSelect={handleSetSupplies}
+                      />
                     </Form.Item>
-                    <Form.Item label="Khách hàng">
+                    <Form.Item label="Khách hàng" name='customer'>
                       <Input className="input" />
                     </Form.Item>
-                    <Form.Item label="Người nhận">
+                    <Form.Item label="Người nhận" name='receiver'>
                       <Input className="input" />
                     </Form.Item>
-                    <Form.Item label="Liên hệ người nhận">
+                    <Form.Item label="Liên hệ người nhận" name='receiver_phone'>
                       <Input className="input" />
                     </Form.Item>
                   </Col>
@@ -131,7 +260,7 @@ const OutboundOrderCreate = () => {
                     <Form.Item label="Vị trí kho hàng">
                       <Input className="input" />
                     </Form.Item>
-                    <Form.Item label="Ghi chú">
+                    <Form.Item label="Ghi chú" name='note'>
                       <TextArea rows={9} className="textarea" />
                     </Form.Item>
                   </Col>
@@ -141,10 +270,10 @@ const OutboundOrderCreate = () => {
                 <Row>
                   <Typography.Title level={5}>Tài liệu</Typography.Title>
                 </Row>
-                <Form.Item label="Số phiếu xuất">
+                <Form.Item label="Số phiếu xuất" name='code'>
                   <Input className="input" />
                 </Form.Item>
-                <Form.Item label="Ngày dự kiến xuất hàng">
+                <Form.Item label="Ngày dự kiến xuất hàng" name='estimated_shipping_date'>
                   <DatePicker className="date" />
                 </Form.Item>
               </Col>
@@ -217,6 +346,10 @@ const OutboundOrderCreate = () => {
                                 .includes(input.trim().toLowerCase())
                             }
                             style={{ width: '100%' }}
+                            options={options(supllies)}
+                            onChange={(value) => {
+                              handleSelectItem(value, index, record);
+                            }}
                           />
                         </Form.Item>
                       );
@@ -233,7 +366,9 @@ const OutboundOrderCreate = () => {
                         style={{
                           width: '100px',
                         }}
-                        onBlur={(e) => {}}
+                        onBlur={(e) => {
+                          handleChangeOrderQuantity(Math.round(parseFloat((e.target.value).replaceAll(',', ''))) as unknown as number, index, record)
+                        }}
                         formatter={(value) => {
                           return `${value}`.replace(
                             /\B(?=(\d{3})+(?!\d))/g,
@@ -253,7 +388,7 @@ const OutboundOrderCreate = () => {
                       return (
                         <InputNumber
                           value={parseFloat(value?.toFixed(1))}
-                          onChange={(value) => {}}
+                          onChange={(value) => { }}
                           formatter={(value) =>
                             ` ${value}`
                               .replace(/\./, '.')
