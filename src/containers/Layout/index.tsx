@@ -200,6 +200,17 @@ const LayoutSystem = (props: LayoutProps) => {
       ]
     ),
     getItem(
+      'Báo cáo tồn kho vật tư',
+      '/report_supplies',
+      permissions.IMPORT_SUPPLIES,
+      <BarChartOutlined style={{ fontSize: '20px' }} />,
+      [ getItem(
+        'Tồn kho',
+        '',
+        permissions.IMPORT_SUPPLIES
+      )]
+    ),
+    getItem(
       'Quản lý tổ chức',
       '/organization',
       permissions.DEPARTMENT_READ,

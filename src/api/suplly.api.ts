@@ -56,6 +56,10 @@ const supplyApi = {
     const url = 'supplies/import_by_excel';
     return axiosClient.post(url, params);
   },
+  getReportSupplies(params: any): Promise<CommonResponse> {
+    const url = 'supplies/create_report';
+    return axiosClient.post(url, params);
+  }
 };
 
 export default supplyApi;
