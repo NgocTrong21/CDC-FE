@@ -93,9 +93,10 @@ const InboundOrderDetail = () => {
 
   const handleAccept = (id: any, type: string) => {
     inboundOrderApi.accept({
-      id,
-      status: type,
-      date: moment(new Date()).toISOString()
+      data: {
+        id,
+        status: type,
+      }
     }).then(() => {
       toast.success('Phê duyệt thành công');
     }).catch(() => {

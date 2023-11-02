@@ -1,28 +1,18 @@
 import axiosClient from './axiosClient';
 import { CommonResponse } from 'types/common.type';
 
-const warehouseApi = {
+const outboundOrderApi = {
   create(params: object): Promise<CommonResponse> {
-    const url = 'warehouse/create';
+    const url = 'outbound_order/create';
     return axiosClient.post(url, params);
   },
   detail(id: number): Promise<CommonResponse> {
-    const url = `warehouse/detail?id=${id}`;
-    return axiosClient.get(url);
-  },
-  suppliesByWarehouse(id: number): Promise<CommonResponse> {
-    const url = `warehouse//supplies_by_warehouse?id=${id}`;
+    const url = `outbound_order/detail?id=${id}`;
     return axiosClient.get(url);
   },
   update(params: object): Promise<CommonResponse> {
-    const url = 'warehouse/update';
+    const url = 'outbound_order/update';
     return axiosClient.post(url, params);
-  },
-  delete(id: number): Promise<CommonResponse> {
-    const url = 'warehouse/delete';
-    return axiosClient.delete(url, {
-      data: { id },
-    });
   },
   search(params: any): Promise<CommonResponse> {
     for (let i in params) {
@@ -31,9 +21,19 @@ const warehouseApi = {
       }
     }
     const paramString = new URLSearchParams(params).toString();
-    const url = `warehouse/search?${paramString}`;
+    const url = `outbound_order/search?${paramString}`;
     return axiosClient.get(url);
+  },
+  delete(id: number): Promise<CommonResponse> {
+    const url = 'outbound_order/delete';
+    return axiosClient.delete(url, {
+      data: { id },
+    });
+  },
+  accept(params: object): Promise<CommonResponse> {
+    const url = 'outbound_order/accept';
+    return axiosClient.post(url, params);
   },
 };
 
-export default warehouseApi;
+export default outboundOrderApi;

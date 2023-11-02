@@ -51,6 +51,8 @@ import ExportToExcel from 'components/Excel';
 import type { PaginationProps } from 'antd';
 import Item from 'antd/lib/list/Item';
 import { formatCurrency } from 'utils/globalFunc.util';
+import outboundOrderApi from 'api/outbound_order';
+import moment from 'moment';
 
 const TableFooter = ({ paginationProps }: any) => {
   return (
@@ -63,6 +65,7 @@ const TableFooter = ({ paginationProps }: any) => {
 
 const OutboundOrderList = () => {
   const navigate = useNavigate();
+  const [outboundOrders, setOutboundOrders] = useState<any>();
   const { increaseCount, getAllNotifications } =
     useContext(NotificationContext);
   const [equipments, setEquipments] = useState<any>([]);
@@ -101,7 +104,20 @@ const OutboundOrderList = () => {
   ) => {
     setLimit(pageSize);
   };
-
+  const handleDelete = (id: number) => {
+    outboundOrderApi
+      .delete(id)
+      .then((res: any) => {
+        const { success, message } = res.data;
+        getOutboundOrderList();
+        if (success) {
+          toast.success('Xóa thành công!');
+        } else {
+          toast.error(message);
+        }
+      })
+      .catch((error) => toast.error(error));
+  };
   const columns: any = [
     {
       title: 'Mã phiếu',
@@ -119,36 +135,33 @@ const OutboundOrderList = () => {
     },
     {
       title: 'Trạng thái',
-      key: 'status',
-      dataIndex: 'status',
       show: true,
       widthExcel: 30,
+      render: (_item: any, record: any) => record.Order_Note_Status.name
     },
     {
       title: 'Ngày tạo',
-      key: 'created_date',
       show: true,
-      dataIndex: 'created_date',
       widthExcel: 30,
+      render: (_item: any, record: any) => moment(new Date(record.createdAt)).format('DD/MM/YYYY')
     },
     {
-      title: 'Nhà cung cấp',
-      key: 'provider',
+      title: 'Người nhận',
+      key: 'receiver',
       show: true,
-      dataIndex: 'provider',
+      dataIndex: 'receiver',
       widthExcel: 30,
     },
     {
       title: 'Kho hàng',
-      key: 'ware_house',
       show: true,
-      dataIndex: 'ware_house',
       widthExcel: 30,
+      render: (_item: any, record: any) => record.Warehouse.name
     },
     {
-      title: 'Người giao hàng',
-      dataIndex: 'deliverer',
-      key: 'deliverer',
+      title: 'Khách hàng',
+      dataIndex: 'customer',
+      key: 'customer',
       show: true,
       widthExcel: 30,
     },
@@ -161,22 +174,27 @@ const OutboundOrderList = () => {
           {item?.Equipment_Status?.id !== 7 && (
             <Menu.Item
               key="update_equipment"
-              className={`${
-                checkPermission(permissions.EQUIPMENT_UPDATE) ? '' : 'hidden'
-              }`}
+              className={`${checkPermission(permissions.EQUIPMENT_UPDATE) ? '' : 'hidden'
+                }`}
             >
               <Tooltip title="Cập nhật phiếu">
-                <Link to={`/order/inbound_order/update/${item.id}`}>
+                <Link to={`/order/outbound_order/update/${item.id}`}>
                   <EditFilled />
                 </Link>
               </Tooltip>
             </Menu.Item>
           )}
+          <Menu.Item>
+            <Tooltip title="Chi tiết phiếu">
+              <Link to={`/order/outbound_order/detail/${item.id}`}>
+                <EyeFilled />
+              </Link>
+            </Tooltip>
+          </Menu.Item>
           <Menu.Item
             key="delete"
-            className={`${
-              checkPermission(permissions.EQUIPMENT_DELETE) ? '' : 'hidden'
-            }`}
+            className={`${checkPermission(permissions.EQUIPMENT_DELETE) ? '' : 'hidden'
+              }`}
           >
             <Tooltip title="Xóa phiếu">
               <Popconfirm
@@ -195,6 +213,31 @@ const OutboundOrderList = () => {
   ];
 
   const [columnTable, setColumnTable] = useState<any>(columns);
+  const getOutboundOrderList = () => {
+    setLoading(true);
+    outboundOrderApi
+      .search({
+        page,
+        limit,
+        name,
+        type_id: type,
+        risk_level: level,
+      })
+      .then((res: any) => {
+        const { success, data } = res.data;
+        console.log('check data', data);
+
+        if (success) {
+          setOutboundOrders(data.outbound_orders.rows);
+          setTotal(data.outbound_orders.count);
+        }
+      })
+      .catch()
+      .finally(() => setLoading(false));
+  };
+  useEffect(() => {
+    getOutboundOrderList();
+  }, [limit, page])
 
   const onPaginationChange = (page: number) => {
     setPage(page);
@@ -213,47 +256,7 @@ const OutboundOrderList = () => {
     onShowSizeChange: onShowSizeChange,
   };
 
-  const handleDelete = (id: number) => {
-    equipmentApi
-      .delete(id)
-      .then((res: any) => {
-        const { success, message } = res.data;
-        if (success) {
-          search();
-          toast.success('Xóa thành công!');
-        } else {
-          toast.error(message);
-        }
-      })
-      .catch((error) => toast.error(error));
-  };
 
-  const search = () => {
-    setLoading(true);
-    equipmentApi
-      .search({
-        name: nameSearch,
-        status_id: status,
-        type_id: type,
-        department_id: department,
-        risk_level: level,
-        page,
-        limit,
-      })
-      .then((res: any) => {
-        const { success, data } = res.data;
-        if (success) {
-          setEquipments(data.equipments.rows);
-          setTotal(data.equipments.count);
-        }
-      })
-      .catch()
-      .finally(() => setLoading(false));
-  };
-
-  useEffect(() => {
-    search();
-  }, [nameSearch, status, type, department, level, page, limit]);
 
   return (
     <div>
@@ -301,7 +304,7 @@ const OutboundOrderList = () => {
       )}
       <Table
         columns={columnTable.filter((item: any) => item.show)}
-        dataSource={equipments}
+        dataSource={outboundOrders}
         className="mt-6 shadow-md"
         footer={() => <TableFooter paginationProps={pagination} />}
         pagination={false}
@@ -313,7 +316,6 @@ const OutboundOrderList = () => {
         callback={() => {
           increaseCount();
           getAllNotifications();
-          search();
         }}
         dataHandover={dataHandover}
       />
@@ -323,7 +325,6 @@ const OutboundOrderList = () => {
         callback={() => {
           increaseCount();
           getAllNotifications();
-          search();
         }}
         dataReport={dataReport}
       />
@@ -333,7 +334,6 @@ const OutboundOrderList = () => {
         callback={() => {
           increaseCount();
           getAllNotifications();
-          search();
         }}
         dataTransfer={dataTransfer}
       />
