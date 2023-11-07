@@ -19,38 +19,9 @@ import supplyApi from 'api/suplly.api';
 import warehouseApi from 'api/warehouse.api';
 import moment from 'moment';
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { options } from 'utils/globalFunc.util';
-
-const mockDataSuppliers = [
-  // {
-  //   key: 1,
-  //   supplierCode: 'code',
-  //   supplierName: 'name',
-  //   orderQuantity: 10,
-  //   unitPrice: 10,
-  //   totalValue: 20000,
-  //   description: 'note',
-  // },
-  // {
-  //   key: 2,
-  //   supplierCode: 'code',
-  //   supplierName: 'name',
-  //   orderQuantity: 10,
-  //   unitPrice: 10,
-  //   totalValue: 20000,
-  //   description: 'note',
-  // },
-  // {
-  //   key: 3,
-  //   supplierCode: 'code',
-  //   supplierName: 'name',
-  //   orderQuantity: 10,
-  //   unitPrice: 10,
-  //   totalValue: 20000,
-  //   description: 'note',
-  // },
-];
 
 const InboundOrderCreate = () => {
   const count = useRef(1);
@@ -66,14 +37,13 @@ const InboundOrderCreate = () => {
     description: '',
   }]);
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
+  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [warehouses, setWarehouses] = useState([]);
   const [supllies, setSupplies] = useState<any>([]);
 
-  const [loading, setLoading] = useState<boolean>(false);
   const seachWarehouses = (params: any) => {
-    setLoading(true);
     warehouseApi.search({
     })
       .then((res) => {
@@ -83,10 +53,8 @@ const InboundOrderCreate = () => {
         }
       })
       .catch()
-      .finally(() => setLoading(false));
   }
   const getSuppliesList = () => {
-    setLoading(true);
     supplyApi
       .list({})
       .then((res: any) => {
@@ -96,7 +64,6 @@ const InboundOrderCreate = () => {
         }
       })
       .catch()
-      .finally(() => setLoading(false));
   };
   useEffect(() => {
     getSuppliesList();
@@ -144,8 +111,6 @@ const InboundOrderCreate = () => {
       const actualIndex = (currentPage - 1) * pageSize + index;
       let listData = [...dataSource];
       const selectedItem = supllies?.find((item: any) => item?.id === value);
-      console.log('check selected', selectedItem);
-
       listData.splice(actualIndex, 1, {
         ...record,
         id: selectedItem?.id,
@@ -189,6 +154,7 @@ const InboundOrderCreate = () => {
           quantity: parseInt(item?.orderQuantity) || 0,
         })),
       }).then(() => {
+        navigate('/order/inbound_order')
         toast.success('Tạo đơn nhập thành công');
       }).catch(() => {
         toast.error('Tạo đơn nhập thất bại!');
