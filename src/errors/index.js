@@ -344,7 +344,7 @@ module.exports.SUPPLY_NOT_FOUND = {
   messageCode: "SUPPLY_NOT_FOUND",
 };
 module.exports.QUANTITY_NOT_ENOUGH = {
-  status: 200,
+  status: 400,
   success: false,
   data: null,
   message: "Số lượng vật tư trên hệ thống không đủ",
@@ -352,7 +352,7 @@ module.exports.QUANTITY_NOT_ENOUGH = {
   messageCode: "QUANTITY_NOT_ENOUGH",
 };
 module.exports.SUPPLY_DUPLICATED = {
-  status: 200,
+  status: 400,
   success: false,
   data: null,
   message: "Thông tin vật tư đã tồn tại trên hệ thống",
@@ -360,7 +360,7 @@ module.exports.SUPPLY_DUPLICATED = {
   messageCode: "SUPPLY_DUPLICATED",
 };
 module.exports.EQUIPMENT_FIELD_DUPLICATED = {
-  status: 200,
+  status: 400,
   success: false,
   data: null,
   message: "Thông tin model hoặc serial của thiết bị đã tồn tại trên hệ thống",

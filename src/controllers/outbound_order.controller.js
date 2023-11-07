@@ -5,47 +5,46 @@ const { Op } = require("sequelize");
 const { getList } = require("../utils/query.util");
 
 exports.create = async (req, res) => {
+  debugger;
   try {
-    const { data, supplies } = req?.body;
-    let outbound_order;
-    for (const supply of supplies) {
-      let isHas = await db.Supply.findOne({
-        where: {
-          id: supply.supply_id,
-        },
-        raw: false,
-      });
-      if (!isHas) {
-        return errorHandler(res, err.SUPPLY_NOT_FOUND);
-      }
-    }
     await db.sequelize.transaction(async (t) => {
-      outbound_order = await db.Outbound_Order.create(
-        { ...data, status_id: 1 },
-        {
-          transaction: t,
-        }
-      );
-
+      const { data, supplies } = req?.body;
+      let outbound_order;
       for (const supply of supplies) {
-        const isHas = await db.Warehouse_Supply.findOne({
-          where: { supply_id: supply.supply_id },
+        let isHas = await db.Supply.findOne({
+          where: {
+            id: supply.supply_id,
+          },
+          raw: false,
         });
-        if (isHas.quantity < supply.quantity) {
-          return errorHandler(res, err.QUANTITY_NOT_ENOUGH);
-        } else {
-          await db.Supply_Outbound_Order.create(
-            {
-              ...supply,
-              outbound_order_id: outbound_order.id,
-            },
-            { transaction: t }
-          );
+        if (!isHas) {
+          return errorHandler(res, err.SUPPLY_NOT_FOUND);
         }
       }
-    });
-
-    return successHandler(res, {}, 200);
+      for (const supply of supplies) {
+      const isHas = await db.Warehouse_Supply.findOne({
+        where: { supply_id: supply.supply_id },
+      });
+      if (isHas.quantity < supply.quantity) {
+        return errorHandler(res, err.QUANTITY_NOT_ENOUGH);
+      } else {
+        outbound_order = await db.Outbound_Order.create(
+          { ...data, status_id: 1 },
+          {
+            transaction: t,
+          }
+        );
+        await db.Supply_Outbound_Order.create(
+          {
+            ...supply,
+            outbound_order_id: outbound_order.id,
+          },
+          { transaction: t }
+        );
+        return successHandler(res, {}, 200);
+      }
+      }
+    });    
   } catch (error) {
     return errorHandler(res, error);
   }
