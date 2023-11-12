@@ -86,6 +86,7 @@ import OutboundOrderUpdate from 'containers/OutboundOrder/OutboundOrderUpdate';
 import InboundOrderDetail from 'containers/InboundOrder/InboundOrderDetail';
 import OutboundOrderDetail from 'containers/OutboundOrder/OutboundOrderDetail';
 import ReportSupply from 'containers/ReportSupply';
+import ReportSupplyByWarehouse from 'containers/ReportSupplyByWarehouse';
 
 const TRACKING_ID = process.env.REACT_APP_TRACKING_ID || '';
 ReactGA.initialize(TRACKING_ID);
@@ -797,10 +798,18 @@ const App = () => {
           />
           {/* Report Supply */}
           <Route
-            path="/report_supplies"
+            path="/report_supplies/all"
             element={
               <PrivateRoute permission={permissions.IMPORT_SUPPLIES}>
                 <ReportSupply />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/report_supplies/report_supplies_by_warehouse"
+            element={
+              <PrivateRoute permission={permissions.IMPORT_SUPPLIES}>
+                <ReportSupplyByWarehouse />
               </PrivateRoute>
             }
           />

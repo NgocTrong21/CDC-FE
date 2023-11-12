@@ -204,11 +204,17 @@ const LayoutSystem = (props: LayoutProps) => {
       '/report_supplies',
       permissions.IMPORT_SUPPLIES,
       <BarChartOutlined style={{ fontSize: '20px' }} />,
-      [ getItem(
+      [getItem(
         'Tồn kho',
-        '',
+        '/all',
         permissions.IMPORT_SUPPLIES
-      )]
+      ),
+      getItem(
+        'Tồn vật tư theo kho',
+        '/report_supplies_by_warehouse',
+        permissions.IMPORT_SUPPLIES
+      )
+      ]
     ),
     getItem(
       'Quản lý tổ chức',
@@ -328,7 +334,7 @@ const LayoutSystem = (props: LayoutProps) => {
     <>
       <div
         className="bg-white rounded-lg shadow-lg relative pt-2 pl-2 pb-2 "
-        // style={{ overflowY: 'scroll' }}
+      // style={{ overflowY: 'scroll' }}
       >
         <div className="flex items-center justify-between rounded-lg">
           <h1 className="font-bold text-2xl pl-3 pt-2 pb-1">Thông báo</h1>
@@ -346,9 +352,8 @@ const LayoutSystem = (props: LayoutProps) => {
               key: item.id,
               label: (
                 <div
-                  className={`${
-                    item.is_seen === 0 ? '' : 'text-gray-400'
-                  } text-base`}
+                  className={`${item.is_seen === 0 ? '' : 'text-gray-400'
+                    } text-base`}
                 >
                   <Row>
                     {/* <Link to={`${handleUrlInNotification(item)}`}>

@@ -78,6 +78,7 @@ const InboundOrderUpdate = () => {
         data: {
           id: data.id,
           deliver: data?.deliver,
+          code: data?.code,
           warehouse_id: data?.warehouse_id,
           deliver_phone: data?.deliver_phone,
           estimated_delivery_date: moment(new Date(data?.estimated_delivery_date)).toISOString(),
@@ -89,9 +90,9 @@ const InboundOrderUpdate = () => {
           quantity: parseInt(item?.orderQuantity) || 0,
         })),
       }).then(() => {
-        toast.success('Tạo đơn nhập thành công');
+        toast.success('Cập nhật đơn nhập thành công');
       }).catch(() => {
-        toast.error('Tạo đơn nhập thất bại!');
+        toast.error('Cập nhật đơn nhập thất bại!');
       });
     }
   };
@@ -122,10 +123,9 @@ const InboundOrderUpdate = () => {
       .then((res: any) => {
         const { success, data } = res.data;
         if (success) {
-          console.log('check data', data.inbound_order);
-          const { id, warehouse_id, provider, deliver, deliver_phone, estimated_delivery_date, note } = data.inbound_order;
+          const { id, warehouse_id, provider, code, deliver, deliver_phone, estimated_delivery_date, note } = data.inbound_order;
           form.setFieldsValue({
-            id, warehouse_id, provider, deliver, deliver_phone, note, estimated_delivery_date: moment(estimated_delivery_date)
+            id, warehouse_id, provider, deliver, code, deliver_phone, note, estimated_delivery_date: moment(estimated_delivery_date)
           });
           setDataSource(data.inbound_order.Supply_Inbound_Orders.map((item: any, index: any) => ({
             key: index,
@@ -248,7 +248,7 @@ const InboundOrderUpdate = () => {
                 <Row>
                   <Typography.Title level={5}>Tài liệu</Typography.Title>
                 </Row>
-                <Form.Item label="Số phiếu nhập">
+                <Form.Item label="Số phiếu nhập" name="code">
                   <Input className="input" />
                 </Form.Item>
                 <Form.Item label="Ngày dự kiến nhận hàng" name="estimated_delivery_date">

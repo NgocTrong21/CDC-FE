@@ -142,8 +142,6 @@ const SupplyUpdate = () => {
             <Form.Item
               label="Xuất sứ"
               name="manufacturing_country"
-              required
-              rules={[{ required: true, message: 'Hãy nhập xuất sứ!' }]}
               className="mb-5"
             >
               <Input placeholder="Nhập xuất sứ" allowClear className="input" />

@@ -59,7 +59,11 @@ const supplyApi = {
   getReportSupplies(params: any): Promise<CommonResponse> {
     const url = 'supplies/create_report';
     return axiosClient.post(url, params);
-  }
+  },
+  getReportSuppliesByWarehouse(params: any): Promise<CommonResponse> {
+    const url = 'supplies/create_report_by_warehouse';
+    return axiosClient.post(url, params);
+  },
 };
 
 export default supplyApi;

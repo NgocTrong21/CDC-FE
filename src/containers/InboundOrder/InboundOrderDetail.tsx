@@ -60,9 +60,9 @@ const InboundOrderDetail = () => {
       .then((res: any) => {
         const { success, data } = res.data;
         if (success) {
-          const { id, warehouse_id, status_id, provider, deliver, deliver_phone, estimated_delivery_date, note } = data.inbound_order;
+          const { id, warehouse_id, code, status_id, provider, deliver, deliver_phone, estimated_delivery_date, note } = data.inbound_order;
           form.setFieldsValue({
-            id, warehouse_id, status_id, provider, deliver, deliver_phone, note, estimated_delivery_date: moment(estimated_delivery_date).format('DD/MM/YYYY')
+            id, warehouse_id, status_id, code, provider, deliver, deliver_phone, note, estimated_delivery_date: moment(estimated_delivery_date).format('DD/MM/YYYY')
           });
           setDataSource(data.inbound_order.Supply_Inbound_Orders.map((item: any, index: any) => ({
             key: index,
@@ -175,7 +175,7 @@ const InboundOrderDetail = () => {
                 <Row>
                   <Typography.Title level={5}>Tài liệu</Typography.Title>
                 </Row>
-                <Form.Item label="Số phiếu nhập">
+                <Form.Item label="Số phiếu nhập" name="code">
                   <Input className="input" type='text' disabled />
                 </Form.Item>
                 <Form.Item label="Ngày dự kiến nhận hàng" name="estimated_delivery_date">

@@ -142,6 +142,7 @@ const InboundOrderCreate = () => {
     if (data) {
       inboundOrderApi.create({
         data: {
+          code: data?.code,
           deliver: data?.deliver,
           deliver_phone: data?.deliver_phone,
           warehouse_id: data?.warehouse_id,
@@ -223,7 +224,7 @@ const InboundOrderCreate = () => {
                 <Row>
                   <Typography.Title level={5}>Tài liệu</Typography.Title>
                 </Row>
-                <Form.Item label="Số phiếu nhập">
+                <Form.Item label="Số phiếu nhập" name="code">
                   <Input className="input" />
                 </Form.Item>
                 <Form.Item label="Ngày dự kiến nhận hàng" name="estimated_delivery_date">

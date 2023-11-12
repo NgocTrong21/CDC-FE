@@ -65,9 +65,9 @@ const OutboundOrderDetail = () => {
       .then((res: any) => {
         const { success, data } = res.data;
         if (success) {
-          const { id, warehouse_id, status_id, customer, receiver, receiver_phone, estimated_shipping_date, note } = data.outbound_order;
+          const { id, warehouse_id, code, status_id, customer, receiver, receiver_phone, estimated_shipping_date, note } = data.outbound_order;
           form.setFieldsValue({
-            id, warehouse_id, status_id, customer, receiver, receiver_phone, note, estimated_shipping_date: moment(estimated_shipping_date).format('DD/MM/YYYY'),
+            id, warehouse_id, status_id, code, customer, receiver, receiver_phone, note, estimated_shipping_date: moment(estimated_shipping_date).format('DD/MM/YYYY'),
           });
           setDataSource(data.outbound_order.Supply_Outbound_Orders.map((item: any, index: any) => ({
             key: index,
@@ -180,7 +180,7 @@ const OutboundOrderDetail = () => {
                 <Row>
                   <Typography.Title level={5}>Tài liệu</Typography.Title>
                 </Row>
-                <Form.Item label="Số phiếu nhập">
+                <Form.Item label="Số phiếu nhập" name="code">
                   <Input className="input" type='text' disabled />
                 </Form.Item>
                 <Form.Item label="Ngày dự kiến nhận hàng" name="estimated_shipping_date">

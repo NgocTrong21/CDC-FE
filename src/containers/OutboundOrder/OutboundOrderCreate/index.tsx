@@ -171,6 +171,7 @@ const OutboundOrderCreate = () => {
         data: {
           receiver: data?.receiver,
           receiver_phone: data?.receiver_phone,
+          code: data?.code,
           warehouse_id: data?.warehouse_id,
           estimated_shipping_date: moment(new Date(data?.estimated_shipping_date)).toISOString(),
           note: data?.note,
@@ -181,8 +182,8 @@ const OutboundOrderCreate = () => {
           quantity: parseInt(item?.orderQuantity) || 0,
         })),
       }).then(() => {
-        navigate('/order/inbound_order');
-        toast.success('Tạo đơn xuất thành công');
+        navigate('/order/outbound_order');
+        toast.success('Tạo phiếu xuất thành công');
       }).catch((error) => {
         toast.error(error.response.data.message);
       });

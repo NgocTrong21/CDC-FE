@@ -1,23 +1,15 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
-  ExclamationCircleFilled,
   DeleteFilled,
   EditFilled,
-  FileWordFilled,
   EyeFilled,
-  FilterFilled,
   SelectOutlined,
-  ImportOutlined,
-  RightCircleFilled,
-  PlusSquareFilled,
-  RetweetOutlined,
   PlusCircleFilled,
 } from '@ant-design/icons';
 import {
   Button,
   Divider,
   Input,
-  Select,
   Table,
   Menu,
   Row,
@@ -28,29 +20,13 @@ import {
 } from 'antd';
 import useDebounce from 'hooks/useDebounce';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import image from 'assets/image.png';
-import equipmentApi from 'api/equipment.api';
-import useQuery from 'hooks/useQuery';
 import { toast } from 'react-toastify';
-import { FilterContext } from 'contexts/filter.context';
-import { NotificationContext } from 'contexts/notification.context';
-import ModalHandover from 'components/ModalHandover';
-import ModalReport from 'components/ModalReport';
 import {
   checkPermission,
-  checkRoleFromData,
-  getCurrentUser,
   onChangeCheckbox,
-  options,
-  resolveDataExcel,
 } from 'utils/globalFunc.util';
-import ModalTransfer from 'components/ModalTransfer';
-import useSearchName from 'hooks/useSearchName';
 import { permissions } from 'constants/permission.constant';
-import ExportToExcel from 'components/Excel';
 import type { PaginationProps } from 'antd';
-import Item from 'antd/lib/list/Item';
-import { formatCurrency } from 'utils/globalFunc.util';
 import outboundOrderApi from 'api/outbound_order';
 import moment from 'moment';
 
@@ -66,40 +42,20 @@ const TableFooter = ({ paginationProps }: any) => {
 const OutboundOrderList = () => {
   const navigate = useNavigate();
   const [outboundOrders, setOutboundOrders] = useState<any>();
-  const { increaseCount, getAllNotifications } =
-    useContext(NotificationContext);
-  const [equipments, setEquipments] = useState<any>([]);
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState<any>({});
   let searchQueryString: string;
   const pathName: any = location?.pathname;
-  const query = useQuery();
-  const currentPage = query?.page;
-  const currentName = query?.name;
-  const currentStatus = query?.status_id;
-  const currentDepartment = query?.department_id;
-  const currentType = query?.type_id;
-  const currentRiskLevel = query?.risk_level;
-  const [page, setPage] = useState<number>(currentPage || 1);
+  const [page, setPage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(10);
   const [total, setTotal] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
-  const [name, setName] = useState<string>(currentName);
+  const [name, setName] = useState<string>('');
   const nameSearch = useDebounce(name, 500);
-  const [status, setStatus] = useState<any>(currentStatus);
-  const [department, setDepartment] = useState<any>(currentDepartment);
-  const [type, setType] = useState<any>(currentType);
-  const [level, setLevel] = useState<any>(currentRiskLevel);
-  const [showHandoverModal, setShowHandoverModal] = useState<boolean>(false);
-  const [showReportModal, setShowReportModal] = useState<boolean>(false);
-  const [showTransferModal, setShowTransferModal] = useState<boolean>(false);
   const [isShowCustomTable, setIsShowCustomTable] = useState<boolean>(false);
-  const [dataHandover, setDataHandover] = useState<any>({});
-  const [dataReport, setDataReport] = useState<any>({});
-  const [dataTransfer, setDataTransfer] = useState<any>({});
 
   const onShowSizeChange: PaginationProps['onShowSizeChange'] = (
-    current,
+    _current,
     pageSize
   ) => {
     setLimit(pageSize);
@@ -120,16 +76,9 @@ const OutboundOrderList = () => {
   };
   const columns: any = [
     {
-      title: 'Mã phiếu',
-      dataIndex: 'name',
-      key: 'order_code',
-      show: true,
-      widthExcel: 30,
-    },
-    {
       title: 'Số phiếu',
-      key: 'order_number',
-      dataIndex: 'model',
+      key: 'code',
+      dataIndex: 'code',
       show: true,
       widthExcel: 30,
     },
@@ -171,7 +120,7 @@ const OutboundOrderList = () => {
       show: true,
       render: (item: any) => (
         <Menu className="flex flex-row items-center">
-          {item?.Equipment_Status?.id !== 7 && (
+          {item?.status_id === 1 && (
             <Menu.Item
               key="update_equipment"
               className={`${checkPermission(permissions.EQUIPMENT_UPDATE) ? '' : 'hidden'
@@ -219,14 +168,10 @@ const OutboundOrderList = () => {
       .search({
         page,
         limit,
-        name,
-        type_id: type,
-        risk_level: level,
+        name: nameSearch,
       })
       .then((res: any) => {
         const { success, data } = res.data;
-        console.log('check data', data);
-
         if (success) {
           setOutboundOrders(data.outbound_orders.rows);
           setTotal(data.outbound_orders.count);
@@ -237,7 +182,7 @@ const OutboundOrderList = () => {
   };
   useEffect(() => {
     getOutboundOrderList();
-  }, [limit, page])
+  }, [limit, page, nameSearch])
 
   const onPaginationChange = (page: number) => {
     setPage(page);
@@ -256,7 +201,13 @@ const OutboundOrderList = () => {
     onShowSizeChange: onShowSizeChange,
   };
 
-
+  const onChangeSearch = (e: any) => {
+    setName(e.target.value);
+    if (e.target.value !== '') {
+    } else {
+      setPage(1);
+    }
+  };
 
   return (
     <div>
@@ -302,6 +253,13 @@ const OutboundOrderList = () => {
             ))}
         </div>
       )}
+      <Input
+        placeholder="Tìm kiếm phiếu (nhập số phiếu)"
+        allowClear
+        value={name}
+        className="rounded-lg h-9 border-[#A3ABEB] border-2"
+        onChange={(e) => onChangeSearch(e)}
+      />
       <Table
         columns={columnTable.filter((item: any) => item.show)}
         dataSource={outboundOrders}
@@ -309,33 +267,6 @@ const OutboundOrderList = () => {
         footer={() => <TableFooter paginationProps={pagination} />}
         pagination={false}
         loading={loading}
-      />
-      <ModalHandover
-        showHandoverModal={showHandoverModal}
-        setShowHandoverModal={() => setShowHandoverModal(false)}
-        callback={() => {
-          increaseCount();
-          getAllNotifications();
-        }}
-        dataHandover={dataHandover}
-      />
-      <ModalReport
-        showReportModal={showReportModal}
-        setShowReportModal={() => setShowReportModal(false)}
-        callback={() => {
-          increaseCount();
-          getAllNotifications();
-        }}
-        dataReport={dataReport}
-      />
-      <ModalTransfer
-        showTransferModal={showTransferModal}
-        setShowTransferModal={() => setShowTransferModal(false)}
-        callback={() => {
-          increaseCount();
-          getAllNotifications();
-        }}
-        dataTransfer={dataTransfer}
       />
     </div>
   );

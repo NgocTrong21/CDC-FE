@@ -1,20 +1,16 @@
 import { ImportOutlined } from '@ant-design/icons';
-import { Button, DatePicker, Divider, Form, Input, Select } from 'antd';
-import { useEffect, useState, useContext } from 'react';
+import { Button, DatePicker, Divider, Form, Input } from 'antd';
+import { useState } from 'react';
 import ava from 'assets/image.png';
-import { convertBase64, options } from 'utils/globalFunc.util';
+import { convertBase64 } from 'utils/globalFunc.util';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import categoryApi from 'api/category.api';
-import { FilterContext } from 'contexts/filter.context';
 import supplyApi from 'api/suplly.api';
 import moment from 'moment';
 
-const { Option } = Select;
 const { TextArea } = Input;
 
 const SupplyCreate = () => {
-  const { levels, units, providers } = useContext(FilterContext);
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [selectedImage, setSelectedImage] = useState<any>('');
@@ -32,7 +28,6 @@ const SupplyCreate = () => {
 
   const onFinish = (values: any) => {
     let data = { ...values, expiration_date: moment(new Date(values?.expiration_date)).toISOString(), image };
-    console.log('check data', data);
     supplyApi
       .create(data)
       .then((res: any) => {
@@ -48,20 +43,6 @@ const SupplyCreate = () => {
       })
       .catch();
   };
-
-  // {
-  //   name: DataTypes.STRING, // tên
-  //   code: DataTypes.STRING, // mã số
-  //   unit: DataTypes.STRING, // đơn vị tính
-  //   quantity: DataTypes.INTEGER, // số lượng
-  //   unit_price: DataTypes.INTEGER, // đơn giá
-  //   control_number: DataTypes.STRING, // số kiểm soát
-  //   lot_number: DataTypes.STRING, // số lô
-  //   manufacturing_country: DataTypes.STRING, //nước sx
-  //   expiration_date: DataTypes.DATE, //hạn sd
-  //   provider: DataTypes.STRING, //hạn sd
-  //   note: DataTypes.TEXT, // ghi chú
-  // },
   return (
     <div>
       <div className="flex-between-center">
@@ -147,8 +128,6 @@ const SupplyCreate = () => {
             <Form.Item
               label="Xuất sứ"
               name="manufacturing_country"
-              required
-              rules={[{ required: true, message: 'Hãy nhập xuất sứ!' }]}
               className="mb-5"
             >
               <Input placeholder="Nhập xuất sứ" allowClear className="input" />

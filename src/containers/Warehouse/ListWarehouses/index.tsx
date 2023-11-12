@@ -17,7 +17,6 @@ import {
 } from 'antd';
 import useDebounce from 'hooks/useDebounce';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import image from 'assets/image.png';
 import useQuery from 'hooks/useQuery';
 import providerApi from 'api/provider.api';
 import ExportToExcel from 'components/Excel';
@@ -40,18 +39,12 @@ const Warehouses = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const pathName: any = location?.pathname;
-  const query = useQuery();
-  const currentPage = query?.page;
-  const currentName = query?.name;
   const [warehouses, setWarehouses] = useState([]);
-  const [page, setPage] = useState<number>(currentPage);
+  const [page, setPage] = useState<number>(1);
   const [total, setTotal] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingDownload, setLoadingDownload] = useState<boolean>(false);
-  const [showFooter, setShowFooter] = useState<boolean>(
-    currentName ? false : true
-  );
-  const [name, setName] = useState<string>(currentName);
+  const [name, setName] = useState<string>('');
   const nameSearch = useDebounce(name, 500);
   const [isShowCustomTable, setIsShowCustomTable] = useState<boolean>(false);
   const seachWarehouses = (params: any) => {
@@ -64,9 +57,11 @@ const Warehouses = () => {
     })
       .then((res) => {
         const { success, data } = res.data;
+        console.log(data);
+
         if (success) {
-          setWarehouses(data.warehouses);
-          setTotal(data.count);
+          setWarehouses(data?.warehouses.rows || []);
+          setTotal(data?.warehouses.count || 0);
         }
       })
       .catch()
@@ -80,24 +75,24 @@ const Warehouses = () => {
       limit
     });
   }, [page, nameSearch]);
-  const handleDelete = (id: number) => {
-    warehouseApi
-      .delete(id)
-      .then((res: any) => {
-        const { success, message } = res.data;
-        if (success) {
-          seachWarehouses({
-            nameSearch,
-            page,
-            limit
-          })
-          toast.success('Xóa thành công!');
-        } else {
-          toast.error(message);
-        }
-      })
-      .catch((error) => toast.error(error));
-  };
+  // const handleDelete = (id: number) => {
+  //   warehouseApi
+  //     .delete(id)
+  //     .then((res: any) => {
+  //       const { success, message } = res.data;
+  //       if (success) {
+  //         seachWarehouses({
+  //           nameSearch,
+  //           page,
+  //           limit
+  //         })
+  //         toast.success('Xóa thành công!');
+  //       } else {
+  //         toast.error(message);
+  //       }
+  //     })
+  //     .catch((error) => toast.error(error));
+  // };
   const columns: any = [
     {
       title: 'Mã kho',
@@ -138,7 +133,7 @@ const Warehouses = () => {
               <EditFilled />
             </Link>
           </Tooltip>
-          <Tooltip title="Xóa">
+          {/* <Tooltip title="Xóa">
             <Popconfirm
               title="Bạn muốn xóa kho này?"
               onConfirm={() => { handleDelete(item.id) }}
@@ -147,15 +142,12 @@ const Warehouses = () => {
             >
               <DeleteFilled />
             </Popconfirm>
-          </Tooltip>
+          </Tooltip> */}
         </div>
       ),
     },
   ];
   const [columnTable, setColumnTable] = useState<any>(columns);
-
-  const handleDeleteWarehouse = (id: number) => { };
-
   const onPaginationChange = (page: number, pageSize: number) => {
     setPage(page);
     navigate(`${pathName}?page=${page}`);
@@ -173,12 +165,8 @@ const Warehouses = () => {
   const onChangeSearch = (e: any) => {
     setName(e.target.value);
     if (e.target.value !== '') {
-      setShowFooter(false);
-      navigate(`${pathName}?keyword=${e.target.value}`);
     } else {
-      setShowFooter(true);
       setPage(1);
-      navigate(`${pathName}?page=1`);
     }
   };
 
@@ -211,7 +199,6 @@ const Warehouses = () => {
     resolveDataExcel(data, 'Danh sách nhà cung cấp', columnTable);
     setLoadingDownload(false);
   };
-  console.log('check warehouses', warehouses);
 
   return (
     <div>
@@ -267,7 +254,7 @@ const Warehouses = () => {
         dataSource={warehouses}
         className="mt-6 shadow-md"
         footer={() =>
-          showFooter && <TableFooter paginationProps={pagination} />
+          <TableFooter paginationProps={pagination} />
         }
         pagination={false}
         loading={loading}

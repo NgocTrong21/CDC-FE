@@ -15,7 +15,6 @@ import {
 } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
 import outboundOrderApi from 'api/outbound_order';
-import supplyApi from 'api/suplly.api';
 import warehouseApi from 'api/warehouse.api';
 import moment from 'moment';
 import { useEffect, useRef, useState } from 'react';
@@ -23,35 +22,6 @@ import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { options } from 'utils/globalFunc.util';
 
-const mockDataSuppliers = [
-  {
-    key: 1,
-    supplierCode: 'code',
-    supplierName: 'name',
-    orderQuantity: 10,
-    unitPrice: 10,
-    totalValue: 20000,
-    description: 'note',
-  },
-  {
-    key: 2,
-    supplierCode: 'code',
-    supplierName: 'name',
-    orderQuantity: 10,
-    unitPrice: 10,
-    totalValue: 20000,
-    description: 'note',
-  },
-  {
-    key: 3,
-    supplierCode: 'code',
-    supplierName: 'name',
-    orderQuantity: 10,
-    unitPrice: 10,
-    totalValue: 20000,
-    description: 'note',
-  },
-];
 
 const OutboundOrderUpdate = () => {
   const params = useParams();
@@ -108,6 +78,7 @@ const OutboundOrderUpdate = () => {
           id: data.id,
           receiver: data?.receiver,
           receiver_phone: data?.receiver_phone,
+          code: data?.code,
           warehouse_id: data?.warehouse_id,
           estimated_shipping_date: moment(new Date(data?.estimated_shipping_date)).toISOString(),
           note: data?.note,
@@ -118,9 +89,13 @@ const OutboundOrderUpdate = () => {
           quantity: parseInt(item?.orderQuantity) || 0,
         })),
       }).then(() => {
-        toast.success('Cập nhật đơn nhập thành công');
-      }).catch(() => {
-        toast.error('Cập nhật đơn nhập thất bại!');
+        toast.success('Cập nhật phiếu nhập thành công');
+      }).catch((error) => {
+        if (error?.response?.data?.message) {
+          toast.error(error?.response?.data?.message);
+        } else {
+          toast.error('Cập nhật phiếu nhập thất bại!');
+        }
       });
     }
   };
@@ -140,10 +115,9 @@ const OutboundOrderUpdate = () => {
       .then((res: any) => {
         const { success, data } = res.data;
         if (success) {
-          console.log('check data', data.outbound_order);
-          const { id, warehouse_id, customer, receiver, receiver_phone, estimated_shipping_date, note } = data.outbound_order;
+          const { id, warehouse_id, customer, code, receiver, receiver_phone, estimated_shipping_date, note } = data.outbound_order;
           form.setFieldsValue({
-            id, warehouse_id, customer, receiver, receiver_phone, note, estimated_shipping_date: moment(estimated_shipping_date),
+            id, warehouse_id, customer, receiver, code, receiver_phone, note, estimated_shipping_date: moment(estimated_shipping_date),
           });
           setDataSource(data.outbound_order.Supply_Outbound_Orders.map((item: any, index: any) => ({
             key: index,
@@ -275,7 +249,7 @@ const OutboundOrderUpdate = () => {
                 <Row>
                   <Typography.Title level={5}>Tài liệu</Typography.Title>
                 </Row>
-                <Form.Item label="Số phiếu xuất">
+                <Form.Item label="Số phiếu xuất" name="code">
                   <Input className="input" />
                 </Form.Item>
                 <Form.Item label="Ngày dự kiến xuất hàng" name='estimated_shipping_date'>

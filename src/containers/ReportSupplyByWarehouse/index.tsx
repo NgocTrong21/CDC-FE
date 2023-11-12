@@ -1,7 +1,4 @@
 import {
-  DeleteFilled,
-  EditFilled,
-  EyeFilled,
   FileExcelFilled,
   ImportOutlined,
   SelectOutlined,
@@ -9,25 +6,21 @@ import {
 import {
   Button,
   Checkbox,
+  DatePicker,
   Divider,
-  Input,
-  Menu,
   Pagination,
-  Popconfirm,
   Row,
+  Select,
   Table,
-  Tooltip,
 } from 'antd';
 import { useState, useEffect } from 'react';
-import image from 'assets/image.png';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import useQuery from 'hooks/useQuery';
-import useDebounce from 'hooks/useDebounce';
+import { useLocation, useNavigate } from 'react-router-dom';
 import supplyApi from 'api/suplly.api';
-import { toast } from 'react-toastify';
-import { onChangeCheckbox } from 'utils/globalFunc.util';
+import { onChangeCheckbox, options } from 'utils/globalFunc.util';
 
 import type { PaginationProps } from 'antd';
+import moment from 'moment';
+import warehouseApi from 'api/warehouse.api';
 
 const TableFooter = ({ paginationProps }: any) => {
   return (
@@ -38,24 +31,36 @@ const TableFooter = ({ paginationProps }: any) => {
   );
 };
 
-const Suplly = () => {
+const ReportSupplyByWarehouse = () => {
   const navigate = useNavigate();
+  const [startDate, setStartDate] = useState<any>(moment().subtract('months', 1));
+  const [endDate, setEndDate] = useState<any>(moment());
   const [supllies, setSupplies] = useState<any>([]);
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState<any>({});
   let searchQueryString: string;
   const pathName: any = location?.pathname;
-  const query = useQuery();
-  const currentPage = query?.page;
-  const currentName = query?.name;
-  const [page, setPage] = useState<number>(currentPage || 1);
+  const [page, setPage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(10);
+  const [warehouses, setWarehouses] = useState([]);
+  const [selectedWarehouse, setSelectedWarehouse] = useState<any>(1);
   const [total, setTotal] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
-  const [name, setName] = useState<string>(currentName);
-  const nameSearch = useDebounce(name, 500);
   const [isShowCustomTable, setIsShowCustomTable] = useState<boolean>(false);
-
+  const seachWarehouses = (params: any) => {
+    warehouseApi.search({
+    })
+      .then((res) => {
+        const { success, data } = res.data;
+        if (success && data?.warehouses) {
+          setWarehouses(data?.warehouses);
+        }
+      })
+      .catch()
+  }
+  useEffect(() => {
+    seachWarehouses({});
+  }, [])
   const onShowSizeChange: PaginationProps['onShowSizeChange'] = (
     _current,
     pageSize
@@ -64,17 +69,6 @@ const Suplly = () => {
   };
 
   const columns: any = [
-    {
-      title: 'Ảnh đại diện',
-      dataIndex: 'image',
-      key: 'image',
-      show: false,
-      render(item: any) {
-        return (
-          <img src={item?.image || image} alt="logo" className="w-32 h-32" />
-        );
-      },
-    },
     {
       title: 'Mã vật tư',
       dataIndex: 'code',
@@ -118,41 +112,28 @@ const Suplly = () => {
       dataIndex: 'manufacturing_country',
     },
     {
-      title: 'Tác vụ',
-      key: 'action',
+      title: 'Tồn đầu kỳ',
+      key: 'begin_quantity',
+      dataIndex: 'begin_quantity',
       show: true,
-      render: (item: any) => (
-        <Menu className="flex flex-row items-center">
-          {false && (
-            <Menu.Item key="detail">
-              <Tooltip title="Hồ sơ vật tư">
-                <Link to={`/supplies/detail/${item.id}`}>
-                  <EyeFilled />
-                </Link>
-              </Tooltip>
-            </Menu.Item>
-          )}
-          <Menu.Item key="update_supplies">
-            <Tooltip title="Cập nhật vật tư">
-              <Link to={`/supplies/update/${item.id}`}>
-                <EditFilled />
-              </Link>
-            </Tooltip>
-          </Menu.Item>
-          <Menu.Item key="delete">
-            <Tooltip title="Xóa vật tư">
-              <Popconfirm
-                title="Bạn muốn xóa vật tư này?"
-                onConfirm={() => handleDelete(item.id)}
-                okText="Xóa"
-                cancelText="Hủy"
-              >
-                <DeleteFilled />
-              </Popconfirm>
-            </Tooltip>
-          </Menu.Item>
-        </Menu>
-      ),
+    },
+    {
+      title: 'Nhập trong kỳ',
+      key: 'inbound_quantity',
+      dataIndex: 'inbound_quantity',
+      show: true,
+    },
+    {
+      title: 'xuất trong kỳ',
+      key: 'outbound_quantity',
+      dataIndex: 'outbound_quantity',
+      show: true,
+    },
+    {
+      title: 'Tồn cuối kỳ',
+      key: 'end_quantity',
+      dataIndex: 'end_quantity',
+      show: true,
     },
   ];
   const [columnTable, setColumnTable] = useState<any>(columns);
@@ -174,47 +155,32 @@ const Suplly = () => {
     onShowSizeChange: onShowSizeChange,
   };
 
-  const handleDelete = (id: number) => {
-    supplyApi
-      .delete(id)
-      .then((res: any) => {
-        const { success, message } = res.data;
-        if (success) {
-          getSuppliesList();
-          toast.success('Xóa thành công!');
-        } else {
-          toast.error(message);
-        }
-      })
-      .catch((error) => toast.error(error));
-  };
-
-  const getSuppliesList = () => {
-    setLoading(true);
-    supplyApi
-      .list({
-        page,
-        limit,
-        name: nameSearch,
-
-      })
-      .then((res: any) => {
-        const { success, data } = res.data;
-        if (success) {
-          setSupplies(data.supplies.rows);
-          setTotal(data.supplies.count);
-        }
-      })
+  const handleGetReportSupplies = (start: any, end: any, selectedWarehouse: any) => {
+    supplyApi.getReportSuppliesByWarehouse({
+      data: {
+        start_date: start,
+        end_date: end,
+        warehouseId: selectedWarehouse
+      }
+    }).then((res: any) => {
+      const { success, data } = res.data;
+      if (success) {
+        setSupplies(data.result);
+      }
+    })
       .catch()
       .finally(() => setLoading(false));
-  };
+  }
   useEffect(() => {
-    getSuppliesList();
-  }, [limit, page, nameSearch])
+    handleGetReportSupplies(startDate, endDate, selectedWarehouse);
+  }, [startDate, endDate, selectedWarehouse])
+  const handleSetSupplies = (data: any) => {
+    setSelectedWarehouse(data);
+  }
   return (
     <div>
       <div className="flex-between-center">
-        <div className="title">DANH SÁCH VẬT TƯ</div>
+        <div className="title">Thống kê vật tư tồn theo kho</div>
         <div className="flex flex-row gap-6">
           <Button className="flex-center text-slate-900 gap-2 rounded-3xl border-[#5B69E6] border-2">
             <FileExcelFilled />
@@ -256,14 +222,20 @@ const Suplly = () => {
               ))}
           </div>
         )}
-        <div className="flex justify-end p-4">
-          <Input
-            placeholder="Tìm kiếm vật tư"
-            allowClear
-            value={name}
-            className="input w-1/2"
-            onChange={(e) => { setName(e.target.value) }}
-          />
+        <div className="flex justify-between">
+          <div className='w-[500px]'>
+            <Select
+              className='w-full'
+              placeholder="Kho hàng"
+              options={options(warehouses)}
+              onSelect={handleSetSupplies}
+              value={selectedWarehouse}
+            />
+          </div>
+          <div className='flex gap-10 w-1/3'>
+            <DatePicker value={startDate} className="date" placeholder='Nhập đầu kỳ' onChange={(e) => { setStartDate(moment(new Date(e as any))) }} />
+            <DatePicker value={endDate} className="date" placeholder='Nhập cuối kỳ' onChange={(e) => { setEndDate(moment(new Date(e as any))) }} />
+          </div>
         </div>
       </div>
       <Table
@@ -278,4 +250,4 @@ const Suplly = () => {
   );
 };
 
-export default Suplly;
+export default ReportSupplyByWarehouse;
