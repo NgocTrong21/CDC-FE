@@ -1,7 +1,6 @@
 import {
   Button,
   Col,
-  DatePicker,
   Form,
   Input,
   InputNumber,
@@ -15,11 +14,10 @@ import {
 } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
 import inboundOrderApi from 'api/inbound_order';
-import supplyApi from 'api/suplly.api';
 import warehouseApi from 'api/warehouse.api';
 import moment from 'moment';
-import { useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams, useRoutes } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { options } from 'utils/globalFunc.util';
 
@@ -28,11 +26,8 @@ const InboundOrderDetail = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const { id } = params;
-  const count = useRef(1);
   const { Column } = Table;
   const [dataSource, setDataSource] = useState<any[]>([]);
-  const [selectedItems, setSelectedItems] = useState<number[]>([]);
-  const [supllies, setSupplies] = useState<any>([]);
   const [warehouses, setWarehouses] = useState([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
@@ -65,10 +60,9 @@ const InboundOrderDetail = () => {
       .then((res: any) => {
         const { success, data } = res.data;
         if (success) {
-          console.log('check data', data.inbound_order);
-          const { id, warehouse_id, provider, deliver, deliver_phone, estimated_delivery_date, note } = data.inbound_order;
+          const { id, warehouse_id, status_id, provider, deliver, deliver_phone, estimated_delivery_date, note } = data.inbound_order;
           form.setFieldsValue({
-            id, warehouse_id, provider, deliver, deliver_phone, note, estimated_delivery_date: moment(estimated_delivery_date).format('DD/MM/YYYY')
+            id, warehouse_id, status_id, provider, deliver, deliver_phone, note, estimated_delivery_date: moment(estimated_delivery_date).format('DD/MM/YYYY')
           });
           setDataSource(data.inbound_order.Supply_Inbound_Orders.map((item: any, index: any) => ({
             key: index,
@@ -111,13 +105,12 @@ const InboundOrderDetail = () => {
             <Typography.Title level={4}>Thông tin phiếu nhập</Typography.Title>
             <Row>
               <Space>
-
-                <Button type="default" className="button-primary" onClick={() => handleAccept(id, 'accept')}>
+                {form.getFieldValue('status_id') === 1 && <><Button type="default" className="button-primary" onClick={() => handleAccept(id, 'accept')}>
                   Phê duyệt
                 </Button>
-                <Button className="rounded-md" danger onClick={() => handleAccept(id, 'reject')}>
-                  Từ chối
-                </Button>
+                  <Button className="rounded-md" danger onClick={() => handleAccept(id, 'reject')}>
+                    Từ chối
+                  </Button></>}
                 <Button type="primary" className="rounded-md" onClick={() => {
                   navigate('/order/inbound_order')
                 }}>
@@ -137,6 +130,12 @@ const InboundOrderDetail = () => {
                     <Form.Item
                       className='hidden'
                       name="id"
+                    >
+                      <Input type='text' disabled />
+                    </Form.Item>
+                    <Form.Item
+                      className='hidden'
+                      name="status_id"
                     >
                       <Input type='text' disabled />
                     </Form.Item>

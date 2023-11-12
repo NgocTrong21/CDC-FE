@@ -65,10 +65,9 @@ const OutboundOrderDetail = () => {
       .then((res: any) => {
         const { success, data } = res.data;
         if (success) {
-          console.log('check data', data.outbound_order);
-          const { id, warehouse_id, customer, receiver, receiver_phone, estimated_shipping_date, note } = data.outbound_order;
+          const { id, warehouse_id, status_id, customer, receiver, receiver_phone, estimated_shipping_date, note } = data.outbound_order;
           form.setFieldsValue({
-            id, warehouse_id, customer, receiver, receiver_phone, note, estimated_shipping_date: moment(estimated_shipping_date).format('DD/MM/YYYY'),
+            id, warehouse_id, status_id, customer, receiver, receiver_phone, note, estimated_shipping_date: moment(estimated_shipping_date).format('DD/MM/YYYY'),
           });
           setDataSource(data.outbound_order.Supply_Outbound_Orders.map((item: any, index: any) => ({
             key: index,
@@ -111,13 +110,12 @@ const OutboundOrderDetail = () => {
             <Typography.Title level={4}>Thông tin phiếu xuất</Typography.Title>
             <Row>
               <Space>
-
-                <Button type="default" className="button-primary" onClick={() => handleAccept(id, 'accept')}>
+                {form.getFieldValue('status_id') === 1 && <><Button type="default" className="button-primary" onClick={() => handleAccept(id, 'accept')}>
                   Phê duyệt
                 </Button>
-                <Button className="rounded-md" danger onClick={() => handleAccept(id, 'reject')}>
-                  Từ chối
-                </Button>
+                  <Button className="rounded-md" danger onClick={() => handleAccept(id, 'reject')}>
+                    Từ chối
+                  </Button></>}
                 <Button type="primary" className="rounded-md" onClick={() => {
                   navigate('/order/outbound_order')
                 }}>
@@ -137,6 +135,12 @@ const OutboundOrderDetail = () => {
                     <Form.Item
                       className='hidden'
                       name="id"
+                    >
+                      <Input type='text' disabled />
+                    </Form.Item>
+                    <Form.Item
+                      className='hidden'
+                      name="status_id"
                     >
                       <Input type='text' disabled />
                     </Form.Item>

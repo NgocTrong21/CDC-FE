@@ -19,6 +19,7 @@ import supplyApi from 'api/suplly.api';
 import warehouseApi from 'api/warehouse.api';
 import moment from 'moment';
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { options } from 'utils/globalFunc.util';
 
@@ -70,10 +71,8 @@ const OutboundOrderCreate = () => {
   const [pageSize, setPageSize] = useState<number>(10);
   const [warehouses, setWarehouses] = useState([]);
   const [supllies, setSupplies] = useState<any>([]);
-
-  const [loading, setLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
   const seachWarehouses = (params: any) => {
-    setLoading(true);
     warehouseApi.search({
     })
       .then((res) => {
@@ -83,7 +82,6 @@ const OutboundOrderCreate = () => {
         }
       })
       .catch()
-      .finally(() => setLoading(false));
   }
   useEffect(() => {
     seachWarehouses({});
@@ -130,8 +128,6 @@ const OutboundOrderCreate = () => {
       const actualIndex = (currentPage - 1) * pageSize + index;
       let listData = [...dataSource];
       const selectedItem = supllies?.find((item: any) => item?.id === value);
-      console.log('check selected', selectedItem);
-
       listData.splice(actualIndex, 1, {
         ...record,
         id: selectedItem?.id,
@@ -150,12 +146,11 @@ const OutboundOrderCreate = () => {
       .then((res: any) => {
         const { success, data } = res.data;
         if (success) {
-          const dataSupplies = data.supplies.map((item: any) => item.Supply)
+          const dataSupplies = data.supplies.filter((item: any) => item.quantity > 0).map((item: any) => item.Supply)
           setSupplies(dataSupplies);
         }
       })
       .catch()
-      .finally(() => setLoading(false));
   }
   const handleChangeOrderQuantity = (value: number, index: number, record: any) => {
     const actualIndex = (currentPage - 1) * pageSize + index;
@@ -172,21 +167,6 @@ const OutboundOrderCreate = () => {
   }
   const onFormSubmit = async (data: any) => {
     if (data) {
-      console.log('check data outbound', ({
-        data: {
-          receiver: data?.receiver,
-          receiver_phone: data?.receiver_phone,
-          warehouse_id: data?.warehouse_id,
-          estimated_shipping_date: moment(new Date(data?.estimated_shipping_date)).toISOString(),
-          note: data?.note,
-          customer: data?.customer,
-        },
-        supplies: dataSource?.map((item: any) => ({
-          supply_id: item?.id,
-          quantity: parseInt(item?.orderQuantity) || 0,
-        })),
-      }));
-
       outboundOrderApi.create({
         data: {
           receiver: data?.receiver,
@@ -201,9 +181,10 @@ const OutboundOrderCreate = () => {
           quantity: parseInt(item?.orderQuantity) || 0,
         })),
       }).then(() => {
+        navigate('/order/inbound_order');
         toast.success('Tạo đơn xuất thành công');
-      }).catch(() => {
-        toast.error('Tạo đơn xuất thất bại!');
+      }).catch((error) => {
+        toast.error(error.response.data.message);
       });
     }
   };
