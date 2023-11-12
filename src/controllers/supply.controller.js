@@ -399,7 +399,6 @@ exports.create_report = async (req, res) => {
     const supply_during_period = supply_in_during_period_merged.concat(
       supply_out_during_period_merged
     );
-
     for (const item of supply_out_from_start_to_now_merged) {
       item.quantity = -item.quantity;
     }
@@ -414,7 +413,180 @@ exports.create_report = async (req, res) => {
       else x.quantity += c.quantity;
       return a;
     }, []);
+    const supply_from_start_to_now_merged = supply_from_start_to_now.reduce(
+      (a, c) => {
+        let x = a.find((e) => e.supply_id === c.supply_id);
+        if (!x) a.push(Object.assign({}, c));
+        else x.quantity += c.quantity;
+        return a;
+      },
+      []
+    );
+    let result = [];
+    for (const item of supply_during_period_merged) {
+      const supply_db = await db.Warehouse_Supply.findAll({
+        where: {
+          supply_id: item.supply_id,
+        },
+        attributes: ["supply_id", "quantity"],
+        include: [{ model: db.Supply }],
+        raw: false,
+      });
+      const currentSupplyQuantity = supply_db.reduce((total, current) => {
+        return total + current.quantity;
+      }, 0);
+      let inbound_during_period_quantity = 0;
+      let outbound_during_period_quantity = 0;
+      let from_start_to_now_merged = 0;
+      for (const i of supply_in_during_period_merged) {
+        if (i.supply_id === item.supply_id) {
+          inbound_during_period_quantity = i.quantity;
+          break;
+        }
+      }
+      for (const i of supply_out_during_period_merged) {
+        if (i.supply_id === item.supply_id) {
+          outbound_during_period_quantity = -i.quantity;
+          break;
+        }
+      }
 
+      for (const i of supply_from_start_to_now_merged) {
+        if (i.supply_id === item.supply_id) {
+          from_start_to_now_merged = i.quantity;
+          break;
+        }
+      }
+
+      result.push({
+        ...supply_db[0].Supply.toJSON(),
+        begin_quantity:
+          Number(currentSupplyQuantity) - Number(from_start_to_now_merged),
+        inbound_quantity: inbound_during_period_quantity,
+        outbound_quantity: outbound_during_period_quantity,
+        end_quantity:
+          Number(currentSupplyQuantity) -
+          Number(from_start_to_now_merged) +
+          Number(item.quantity),
+      });
+    }
+    return successHandler(res, { result }, 200);
+  } catch (error) {
+    return errorHandler(res, error);
+  }
+};
+
+exports.create_report_by_warehouse = async (req, res) => {
+  try {
+    const { data } = req.body;
+    const startedDate = new Date(data.start_date);
+    const endDate = new Date(data.end_date);
+    const nowDate = Date.now();
+    const warehouseId = data.warehouseId;
+
+    const inbound_orders_during_period = await db.Inbound_Order.findAll({
+      where: {
+        approve_date: { [Op.between]: [startedDate, endDate] },
+        status_id: 2,
+        warehouse_id: +warehouseId,
+      },
+      include: [
+        {
+          model: db.Supply_Inbound_Order,
+          attributes: ["supply_id", "quantity"],
+        },
+      ],
+      raw: false,
+    });
+    const outbound_orders_during_period = await db.Outbound_Order.findAll({
+      where: {
+        approve_date: { [Op.between]: [startedDate, endDate] },
+        status_id: 2,
+        warehouse_id: warehouseId,
+      },
+      include: [
+        {
+          model: db.Supply_Outbound_Order,
+          attributes: ["supply_id", "quantity"],
+        },
+      ],
+      raw: false,
+    });
+    const inbound_orders_from_start_to_now = await db.Inbound_Order.findAll({
+      where: {
+        approve_date: { [Op.between]: [startedDate, nowDate] },
+        status_id: 2,
+        warehouse_id: warehouseId,
+      },
+      include: [
+        {
+          model: db.Supply_Inbound_Order,
+          attributes: ["supply_id", "quantity"],
+        },
+      ],
+      raw: false,
+    });
+    const outbound_orders_from_start_to_now = await db.Outbound_Order.findAll({
+      where: {
+        approve_date: { [Op.between]: [startedDate, nowDate] },
+        status_id: 2,
+        warehouse_id: warehouseId,
+      },
+      include: [
+        {
+          model: db.Supply_Outbound_Order,
+          attributes: ["supply_id", "quantity"],
+        },
+      ],
+      raw: false,
+    });
+    let supply_in_during_period = [];
+    let supply_out_during_period = [];
+    let supply_in_from_start_to_now = [];
+    let supply_out_from_start_to_now = [];
+
+    inbound_orders_during_period.map((order) => {
+      order.Supply_Inbound_Orders.map((supply) => {
+        supply_in_during_period.push(supply.toJSON());
+      });
+    });
+    outbound_orders_during_period.map((order) => {
+      order.Supply_Outbound_Orders.map((supply) => {
+        supply_out_during_period.push(supply.toJSON());
+      });
+    });
+
+    inbound_orders_from_start_to_now.map((order) => {
+      order.Supply_Inbound_Orders.map((supply) => {
+        supply_in_from_start_to_now.push(supply.toJSON());
+      });
+    });
+    outbound_orders_from_start_to_now.map((order) => {
+      order.Supply_Outbound_Orders.map((supply) => {
+        supply_out_from_start_to_now.push(supply.toJSON());
+      });
+    });    
+    for (const item of supply_out_during_period) {
+      item.quantity = -item.quantity;
+    }
+
+    const supply_during_period = supply_in_during_period.concat(
+      supply_out_during_period
+    );
+    for (const item of supply_out_from_start_to_now) {
+      item.quantity = -item.quantity;
+    }
+
+    const supply_from_start_to_now = supply_in_from_start_to_now.concat(
+      supply_out_from_start_to_now
+    );
+
+    const supply_during_period_merged = supply_during_period.reduce((a, c) => {
+      let x = a.find((e) => e.supply_id === c.supply_id);
+      if (!x) a.push(Object.assign({}, c));
+      else x.quantity += c.quantity;
+      return a;
+    }, []);
     const supply_from_start_to_now_merged = supply_from_start_to_now.reduce(
       (a, c) => {
         let x = a.find((e) => e.supply_id === c.supply_id);
@@ -429,6 +601,7 @@ exports.create_report = async (req, res) => {
       const supply_db = await db.Warehouse_Supply.findOne({
         where: {
           supply_id: item.supply_id,
+          warehouse_id: warehouseId,
         },
         attributes: ["supply_id", "quantity"],
         include: [{ model: db.Supply }],
@@ -437,13 +610,13 @@ exports.create_report = async (req, res) => {
       let inbound_during_period_quantity = 0;
       let outbound_during_period_quantity = 0;
       let from_start_to_now_merged = 0;
-      for (const i of supply_in_during_period_merged) {
+      for (const i of supply_in_during_period) {
         if (i.supply_id === item.supply_id) {
           inbound_during_period_quantity = i.quantity;
           break;
         }
       }
-      for (const i of supply_out_during_period_merged) {
+      for (const i of supply_out_during_period) {
         if (i.supply_id === item.supply_id) {
           outbound_during_period_quantity = -i.quantity;
           break;

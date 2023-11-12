@@ -21,28 +21,38 @@ exports.create = async (req, res) => {
           return errorHandler(res, err.SUPPLY_NOT_FOUND);
         }
       }
+      let validate = false;
       for (const supply of supplies) {
-      const isHas = await db.Warehouse_Supply.findOne({
-        where: { supply_id: supply.supply_id },
-      });
-      if (isHas.quantity < supply.quantity) {
-        return errorHandler(res, err.QUANTITY_NOT_ENOUGH);
-      } else {
+        const isHas = await db.Warehouse_Supply.findOne({
+          where: { supply_id: supply.supply_id, warehouse_id: data.warehouse_id },
+        });
+        if (isHas.quantity < supply.quantity) {
+          validate = false;
+          break;
+        } 
+        else {
+          validate = true;
+        }
+      }
+      if(validate){
         outbound_order = await db.Outbound_Order.create(
           { ...data, status_id: 1 },
           {
             transaction: t,
           }
         );
-        await db.Supply_Outbound_Order.create(
-          {
-            ...supply,
-            outbound_order_id: outbound_order.id,
-          },
-          { transaction: t }
-        );
+        for (const supply of supplies) {
+          await db.Supply_Outbound_Order.create(
+            {
+              ...supply,
+              outbound_order_id: outbound_order.id,
+            },
+            { transaction: t }
+          );
+        }
         return successHandler(res, {}, 200);
-      }
+      }else {
+        return errorHandler(res, err.QUANTITY_NOT_ENOUGH);
       }
     });    
   } catch (error) {
@@ -162,25 +172,42 @@ exports.update = async (req, res) => {
         where: { id: data?.id },
       });
       if (!isHas) return errorHandler(res, err.ORDER_NOT_FOUND);
-      await db.Outbound_Order.update(data, {
-        where: { id: data?.id },
-        transaction: t,
-      });
-      await db.Supply_Outbound_Order.destroy({
-        where: { outbound_order_id: data?.id },
-      });
+      let validate = false;
       for (const supply of supplies) {
-        await db.Supply_Outbound_Order.create(
-          {
-            ...supply,
-            outbound_order_id: isHas.id,
-          },
-          { transaction: t }
-        );
+        const isHas = await db.Warehouse_Supply.findOne({
+          where: { supply_id: supply.supply_id, warehouse_id: data.warehouse_id },
+        });
+        if (isHas.quantity < supply.quantity) {
+          validate = false;
+          break;
+        } 
+        else {
+          validate = true;
+        }
+      }
+      if(validate) {
+        await db.Outbound_Order.update(data, {
+          where: { id: data?.id },
+          transaction: t,
+        });
+        await db.Supply_Outbound_Order.destroy({
+          where: { outbound_order_id: data?.id },
+        });
+        for (const supply of supplies) {
+          await db.Supply_Outbound_Order.create(
+            {
+              ...supply,
+              outbound_order_id: isHas.id,
+            },
+            { transaction: t }
+          );
+        }
+        return successHandler(res, {}, 200);
+      }else {
+        return errorHandler(res, err.QUANTITY_NOT_ENOUGH);
       }
     });
 
-    return successHandler(res, {}, 200);
   } catch (error) {
     return errorHandler(res, error);
   }

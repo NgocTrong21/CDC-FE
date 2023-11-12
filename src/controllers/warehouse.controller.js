@@ -89,17 +89,7 @@ exports.delete = async (req, res) => {
 exports.search = async (req, res) => {
   try {
     let { limit, page, name } = req?.query;
-
-    // const { isHasRole, department_id_from_token } = await checkRoleFromToken(
-    //   req
-    // );
-
-    // if (!isHasRole) {
-    //   department_id = department_id_from_token;
-    // }
-
     let filter = {};
-
     if (name) {
       filter = {
         ...filter,
