@@ -457,20 +457,39 @@ exports.create_report = async (req, res) => {
           break;
         }
       }
-
-      result.push({
-        ...supply_db[0].Supply.toJSON(),
-        begin_quantity:
-          Number(currentSupplyQuantity) - Number(from_start_to_now_merged),
-        inbound_quantity: inbound_during_period_quantity,
-        outbound_quantity: outbound_during_period_quantity,
-        end_quantity:
-          Number(currentSupplyQuantity) -
-          Number(from_start_to_now_merged) +
-          Number(item.quantity),
-      });
+      if (data.search) {
+        const supplyName = supply_db[0].Supply.name.toLowerCase();
+        const supplyCode = supply_db[0].Supply.code.toLowerCase();
+        const searchText = data.search.toLowerCase();
+        if(supplyName?.includes(searchText) === true || supplyCode?.includes(searchText) === true) {
+          result.push({
+            ...supply_db[0].Supply.toJSON(),
+            begin_quantity:
+              Number(currentSupplyQuantity) - Number(from_start_to_now_merged),
+            inbound_quantity: inbound_during_period_quantity,
+            outbound_quantity: outbound_during_period_quantity,
+            end_quantity:
+              Number(currentSupplyQuantity) -
+              Number(from_start_to_now_merged) +
+              Number(item.quantity),
+          });
+        }
+      }
+      else {
+        result.push({
+          ...supply_db[0].Supply.toJSON(),
+          begin_quantity:
+            Number(currentSupplyQuantity) - Number(from_start_to_now_merged),
+          inbound_quantity: inbound_during_period_quantity,
+          outbound_quantity: outbound_during_period_quantity,
+          end_quantity:
+            Number(currentSupplyQuantity) -
+            Number(from_start_to_now_merged) +
+            Number(item.quantity),
+        });
+      }
     }
-    return successHandler(res, { result }, 200);
+    return successHandler(res, { result, count: result ? result.length : 0 }, 200);
   } catch (error) {
     return errorHandler(res, error);
   }
@@ -565,7 +584,7 @@ exports.create_report_by_warehouse = async (req, res) => {
       order.Supply_Outbound_Orders.map((supply) => {
         supply_out_from_start_to_now.push(supply.toJSON());
       });
-    });    
+    });
     for (const item of supply_out_during_period) {
       item.quantity = -item.quantity;
     }
@@ -642,7 +661,7 @@ exports.create_report_by_warehouse = async (req, res) => {
           Number(item.quantity),
       });
     }
-    return successHandler(res, { result }, 200);
+    return successHandler(res, { result, count: result ? result.length : 0 }, 200);
   } catch (error) {
     return errorHandler(res, error);
   }

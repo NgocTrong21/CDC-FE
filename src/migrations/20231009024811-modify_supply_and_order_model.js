@@ -5,12 +5,7 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.removeColumn("supplies", "provider_id");
     await queryInterface.removeColumn("supplies", "quantity");
-    await queryInterface.addColumn("supplies", "provider", {
-      type: Sequelize.STRING,
-      allowNull: true,
-    });
 
-    await queryInterface.removeColumn("inbound_orders", "provider_id");
     await queryInterface.addColumn("inbound_orders", "provider", {
       type: Sequelize.STRING,
       allowNull: true,
