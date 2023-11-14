@@ -1,11 +1,9 @@
 import {
   FileExcelFilled,
   ImportOutlined,
-  SelectOutlined,
 } from '@ant-design/icons';
 import {
   Button,
-  Checkbox,
   DatePicker,
   Divider,
   Pagination,
@@ -14,11 +12,10 @@ import {
   Table,
 } from 'antd';
 import { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import supplyApi from 'api/suplly.api';
-import { onChangeCheckbox, options } from 'utils/globalFunc.util';
+import { options } from 'utils/globalFunc.util';
 
-import type { PaginationProps } from 'antd';
 import moment from 'moment';
 import warehouseApi from 'api/warehouse.api';
 
@@ -36,18 +33,12 @@ const ReportSupplyByWarehouse = () => {
   const [startDate, setStartDate] = useState<any>(moment().subtract('months', 1));
   const [endDate, setEndDate] = useState<any>(moment());
   const [supllies, setSupplies] = useState<any>([]);
-  const location = useLocation();
-  const [searchQuery, setSearchQuery] = useState<any>({});
-  let searchQueryString: string;
-  const pathName: any = location?.pathname;
   const [page, setPage] = useState<number>(1);
-  const [limit, setLimit] = useState<number>(10);
   const [warehouses, setWarehouses] = useState([]);
   const [selectedWarehouse, setSelectedWarehouse] = useState<any>(1);
   const [total, setTotal] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
-  const [isShowCustomTable, setIsShowCustomTable] = useState<boolean>(false);
-  const seachWarehouses = (params: any) => {
+  const seachWarehouses = () => {
     warehouseApi.search({
     })
       .then((res) => {
@@ -59,14 +50,8 @@ const ReportSupplyByWarehouse = () => {
       .catch()
   }
   useEffect(() => {
-    seachWarehouses({});
+    seachWarehouses();
   }, [])
-  const onShowSizeChange: PaginationProps['onShowSizeChange'] = (
-    _current,
-    pageSize
-  ) => {
-    setLimit(pageSize);
-  };
 
   const columns: any = [
     {
@@ -136,23 +121,18 @@ const ReportSupplyByWarehouse = () => {
       show: true,
     },
   ];
-  const [columnTable, setColumnTable] = useState<any>(columns);
+  const [columnTable, _setColumnTable] = useState<any>(columns);
 
   const onPaginationChange = (page: number) => {
     setPage(page);
-    searchQuery.page = page;
-    setSearchQuery(searchQuery);
-    searchQueryString = new URLSearchParams(searchQuery).toString();
-    navigate(`${pathName}?${searchQueryString}`);
   };
 
   const pagination = {
     current: page,
     total: total,
-    pageSize: limit,
+    pageSize: 10,
     showTotal: (total: number) => `Tổng cộng: ${total} vật tư`,
     onChange: onPaginationChange,
-    onShowSizeChange: onShowSizeChange,
   };
 
   const handleGetReportSupplies = (start: any, end: any, selectedWarehouse: any) => {
@@ -166,6 +146,7 @@ const ReportSupplyByWarehouse = () => {
       const { success, data } = res.data;
       if (success) {
         setSupplies(data.result);
+        setTotal(data.count);
       }
     })
       .catch()
@@ -197,31 +178,6 @@ const ReportSupplyByWarehouse = () => {
       </div>
       <Divider />
       <div className="flex justify-between flex-col">
-        <div
-          className="flex flex-row gap-4 items-center mb-4"
-          onClick={() => setIsShowCustomTable(!isShowCustomTable)}
-        >
-          <SelectOutlined />
-          <div className="font-medium text-center cursor-pointer text-base">
-            Tùy chọn trường hiển thị
-          </div>
-        </div>
-        {isShowCustomTable && (
-          <div className="flex flex-row gap-4">
-            {columnTable.length > 0 &&
-              columnTable.map((item: any) => (
-                <div>
-                  <Checkbox
-                    defaultChecked={item?.show}
-                    onChange={(e: any) =>
-                      onChangeCheckbox(item, e, columnTable, setColumnTable)
-                    }
-                  />
-                  <div>{item?.title}</div>
-                </div>
-              ))}
-          </div>
-        )}
         <div className="flex justify-between">
           <div className='w-[500px]'>
             <Select

@@ -126,6 +126,7 @@ const OutboundOrderUpdate = () => {
             supplierName: item.Supply?.name,
             orderQuantity: item.quantity,
             unitPrice: item.Supply?.unit_price,
+            unit: item.Supply?.unit,
             totalValue: item.quantity * item.Supply?.unit_price || 0,
             description: item.Supply?.note,
           })));

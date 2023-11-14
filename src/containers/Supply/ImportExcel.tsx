@@ -53,43 +53,25 @@ const ImportSupplyByExcel = () => {
         for (let i = 2; i <= json?.length + 1; i++) {
           const name = workSheet[`A${i}`]?.v;
           const code = workSheet[`B${i}`]?.v;
-          const model = workSheet[`C${i}`]?.v;
-          const serial = workSheet[`D${i}`]?.v;
-          const manufacturer = workSheet[`E${i}`]?.v;
-          const manufacturing_country = workSheet[`F${i}`]?.v;
-          const year_of_manufacture = workSheet[`G${i}`]?.v;
-          const year_in_use = workSheet[`H${i}`]?.v;
-          const warehouse_import_date = new Date(
-            (workSheet[`I${i}`]?.v - (25567 + 2)) * 86400000
+          const lot_number = workSheet[`C${i}`]?.v;
+          const expiration_date = new Date(
+            (workSheet[`D${i}`]?.v - (25567 + 2)) * 86400000
           ).valueOf();
-          const project_id = workSheet[`J${i}`]?.v;
-          const note = workSheet[`K${i}`]?.v;
-          const technical_parameter = workSheet[`L${i}`]?.v;
-          const configuration = workSheet[`M${i}`]?.v;
-          const import_price = workSheet[`N${i}`]?.v;
-          const risk_level = workSheet[`O${i}`]?.v;
-          const usage_procedure = workSheet[`P${i}`]?.v;
-          const unit_id = workSheet[`Q${i}`]?.v;
-          const type_id = workSheet[`R${i}`]?.v;
+          const unit = workSheet[`E${i}`]?.v;
+          const unit_price = workSheet[`F${i}`]?.v;
+          const manufacturing_country = workSheet[`G${i}`]?.v;
+          const provider = workSheet[`H${i}`]?.v;
+          const note = workSheet[`I${i}`]?.v;
           newWorkSheet.push({
             name,
             code,
-            model,
-            serial,
-            manufacturer,
+            lot_number,
+            expiration_date,
+            unit,
+            unit_price,
             manufacturing_country,
-            year_in_use,
-            year_of_manufacture,
-            warehouse_import_date,
-            project_id,
-            note,
-            technical_parameter,
-            configuration,
-            import_price,
-            risk_level,
-            usage_procedure,
-            unit_id,
-            type_id,
+            provider,
+            note
           });
         }
         setData(newWorkSheet);

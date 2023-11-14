@@ -43,7 +43,7 @@ const InboundOrderCreate = () => {
   const [warehouses, setWarehouses] = useState([]);
   const [supllies, setSupplies] = useState<any>([]);
 
-  const seachWarehouses = (params: any) => {
+  const seachWarehouses = () => {
     warehouseApi.search({
     })
       .then((res) => {
@@ -67,7 +67,7 @@ const InboundOrderCreate = () => {
   };
   useEffect(() => {
     getSuppliesList();
-    seachWarehouses({});
+    seachWarehouses();
   }, [])
 
   const addRow = () => {
