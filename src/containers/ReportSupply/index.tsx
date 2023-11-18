@@ -11,12 +11,14 @@ import {
   Row,
   Table,
 } from 'antd';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useDebounce from 'hooks/useDebounce';
 import supplyApi from 'api/suplly.api';
 
 import moment from 'moment';
+import ExportToExcel from 'components/Excel';
+import { exportToExcelPro, getDataExcel, getFields, getHeadersExcel } from 'utils/globalFunc.util';
 
 const TableFooter = ({ paginationProps }: any) => {
   return (
@@ -29,6 +31,7 @@ const TableFooter = ({ paginationProps }: any) => {
 
 const ReportSupply = () => {
   const navigate = useNavigate();
+  const [loadingDownload, setLoadingDownload] = useState<boolean>(false);
   const [startDate, setStartDate] = useState<any>(moment().subtract('months', 1));
   const [endDate, setEndDate] = useState<any>(moment());
   const [supllies, setSupplies] = useState<any>([]);
@@ -44,41 +47,48 @@ const ReportSupply = () => {
       dataIndex: 'code',
       key: 'code',
       show: true,
+      widthExcel: 15,
     },
     {
       title: 'Số lô',
       dataIndex: 'lot_number',
       key: 'lot_number',
       show: true,
+      widthExcel: 15,
     },
     {
       title: 'Tên vật tư',
       dataIndex: 'name',
       key: 'name',
       show: true,
+      widthExcel: 30,
     },
     {
       title: 'Đơn vị tính',
       key: 'unit',
       dataIndex: 'unit',
       show: true,
+      widthExcel: 12,
     },
     {
       title: 'Đơn giá',
       key: 'unit_price',
       dataIndex: 'unit_price',
       show: true,
+      widthExcel: 20,
     },
     {
       title: 'Nhà cung cấp',
       key: 'provider',
       show: true,
+      widthExcel: 30,
       dataIndex: 'provider',
     },
     {
       title: 'Xuất sứ',
       key: 'manufacturing_country',
       show: true,
+      widthExcel: 15,
       dataIndex: 'manufacturing_country',
     },
     {
@@ -86,24 +96,28 @@ const ReportSupply = () => {
       key: 'begin_quantity',
       dataIndex: 'begin_quantity',
       show: true,
+      widthExcel: 20,
     },
     {
       title: 'Nhập trong kỳ',
       key: 'inbound_quantity',
       dataIndex: 'inbound_quantity',
       show: true,
+      widthExcel: 20,
     },
     {
       title: 'xuất trong kỳ',
       key: 'outbound_quantity',
       dataIndex: 'outbound_quantity',
       show: true,
+      widthExcel: 20,
     },
     {
       title: 'Tồn cuối kỳ',
       key: 'end_quantity',
       dataIndex: 'end_quantity',
       show: true,
+      widthExcel: 20,
     },
   ];
   const [columnTable, _setColumnTable] = useState<any>(columns);
@@ -144,23 +158,65 @@ const ReportSupply = () => {
   const handleSearchSupply = (value: string) => {
     setName(value)
   }
-
+  const resolveDataExcel = (data: any, sheetName: string, columnTable: any) => {
+    const fields: any = getFields(columnTable);
+    const objectKey = Object.keys(data[0]);
+    const newDatas: any = getDataExcel(data, objectKey, fields);
+    const workSheetColumnName = fields?.map((item: any) => ({
+      title: item?.title,
+      width: item?.width,
+    }));
+    const workSheetName = sheetName;
+    const fileName = `${sheetName} ${new Date()
+      .toISOString()
+      .substring(0, 10)}.xlsx`;
+    const finalData: any = [workSheetColumnName, ...newDatas];
+    const { myHeader, widths, newData } = getHeadersExcel(finalData);
+    exportToExcelPro(
+      newData,
+      fileName,
+      workSheetName,
+      workSheetName,
+      myHeader,
+      widths
+    );
+  };
+  const downloadEquipmentList = useCallback(async () => {
+    setLoadingDownload(true);
+    const res = await supplyApi.getReportSupplies({
+      data: {
+        start_date: startDate,
+        end_date: endDate,
+        search: (nameSearch || '').trim()
+      }
+    });
+    const reportData = res?.data?.data?.result;
+    const data = reportData.map((x: any) => ({
+      code: x.code,
+      lot_number: x.lot_number,
+      name: x.name,
+      unit: x.unit,
+      unit_price: x?.unit_price,
+      provider: x?.provider,
+      department: x?.Department?.name,
+      manufacturing_country: x?.manufacturing_country,
+      begin_quantity: x.begin_quantity,
+      inbound_quantity: x.inbound_quantity,
+      outbound_quantity: x.outbound_quantity,
+      end_quantity: x.end_quantity,
+    }));
+    resolveDataExcel(data, 'Báo cáo tồn kho', columnTable);
+    setLoadingDownload(false);
+  }, [startDate, endDate, nameSearch])
   return (
     <div>
       <div className="flex-between-center">
         <div className="title">Thống kê tồn kho vật tư</div>
         <div className="flex flex-row gap-6">
-          <Button className="flex-center text-slate-900 gap-2 rounded-3xl border-[#5B69E6] border-2">
-            <FileExcelFilled />
-            <div className="font-medium text-md text-[#5B69E6]">Xuất Excel</div>
-          </Button>
-          <Button
-            className="flex-center text-slate-900 gap-2 rounded-3xl border-[#5B69E6] border-2"
-            onClick={() => navigate('/supplies/import_excel_sp')}
-          >
-            <ImportOutlined />
-            <div className="font-medium text-md text-[#5B69E6]">Nhập Excel</div>
-          </Button>
+          <ExportToExcel
+            callback={downloadEquipmentList}
+            loading={loadingDownload}
+          />
         </div>
       </div>
       <Divider />

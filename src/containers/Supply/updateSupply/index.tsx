@@ -98,6 +98,8 @@ const SupplyUpdate = () => {
               label="Mã vật tư"
               name="code"
               className="mb-5"
+              required
+              rules={[{ required: true, message: 'Hãy nhập mã vật tư!' }]}
             >
               <Input
                 placeholder="Nhập mã vật tư"
@@ -109,6 +111,8 @@ const SupplyUpdate = () => {
               label="Số lô"
               name="lot_number"
               className="mb-5"
+              required
+              rules={[{ required: true, message: 'Hãy nhập số lô!' }]}
             >
               <Input
                 placeholder="Nhập số lô"

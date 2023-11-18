@@ -216,21 +216,21 @@ const LayoutSystem = (props: LayoutProps) => {
       )
       ]
     ),
-    getItem(
-      'Quản lý tổ chức',
-      '/organization',
-      permissions.DEPARTMENT_READ,
-      <UsergroupAddOutlined style={{ fontSize: '20px' }} />,
-      [
-        getItem('Khoa - Phòng', '/department', permissions.DEPARTMENT_READ),
-        getItem(
-          'Nhà cung cấp dịch vụ',
-          '/provider',
-          permissions.DEPARTMENT_READ
-        ),
-        getItem('Dịch vụ', '/service', permissions.DEPARTMENT_READ),
-      ]
-    ),
+    // getItem(
+    //   'Quản lý tổ chức',
+    //   '/organization',
+    //   permissions.DEPARTMENT_READ,
+    //   <UsergroupAddOutlined style={{ fontSize: '20px' }} />,
+    //   [
+    //     getItem('Khoa - Phòng', '/department', permissions.DEPARTMENT_READ),
+    //     getItem(
+    //       'Nhà cung cấp dịch vụ',
+    //       '/provider',
+    //       permissions.DEPARTMENT_READ
+    //     ),
+    //     getItem('Dịch vụ', '/service', permissions.DEPARTMENT_READ),
+    //   ]
+    // ),
     getItem(
       'Quản lý thành viên',
       '/user',
@@ -241,89 +241,89 @@ const LayoutSystem = (props: LayoutProps) => {
         getItem('Thêm mới thành viên', '/create_user', permissions.USER_CREATE),
       ]
     ),
-    getItem(
-      'Quản lý danh mục',
-      '/category',
-      permissions.GROUP_EQUIPMENT_READ,
-      <UnorderedListOutlined style={{ fontSize: '20px' }} />,
-      [
-        getItem('Nhóm thiết bị', '/group', permissions.GROUP_EQUIPMENT_READ),
-        getItem('Loại thiết bị', '/type', permissions.TYPE_EQUIPMENT_READ),
-        getItem('Đơn vị tính', '/unit', permissions.UNIT_EQUIPMENT_READ),
-        getItem('Trạng thái', '/status', true),
-        getItem('Chu kỳ', '/cycle'),
-      ]
-    ),
-    getItem(
-      'Thống kê thiết bị',
-      '/statistic',
-      permissions.STATISTIC_EQUIPMENT,
-      <BarChartOutlined style={{ fontSize: '20px' }} />,
-      [
-        getItem(
-          'Theo khoa phòng',
-          '/department',
-          permissions.STATISTIC_EQUIPMENT
-        ),
-        getItem(
-          'Theo trạng thái sử dụng',
-          '/status',
-          permissions.STATISTIC_EQUIPMENT
-        ),
-        getItem(
-          'Theo mức độ rủi ro',
-          '/risk_level',
-          permissions.STATISTIC_EQUIPMENT
-        ),
-        getItem(
-          'Theo loại thiết bị',
-          '/equipment_type',
-          permissions.STATISTIC_EQUIPMENT
-        ),
-        getItem('Theo năm', '/year', permissions.STATISTIC_EQUIPMENT),
-        getItem('Theo dự án', '/project', permissions.STATISTIC_EQUIPMENT),
-        getItem(
-          'Theo thời gian kiểm định',
-          '/accreditation',
-          permissions.STATISTIC_EQUIPMENT
-        ),
-        getItem(
-          'Theo thời gian hết hạn bảo hành',
-          '/warranty_expires',
-          permissions.STATISTIC_EQUIPMENT
-        ),
-        getItem(
-          'Thống kê vật tư',
-          '/supplies',
-          permissions.STATISTIC_EQUIPMENT
-        ),
-      ]
-    ),
-    getItem(
-      'Kiểm kê',
-      '/inventories',
-      permissions.INVENTORY_EQUIPMENT_READ,
-      <FileDoneOutlined style={{ fontSize: '20px' }} />,
-      [
-        getItem(
-          'Danh sách kiểm kê thiết bị',
-          '/equipment',
-          permissions.INVENTORY_EQUIPMENT_READ
-        ),
-        getItem(
-          'Danh sách kiểm kê vật tư',
-          '/supplies',
-          permissions.INVENTORY_EQUIPMENT_READ
-        ),
-      ]
-    ),
+    // getItem(
+    //   'Quản lý danh mục',
+    //   '/category',
+    //   permissions.GROUP_EQUIPMENT_READ,
+    //   <UnorderedListOutlined style={{ fontSize: '20px' }} />,
+    //   [
+    //     getItem('Nhóm thiết bị', '/group', permissions.GROUP_EQUIPMENT_READ),
+    //     getItem('Loại thiết bị', '/type', permissions.TYPE_EQUIPMENT_READ),
+    //     getItem('Đơn vị tính', '/unit', permissions.UNIT_EQUIPMENT_READ),
+    //     getItem('Trạng thái', '/status', true),
+    //     getItem('Chu kỳ', '/cycle'),
+    //   ]
+    // ),
+    // getItem(
+    //   'Thống kê thiết bị',
+    //   '/statistic',
+    //   permissions.STATISTIC_EQUIPMENT,
+    //   <BarChartOutlined style={{ fontSize: '20px' }} />,
+    //   [
+    //     getItem(
+    //       'Theo khoa phòng',
+    //       '/department',
+    //       permissions.STATISTIC_EQUIPMENT
+    //     ),
+    //     getItem(
+    //       'Theo trạng thái sử dụng',
+    //       '/status',
+    //       permissions.STATISTIC_EQUIPMENT
+    //     ),
+    //     getItem(
+    //       'Theo mức độ rủi ro',
+    //       '/risk_level',
+    //       permissions.STATISTIC_EQUIPMENT
+    //     ),
+    //     getItem(
+    //       'Theo loại thiết bị',
+    //       '/equipment_type',
+    //       permissions.STATISTIC_EQUIPMENT
+    //     ),
+    //     getItem('Theo năm', '/year', permissions.STATISTIC_EQUIPMENT),
+    //     getItem('Theo dự án', '/project', permissions.STATISTIC_EQUIPMENT),
+    //     getItem(
+    //       'Theo thời gian kiểm định',
+    //       '/accreditation',
+    //       permissions.STATISTIC_EQUIPMENT
+    //     ),
+    //     getItem(
+    //       'Theo thời gian hết hạn bảo hành',
+    //       '/warranty_expires',
+    //       permissions.STATISTIC_EQUIPMENT
+    //     ),
+    //     getItem(
+    //       'Thống kê vật tư',
+    //       '/supplies',
+    //       permissions.STATISTIC_EQUIPMENT
+    //     ),
+    //   ]
+    // ),
+    // getItem(
+    //   'Kiểm kê',
+    //   '/inventories',
+    //   permissions.INVENTORY_EQUIPMENT_READ,
+    //   <FileDoneOutlined style={{ fontSize: '20px' }} />,
+    //   [
+    //     getItem(
+    //       'Danh sách kiểm kê thiết bị',
+    //       '/equipment',
+    //       permissions.INVENTORY_EQUIPMENT_READ
+    //     ),
+    //     getItem(
+    //       'Danh sách kiểm kê vật tư',
+    //       '/supplies',
+    //       permissions.INVENTORY_EQUIPMENT_READ
+    //     ),
+    //   ]
+    // ),
     getItem(
       'Cài đặt',
       '/setting',
       permissions.SETTING_INFO,
       <SettingOutlined style={{ fontSize: '20px' }} />,
       [
-        getItem('Cấu hình hệ thống', '/email-config', permissions.SETTING_INFO),
+        // getItem('Cấu hình hệ thống', '/email-config', permissions.SETTING_INFO),
         getItem('Phân quyền', '/role', permissions.SETTING_ROLE),
         getItem('Thông báo', '/notification', permissions.SETTING_INFO),
       ]

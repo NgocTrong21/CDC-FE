@@ -15,11 +15,12 @@ import {
 import TextArea from 'antd/lib/input/TextArea';
 import inboundOrderApi from 'api/inbound_order';
 import warehouseApi from 'api/warehouse.api';
+import { permissions } from 'constants/permission.constant';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { options } from 'utils/globalFunc.util';
+import { getCurrentUser, options } from 'utils/globalFunc.util';
 
 const InboundOrderDetail = () => {
   const params = useParams();
@@ -35,6 +36,15 @@ const InboundOrderDetail = () => {
     setCurrentPage(page);
     setPageSize(size);
   };
+  const checkPermission = (permission: number) => {
+    const current_user: any = getCurrentUser();
+    const permissions = current_user?.Role?.Role_Permissions;
+    console.log(permissions);
+
+    return permissions?.find((item: any) => item.permission_id === permission);
+  };
+  console.log('check per', checkPermission(permissions.APPROVE_ORDERS));
+
   const dataSourceByPage = (dataSourceInput: any) => {
     if (dataSourceInput && dataSourceInput?.length > 0) {
       const startIndex = (currentPage - 1) * pageSize;
@@ -106,7 +116,7 @@ const InboundOrderDetail = () => {
             <Typography.Title level={4}>Thông tin phiếu nhập</Typography.Title>
             <Row>
               <Space>
-                {form.getFieldValue('status_id') === 1 && <><Button type="default" className="button-primary" onClick={() => handleAccept(id, 'accept')}>
+                {(checkPermission(permissions.APPROVE_ORDERS) && form.getFieldValue('status_id') === 1) && <><Button type="default" className="button-primary" onClick={() => handleAccept(id, 'accept')}>
                   Phê duyệt
                 </Button>
                   <Button className="rounded-md" danger onClick={() => handleAccept(id, 'reject')}>

@@ -115,19 +115,16 @@ const exportToExcelPro = async (
   const wb = new ExcelJS.Workbook();
   const ws = wb.addWorksheet(sheetName);
   const columns = myHeader?.length;
+  console.log('sheetName', sheetName);
+  console.log('columns', columns);
+  console.log('myHeader', myHeader);
 
   const title = {
     border: true,
     height: 40,
-    font: { size: 20, bold: false, color: { argb: 'FFFFFF' } },
+    font: { size: 20, bold: false, color: { argb: '000000' } },
     alignment: { horizontal: 'center', vertical: 'middle' },
-    fill: {
-      type: 'pattern',
-      pattern: 'solid', //darkVertical
-      fgColor: {
-        argb: '0000FF',
-      },
-    },
+    fill: null,
   };
   const header = {
     border: true,
@@ -158,6 +155,8 @@ const exportToExcelPro = async (
   });
 
   const buf = await wb.xlsx.writeBuffer();
+  console.log('check buf', myData, ws, header);
+
   fs.saveAs(new Blob([buf]), `${fileName}.xlsx`);
 };
 

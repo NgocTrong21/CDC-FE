@@ -48,7 +48,7 @@ const ImportOne = () => {
   };
 
   const onFinish = (values: any) => {
-    let data = { ...values, image, department_id: 1, status_id: 2 };
+    let data = { ...values, image, department_id: 1, status_id: 3 };
     setLoading(true);
     equipmentApi
       .create(data)

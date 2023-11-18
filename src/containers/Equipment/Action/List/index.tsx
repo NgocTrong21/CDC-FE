@@ -276,11 +276,10 @@ const List = () => {
             <>
               <Menu.Item
                 key="bell"
-                className={`${
-                  checkPermission(permissions.REPORT_EQUIPMENT_CREATE)
+                className={`${checkPermission(permissions.REPORT_EQUIPMENT_CREATE)
                     ? ''
                     : 'hidden'
-                }`}
+                  }`}
               >
                 <Tooltip title="Báo hỏng thiết bị">
                   <ExclamationCircleFilled
@@ -292,11 +291,10 @@ const List = () => {
                 <>
                   <Menu.Item
                     key="transfer"
-                    className={`${
-                      checkPermission(permissions.TRANFER_EQUIPMENT_CREATE)
+                    className={`${checkPermission(permissions.TRANFER_EQUIPMENT_CREATE)
                         ? ''
                         : 'hidden'
-                    }`}
+                      }`}
                   >
                     <Tooltip title="Điều chuyển thiết bị">
                       <RetweetOutlined
@@ -308,9 +306,8 @@ const List = () => {
               )}
               <Menu.Item
                 key="supplies"
-                className={`${
-                  checkPermission(permissions.IMPORT_SUPPLIES) ? '' : 'hidden'
-                }`}
+                className={`${checkPermission(permissions.IMPORT_SUPPLIES) ? '' : 'hidden'
+                  }`}
               >
                 <Tooltip title="Nhập vật tư kèm theo">
                   <Popconfirm
@@ -340,9 +337,8 @@ const List = () => {
           {item?.Equipment_Status?.id !== 7 && (
             <Menu.Item
               key="update_equipment"
-              className={`${
-                checkPermission(permissions.EQUIPMENT_UPDATE) ? '' : 'hidden'
-              }`}
+              className={`${checkPermission(permissions.EQUIPMENT_UPDATE) ? '' : 'hidden'
+                }`}
             >
               <Tooltip title="Cập nhật thiết bị">
                 <Link to={`/equipment/update/${item.id}`}>
@@ -376,9 +372,8 @@ const List = () => {
           )}
           <Menu.Item
             key="delete"
-            className={`${
-              checkPermission(permissions.EQUIPMENT_DELETE) ? '' : 'hidden'
-            }`}
+            className={`${checkPermission(permissions.EQUIPMENT_DELETE) ? '' : 'hidden'
+              }`}
           >
             <Tooltip title="Xóa thiết bị">
               <Popconfirm
