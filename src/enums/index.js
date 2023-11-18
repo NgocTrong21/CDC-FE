@@ -8,6 +8,8 @@ module.exports.RoleSystem = {
   TPVT: 7, //Trưởng phòng vật tư
   PTPVT: 8, //Phụ trách phòng vật tư
   USER: 9, //Người dùng mặc định
+  GDPVT: 10,
+  NVQLVT: 12,
 };
 
 module.exports.PermissionSystem = {
@@ -101,6 +103,10 @@ module.exports.PermissionSystem = {
   EXTERNAL_INSPECTION_EQUIPMENT_PRINT: 88,
   EXTERNAL_INSPECTION_EQUIPMENT_APPROVE: 89,
   EXTERNAL_INSPECTION_EQUIPMENT_DELETE: 90,
+  APPROVE_ORDERS: 91,
+  CRUD_ORDERS: 92,
+  CRUD_WAREHOUSES: 93,
+  CRUD_CONSUMABLE_SUPPLY: 94,
 };
 
 module.exports.REPORT = {

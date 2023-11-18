@@ -8,21 +8,21 @@ const roleMiddleware = require("../midlewares/role.middleware");
 router.post(
   "/create",
   authMiddleware,
-  roleMiddleware.isAdmin,
+  permissionMiddleware.CRUD_CONSUMABLE_SUPPLY,
   supplyController.create
 );
 router.patch(
   "/update",
   authMiddleware,
-  roleMiddleware.isAdmin,
+  permissionMiddleware.CRUD_CONSUMABLE_SUPPLY,
   supplyController.update
 );
-router.get("/list", authMiddleware, supplyController.list);
+router.get("/list", authMiddleware,permissionMiddleware.CRUD_CONSUMABLE_SUPPLY, supplyController.list);
 router.get("/detail", authMiddleware, supplyController.detail);
 router.delete(
   "/delete",
   authMiddleware,
-  roleMiddleware.isAdmin,
+  permissionMiddleware.CRUD_CONSUMABLE_SUPPLY,
   supplyController.delete
 );
 router.post(

@@ -8,37 +8,37 @@ const roleMiddleware = require("../midlewares/role.middleware");
 router.post(
   "/create",
   authMiddleware,
-  roleMiddleware.isAdmin,
+  permissionMiddleware.CRUD_WAREHOUSES,
   warehouseController.create
 );
 router.get(
   "/detail",
   authMiddleware,
-  roleMiddleware.isAdmin,
+  permissionMiddleware.CRUD_WAREHOUSES,
   warehouseController.detail
 );
 router.get(
   "/supplies_by_warehouse",
   authMiddleware,
-  roleMiddleware.isAdmin,
+  permissionMiddleware.CRUD_WAREHOUSES,
   warehouseController.suppliesByWarehouse
 );
 router.post(
   "/update",
   authMiddleware,
-  roleMiddleware.isAdmin,
+  permissionMiddleware.CRUD_WAREHOUSES,
   warehouseController.update
 );
 router.get(
   "/search",
   authMiddleware,
-  roleMiddleware.isAdmin,
+  permissionMiddleware.CRUD_WAREHOUSES,
   warehouseController.search
 );
 router.delete(
   "/delete",
   authMiddleware,
-  roleMiddleware.isAdmin,
+  permissionMiddleware.CRUD_WAREHOUSES,
   warehouseController.delete
 );
 

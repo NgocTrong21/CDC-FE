@@ -36,6 +36,7 @@ module.exports.getList = async (
       const offset = page > 1 ? limit * (page - 1) : 0;
       data = await db[model].findAndCountAll({
         limit: limit,
+        order: [["createdAt", "DESC"]],
         offset,
         ...query,
       });

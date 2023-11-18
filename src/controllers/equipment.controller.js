@@ -13,16 +13,16 @@ const { sendUnuseEquipmentEmail } = require("../utils/sendEmail.util");
 //Equipment Controller
 exports.create = async (req, res) => {
   try {
+    console.log(req.body);
     const data = req?.body;
     await db.sequelize.transaction(async (t) => {
-      const equipmentInDB = await db.Equipment.findOne({
-        where: {
-          fixed_asset_number: data?.fixed_asset_number,
-        },
-        // attributes: ['id', 'hash_code', 'serial'],
-      });
-      if (equipmentInDB)
-        return errorHandler(res, err.EQUIPMENT_FIELD_DUPLICATED);
+      // const equipmentInDB = await db.Equipment.findOne({
+      //   where: {
+      //     fixed_asset_number: data?.fixed_asset_number,
+      //   },
+      // });
+      // if (equipmentInDB)
+      //   return errorHandler(res, err.EQUIPMENT_FIELD_DUPLICATED);
       let equipment;
       if (data?.image) {
         const result = await cloudinary.uploader.upload(data?.image, {
