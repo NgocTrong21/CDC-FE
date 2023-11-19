@@ -25,17 +25,17 @@ const ImportWarehouse = () => {
   };
 
   const onFinish = (values: any) => {
-    console.log('check values', values);
-    warehouseApi.create({ data: values })
+    warehouseApi
+      .create({ data: values })
       .then((res: any) => {
-        const { success } = res.data;
+        const { success, message } = res.data;
         if (success) {
           toast.success('Thêm mới kho thành công!');
           setImage('');
           setSelectedImage('');
           form.resetFields();
         } else {
-          toast.error('Thêm mới kho thất bại!');
+          toast.error(message || 'Thêm mới kho thất bại!');
         }
       })
       .catch();
@@ -69,7 +69,13 @@ const ImportWarehouse = () => {
                 className="rounded-lg h-9 border-[#A3ABEB] border-2"
               />
             </Form.Item>
-            <Form.Item label="Mã kho" name="code" className="mb-5">
+            <Form.Item
+              label="Mã kho"
+              name="code"
+              className="mb-5"
+              required
+              rules={[{ required: true, message: 'Hãy nhập mã kho!' }]}
+            >
               <Input
                 placeholder="Nhập mã kho"
                 allowClear
@@ -78,14 +84,9 @@ const ImportWarehouse = () => {
             </Form.Item>
           </div>
 
+          <div className="grid grid-cols-2 gap-5"></div>
           <div className="grid grid-cols-2 gap-5">
-          </div>
-          <div className="grid grid-cols-2 gap-5">
-            <Form.Item
-              label="Thủ kho"
-              name="storekeeper"
-              className="mb-5"
-            >
+            <Form.Item label="Thủ kho" name="storekeeper" className="mb-5">
               <Input
                 placeholder="Nhập tên"
                 allowClear

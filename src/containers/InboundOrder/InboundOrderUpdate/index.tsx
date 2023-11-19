@@ -73,40 +73,54 @@ const InboundOrderUpdate = () => {
     }
   };
   const onFormSubmit = async (data: any) => {
-    if (data) {
-      inboundOrderApi.update({
-        data: {
-          id: data.id,
-          deliver: data?.deliver,
-          code: data?.code,
-          warehouse_id: data?.warehouse_id,
-          deliver_phone: data?.deliver_phone,
-          estimated_delivery_date: moment(new Date(data?.estimated_delivery_date)).toISOString(),
-          note: data?.note,
-          provider: data?.provider,
-        },
-        supplies: dataSource?.map((item: any) => ({
-          supply_id: item?.supplierId,
-          quantity: parseInt(item?.orderQuantity) || 0,
-        })),
-      }).then(() => {
-        toast.success('Cập nhật đơn nhập thành công');
-      }).catch(() => {
-        toast.error('Cập nhật đơn nhập thất bại!');
-      });
-    }
+    try {
+      await form.validateFields();
+      if (data) {
+        inboundOrderApi
+          .update({
+            data: {
+              id: data.id,
+              deliver: data?.deliver,
+              code: data?.code,
+              warehouse_id: data?.warehouse_id,
+              deliver_phone: data?.deliver_phone,
+              estimated_delivery_date: moment(
+                new Date(data?.estimated_delivery_date)
+              ).toISOString(),
+              note: data?.note,
+              provider: data?.provider,
+            },
+            supplies: dataSource?.map((item: any) => ({
+              supply_id: item?.supplierId,
+              quantity: parseInt(item?.orderQuantity) || 0,
+            })),
+          })
+          .then((res) => {
+            const { success, message } = res.data;
+            if (success) {
+              navigate('/order/inbound_order');
+              toast.success('Cập nhật đơn nhập thành công');
+            } else {
+              toast.error(message || 'Cập nhật đơn nhập thất bại!');
+            }
+          })
+          .catch(() => {
+            toast.error('Cập nhật đơn nhập thất bại!');
+          });
+      }
+    } catch (error) {}
   };
   const seachWarehouses = () => {
-    warehouseApi.search({
-    })
+    warehouseApi
+      .search({})
       .then((res) => {
         const { success, data } = res.data;
         if (success) {
           setWarehouses(data.warehouses);
         }
       })
-      .catch()
-  }
+      .catch();
+  };
   const getSuppliesList = () => {
     supplyApi
       .list({})
@@ -116,32 +130,53 @@ const InboundOrderUpdate = () => {
           setSupplies(data.supplies);
         }
       })
-      .catch()
+      .catch();
   };
   const getDetailInboundOrder = (id: any) => {
-    inboundOrderApi.detail(id)
+    inboundOrderApi
+      .detail(id)
       .then((res: any) => {
         const { success, data } = res.data;
         if (success) {
-          const { id, warehouse_id, provider, code, deliver, deliver_phone, estimated_delivery_date, note } = data.inbound_order;
+          const {
+            id,
+            warehouse_id,
+            provider,
+            code,
+            deliver,
+            deliver_phone,
+            estimated_delivery_date,
+            note,
+          } = data.inbound_order;
           form.setFieldsValue({
-            id, warehouse_id, provider, deliver, code, deliver_phone, note, estimated_delivery_date: moment(estimated_delivery_date)
+            id,
+            warehouse_id,
+            provider,
+            deliver,
+            code,
+            deliver_phone,
+            note,
+            estimated_delivery_date: moment(estimated_delivery_date),
           });
-          setDataSource(data.inbound_order.Supply_Inbound_Orders.map((item: any, index: any) => ({
-            key: index,
-            supplierId: item.Supply?.id,
-            supplierCode: item.Supply?.code || '',
-            supplierName: item.Supply?.name,
-            orderQuantity: item.quantity,
-            unitPrice: item.Supply?.unit_price,
-            unit: item.Supply?.unit,
-            totalValue: item.quantity * item.Supply?.unit_price || 0,
-            description: item.Supply?.note,
-          })));
+          setDataSource(
+            data.inbound_order.Supply_Inbound_Orders.map(
+              (item: any, index: any) => ({
+                key: index,
+                supplierId: item.Supply?.id,
+                supplierCode: item.Supply?.code || '',
+                supplierName: item.Supply?.name,
+                orderQuantity: item.quantity,
+                unitPrice: item.Supply?.unit_price,
+                unit: item.Supply?.unit,
+                totalValue: item.quantity * item.Supply?.unit_price || 0,
+                description: item.Supply?.note,
+              })
+            )
+          );
         }
       })
-      .catch()
-  }
+      .catch();
+  };
   const handleSelectItem = (value: string, index: number, record: any) => {
     if (supllies && supllies?.length > 0) {
       const actualIndex = (currentPage - 1) * pageSize + index;
@@ -154,25 +189,29 @@ const InboundOrderUpdate = () => {
         supplierName: selectedItem?.name,
         unitPrice: selectedItem?.unit_price,
         description: selectedItem?.note,
-        unit: selectedItem?.unit
-      })
-      setDataSource(listData)
+        unit: selectedItem?.unit,
+      });
+      setDataSource(listData);
     }
-  }
+  };
 
-  const handleChangeOrderQuantity = (value: number, index: number, record: any) => {
+  const handleChangeOrderQuantity = (
+    value: number,
+    index: number,
+    record: any
+  ) => {
     const actualIndex = (currentPage - 1) * pageSize + index;
     const listData = [...dataSource];
     const orderQuantity = value || 0;
     const unitValue = listData[actualIndex]?.unitPrice as number;
-    const totalValue = (orderQuantity * unitValue) || 0;
+    const totalValue = orderQuantity * unitValue || 0;
     listData[actualIndex] = {
       ...listData[actualIndex],
       orderQuantity,
       totalValue: totalValue || 0,
     };
     setDataSource(listData);
-  }
+  };
   useEffect(() => {
     getDetailInboundOrder(id);
     seachWarehouses();
@@ -181,20 +220,27 @@ const InboundOrderUpdate = () => {
 
   return (
     <Layout>
-      <Form form={form} size="middle" layout="vertical" autoComplete="off" >
+      <Form form={form} size="middle" layout="vertical" autoComplete="off">
         <Layout>
           <Row align="middle" justify="space-between">
             <Typography.Title level={4}>Cập nhật phiếu nhập</Typography.Title>
             <Row>
               <Space>
-                <Button type="primary" className="rounded-md" onClick={() => {
-                  navigate('/order/inbound_order')
-                }}>
+                <Button
+                  type="primary"
+                  className="rounded-md"
+                  onClick={() => {
+                    navigate('/order/inbound_order');
+                  }}
+                >
                   Đóng
                 </Button>
-                <Button className="button-primary" onClick={() => {
-                  onFormSubmit(form.getFieldsValue())
-                }}>
+                <Button
+                  className="button-primary"
+                  onClick={() => {
+                    onFormSubmit(form.getFieldsValue());
+                  }}
+                >
                   Lưu
                 </Button>
               </Space>
@@ -208,10 +254,7 @@ const InboundOrderUpdate = () => {
                 </Row>
                 <Row justify="space-between">
                   <Col span={12}>
-                    <Form.Item
-                      className='hidden'
-                      name="id"
-                    >
+                    <Form.Item className="hidden" name="id">
                       <Input />
                     </Form.Item>
                     <Form.Item
@@ -231,7 +274,10 @@ const InboundOrderUpdate = () => {
                     <Form.Item label="Người giao hàng" name="deliver">
                       <Input className="input" />
                     </Form.Item>
-                    <Form.Item label="Liên hệ người giao hàng" name="deliver_phone">
+                    <Form.Item
+                      label="Liên hệ người giao hàng"
+                      name="deliver_phone"
+                    >
                       <Input className="input" />
                     </Form.Item>
                   </Col>
@@ -249,10 +295,18 @@ const InboundOrderUpdate = () => {
                 <Row>
                   <Typography.Title level={5}>Tài liệu</Typography.Title>
                 </Row>
-                <Form.Item label="Số phiếu nhập" name="code">
+                <Form.Item
+                  label="Mã phiếu nhập"
+                  name="code"
+                  required
+                  rules={[{ required: true, message: 'Hãy nhập mã phiếu!' }]}
+                >
                   <Input className="input" />
                 </Form.Item>
-                <Form.Item label="Ngày dự kiến nhận hàng" name="estimated_delivery_date">
+                <Form.Item
+                  label="Ngày dự kiến nhận hàng"
+                  name="estimated_delivery_date"
+                >
                   <DatePicker className="date" />
                 </Form.Item>
               </Col>
@@ -339,7 +393,13 @@ const InboundOrderUpdate = () => {
                           width: '100px',
                         }}
                         onBlur={(e) => {
-                          handleChangeOrderQuantity(Math.round(parseFloat((e.target.value).replaceAll(',', ''))) as unknown as number, index, record)
+                          handleChangeOrderQuantity(
+                            Math.round(
+                              parseFloat(e.target.value.replaceAll(',', ''))
+                            ) as unknown as number,
+                            index,
+                            record
+                          );
                         }}
                         formatter={(value) => {
                           return `${value}`.replace(
@@ -360,7 +420,7 @@ const InboundOrderUpdate = () => {
                       return (
                         <InputNumber
                           value={parseFloat(value?.toFixed(1))}
-                          onChange={(value) => { }}
+                          onChange={(value) => {}}
                           formatter={(value) =>
                             ` ${value}`
                               .replace(/\./, '.')
