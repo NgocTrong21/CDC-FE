@@ -140,7 +140,8 @@ exports.search = async (req, res) => {
       filter,
       "Equipment",
       include,
-      attributes
+      attributes,
+      []
     );
     return successHandler(res, { equipments, count: equipments.length }, 200);
   } catch (error) {

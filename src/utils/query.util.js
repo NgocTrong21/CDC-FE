@@ -8,9 +8,11 @@ module.exports.getList = async (
   filter,
   model,
   include,
-  attributes = []
+  attributes = [],
+  order = [["createdAt", "DESC"]],
 ) => {
   try {
+    console.log(order);
     for (let i in filter) {
       if (!filter[i]) {
         delete filter[i];
@@ -36,7 +38,7 @@ module.exports.getList = async (
       const offset = page > 1 ? limit * (page - 1) : 0;
       data = await db[model].findAndCountAll({
         limit: limit,
-        order: [["createdAt", "DESC"]],
+        order: order,
         offset,
         ...query,
       });

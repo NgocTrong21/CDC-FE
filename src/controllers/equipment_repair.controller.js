@@ -45,7 +45,6 @@ exports.reportEquipment = async (req, res) => {
     await db.sequelize.transaction(async (t) => {
       const repair_data = await db.Repair.create(
         { ...data, done: 0 },
-
         { transaction: t }
       );
       const dataEmail = {
@@ -217,6 +216,11 @@ exports.createScheduleRepair = async (req, res) => {
           where: { equipment_id: data?.equipment_id, id: data?.id },
           transaction: t,
         }),
+        data.schedule_repair_status === 1 &&
+          (await db.Equipment.update(
+            { status_id: 5 },
+            { where: { id: data?.equipment_id }, transaction: t }
+          )),
         await db.Notification.create(
           {
             user_id: data.schedule_create_user_id,
