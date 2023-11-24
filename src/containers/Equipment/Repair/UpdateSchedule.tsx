@@ -262,16 +262,15 @@ const UpdateSchedule = () => {
 
   return (
     <div>
-      <div className="title text-center">{`${
-        query?.edit === 'true' ? 'CẬP NHẬT' : ''
-      } PHIẾU SỬA CHỮA THIẾT BỊ`}</div>
+      <div className="title text-center">{`${query?.edit === 'true' ? 'CẬP NHẬT' : ''
+        } PHIẾU SỬA CHỮA THIẾT BỊ`}</div>
       <Divider />
       <div>
         <div className="title">
           <div className="flex items-center gap-2">
             PHIẾU SỬA CHỮA (
             <span className="italic">Mã phiếu: {schedule?.code}</span>) ___{' '}
-            {handleScheduleRepairStatus(schedule?.schedule_repair_status)}
+            {/* {handleScheduleRepairStatus(schedule?.schedule_repair_status)} */}
             <Tooltip title="Chi tiết phiếu báo hỏng">
               <ExclamationCircleFilled
                 className="text-red-600"
@@ -369,11 +368,10 @@ const UpdateSchedule = () => {
             <Form.Item
               label="Nghiệm thu"
               name="repair_status"
-              required={schedule.schedule_repair_status === 1 ? true : false}
+              required
               rules={[
                 {
-                  required:
-                    schedule.schedule_repair_status === 1 ? true : false,
+                  required: true,
                   message: 'Hãy chọn trạng thái thiết bị!',
                 },
               ]}
@@ -384,24 +382,21 @@ const UpdateSchedule = () => {
                 optionFilterProp="children"
                 options={options(status)}
                 allowClear
-                disabled={schedule.schedule_repair_status !== 1}
               />
             </Form.Item>
             <Form.Item
               label="Ngày hoàn thành sửa chữa"
               name="repair_completion_date"
-              required={schedule.schedule_repair_status === 1 ? true : false}
+              required
               rules={[
                 {
-                  required:
-                    schedule.schedule_repair_status === 1 ? true : false,
+                  required: true,
                   message: 'Hãy chọn ngày hoàn thành sửa chữa!',
                 },
               ]}
             >
               <DatePicker
                 className="date"
-                disabled={schedule.schedule_repair_status !== 1}
               />
             </Form.Item>
           </div>
@@ -409,11 +404,10 @@ const UpdateSchedule = () => {
             <Form.Item
               label={`Chi phí sửa chữa thực tế: ${actualCost}`}
               name="actual_repair_cost"
-              required={schedule.schedule_repair_status === 1 ? true : false}
+              required
               rules={[
                 {
-                  required:
-                    schedule.schedule_repair_status === 1 ? true : false,
+                  required: true,
                   message: 'Hãy nhập chi phí sửa chữa thực tế!',
                 },
               ]}
@@ -422,14 +416,12 @@ const UpdateSchedule = () => {
                 className="input"
                 type="text"
                 onChange={(e) => handleChange(e, 'actual_cost')}
-                disabled={schedule.schedule_repair_status !== 1}
               />
             </Form.Item>
             <Form.Item label="Ghi chú" name="note">
               <TextArea
                 className="textarea"
                 rows={1}
-                disabled={schedule.schedule_repair_status !== 1}
               />
             </Form.Item>
             <Form.Item
@@ -440,7 +432,6 @@ const UpdateSchedule = () => {
               <Input
                 type="file"
                 onChange={(e: any) => handleChangeFile(e)}
-                disabled={schedule.schedule_repair_status !== 1}
               />
             </Form.Item>
           </div>
@@ -466,7 +457,7 @@ const UpdateSchedule = () => {
             )}
           </div>
           <div className="flex gap-6">
-            {schedule.schedule_repair_status !== 1 &&
+            {/* {schedule.schedule_repair_status !== 1 &&
               checkPermission(permissions.REPAIR_EQUIPMENT_APPROVE) && (
                 <Form.Item>
                   <Button
@@ -476,7 +467,7 @@ const UpdateSchedule = () => {
                     Phê duyệt
                   </Button>
                 </Form.Item>
-              )}
+              )} */}
             {schedule.schedule_repair_status !== 1 &&
               checkPermission(permissions.REPAIR_EQUIPMENT_UPDATE) && (
                 <Form.Item>
@@ -515,7 +506,7 @@ const UpdateSchedule = () => {
             )}
           </div>
         </Form>
-        <Modal
+        {/* <Modal
           title="Phê duyệt phiếu sửa chữa thiết bị"
           open={showApproveScheduleModal}
           onCancel={() => setShowApproveScheduleModal(false)}
@@ -571,7 +562,7 @@ const UpdateSchedule = () => {
               </Form.Item>
             </div>
           </Form>
-        </Modal>
+        </Modal> */}
       </div>
       <Modal
         open={showBrokenReportModal}

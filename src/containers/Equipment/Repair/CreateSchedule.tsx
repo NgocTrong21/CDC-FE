@@ -75,12 +75,12 @@ const CreateSchedule = () => {
         new Date(values?.schedule_repair_date)
       ).toISOString(),
       equipment_id: id,
+      schedule_repair_status: 1,
       id: repair_id,
       schedule_create_user_id: current_user?.id,
       name: equipment?.name,
       department: equipment?.Department?.name,
       department_id: equipment?.Department?.id,
-      schedule_repair_status: 0,
       isEdit: 0
     };
     setLoadingCreate(true);

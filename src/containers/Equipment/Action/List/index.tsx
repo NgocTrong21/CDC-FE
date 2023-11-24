@@ -11,6 +11,7 @@ import {
   RightCircleFilled,
   PlusSquareFilled,
   RetweetOutlined,
+  CarFilled,
 } from '@ant-design/icons';
 import {
   Button,
@@ -277,8 +278,8 @@ const List = () => {
               <Menu.Item
                 key="bell"
                 className={`${checkPermission(permissions.REPORT_EQUIPMENT_CREATE)
-                    ? ''
-                    : 'hidden'
+                  ? ''
+                  : 'hidden'
                   }`}
               >
                 <Tooltip title="Báo hỏng thiết bị">
@@ -292,8 +293,8 @@ const List = () => {
                   <Menu.Item
                     key="transfer"
                     className={`${checkPermission(permissions.TRANFER_EQUIPMENT_CREATE)
-                        ? ''
-                        : 'hidden'
+                      ? ''
+                      : 'hidden'
                       }`}
                   >
                     <Tooltip title="Điều chuyển thiết bị">
@@ -304,27 +305,6 @@ const List = () => {
                   </Menu.Item>
                 </>
               )}
-              <Menu.Item
-                key="supplies"
-                className={`${checkPermission(permissions.IMPORT_SUPPLIES) ? '' : 'hidden'
-                  }`}
-              >
-                <Tooltip title="Nhập vật tư kèm theo">
-                  <Popconfirm
-                    title="Nhập vật tư kèm theo"
-                    onConfirm={() =>
-                      navigate(`/equipment/import_supplies/${item?.id}`)
-                    }
-                    onCancel={() =>
-                      navigate(`/equipment/import_supply/${item?.id}`)
-                    }
-                    okText="Chọn vật tư sẵn có"
-                    cancelText="Nhập mới"
-                  >
-                    <PlusSquareFilled />
-                  </Popconfirm>
-                </Tooltip>
-              </Menu.Item>
             </>
           )}
           <Menu.Item key="detail">
@@ -347,20 +327,6 @@ const List = () => {
               </Tooltip>
             </Menu.Item>
           )}
-          {/* {item?.Equipment_Status?.id === 6 && (
-            <Menu.Item
-              key="liquidation"
-              className={`${
-                checkPermission(permissions.LIQUIDATION_EQUIPMENT_CREATE)
-                  ? ''
-                  : 'hidden'
-              }`}
-            >
-              <Tooltip title="Thanh lý thiết bị">
-                <CarFilled />
-              </Tooltip>
-            </Menu.Item>
-          )} */}
           {item?.Equipment_Status?.id === 7 && (
             <Menu.Item key="liquidation_word">
               <Tooltip title="Biên bản thanh lý">

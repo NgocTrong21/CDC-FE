@@ -1,12 +1,10 @@
 import { useContext, useEffect, useState } from 'react';
 import {
-  CheckCircleFilled,
   EyeFilled,
   FilterFilled,
   PlusCircleFilled,
   ProfileFilled,
   RightCircleFilled,
-  ScissorOutlined,
   SelectOutlined,
   ToolFilled,
 } from '@ant-design/icons';
@@ -16,7 +14,6 @@ import {
   Input,
   Menu,
   Pagination,
-  Popconfirm,
   Row,
   Select,
   Table,
@@ -66,95 +63,6 @@ const Repair = () => {
     const scheduleStatus = [0, 1, 2];
     return scheduleStatus.includes(status);
   };
-
-  const columns_highest_repair_cost: any = [
-    {
-      title: 'Mã thiết bị',
-      key: 'code',
-      show: true,
-      widthExcel: 30,
-      render: (item: any) => <div>{item?.Equipment?.code}</div>,
-    },
-    {
-      title: 'Tên thiết bị',
-      key: 'name',
-      show: true,
-      widthExcel: 30,
-      render: (item: any) => <div>{item?.Equipment?.name}</div>,
-    },
-    {
-      title: 'Model',
-      key: 'model',
-      show: true,
-      widthExcel: 30,
-      render: (item: any) => <div>{item?.Equipment?.model}</div>,
-    },
-    {
-      title: 'Serial',
-      key: 'serial',
-      show: true,
-      widthExcel: 30,
-      render: (item: any) => <div>{item?.Equipment?.serial}</div>,
-    },
-    {
-      title: 'Khoa - Phòng',
-      key: 'department',
-      show: true,
-      render: (item: any) => <div>{item?.Equipment?.Department?.name}</div>,
-      widthExcel: 30,
-    },
-    {
-      title: 'Trạng thái hoạt động',
-      key: 'status',
-      show: true,
-      render: (item: any) => (
-        <div>{item?.Equipment?.Equipment_Status?.name}</div>
-      ),
-      widthExcel: 30,
-    },
-    {
-      title: 'Tổng chi phí sửa chữa',
-      key: 'total',
-      show: true,
-      widthExcel: 30,
-      render: (item: any) => <div>{formatCurrencyVN(item?.total)}</div>,
-    },
-    {
-      title: 'Tác vụ',
-      key: 'action',
-      show: true,
-      render: (item: any) => (
-        <Menu className="flex flex-row">
-          <Menu.Item key="detail">
-            <Tooltip title="Hồ sơ thiết bị">
-              <Link to={`/equipment/detail/${item?.equipment_id}`}>
-                <EyeFilled />
-              </Link>
-            </Tooltip>
-          </Menu.Item>
-          <Menu.Item key="history">
-            <Tooltip title="Lịch sử sửa chữa">
-              <Link to={`/equipment/repair/history/${item?.equipment_id}`}>
-                <ProfileFilled />
-              </Link>
-            </Tooltip>
-          </Menu.Item>
-          <Menu.Item key="detail">
-            <Tooltip title="Ngừng sử dụng">
-              <Popconfirm
-                title="Bạn muốn ngừng sử dụng thiết bị này?"
-                onConfirm={() => handleUnuseEquipment(item)}
-                okText="Đồng ý"
-                cancelText="Hủy"
-              >
-                <ScissorOutlined />
-              </Popconfirm>
-            </Tooltip>
-          </Menu.Item>
-        </Menu>
-      ),
-    },
-  ];
 
   const columns: any = [
     {
@@ -273,7 +181,7 @@ const Repair = () => {
     {
       title: 'Trạng thái xử lý phiếu báo hỏng',
       key: 'report_status',
-      show: true,
+      show: false,
       widthExcel: 30,
       render: (item: any) => {
         return <>{handleReportStatus(item?.Repairs[0]?.report_status)}</>;
@@ -282,7 +190,7 @@ const Repair = () => {
     {
       title: 'Trạng thái xử lý phiếu sửa chữa',
       key: 'schedule_repair_status',
-      show: true,
+      show: false,
       widthExcel: 30,
       render: (item: any) => {
         return (
@@ -310,26 +218,11 @@ const Repair = () => {
               </Link>
             </Tooltip>
           </Menu.Item>
-          <Menu.Item key="report">
-            <Tooltip title="Phiếu báo hỏng">
-              <Link
-                to={`/equipment/repair/broken_report/${item?.id}/${item?.Repairs[0]?.id}`}
-              >
-                <CheckCircleFilled />
-              </Link>
-            </Tooltip>
-          </Menu.Item>
-          {item?.Repairs[0]?.report_status === 1 &&
-            !checkScheduleRepair(item?.Repairs[0]?.schedule_repair_status) && (
+          {
+            (item?.Repairs[0]?.schedule_repair_status === null) && (
               <Menu.Item key="word">
                 <Tooltip
-                  title={` ${
-                    checkPermission(permissions.REPAIR_EQUIPMENT_CREATE)
-                      ? item?.Repairs[0]?.repair_status === null
-                        ? 'Tạo phiếu sửa chữa'
-                        : 'Xem phiếu sửa chữa'
-                      : 'Xem phiếu sửa chữa'
-                  }`}
+                  title='Tạo phiếu sửa chữa'
                 >
                   <Link
                     to={`/equipment/repair/create_schedule/${item?.id}/${item?.Repairs[0]?.id}`}
@@ -339,26 +232,24 @@ const Repair = () => {
                 </Tooltip>
               </Menu.Item>
             )}
-          {item?.Repairs[0]?.report_status === 1 &&
-            checkScheduleRepair(item?.Repairs[0]?.schedule_repair_status) && (
-              <Menu.Item key="edit">
-                <Tooltip
-                  title={`${
-                    checkPermission(permissions.REPAIR_EQUIPMENT_UPDATE)
-                      ? item?.Repairs[0]?.repair_status === null
-                        ? 'Cập nhật phiếu sửa chữa'
-                        : 'Xem phiếu sửa chữa'
-                      : 'Xem phiếu sửa chữa'
+          {((item?.Repairs[0]?.schedule_repair_status === 1) &&
+            <Menu.Item key="edit">
+              <Tooltip
+                title={`${checkPermission(permissions.REPAIR_EQUIPMENT_UPDATE)
+                  ? item?.Repairs[0]?.repair_status === null
+                    ? 'Cập nhật phiếu sửa chữa'
+                    : 'Xem phiếu sửa chữa'
+                  : 'Xem phiếu sửa chữa'
                   }`}
+              >
+                <Link
+                  to={`/equipment/repair/update_schedule/${item?.id}/${item?.Repairs[0]?.id}?edit=true`}
                 >
-                  <Link
-                    to={`/equipment/repair/update_schedule/${item?.id}/${item?.Repairs[0]?.id}?edit=true`}
-                  >
-                    <ToolFilled />
-                  </Link>
-                </Tooltip>
-              </Menu.Item>
-            )}
+                  <ToolFilled />
+                </Link>
+              </Tooltip>
+            </Menu.Item>
+          )}
           {(item?.Repairs[0]?.repair_status === 3 ||
             item?.Repairs[0]?.repair_status === 4) &&
             checkPermission(permissions.REPAIR_EQUIPMENT_APPROVE) && (

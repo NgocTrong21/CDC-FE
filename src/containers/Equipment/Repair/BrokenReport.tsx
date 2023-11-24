@@ -67,8 +67,8 @@ const BrokenReport = () => {
             approve_broken_report_date: data?.equipment
               ?.approve_broken_report_date
               ? moment(data?.equipment?.approve_broken_report_date).format(
-                  'hh:mm:ss, DD-MM-YYYY'
-                )
+                'hh:mm:ss, DD-MM-YYYY'
+              )
               : moment(new Date()).format('DD-MM-YYYY'),
             approve_report_person_id:
               data?.equipment?.approve_report_person?.id || current_user.id,
@@ -87,40 +87,40 @@ const BrokenReport = () => {
     getBrokenReport();
   }, [id, repair_id]);
 
-  const handleApproveBrokenReport = (values: any) => {
-    const data = {
-      id: equipment.id,
-      equipment_id: equipment.equipment_id,
-      approve_report_person_id: equipment.approve_report_person_id,
-      approve_broken_report_date: moment(
-        new Date(equipment.approve_broken_report_date)
-      ).toISOString(),
-      report_status: values.report_status,
-      report_note: values.report_note,
-      name: equipment.name,
-      department: equipment.department,
-      department_id: equipment.department_id,
-      reporting_person_id: equipment.reporting_person_id,
-      isEdit: 1
-    };
-    setLoadingApprove(true);
-    equipmentRepairApi
-      .approveBrokenReport(data)
-      .then((res: any) => {
-        const { success } = res.data;
-        if (success) {
-          getBrokenReport();
-          setShowApproveReportModal(false);
-          toast.success('Phê duyệt phiếu báo hỏng thành công!');
-          increaseCount();
-          getAllNotifications();
-        } else {
-          toast.error('Phê duyệt phiếu báo hỏng thất bại!');
-        }
-      })
-      .catch()
-      .finally(() => setLoadingApprove(false));
-  };
+  // const handleApproveBrokenReport = (values: any) => {
+  //   const data = {
+  //     id: equipment.id,
+  //     equipment_id: equipment.equipment_id,
+  //     approve_report_person_id: equipment.approve_report_person_id,
+  //     approve_broken_report_date: moment(
+  //       new Date(equipment.approve_broken_report_date)
+  //     ).toISOString(),
+  //     report_status: values.report_status,
+  //     report_note: values.report_note,
+  //     name: equipment.name,
+  //     department: equipment.department,
+  //     department_id: equipment.department_id,
+  //     reporting_person_id: equipment.reporting_person_id,
+  //     isEdit: 1
+  //   };
+  //   setLoadingApprove(true);
+  //   equipmentRepairApi
+  //     .approveBrokenReport(data)
+  //     .then((res: any) => {
+  //       const { success } = res.data;
+  //       if (success) {
+  //         getBrokenReport();
+  //         setShowApproveReportModal(false);
+  //         toast.success('Phê duyệt phiếu báo hỏng thành công!');
+  //         increaseCount();
+  //         getAllNotifications();
+  //       } else {
+  //         toast.error('Phê duyệt phiếu báo hỏng thất bại!');
+  //       }
+  //     })
+  //     .catch()
+  //     .finally(() => setLoadingApprove(false));
+  // };
 
   const updateBrokenReport = (values: any) => {
     const data = {
@@ -188,14 +188,15 @@ const BrokenReport = () => {
         <div className="grid grid-cols-2 gap-5">
           <Form.Item label="Lí do hỏng" name="reason">
             <Input
-              disabled={equipment?.report_status === 1}
+              disabled
               className="input"
             />
           </Form.Item>
           <Form.Item label="Mức độ ưu tiên" name="repair_priority">
             <Select
-              disabled={equipment?.report_status === 1}
+              disabled
               options={broken_status}
+              className='text-black'
             />
           </Form.Item>
         </div>
@@ -220,7 +221,7 @@ const BrokenReport = () => {
             className="hidden"
           ></Form.Item>
         </div>
-        <div className="flex items-center justify-center gap-4">
+        {/* <div className="flex items-center justify-center gap-4">
           {equipment.report_status !== 1 &&
             checkPermission(permissions.REPORT_EQUIPMENT_APPROVE) && (
               <Form.Item>
@@ -245,8 +246,8 @@ const BrokenReport = () => {
                 </Button>
               </Form.Item>
             )}
-        </div>
-        {equipment.report_status === 1 && (
+        </div> */}
+        {/* {equipment.report_status === 1 && (
           <Form.Item>
             <Button
               className="button-primary"
@@ -255,9 +256,9 @@ const BrokenReport = () => {
               In phiếu báo hỏng
             </Button>
           </Form.Item>
-        )}
+        )} */}
       </Form>
-      <Modal
+      {/* <Modal
         title="Phê duyệt phiếu báo hỏng thiết bị"
         open={showApproveReportModal}
         onCancel={() => setShowApproveReportModal(false)}
@@ -303,7 +304,7 @@ const BrokenReport = () => {
             </Form.Item>
           </div>
         </Form>
-      </Modal>
+      </Modal> */}
     </div>
   );
 };
