@@ -367,3 +367,43 @@ module.exports.EQUIPMENT_FIELD_DUPLICATED = {
   code: 1039,
   messageCode: "EQUIPMENT_FIELD_DUPLICATED",
 };
+module.exports.SUPPLY_FIELD_DUPLICATED = {
+  status: 200,
+  success: false,
+  data: null,
+  message: "Thông tin mã và số lô vật tư đã tồn tại trên hệ thống",
+  code: 10340,
+  messageCode: "SUPPLY_FIELD_DUPLICATED",
+};
+module.exports.WAREHOUSE_FIELD_DUPLICATED = {
+  status: 200,
+  success: false,
+  data: null,
+  message: "Thông tin mã kho đã tồn tại trên hệ thống",
+  code: 10341,
+  messageCode: "WAREHOUSE_FIELD_DUPLICATED",
+};
+module.exports.INBOUND_FIELD_DUPLICATED = {
+  status: 200,
+  success: false,
+  data: null,
+  message: "Thông tin mã phiếu đã tồn tại trên hệ thống",
+  code: 10342,
+  messageCode: "INBOUND_FIELD_DUPLICATED",
+};
+module.exports.OUTBOUND_FIELD_DUPLICATED = {
+  status: 200,
+  success: false,
+  data: null,
+  message: "Thông tin mã phiếu đã tồn tại trên hệ thống",
+  code: 10343,
+  messageCode: "OUTBOUND_FIELD_DUPLICATED",
+};
+module.exports.EMPTY_SUPPLIES = {
+  status: 200,
+  success: false,
+  data: null,
+  message: "Vật tư bị trống. Vui lòng nhập thông tin vật tư",
+  code: 10344,
+  messageCode: "EMPTY_SUPPLIES",
+};

@@ -7,15 +7,21 @@ const { getList } = require("../utils/query.util");
 exports.create = async (req, res) => {
   try {
     const { data, supplies } = req.body;
-        let inbound_order;
+    let inbound_order;
     await db.sequelize.transaction(async (t) => {
-      inbound_order = await db.Inbound_Order.create(
+      const inboundOrderInDB = await db.Inbound_Order.findOne({
+        where: {
+          code: data.code,
+        },
+      });
+      if (inboundOrderInDB)
+        return errorHandler(res, err.INBOUND_FIELD_DUPLICATED);
+      const inbound_order = await db.Inbound_Order.create(
         { ...data, status_id: 1 },
         {
           transaction: t,
         }
       );
-
       for (const supply of supplies) {
         await db.Supply_Inbound_Order.create(
           {
@@ -25,9 +31,8 @@ exports.create = async (req, res) => {
           { transaction: t }
         );
       }
+      return successHandler(res, {}, 200);
     });
-
-    return successHandler(res, {}, 200);
   } catch (error) {
     return errorHandler(res, error);
   }
@@ -140,6 +145,13 @@ exports.update = async (req, res) => {
         where: { id: data?.id },
       });
       if (!isHas) return errorHandler(res, err.ORDER_NOT_FOUND);
+      const inboundOrderInDB = await db.Inbound_Order.findOne({
+        where: {
+          code: data.code,
+        },
+      });
+      if (inboundOrderInDB)
+        return errorHandler(res, err.INBOUND_FIELD_DUPLICATED);
       await db.Inbound_Order.update(data, {
         where: { id: data?.id },
         transaction: t,
@@ -156,9 +168,8 @@ exports.update = async (req, res) => {
           { transaction: t }
         );
       }
+      return successHandler(res, {}, 200);
     });
-
-    return successHandler(res, {}, 200);
   } catch (error) {
     return errorHandler(res, error);
   }

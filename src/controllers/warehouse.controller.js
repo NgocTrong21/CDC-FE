@@ -7,9 +7,15 @@ const { getList } = require("../utils/query.util");
 exports.create = async (req, res) => {
   try {
     const { data } = req.body;
-    let warehouse;
     await db.sequelize.transaction(async (t) => {
-      warehouse = await db.Warehouse.create(data, {
+      const warehouseInDB = await db.Warehouse.findOne({
+        where: {
+          code: data.code,
+        },
+      });
+      if (warehouseInDB)
+        return errorHandler(res, err.WAREHOUSE_FIELD_DUPLICATED);
+      await db.Warehouse.create(data, {
         transaction: t,
       });
       return successHandler(res, {}, 200);
@@ -36,12 +42,12 @@ exports.suppliesByWarehouse = async (req, res) => {
   try {
     let { id } = req?.query;
     const supplies = await db.Warehouse_Supply.findAll({
-      where: { warehouse_id:  id},
-        include: [
-          {
-            model: db.Supply,
-          },
-        ],
+      where: { warehouse_id: id },
+      include: [
+        {
+          model: db.Supply,
+        },
+      ],
       raw: false,
     });
     return successHandler(res, { supplies }, 200);
@@ -58,13 +64,19 @@ exports.update = async (req, res) => {
         where: { id: data?.id },
       });
       if (!isHas) return errorHandler(res, err.WAREHOUSE_NOT_FOUND);
+      const warehouseInDB = await db.Warehouse.findOne({
+        where: {
+          code: data.code,
+        },
+      });
+      if (warehouseInDB)
+        return errorHandler(res, err.WAREHOUSE_FIELD_DUPLICATED);
       await db.Warehouse.update(data, {
         where: { id: data?.id },
         transaction: t,
       });
+      return successHandler(res, {}, 200);
     });
-
-    return successHandler(res, {}, 200);
   } catch (error) {
     return errorHandler(res, error);
   }
@@ -103,5 +115,3 @@ exports.search = async (req, res) => {
     return errorHandler(res, error);
   }
 };
-
-

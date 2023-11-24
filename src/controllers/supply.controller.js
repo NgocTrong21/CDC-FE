@@ -9,8 +9,14 @@ exports.create = async (req, res) => {
   try {
     const data = req.body;
     await db.sequelize.transaction(async (t) => {
+      const supplyInDB = await db.Supply.findOne({
+        where: {
+          code: data.code,
+          lot_number: data.lot_number,
+        },
+      });
+      if (supplyInDB) return errorHandler(res, err.SUPPLY_FIELD_DUPLICATED);
       await db.Supply.create(data, { transaction: t });
-
       return successHandler(res, {}, 201);
     });
   } catch (error) {
@@ -27,7 +33,13 @@ exports.update = async (req, res) => {
         raw: false,
       });
       if (!isHas) return errorHandler(res, err.EQUIPMENT_NOT_FOUND);
-
+      const supplyInDB = await db.Supply.findOne({
+        where: {
+          code: data.code,
+          lot_number: data.lot_number,
+        },
+      });
+      if (supplyInDB) return errorHandler(res, err.SUPPLY_FIELD_DUPLICATED);
       await db.Supply.update(data, {
         where: { id: data?.id },
         transaction: t,
@@ -262,9 +274,25 @@ exports.listSupplyOfEquipment = async (req, res) => {
 };
 
 exports.importByExcel = async (req, res) => {
+  let duplicateArray = [];
+  const data = req.body;
   try {
     await db.sequelize.transaction(async (t) => {
-      await db.Supply.bulkCreate(req.body, { transaction: t });
+      await Promise.all(
+        data.map(async (supply) => {
+          const isDuplicate = await db.Supply.findOne({
+            where: {
+              code: supply?.code,
+              lot_number: supply?.lot_number,
+            },
+          });
+          if (isDuplicate) {
+            duplicateArray.push(supply);
+          } else {
+            await db.Supply.create(supply, { transaction: t });
+          }
+        })
+      );
       return successHandler(res, {}, 200);
     });
   } catch (error) {
@@ -461,7 +489,10 @@ exports.create_report = async (req, res) => {
         const supplyName = supply_db[0].Supply.name.toLowerCase();
         const supplyCode = supply_db[0].Supply.code.toLowerCase();
         const searchText = data.search.toLowerCase();
-        if(supplyName?.includes(searchText) === true || supplyCode?.includes(searchText) === true) {
+        if (
+          supplyName?.includes(searchText) === true ||
+          supplyCode?.includes(searchText) === true
+        ) {
           result.push({
             ...supply_db[0].Supply.toJSON(),
             begin_quantity:
@@ -474,8 +505,7 @@ exports.create_report = async (req, res) => {
               Number(item.quantity),
           });
         }
-      }
-      else {
+      } else {
         result.push({
           ...supply_db[0].Supply.toJSON(),
           begin_quantity:
@@ -489,7 +519,11 @@ exports.create_report = async (req, res) => {
         });
       }
     }
-    return successHandler(res, { result, count: result ? result.length : 0 }, 200);
+    return successHandler(
+      res,
+      { result, count: result ? result.length : 0 },
+      200
+    );
   } catch (error) {
     return errorHandler(res, error);
   }
@@ -661,7 +695,11 @@ exports.create_report_by_warehouse = async (req, res) => {
           Number(item.quantity),
       });
     }
-    return successHandler(res, { result, count: result ? result.length : 0 }, 200);
+    return successHandler(
+      res,
+      { result, count: result ? result.length : 0 },
+      200
+    );
   } catch (error) {
     return errorHandler(res, error);
   }
