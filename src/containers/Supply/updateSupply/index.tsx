@@ -28,11 +28,15 @@ const SupplyUpdate = () => {
     }
   };
   const onFinish = (values: any) => {
-    let data = { ...values, expiration_date: moment(new Date(values?.expiration_date)).toISOString(), image };
+    let data = {
+      ...values,
+      expiration_date: moment(new Date(values?.expiration_date)).toISOString(),
+      image,
+    };
     supplyApi
       .update(data)
       .then((res: any) => {
-        const { success } = res.data;
+        const { success, message } = res.data;
         if (success) {
           toast.success('Cập nhật vật tư thành công!');
           setImage('');
@@ -40,25 +44,46 @@ const SupplyUpdate = () => {
           form.resetFields();
           navigate(`/supplies/list_sp`);
         } else {
-          toast.error('Cập nhật vật tư thất bại!');
+          toast.error(message || 'Cập nhật vật tư thất bại!');
         }
       })
       .catch();
   };
   const getDetailEquipment = (id: any) => {
-    supplyApi.detail(id)
+    supplyApi
+      .detail(id)
       .then((res: any) => {
         const { success, data } = res.data;
         if (success) {
           console.log(data.supply);
-          const { id, name, code, expiration_date, lot_number, manufacturing_country, provider, unit, unit_price, note } = data.supply
+          const {
+            id,
+            name,
+            code,
+            expiration_date,
+            lot_number,
+            manufacturing_country,
+            provider,
+            unit,
+            unit_price,
+            note,
+          } = data.supply;
           form.setFieldsValue({
-            id, name, code, lot_number, manufacturing_country, provider, unit, unit_price, expiration_date: moment(expiration_date), note
-          })
+            id,
+            name,
+            code,
+            lot_number,
+            manufacturing_country,
+            provider,
+            unit,
+            unit_price,
+            expiration_date: moment(expiration_date),
+            note,
+          });
         }
       })
-      .catch()
-  }
+      .catch();
+  };
 
   useEffect(() => {
     getDetailEquipment(id);
@@ -114,22 +139,14 @@ const SupplyUpdate = () => {
               required
               rules={[{ required: true, message: 'Hãy nhập số lô!' }]}
             >
-              <Input
-                placeholder="Nhập số lô"
-                allowClear
-                className="input"
-              />
+              <Input placeholder="Nhập số lô" allowClear className="input" />
             </Form.Item>
             <Form.Item label="Hạn sử dụng" name="expiration_date">
               <DatePicker className="date" />
             </Form.Item>
           </div>
           <div className="grid grid-cols-3 gap-5">
-            <Form.Item
-              label="Đơn vị tính"
-              name="unit"
-              className="mb-5"
-            >
+            <Form.Item label="Đơn vị tính" name="unit" className="mb-5">
               <Input
                 placeholder="Nhập đơn vị tính"
                 allowClear
@@ -153,7 +170,11 @@ const SupplyUpdate = () => {
           </div>
           <div className="grid grid-cols-3 gap-5">
             <Form.Item label="Nhà cung cấp" name="provider" className="mb-5">
-              <Input placeholder="Nhập nhà cung cấp" allowClear className="input" />
+              <Input
+                placeholder="Nhập nhà cung cấp"
+                allowClear
+                className="input"
+              />
             </Form.Item>
           </div>
 

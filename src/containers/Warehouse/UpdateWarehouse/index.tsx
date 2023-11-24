@@ -9,7 +9,7 @@ import { toast } from 'react-toastify';
 
 const UpdateWarehouse = () => {
   const navigate = useNavigate();
-  const {id} = useParams();
+  const { id } = useParams();
   const [form] = Form.useForm();
   const [selectedImage, setSelectedImage] = useState<any>('');
   const [image, setImage] = useState<any>('');
@@ -24,27 +24,32 @@ const UpdateWarehouse = () => {
     }
   };
   useEffect(() => {
-    if(id) {
-      warehouseApi.detail(+id)
-      .then((res: any) => {
-        const { success, data } = res.data;
-        if (success) {
-          const { name, code, note, storekeeper, id } = data.warehouse
-          form.setFieldsValue({
-            id, name, code, storekeeper, note
-          })
-        }
-      })
-      .catch()
+    if (id) {
+      warehouseApi
+        .detail(+id)
+        .then((res: any) => {
+          const { success, data } = res.data;
+          if (success) {
+            const { name, code, note, storekeeper, id } = data.warehouse;
+            form.setFieldsValue({
+              id,
+              name,
+              code,
+              storekeeper,
+              note,
+            });
+          }
+        })
+        .catch();
     }
-    
-  }, [id])
+  }, [id]);
 
   const onFinish = (values: any) => {
-    console.log('check values', values);
-    warehouseApi.update({ data: values })
+    setLoading(true);
+    warehouseApi
+      .update({ data: values })
       .then((res: any) => {
-        const { success } = res.data;
+        const { success, message } = res.data;
         if (success) {
           toast.success('Cập nhật kho thành công!');
           setImage('');
@@ -52,10 +57,14 @@ const UpdateWarehouse = () => {
           form.resetFields();
           navigate(`/warehouses/list_warehouses`);
         } else {
-          toast.error('Cập nhật kho thất bại!');
+          toast.error(message || 'Cập nhật kho thất bại!');
         }
+        setLoading(false);
       })
-      .catch();
+      .catch((err) => {
+        toast.error('Cập nhật kho thất bại!');
+        setLoading(false);
+      });
   };
 
   return (
@@ -72,10 +81,10 @@ const UpdateWarehouse = () => {
           size="large"
           onFinish={onFinish}
         >
-            <Form.Item name="id" className="mb-5 hidden ">
-              <Input className="input" />
-            </Form.Item>
-            <div className="grid grid-cols-2 gap-5">
+          <Form.Item name="id" className="mb-5 hidden ">
+            <Input className="input" />
+          </Form.Item>
+          <div className="grid grid-cols-2 gap-5">
             <Form.Item
               label="Tên kho"
               name="name"
@@ -89,7 +98,13 @@ const UpdateWarehouse = () => {
                 className="rounded-lg h-9 border-[#A3ABEB] border-2"
               />
             </Form.Item>
-            <Form.Item label="Mã kho" name="code" className="mb-5">
+            <Form.Item
+              label="Mã kho"
+              name="code"
+              className="mb-5"
+              required
+              rules={[{ required: true, message: 'Hãy nhập mã kho!' }]}
+            >
               <Input
                 placeholder="Nhập mã kho"
                 allowClear
@@ -97,15 +112,9 @@ const UpdateWarehouse = () => {
               />
             </Form.Item>
           </div>
-
+          <div className="grid grid-cols-2 gap-5"></div>
           <div className="grid grid-cols-2 gap-5">
-          </div>
-          <div className="grid grid-cols-2 gap-5">
-            <Form.Item
-              label="Thủ kho"
-              name="storekeeper"
-              className="mb-5"
-            >
+            <Form.Item label="Thủ kho" name="storekeeper" className="mb-5">
               <Input
                 placeholder="Nhập tên"
                 allowClear

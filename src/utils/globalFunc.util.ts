@@ -115,9 +115,7 @@ const exportToExcelPro = async (
   const wb = new ExcelJS.Workbook();
   const ws = wb.addWorksheet(sheetName);
   const columns = myHeader?.length;
-  console.log('sheetName', sheetName);
-  console.log('columns', columns);
-  console.log('myHeader', myHeader);
+  console.log('check report', report);
 
   const title = {
     border: true,
@@ -144,7 +142,6 @@ const exportToExcelPro = async (
   if (widths && widths.length > 0) {
     ws.columns = widths;
   }
-
   let row = addRow(ws, [report], title);
   mergeCells(ws, row, 1, columns);
 
@@ -155,8 +152,109 @@ const exportToExcelPro = async (
   });
 
   const buf = await wb.xlsx.writeBuffer();
-  console.log('check buf', myData, ws, header);
 
+  fs.saveAs(new Blob([buf]), `${fileName}.xlsx`);
+};
+
+const exportToExcelReport = async (
+  myData: any,
+  fileName: any,
+  sheetName: any,
+  report: any,
+  myHeader: any,
+  widths: any,
+  warehouse: any,
+  codewarehouse: any,
+  startedDate: any,
+  endedDate: any,
+  warehouseValue: any
+) => {
+  if (!myData || myData.length === 0) {
+    return;
+  }
+
+  const wb = new ExcelJS.Workbook();
+  const ws = wb.addWorksheet(sheetName);
+  const columns = myHeader?.length;
+  const title = {
+    border: false,
+    height: 60,
+    font: { size: 30, bold: true, color: { argb: '000000' } },
+    alignment: { horizontal: 'center', vertical: 'middle' },
+    fill: null,
+  };
+  const desctriptionContent = {
+    border: false,
+    height: 30,
+    font: { size: 12, bold: false, color: { argb: '000000' } },
+    alignment: { horizontal: 'center', vertical: 'middle' },
+    fill: null,
+  };
+  const header = {
+    border: true,
+    height: 0,
+    font: { size: 12, bold: true, color: { argb: '000000' } },
+    alignment: null,
+    fill: null,
+  };
+  const data = {
+    border: true,
+    height: 0,
+    font: { size: 12, bold: false, color: { argb: '000000' } },
+    alignment: null,
+    fill: null,
+  };
+  const totalValue = {
+    border: true,
+    height: 0,
+    font: { size: 12, bold: true, color: { argb: '000000' } },
+    alignment: { horizontal: 'center', vertical: 'middle' },
+    fill: null,
+  };
+  if (widths && widths.length > 0) {
+    ws.columns = widths;
+  }
+  let row = addRow(ws, [(report as string).toLocaleUpperCase()], title);
+  mergeCells(ws, row, 1, columns);
+  if (warehouse && codewarehouse) {
+    let rowWarehouseName = addRow(
+      ws,
+      [
+        `MÃ KHO: ${(warehouse as string).toUpperCase()} - TÊN KHO: ${(
+          codewarehouse as string
+        ).toUpperCase()}`,
+      ],
+      desctriptionContent
+    );
+    mergeCells(ws, rowWarehouseName, 1, columns);
+  }
+  let started = addRow(
+    ws,
+    [
+      `ĐẦU KỲ: ${(startedDate as string).toUpperCase()} - CUỐI KỲ: ${(
+        endedDate as string
+      ).toUpperCase()}`,
+    ],
+    desctriptionContent
+  );
+  mergeCells(ws, started, 1, columns);
+  const spaceLine = addRow(ws, [''], desctriptionContent);
+  mergeCells(ws, spaceLine, 1, columns);
+  addRow(ws, myHeader, header);
+  myData.forEach((row: any) => {
+    addRow(ws, Object.values(row), data);
+  });
+  if (warehouseValue) {
+    const rowValues = [];
+    rowValues[1] = 'Tổng giá trị kho';
+    rowValues[columns] = `${warehouseValue}`
+      .replace(/\./, '.')
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+    const totalValueWarehouse = addRow(ws, rowValues, totalValue);
+    mergeCells(ws, totalValueWarehouse, 1, columns - 1);
+  }
+  const buf = await wb.xlsx.writeBuffer();
   fs.saveAs(new Blob([buf]), `${fileName}.xlsx`);
 };
 
@@ -264,6 +362,7 @@ export {
   mergeCells,
   getHeadersExcel,
   exportToExcelPro,
+  exportToExcelReport,
   resolveDataExcel,
   onChangeCheckbox,
   getCurrentUser,

@@ -1,12 +1,8 @@
 import {
-  FileExcelFilled,
-  ImportOutlined,
-} from '@ant-design/icons';
-import {
-  Button,
   DatePicker,
   Divider,
   Input,
+  InputNumber,
   Pagination,
   Row,
   Table,
@@ -18,7 +14,12 @@ import supplyApi from 'api/suplly.api';
 
 import moment from 'moment';
 import ExportToExcel from 'components/Excel';
-import { exportToExcelPro, getDataExcel, getFields, getHeadersExcel } from 'utils/globalFunc.util';
+import {
+  exportToExcelReport,
+  getDataExcel,
+  getFields,
+  getHeadersExcel,
+} from 'utils/globalFunc.util';
 
 const TableFooter = ({ paginationProps }: any) => {
   return (
@@ -30,9 +31,10 @@ const TableFooter = ({ paginationProps }: any) => {
 };
 
 const ReportSupply = () => {
-  const navigate = useNavigate();
   const [loadingDownload, setLoadingDownload] = useState<boolean>(false);
-  const [startDate, setStartDate] = useState<any>(moment().subtract('months', 1));
+  const [startDate, setStartDate] = useState<any>(
+    moment().subtract('months', 1)
+  );
   const [endDate, setEndDate] = useState<any>(moment());
   const [supllies, setSupplies] = useState<any>([]);
   const [page, setPage] = useState<number>(1);
@@ -119,6 +121,29 @@ const ReportSupply = () => {
       show: true,
       widthExcel: 20,
     },
+    {
+      title: 'Tổng giá trị',
+      key: 'valueTotal',
+      show: true,
+      widthExcel: 20,
+      render: (item: any) => (
+        <div>
+          <InputNumber
+            value={parseFloat(
+              (item?.unit_price * item?.end_quantity)?.toFixed(1)
+            )}
+            formatter={(value) =>
+              ` ${value}`
+                .replace(/\./, '.')
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+            }
+            precision={1}
+            disabled
+            className="text-black"
+          />
+        </div>
+      ),
+    },
   ];
   const [columnTable, _setColumnTable] = useState<any>(columns);
 
@@ -135,30 +160,39 @@ const ReportSupply = () => {
   };
 
   const handleGetReportSupplies = (start: any, end: any, search: any) => {
-    supplyApi.getReportSupplies({
-      data: {
-        start_date: start,
-        end_date: end,
-        search: (search || '').trim()
-      }
-    }).then((res: any) => {
-      const { success, data } = res.data;
-      if (success) {
-        const supplyData = data.result;
-        setSupplies(supplyData);
-        setTotal(data.count);
-      }
-    })
+    supplyApi
+      .getReportSupplies({
+        data: {
+          start_date: start,
+          end_date: end,
+          search: (search || '').trim(),
+        },
+      })
+      .then((res: any) => {
+        const { success, data } = res.data;
+        if (success) {
+          const supplyData = data.result;
+          setSupplies(supplyData);
+          setTotal(data.count);
+        }
+      })
       .catch()
       .finally(() => setLoading(false));
-  }
+  };
   useEffect(() => {
     handleGetReportSupplies(startDate, endDate, nameSearch);
-  }, [startDate, endDate, nameSearch])
+  }, [startDate, endDate, nameSearch]);
   const handleSearchSupply = (value: string) => {
-    setName(value)
-  }
-  const resolveDataExcel = (data: any, sheetName: string, columnTable: any) => {
+    setName(value);
+  };
+
+  const resolveDataExcel = (
+    data: any,
+    sheetName: string,
+    columnTable: any,
+    reportData: any
+  ) => {
+    const { codeWarehouse, warehouseName, startedDate, endedDate } = reportData;
     const fields: any = getFields(columnTable);
     const objectKey = Object.keys(data[0]);
     const newDatas: any = getDataExcel(data, objectKey, fields);
@@ -172,26 +206,23 @@ const ReportSupply = () => {
       .substring(0, 10)}.xlsx`;
     const finalData: any = [workSheetColumnName, ...newDatas];
     const { myHeader, widths, newData } = getHeadersExcel(finalData);
-    exportToExcelPro(
+    exportToExcelReport(
       newData,
       fileName,
       workSheetName,
       workSheetName,
       myHeader,
-      widths
+      widths,
+      warehouseName,
+      codeWarehouse,
+      startedDate,
+      endedDate,
+      0
     );
   };
   const downloadEquipmentList = useCallback(async () => {
     setLoadingDownload(true);
-    const res = await supplyApi.getReportSupplies({
-      data: {
-        start_date: startDate,
-        end_date: endDate,
-        search: (nameSearch || '').trim()
-      }
-    });
-    const reportData = res?.data?.data?.result;
-    const data = reportData.map((x: any) => ({
+    const data = supllies.map((x: any) => ({
       code: x.code,
       lot_number: x.lot_number,
       name: x.name,
@@ -204,10 +235,19 @@ const ReportSupply = () => {
       inbound_quantity: x.inbound_quantity,
       outbound_quantity: x.outbound_quantity,
       end_quantity: x.end_quantity,
+      valueTotal: ` ${x.unit_price * x.end_quantity || 0}`
+        .replace(/\./, '.')
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ','),
     }));
-    resolveDataExcel(data, 'Báo cáo tồn kho', columnTable);
+    const reportDataDetail = {
+      warehouseName: '',
+      codeWarehouse: '',
+      startedDate: moment(startDate).format('DD-MM-YYYY'),
+      endedDate: moment(endDate).format('DD-MM-YYYY'),
+    };
+    resolveDataExcel(data, 'Báo cáo tồn kho', columnTable, reportDataDetail);
     setLoadingDownload(false);
-  }, [startDate, endDate, nameSearch])
+  }, [startDate, endDate, nameSearch, supllies]);
   return (
     <div>
       <div className="flex-between-center">
@@ -222,18 +262,34 @@ const ReportSupply = () => {
       <Divider />
       <div className="flex justify-between flex-col">
         <div className="flex justify-between">
-          <div className='w-1/3'>
+          <div className="w-1/3">
             <Input
               placeholder="Tìm kiếm vật tư"
               allowClear
               value={name}
               className="input"
-              onChange={(e) => { handleSearchSupply(e.target.value) }}
+              onChange={(e) => {
+                handleSearchSupply(e.target.value);
+              }}
             />
           </div>
-          <div className='flex gap-10 w-1/3'>
-            <DatePicker value={startDate} className="date" placeholder='Nhập đầu kỳ' onChange={(e) => { setStartDate(moment(new Date(e as any))) }} />
-            <DatePicker value={endDate} className="date" placeholder='Nhập cuối kỳ' onChange={(e) => { setEndDate(moment(new Date(e as any))) }} />
+          <div className="flex gap-10 w-1/3">
+            <DatePicker
+              value={startDate}
+              className="date"
+              placeholder="Nhập đầu kỳ"
+              onChange={(e) => {
+                setStartDate(moment(new Date(e as any)));
+              }}
+            />
+            <DatePicker
+              value={endDate}
+              className="date"
+              placeholder="Nhập cuối kỳ"
+              onChange={(e) => {
+                setEndDate(moment(new Date(e as any)));
+              }}
+            />
           </div>
         </div>
       </div>

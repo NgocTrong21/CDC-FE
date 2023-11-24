@@ -27,18 +27,24 @@ const SupplyCreate = () => {
   };
 
   const onFinish = (values: any) => {
-    let data = { ...values, expiration_date: moment(new Date(values?.expiration_date)).toISOString(), image };
+    let data = {
+      ...values,
+      expiration_date: moment(new Date(values?.expiration_date)).toISOString(),
+      image,
+    };
     supplyApi
       .create(data)
       .then((res: any) => {
-        const { success } = res.data;
+        const { success, message } = res.data;
+        console.log(res.data);
+
         if (success) {
           toast.success('Thêm mới vật tư thành công!');
           setImage('');
           setSelectedImage('');
           form.resetFields();
         } else {
-          toast.error('Thêm mới vật tư thất bại!');
+          toast.error(message || 'Thêm mới vật tư thất bại!');
         }
       })
       .catch();
@@ -100,22 +106,14 @@ const SupplyCreate = () => {
               required
               rules={[{ required: true, message: 'Hãy nhập số lô!' }]}
             >
-              <Input
-                placeholder="Nhập số lô"
-                allowClear
-                className="input"
-              />
+              <Input placeholder="Nhập số lô" allowClear className="input" />
             </Form.Item>
             <Form.Item label="Hạn sử dụng" name="expiration_date">
               <DatePicker className="date" />
             </Form.Item>
           </div>
           <div className="grid grid-cols-3 gap-5">
-            <Form.Item
-              label="Đơn vị tính"
-              name="unit"
-              className="mb-5"
-            >
+            <Form.Item label="Đơn vị tính" name="unit" className="mb-5">
               <Input
                 placeholder="Nhập đơn vị tính"
                 allowClear
@@ -139,7 +137,11 @@ const SupplyCreate = () => {
           </div>
           <div className="grid grid-cols-3 gap-5">
             <Form.Item label="Nhà cung cấp" name="provider" className="mb-5">
-              <Input placeholder="Nhập nhà cung cấp" allowClear className="input" />
+              <Input
+                placeholder="Nhập nhà cung cấp"
+                allowClear
+                className="input"
+              />
             </Form.Item>
           </div>
 
