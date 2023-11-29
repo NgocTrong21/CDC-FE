@@ -426,7 +426,7 @@ exports.reHandoverEquipment = async (req, res) => {
       })
     );
     if (data?.status_id === 6) {
-      await db.Liquidation.create({ equipment_id: data?.equipment_id });
+      await db.Liquidation.create({ equipment_id: data?.equipment_id, liquidation_status: 0 });
     }
     await db.sequelize.transaction(async (t) => {
       await Promise.all([

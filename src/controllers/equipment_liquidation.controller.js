@@ -40,7 +40,7 @@ exports.getListUnusedEquipment = async (req, res) => {
         ],
       };
     }
-    const attributes = ["id", "name", "model", "serial", "code"];
+    const attributes = ["id", "name", "model", "serial", "fixed_asset_number"];
     let include = [
       { model: db.Department, attributes: ["id", "name"] },
       {
@@ -179,7 +179,6 @@ exports.updateLiquidationReport = async (req, res) => {
           where: { equipment_id: data?.equipment_id, id: data?.id },
           transaction: t,
         }),
-
         await db.Notification.create(
           {
             user_id: data.create_user_id,
