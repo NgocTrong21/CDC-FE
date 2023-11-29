@@ -1,4 +1,4 @@
-import { Button, Form, Input, Modal, Radio } from 'antd';
+import { Button, DatePicker, Form, Input, Modal, Radio } from 'antd';
 import { CURRENT_USER } from 'constants/auth.constant';
 import { report_status } from 'constants/dataFake.constant';
 import { NotificationContext } from 'contexts/notification.context';
@@ -79,9 +79,6 @@ const DetailLiquidation = () => {
             department_id: data?.equipment?.Equipment?.Department.id,
             code: data?.equipment?.code,
             liquidation_status: data?.equipment?.liquidation_status,
-            liquidation_date: moment(data?.equipment?.liquidation_date).format(
-              'hh:mm:ss, DD-MM-YYYY'
-            ),
             create_user: data?.equipment?.create_user?.name,
             create_user_id: data?.equipment?.create_user?.id,
             approver_id: data?.equipment?.approver?.id || current_user.id,
@@ -103,9 +100,9 @@ const DetailLiquidation = () => {
     const data = {
       ...equipment,
       liquidation_status: values.liquidation_status,
+      liquidation_date: values.liquidation_date,
       liquidation_note: values.liquidation_note,
     };
-    delete data.liquidation_date;
     delete data.file;
     setLoadingApprove(true);
     equipmentLiquidationApi
@@ -130,6 +127,7 @@ const DetailLiquidation = () => {
     const data = {
       ...equipment,
       liquidation_status: 0,
+      liquidation_date: values.liquidation_date,
       file,
       isEdit: 1,
     };
@@ -181,7 +179,7 @@ const DetailLiquidation = () => {
         </div>
         <div className="grid grid-cols-2 gap-5">
           <Form.Item label="Ngày thanh lý" name="liquidation_date">
-            <Input disabled className="input" />
+            <DatePicker className="date" />
           </Form.Item>
           <Form.Item
             label="Tài liệu đính kèm"

@@ -10,7 +10,6 @@ import { options } from 'utils/globalFunc.util';
 
 const ImportEquipmentByExcel = () => {
   const [department, setDepartment] = useState<number>();
-  const [status, setStatus] = useState<number>();
   const { departments, statuses } = useContext(FilterContext);
   const [loading, setLoading] = useState<boolean>(false);
   const [form] = Form.useForm();
@@ -18,12 +17,6 @@ const ImportEquipmentByExcel = () => {
   const [equipment, setEquipment] = useState<any>([]);
 
   const columns: any = [
-    // {
-    //   title: 'Số thứ tự',
-    //   dataIndex: 'line',
-    //   key: 'line',
-    // },
-
     {
       title: 'Tên thiết bị',
       dataIndex: 'name',
@@ -60,11 +53,6 @@ const ImportEquipmentByExcel = () => {
       key: 'hash_code',
     },
     {
-      title: 'Số lượng',
-      dataIndex: 'quantity',
-      key: 'quantity',
-    },
-    {
       title: 'Thành tiền',
       key: 'initial_value',
       dataIndex: 'initial_value',
@@ -84,26 +72,11 @@ const ImportEquipmentByExcel = () => {
       key: 'note',
       dataIndex: 'note',
     },
-
-    // {
-    //   title: 'Hãng sản xuất',
-    //   key: 'manufacturer_id',
-    //   dataIndex: 'manufacturer_id',
-    // },
-
-    // {
-    //   title: 'Năm sản xuất',
-    //   key: 'year_of_manufacture',
-    //   dataIndex: 'year_of_manufacture',
-    // },
   ];
 
   const onChange = (key: string, value: any) => {
     if (key === 'department') {
       setDepartment(value);
-    }
-    if (key === 'status') {
-      setStatus(value);
     }
   };
 
@@ -111,8 +84,8 @@ const ImportEquipmentByExcel = () => {
     let n: any = data.map((item: any, index: number) => ({
       line: index + 2,
       ...item,
-      department_id: 1,
-      status_id: 2,
+      department_id: department,
+      status_id: 3,
     }));
     setLoading(true);
     equipmentApi
@@ -168,19 +141,6 @@ const ImportEquipmentByExcel = () => {
           const annual_depreciation = workSheet[`J${i}`]?.v;
           const residual_value = workSheet[`K${i}`]?.v;
           const note = workSheet[`L${i}`]?.v;
-          // const manufacturer_id = workSheet[`E${i}`]?.v;
-          // const year_of_manufacture = workSheet[`G${i}`]?.v;
-          // const warehouse_import_date = new Date(
-          //   (workSheet[`I${i}`]?.v - (25567 + 2)) * 86400000
-          // ).valueOf();
-          // const project_id = workSheet[`J${i}`]?.v;
-          // const note = workSheet[`K${i}`]?.v;
-          // const technical_parameter = workSheet[`N${i}`]?.v;
-          // const configuration = workSheet[`O${i}`]?.v;
-          // const import_price = workSheet[`P${i}`]?.v;
-          // const risk_level = workSheet[`Q${i}`]?.v;
-          // const usage_procedure = workSheet[`R${i}`]?.v;
-          // const unit_id = workSheet[`S${i}`]?.v;
           newWorkSheet.push({
             name,
             model,
@@ -194,17 +154,6 @@ const ImportEquipmentByExcel = () => {
             annual_depreciation,
             residual_value,
             note,
-            // manufacturer_id,
-            // year_of_manufacture,
-            // warehouse_import_date,
-            // project_id,
-            // note,
-            // technical_parameter,
-            // configuration,
-            // import_price,
-            // risk_level,
-            // usage_procedure,
-            // unit_id,
           });
         }
         setData(newWorkSheet);
@@ -263,15 +212,7 @@ const ImportEquipmentByExcel = () => {
           <div>
             <div className="grid grid-cols-2 gap-4">
               <Form.Item label="Khoa Phòng" name="department" className="mb-5">
-                <Input
-                  className="input"
-                  defaultValue={
-                    options(departments).find((item: any) => item.value === 1)
-                      .label
-                  }
-                  disabled
-                />
-                {/* <Select
+                <Select
                   showSearch
                   placeholder="Chọn Khoa - Phòng"
                   optionFilterProp="children"
@@ -285,7 +226,7 @@ const ImportEquipmentByExcel = () => {
                   }
                   options={options(departments)}
                   onChange={(value: any) => onChange('department', value)}
-                /> */}
+                />
               </Form.Item>
               <Form.Item
                 label="Trạng thái thiết bị"
@@ -295,25 +236,11 @@ const ImportEquipmentByExcel = () => {
                 <Input
                   className="input"
                   defaultValue={
-                    options(statuses).find((item: any) => item.value === 2)
+                    options(statuses).find((item: any) => item.value === 3)
                       .label
                   }
                   disabled
                 />
-                {/* <Select
-                  showSearch
-                  placeholder="Chọn Trạng thái"
-                  optionFilterProp="children"
-                  allowClear
-                  filterOption={(input, option) =>
-                    (option!.label as unknown as string)
-                      .toLowerCase()
-                      .includes(input.toLowerCase())
-                  }
-                  className="select-custom"
-                  options={options(statuses)}
-                  onChange={(value: any) => onChange('status', value)}
-                /> */}
               </Form.Item>
             </div>
           </div>
@@ -324,7 +251,7 @@ const ImportEquipmentByExcel = () => {
         <>
           <div className="italic text-red-600">
             * Những thiết bị có số thứ tự sau trong file excel đã bị trùng thông
-            tin về code hoặc serial với các thiết bị khác trong hệ thống. Vui
+            tin về số hiệu TSCĐ với các thiết bị khác trong hệ thống. Vui
             lòng kiểm tra và tạo file excel mới để nhập lại những thiết bị trên.
           </div>
           <Table

@@ -442,14 +442,6 @@ const UpdateSchedule = () => {
             >
               <Input className="input" disabled />
             </Form.Item>
-            {schedule.schedule_repair_status !== 0 && (
-              <Form.Item
-                label="Người phê duyệt phiếu sửa chữa"
-                name="schedule_approve_user_name"
-              >
-                <Input className="input" disabled />
-              </Form.Item>
-            )}
             {schedule.schedule_repair_status === 1 && (
               <Form.Item label="Người nghiệm thu" name="test_user_name">
                 <Input className="input" disabled />
@@ -457,17 +449,6 @@ const UpdateSchedule = () => {
             )}
           </div>
           <div className="flex gap-6">
-            {/* {schedule.schedule_repair_status !== 1 &&
-              checkPermission(permissions.REPAIR_EQUIPMENT_APPROVE) && (
-                <Form.Item>
-                  <Button
-                    className="button-primary"
-                    onClick={() => setShowApproveScheduleModal(true)}
-                  >
-                    Phê duyệt
-                  </Button>
-                </Form.Item>
-              )} */}
             {schedule.schedule_repair_status !== 1 &&
               checkPermission(permissions.REPAIR_EQUIPMENT_UPDATE) && (
                 <Form.Item>
@@ -506,63 +487,6 @@ const UpdateSchedule = () => {
             )}
           </div>
         </Form>
-        {/* <Modal
-          title="Phê duyệt phiếu sửa chữa thiết bị"
-          open={showApproveScheduleModal}
-          onCancel={() => setShowApproveScheduleModal(false)}
-          footer={null}
-        >
-          <Form
-            size="large"
-            layout="vertical"
-            form={formApprove}
-            onFinish={approveScheduleRepair}
-          >
-            <Form.Item name="id" className="hidden"></Form.Item>
-            <Form.Item name="equipment_id" className="hidden"></Form.Item>
-            <Form.Item
-              name="schedule_approve_user_id"
-              className="hidden"
-            ></Form.Item>
-            <Form.Item
-              name="schedule_create_user_id"
-              className="hidden"
-            ></Form.Item>
-            <Form.Item
-              label="Trạng thái phê duyệt"
-              name="schedule_repair_status"
-              required
-              rules={[{ required: true, message: 'Hãy chọn mục này!' }]}
-            >
-              <Radio.Group>
-                <Radio value={1}>Phê duyệt</Radio>
-                <Radio value={2}>Từ chối</Radio>
-              </Radio.Group>
-            </Form.Item>
-            <Form.Item label="Ghi chú" name="schedule_repair_note">
-              <TextArea placeholder="Nhập ghi chú" className="input" />
-            </Form.Item>
-            <div className="flex flex-row justify-end gap-4">
-              <Form.Item>
-                <Button
-                  htmlType="submit"
-                  className="button-primary"
-                  loading={loadingApprove}
-                >
-                  Xác nhận
-                </Button>
-              </Form.Item>
-              <Form.Item>
-                <Button
-                  onClick={() => setShowApproveScheduleModal(false)}
-                  className="button-primary"
-                >
-                  Đóng
-                </Button>
-              </Form.Item>
-            </div>
-          </Form>
-        </Modal> */}
       </div>
       <Modal
         open={showBrokenReportModal}

@@ -4,9 +4,7 @@ import {
   Divider,
   Form,
   Input,
-  Modal,
   Select,
-  Tooltip,
 } from 'antd';
 import categoryApi from 'api/category.api';
 import equipmentRepairApi from 'api/equipment_repair.api';

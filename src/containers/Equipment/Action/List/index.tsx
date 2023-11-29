@@ -159,20 +159,6 @@ const List = () => {
       widthExcel: 30,
     },
     {
-      title: 'Mã hóa TB',
-      dataIndex: 'hash_code',
-      key: 'hash_code',
-      show: true,
-      widthExcel: 30,
-    },
-    {
-      title: 'Số lượng',
-      dataIndex: 'quantity',
-      key: 'quantity',
-      show: true,
-      widthExcel: 30,
-    },
-    {
       title: 'Hãng sản xuất',
       key: 'manufacturer_id',
       show: false,
@@ -215,7 +201,7 @@ const List = () => {
     {
       title: 'Trạng thái',
       key: 'status',
-      show: false,
+      show: true,
       render: (item: any) => <div>{item?.Equipment_Status?.name}</div>,
       widthExcel: 30,
     },
@@ -264,15 +250,6 @@ const List = () => {
       show: true,
       render: (item: any) => (
         <Menu className="flex flex-row items-center">
-          {item?.Equipment_Status?.id === 2 && (
-            <>
-              <Menu.Item key="handover">
-                <Tooltip title="Bàn giao thiết bị">
-                  <RightCircleFilled onClick={() => setHandoverFields(item)} />
-                </Tooltip>
-              </Menu.Item>
-            </>
-          )}
           {item?.Equipment_Status?.id === 3 && (
             <>
               <Menu.Item

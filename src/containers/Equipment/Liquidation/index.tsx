@@ -58,11 +58,11 @@ const Liquidation = () => {
       render: (item: any) => <div>{item?.name}</div>,
     },
     {
-      title: 'Code',
-      key: 'code',
+      title: 'Mã TSCĐ',
+      key: 'fixed_asset_number',
       show: true,
       widthExcel: 35,
-      render: (item: any) => <div>{item?.code}</div>,
+      render: (item: any) => <div>{item?.fixed_asset_number}</div>,
     },
     {
       title: 'Model',
@@ -109,7 +109,7 @@ const Liquidation = () => {
       render: (item: any) => {
         return (
           <>
-            {handleReportStatus(item?.Liquidation?.liquidation_status)}
+            {handleReportStatus(item?.Liquidations[0]?.liquidation_status)}
           </>
         );
       },
@@ -130,11 +130,10 @@ const Liquidation = () => {
           {item?.Liquidation !== null ? (
             <Menu.Item
               key="liquidation_detail"
-              className={`${
-                checkPermission(permissions.LIQUIDATION_EQUIPMENT_READ)
-                  ? ''
-                  : 'hidden'
-              }`}
+              className={`${checkPermission(permissions.LIQUIDATION_EQUIPMENT_READ)
+                ? ''
+                : 'hidden'
+                }`}
             >
               <Tooltip title="Phiếu yêu cầu thanh lý">
                 <Link
@@ -147,11 +146,10 @@ const Liquidation = () => {
           ) : (
             <Menu.Item
               key="liquidation_create"
-              className={`${
-                checkPermission(permissions.LIQUIDATION_EQUIPMENT_CREATE)
-                  ? ''
-                  : 'hidden'
-              }`}
+              className={`${checkPermission(permissions.LIQUIDATION_EQUIPMENT_CREATE)
+                ? ''
+                : 'hidden'
+                }`}
             >
               <Tooltip title="Tạo phiếu yêu cầu thanh lý">
                 <PlusCircleFilled onClick={() => setLiquidationFields(item)} />
