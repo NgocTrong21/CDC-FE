@@ -72,24 +72,17 @@ const LayoutSystem = (props: LayoutProps) => {
     let isHasPermission: boolean = userPermissions.some(
       (item: any) => item.permission_id === permission
     );
-    // if (isHasPermission) {
-    //   return {
-    //     key,
-    //     icon,
-    //     children,
-    //     label,
-    //     type,
-    //   } as MenuItem;
-    // } else {
-    //   return;
-    // }
-    return {
-      key,
-      icon,
-      children,
-      label,
-      type,
-    } as MenuItem;
+    if (isHasPermission) {
+      return {
+        key,
+        icon,
+        children,
+        label,
+        type,
+      } as MenuItem;
+    } else {
+      return;
+    }
   }
 
   const items: MenuProps['items'] = [
@@ -111,26 +104,6 @@ const LayoutSystem = (props: LayoutProps) => {
           permissions.EQUIPMENT_CREATE
         ),
         getItem('Sửa chữa', '/repair', permissions.REPAIR_EQUIPMENT_READ),
-        // getItem('Thông báo kiểm định', '7'),
-        // getItem(
-        //   'Bảo dưỡng định kì',
-        //   '/maintenance',
-        //   permissions.MAINTAINANCE_EQUIPMENT_READ
-        // ),
-        // getItem(
-        //   'Kiểm định',
-        //   '/inspection',
-        //   permissions.ACCREDITATION_EQUIPMENT_READ
-        // ),
-        // getItem('Kiểm xạ', '10', permissions.RADIATION_EQUIPMENT_READ),
-        // getItem(
-        //   'Ngoại kiểm',
-        //   '11',
-        //   permissions.EXTERNAL_INSPECTION_EQUIPMENT_READ
-        // ),
-        // getItem('Kiểm định môi trường phòng', '12'),
-        // getItem('Gia hạn giấy phép', '13'),
-        // getItem('Bảo hành', '14', permissions.INSURANCE_EQUIPMENT_READ),
         getItem(
           'Điều chuyển thiết bị',
           '/transfer',
@@ -147,37 +120,37 @@ const LayoutSystem = (props: LayoutProps) => {
     getItem(
       'Quản lý vật tư',
       '/supplies',
-      permissions.EQUIPMENT_READ,
+      permissions.CONSUMABLE_SUPPLY_READ,
       <SisternodeOutlined style={{ fontSize: '20px' }} />,
       [
-        getItem('Danh sách vật tư', '/list_sp', permissions.EQUIPMENT_READ),
+        getItem('Danh sách vật tư', '/list_sp', permissions.CONSUMABLE_SUPPLY_READ),
         getItem(
           'Nhập vật tư theo Excel',
           '/import_excel_sp',
-          permissions.IMPORT_SUPPLIES
+          permissions.CONSUMABLE_SUPPLY_CREATE
         ),
         getItem(
           'Nhập vật tư đơn lẻ',
           '/create_sp',
-          permissions.IMPORT_SUPPLIES
+          permissions.CONSUMABLE_SUPPLY_CREATE
         ),
       ]
     ),
     getItem(
       'Quản lý kho',
       '/warehouses',
-      permissions.IMPORT_SUPPLIES,
+      permissions.WAREHOUSES_MANAGEMENT_READ,
       <ShopOutlined style={{ fontSize: '20px' }} />,
       [
         getItem(
           'Danh sách kho',
           '/list_warehouses',
-          permissions.IMPORT_SUPPLIES
+          permissions.WAREHOUSES_MANAGEMENT_READ
         ),
         getItem(
           'Nhập thông tin kho',
           '/import_warehouse',
-          permissions.IMPORT_SUPPLIES
+          permissions.WAREHOUSES_MANAGEMENT_CREATE
         ),
       ]
     ),

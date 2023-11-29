@@ -20,9 +20,10 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import useQuery from 'hooks/useQuery';
 import providerApi from 'api/provider.api';
 import ExportToExcel from 'components/Excel';
-import { resolveDataExcel } from 'utils/globalFunc.util';
+import { checkPermission, resolveDataExcel } from 'utils/globalFunc.util';
 import warehouseApi from 'api/warehouse.api';
 import { toast } from 'react-toastify';
+import { permissions } from 'constants/permission.constant';
 
 const limit: number = 10;
 
@@ -125,14 +126,16 @@ const Warehouses = () => {
     {
       title: 'Tác vụ',
       key: 'action',
-      show: true,
+      show: checkPermission(permissions.WAREHOUSES_MANAGEMENT_UPDATE),
       render: (item: any) => (
         <div>
-          <Tooltip className="mr-4" title="Cập nhật thông tin kho">
-            <Link to={`/warehouses/update_warehouse/${item.id}`}>
-              <EditFilled />
-            </Link>
-          </Tooltip>
+          {
+            checkPermission(permissions.WAREHOUSES_MANAGEMENT_UPDATE) && <Tooltip className="mr-4" title="Cập nhật thông tin kho">
+              <Link to={`/warehouses/update_warehouse/${item.id}`}>
+                <EditFilled />
+              </Link>
+            </Tooltip>
+          }
           {/* <Tooltip title="Xóa">
             <Popconfirm
               title="Bạn muốn xóa kho này?"

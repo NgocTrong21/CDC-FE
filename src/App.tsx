@@ -238,10 +238,11 @@ const App = () => {
               </PrivateRoute>
             }
           />
+          {/* supplies */}
           <Route
             path="/supplies/list_sp"
             element={
-              <PrivateRoute permission={permissions.IMPORT_SUPPLIES}>
+              <PrivateRoute permission={permissions.CONSUMABLE_SUPPLY_READ}>
                 <Suplly />
               </PrivateRoute>
             }
@@ -249,7 +250,7 @@ const App = () => {
           <Route
             path="/supplies/import_excel_sp"
             element={
-              <PrivateRoute permission={permissions.IMPORT_SUPPLIES}>
+              <PrivateRoute permission={permissions.CONSUMABLE_SUPPLY_CREATE}>
                 <SupplyImportExcel />
               </PrivateRoute>
             }
@@ -257,7 +258,7 @@ const App = () => {
           <Route
             path="/supplies/detail/:id"
             element={
-              <PrivateRoute permission={permissions.IMPORT_SUPPLIES}>
+              <PrivateRoute permission={permissions.CONSUMABLE_SUPPLY_READ}>
                 <SupplyDetail />
               </PrivateRoute>
             }
@@ -265,7 +266,7 @@ const App = () => {
           <Route
             path="/supplies/create_sp"
             element={
-              <PrivateRoute permission={permissions.IMPORT_SUPPLIES}>
+              <PrivateRoute permission={permissions.CONSUMABLE_SUPPLY_CREATE}>
                 <SupplyCreate />
               </PrivateRoute>
             }
@@ -273,7 +274,7 @@ const App = () => {
           <Route
             path="/supplies/update/:id"
             element={
-              <PrivateRoute permission={permissions.IMPORT_SUPPLIES}>
+              <PrivateRoute permission={permissions.CONSUMABLE_SUPPLY_UPDATE}>
                 <SupplyUpdate />
               </PrivateRoute>
             }
@@ -452,7 +453,7 @@ const App = () => {
           <Route
             path="/warehouses/list_warehouses"
             element={
-              <PrivateRoute permission={permissions.IMPORT_SUPPLIES}>
+              <PrivateRoute permission={permissions.WAREHOUSES_MANAGEMENT_READ}>
                 <Warehouses />
               </PrivateRoute>
             }
@@ -460,7 +461,7 @@ const App = () => {
           <Route
             path="/warehouses/import_warehouse"
             element={
-              <PrivateRoute permission={permissions.IMPORT_SUPPLIES}>
+              <PrivateRoute permission={permissions.WAREHOUSES_MANAGEMENT_CREATE}>
                 <ImportWarehouse />
               </PrivateRoute>
             }
@@ -468,7 +469,7 @@ const App = () => {
           <Route
             path="/warehouses/update_warehouse/:id"
             element={
-              <PrivateRoute permission={permissions.IMPORT_SUPPLIES}>
+              <PrivateRoute permission={permissions.WAREHOUSES_MANAGEMENT_UPDATE}>
                 <UpdateWarehouse />
               </PrivateRoute>
             }

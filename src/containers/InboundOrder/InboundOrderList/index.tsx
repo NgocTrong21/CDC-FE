@@ -149,7 +149,7 @@ const InboundOrderList = () => {
           {item?.status_id === 1 && (
             <Menu.Item
               key="update_equipment"
-              className={`${checkPermission(permissions.EQUIPMENT_UPDATE) ? '' : 'hidden'
+              className={`${checkPermission(permissions.INBOUND_ORDERS_UPDATE) ? '' : 'hidden'
                 }`}
             >
               <Tooltip title="Cập nhật phiếu">
@@ -159,7 +159,9 @@ const InboundOrderList = () => {
               </Tooltip>
             </Menu.Item>
           )}
-          <Menu.Item>
+          <Menu.Item
+            className={`${checkPermission(permissions.INBOUND_ORDERS_READ) ? '' : 'hidden'}`}
+          >
             <Tooltip title="Chi tiết phiếu">
               <Link to={`/order/inbound_order/detail/${item.id}`}>
                 <EyeFilled />
@@ -168,7 +170,7 @@ const InboundOrderList = () => {
           </Menu.Item>
           <Menu.Item
             key="delete"
-            className={`${checkPermission(permissions.EQUIPMENT_DELETE) ? '' : 'hidden'
+            className={`${checkPermission(permissions.INBOUND_ORDERS_DELETE) ? '' : 'hidden'
               }`}
           >
             <Tooltip title="Xóa phiếu">
@@ -246,7 +248,7 @@ const InboundOrderList = () => {
           </div>
         </div>
         <Button
-          className="button_excel"
+          className={`button_excel ${checkPermission(permissions.INBOUND_ORDERS_CREATE) ? '' : 'hidden'}`}
           onClick={() => {
             navigate('/order/inbound_order/import');
           }}

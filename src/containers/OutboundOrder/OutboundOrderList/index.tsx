@@ -123,7 +123,7 @@ const OutboundOrderList = () => {
           {item?.status_id === 1 && (
             <Menu.Item
               key="update_equipment"
-              className={`${checkPermission(permissions.EQUIPMENT_UPDATE) ? '' : 'hidden'
+              className={`${checkPermission(permissions.OUTBOUND_ORDERS_UPDATE) ? '' : 'hidden'
                 }`}
             >
               <Tooltip title="Cập nhật phiếu">
@@ -133,7 +133,9 @@ const OutboundOrderList = () => {
               </Tooltip>
             </Menu.Item>
           )}
-          <Menu.Item>
+          <Menu.Item
+            className={`${checkPermission(permissions.OUTBOUND_ORDERS_READ) ? '' : 'hidden'}`}
+          >
             <Tooltip title="Chi tiết phiếu">
               <Link to={`/order/outbound_order/detail/${item.id}`}>
                 <EyeFilled />
@@ -142,7 +144,7 @@ const OutboundOrderList = () => {
           </Menu.Item>
           <Menu.Item
             key="delete"
-            className={`${checkPermission(permissions.EQUIPMENT_DELETE) ? '' : 'hidden'
+            className={`${checkPermission(permissions.OUTBOUND_ORDERS_DELETE) ? '' : 'hidden'
               }`}
           >
             <Tooltip title="Xóa phiếu">
@@ -226,7 +228,7 @@ const OutboundOrderList = () => {
           </div>
         </div>
         <Button
-          className="button_excel"
+          className={`button_excel ${checkPermission(permissions.OUTBOUND_ORDERS_CREATE) ? '' : 'hidden'}`}
           onClick={() => {
             navigate('/order/outbound_order/import');
           }}

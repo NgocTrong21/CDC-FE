@@ -25,9 +25,10 @@ import useQuery from 'hooks/useQuery';
 import useDebounce from 'hooks/useDebounce';
 import supplyApi from 'api/suplly.api';
 import { toast } from 'react-toastify';
-import { onChangeCheckbox } from 'utils/globalFunc.util';
+import { checkPermission, onChangeCheckbox } from 'utils/globalFunc.util';
 
 import type { PaginationProps } from 'antd';
+import { permissions } from 'constants/permission.constant';
 
 const TableFooter = ({ paginationProps }: any) => {
   return (
@@ -123,7 +124,7 @@ const Suplly = () => {
       show: true,
       render: (item: any) => (
         <Menu className="flex flex-row items-center">
-          {false && (
+          {checkPermission(permissions.CONSUMABLE_SUPPLY_READ) && (
             <Menu.Item key="detail">
               <Tooltip title="Hồ sơ vật tư">
                 <Link to={`/supplies/detail/${item.id}`}>
@@ -132,25 +133,29 @@ const Suplly = () => {
               </Tooltip>
             </Menu.Item>
           )}
-          <Menu.Item key="update_supplies">
-            <Tooltip title="Cập nhật vật tư">
-              <Link to={`/supplies/update/${item.id}`}>
-                <EditFilled />
-              </Link>
-            </Tooltip>
-          </Menu.Item>
-          <Menu.Item key="delete">
-            <Tooltip title="Xóa vật tư">
-              <Popconfirm
-                title="Bạn muốn xóa vật tư này?"
-                onConfirm={() => handleDelete(item.id)}
-                okText="Xóa"
-                cancelText="Hủy"
-              >
-                <DeleteFilled />
-              </Popconfirm>
-            </Tooltip>
-          </Menu.Item>
+          {
+            checkPermission(permissions.CONSUMABLE_SUPPLY_UPDATE) && <Menu.Item key="update_supplies">
+              <Tooltip title="Cập nhật vật tư">
+                <Link to={`/supplies/update/${item.id}`}>
+                  <EditFilled />
+                </Link>
+              </Tooltip>
+            </Menu.Item>
+          }
+          {
+            checkPermission(permissions.CONSUMABLE_SUPPLY_DELETE) && <Menu.Item key="delete">
+              <Tooltip title="Xóa vật tư">
+                <Popconfirm
+                  title="Bạn muốn xóa vật tư này?"
+                  onConfirm={() => handleDelete(item.id)}
+                  okText="Xóa"
+                  cancelText="Hủy"
+                >
+                  <DeleteFilled />
+                </Popconfirm>
+              </Tooltip>
+            </Menu.Item>
+          }
         </Menu>
       ),
     },
