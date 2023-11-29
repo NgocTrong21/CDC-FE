@@ -8,37 +8,37 @@ const roleMiddleware = require("../midlewares/role.middleware");
 router.post(
   "/create",
   authMiddleware,
-   permissionMiddleware.CRUD_ORDERS,
+   permissionMiddleware.OUTBOUND_ORDERS_CREATE,
   outboundOrderController.create
 );
 router.get(
   "/detail",
   authMiddleware,
-   permissionMiddleware.CRUD_ORDERS,
+   permissionMiddleware.OUTBOUND_ORDERS_READ,
   outboundOrderController.detail
 );
 router.post(
   "/update",
   authMiddleware,
-   permissionMiddleware.CRUD_ORDERS,
+   permissionMiddleware.OUTBOUND_ORDERS_UPDATE,
   outboundOrderController.update
 );
 router.get(
   "/search",
   authMiddleware,
-   permissionMiddleware.CRUD_ORDERS,
+   permissionMiddleware.OUTBOUND_ORDERS_READ,
   outboundOrderController.search
 );
 router.delete(
   "/delete",
   authMiddleware,
-   permissionMiddleware.CRUD_ORDERS,
+   permissionMiddleware.OUTBOUND_ORDERS_DELETE,
   outboundOrderController.delete
 );
 router.post(
   "/accept",
   authMiddleware,
-   permissionMiddleware.CRUD_ORDERS,
+   permissionMiddleware.APPROVE_ORDERS,
   outboundOrderController.accept
 );
 module.exports = router;

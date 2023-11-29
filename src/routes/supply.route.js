@@ -3,26 +3,35 @@ const router = express.Router();
 const supplyController = require("../controllers/supply.controller");
 const authMiddleware = require("../midlewares/auth.middleware");
 const permissionMiddleware = require("../midlewares/permission.middleware");
-const roleMiddleware = require("../midlewares/role.middleware");
 
 router.post(
   "/create",
   authMiddleware,
-  permissionMiddleware.CRUD_CONSUMABLE_SUPPLY,
+  permissionMiddleware.CONSUMABLE_SUPPLY_CREATE,
   supplyController.create
 );
 router.patch(
   "/update",
   authMiddleware,
-  permissionMiddleware.CRUD_CONSUMABLE_SUPPLY,
+  permissionMiddleware.CONSUMABLE_SUPPLY_UPDATE,
   supplyController.update
 );
-router.get("/list", authMiddleware,permissionMiddleware.CRUD_CONSUMABLE_SUPPLY, supplyController.list);
-router.get("/detail", authMiddleware, supplyController.detail);
+router.get(
+  "/list",
+  authMiddleware,
+  permissionMiddleware.CONSUMABLE_SUPPLY_READ,
+  supplyController.list
+);
+router.get(
+  "/detail",
+  authMiddleware,
+  permissionMiddleware.CONSUMABLE_SUPPLY_READ,
+  supplyController.detail
+);
 router.delete(
   "/delete",
   authMiddleware,
-  permissionMiddleware.CRUD_CONSUMABLE_SUPPLY,
+  permissionMiddleware.CONSUMABLE_SUPPLY_DELETE,
   supplyController.delete
 );
 router.post(
@@ -52,7 +61,10 @@ router.post(
   supplyController.importByExcel
 );
 router.post("/create_report", authMiddleware, supplyController.create_report);
-router.post("/create_report_by_warehouse", authMiddleware, supplyController.create_report_by_warehouse);
-
+router.post(
+  "/create_report_by_warehouse",
+  authMiddleware,
+  supplyController.create_report_by_warehouse
+);
 
 module.exports = router;
