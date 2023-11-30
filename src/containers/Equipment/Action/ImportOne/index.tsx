@@ -13,6 +13,7 @@ const ImportOne = () => {
   const {
     departments,
     statuses,
+    units
   } = useContext(FilterContext);
   const [form] = Form.useForm();
   const [selectedImage, setSelectedImage] = useState<any>('');
@@ -162,14 +163,22 @@ const ImportOne = () => {
             </Form.Item>
             <Form.Item
               label="Đơn vị tính"
-              name="unit"
+              name="unit_id"
+              required
               rules={[{ required: false, message: 'Hãy nhập đơn vị tính!' }]}
               className="mb-5"
             >
-              <Input
-                placeholder="Nhập đơn vị tính"
+              <Select
+                showSearch
+                placeholder="Chọn đơn vị"
+                optionFilterProp="children"
                 allowClear
-                className="input"
+                filterOption={(input, option) =>
+                  (option!.label as unknown as string)
+                    .toLowerCase()
+                    .includes(input.toLowerCase())
+                }
+                options={options(units)}
               />
             </Form.Item>
           </div>
@@ -192,9 +201,9 @@ const ImportOne = () => {
                 className="input"
               />
             </Form.Item>
-            <Form.Item label="Thành tiền" name="initial_value" className="mb-5">
+            <Form.Item label="Giá trị" name="initial_value" className="mb-5">
               <Input
-                placeholder="Nhập thành tiền thiết bị"
+                placeholder="Nhập giá trị thiết bị"
                 allowClear
                 className="input"
               />

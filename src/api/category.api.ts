@@ -45,6 +45,33 @@ const categoryApi = {
     const url = 'category/supplies_type/list';
     return axiosClient.get(url);
   },
+  //Equipment_Unit
+  listUnit(): Promise<CommonResponse> {
+    const url = 'category/unit/list';
+    return axiosClient.get(url);
+  },
+  createUnit(params: object): Promise<CommonResponse> {
+    const url = 'category/unit/create';
+    return axiosClient.post(url, params);
+  },
+  detailUnit(id: number): Promise<CommonResponse> {
+    const url = `category/unit/detail?id=${id}`;
+    return axiosClient.get(url);
+  },
+  updateUnit(params: object): Promise<CommonResponse> {
+    const url = 'category/unit/update';
+    return axiosClient.put(url, params);
+  },
+  deleteUnit(id: number): Promise<CommonResponse> {
+    const url = 'category/unit/delete';
+    return axiosClient.delete(url, {
+      data: { id },
+    });
+  },
+  searchUnit(name: string): Promise<CommonResponse> {
+    const url = `category/unit/search?name=${name}`;
+    return axiosClient.get(url);
+  },
 };
 
 export default categoryApi;

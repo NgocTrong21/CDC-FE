@@ -64,6 +64,9 @@ import InboundOrderDetail from 'containers/InboundOrder/InboundOrderDetail';
 import OutboundOrderDetail from 'containers/OutboundOrder/OutboundOrderDetail';
 import ReportSupply from 'containers/ReportSupply';
 import ReportSupplyByWarehouse from 'containers/ReportSupplyByWarehouse';
+import EquipmentUnit from 'containers/Category/Equipment_Unit';
+import CreateEquipmentUnit from 'containers/Category/Equipment_Unit/create';
+import DetailEquipmentUnit from 'containers/Category/Equipment_Unit/detail';
 
 const TRACKING_ID = process.env.REACT_APP_TRACKING_ID || '';
 ReactGA.initialize(TRACKING_ID);
@@ -415,7 +418,31 @@ const App = () => {
               </PrivateRoute>
             }
           />
-
+          {/* Unit */}
+          <Route
+            path="/category/unit"
+            element={
+              <PrivateRoute permission={permissions.UNIT_EQUIPMENT_READ}>
+                <EquipmentUnit />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/category/unit/create"
+            element={
+              <PrivateRoute permission={permissions.UNIT_EQUIPMENT_CREATE}>
+                <CreateEquipmentUnit />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/category/unit/detail/:id"
+            element={
+              <PrivateRoute permission={permissions.UNIT_EQUIPMENT_READ}>
+                <DetailEquipmentUnit />
+              </PrivateRoute>
+            }
+          />
           {/* Setting Routes */}
           <Route
             path="/setting/role"

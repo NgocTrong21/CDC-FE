@@ -214,19 +214,19 @@ const LayoutSystem = (props: LayoutProps) => {
         getItem('Thêm mới thành viên', '/create_user', permissions.USER_CREATE),
       ]
     ),
-    // getItem(
-    //   'Quản lý danh mục',
-    //   '/category',
-    //   permissions.GROUP_EQUIPMENT_READ,
-    //   <UnorderedListOutlined style={{ fontSize: '20px' }} />,
-    //   [
-    //     getItem('Nhóm thiết bị', '/group', permissions.GROUP_EQUIPMENT_READ),
-    //     getItem('Loại thiết bị', '/type', permissions.TYPE_EQUIPMENT_READ),
-    //     getItem('Đơn vị tính', '/unit', permissions.UNIT_EQUIPMENT_READ),
-    //     getItem('Trạng thái', '/status', true),
-    //     getItem('Chu kỳ', '/cycle'),
-    //   ]
-    // ),
+    getItem(
+      'Quản lý danh mục',
+      '/category',
+      permissions.GROUP_EQUIPMENT_READ,
+      <UnorderedListOutlined style={{ fontSize: '20px' }} />,
+      [
+        // getItem('Nhóm thiết bị', '/group', permissions.GROUP_EQUIPMENT_READ),
+        // getItem('Loại thiết bị', '/type', permissions.TYPE_EQUIPMENT_READ),
+        getItem('Đơn vị tính', '/unit', permissions.UNIT_EQUIPMENT_READ),
+        // getItem('Trạng thái', '/status', true),
+        // getItem('Chu kỳ', '/cycle'),
+      ]
+    ),
     // getItem(
     //   'Thống kê thiết bị',
     //   '/statistic',
