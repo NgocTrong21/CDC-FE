@@ -44,7 +44,7 @@ module.exports = {
   TYPE_EQUIPMENT_READ: permission(PermissionSystem.TYPE_EQUIPMENT_READ),
   TYPE_EQUIPMENT_UPDATE: permission(PermissionSystem.TYPE_EQUIPMENT_UPDATE),
   TYPE_EQUIPMENT_DELETE: permission(PermissionSystem.TYPE_EQUIPMENT_DELETE),
-  UNIT_EQUIPMENT_CREATE: permission.apply(PermissionSystem.UNIT_EQUIPMENT_CREATE), 
+  UNIT_EQUIPMENT_CREATE: permission(PermissionSystem.UNIT_EQUIPMENT_CREATE), 
   UNIT_EQUIPMENT_READ: permission(PermissionSystem.UNIT_EQUIPMENT_READ),
   UNIT_EQUIPMENT_UPDATE: permission(PermissionSystem.UNIT_EQUIPMENT_UPDATE),
   UNIT_EQUIPMENT_DELETE: permission(PermissionSystem.UNIT_EQUIPMENT_DELETE),
