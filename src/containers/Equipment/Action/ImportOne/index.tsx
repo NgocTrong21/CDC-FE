@@ -1,4 +1,4 @@
-import { Button, DatePicker, Divider, Form, Input, Select } from 'antd';
+import { Button, DatePicker, Divider, Form, Input, InputNumber, Select } from 'antd';
 import { useContext, useState } from 'react';
 import ava from 'assets/image.png';
 import { convertBase64, options } from 'utils/globalFunc.util';
@@ -42,7 +42,7 @@ const ImportOne = () => {
       handover_date: moment(
         new Date(values.handover_date)
       ).toISOString(),
-      image, department_id: 1, status_id: 3
+      image, status_id: 3
     };
     setLoading(true);
     equipmentApi
@@ -93,6 +93,7 @@ const ImportOne = () => {
             </Form.Item>
             <Form.Item
               label="Khoa - Phòng"
+              name="department_id"
               className="mb-5"
               required
               rules={[
@@ -201,11 +202,18 @@ const ImportOne = () => {
                 className="input"
               />
             </Form.Item>
-            <Form.Item label="Giá trị" name="initial_value" className="mb-5">
-              <Input
+            <Form.Item label="Giá trị nhập" name="initial_value" className="mb-5">
+              <InputNumber
+                min={0}
                 placeholder="Nhập giá trị thiết bị"
-                allowClear
-                className="input"
+                className='input w-full flex items-center'
+                formatter={(value) => {
+                  return `${value}`.replace(
+                    /\B(?=(\d{3})+(?!\d))/g,
+                    ','
+                  );
+                }}
+                precision={0}
               />
             </Form.Item>
             <Form.Item
@@ -213,10 +221,18 @@ const ImportOne = () => {
               name="annual_depreciation"
               className="mb-5"
             >
-              <Input
-                placeholder="Nhập Khấu hao hàng năm"
-                allowClear
-                className="input"
+              <InputNumber
+                min={0}
+                max={100}
+                className='input w-full flex items-center'
+                placeholder='Nhập khấu hao'
+                formatter={(value) => {
+                  return `${value}`.replace(
+                    /\B(?=(\d{3})+(?!\d))/g,
+                    ','
+                  );
+                }}
+                precision={0}
               />
             </Form.Item>
           </div>
@@ -226,10 +242,17 @@ const ImportOne = () => {
               name="residual_value"
               className="mb-5"
             >
-              <Input
+              <InputNumber
+                min={0}
                 placeholder="Nhập giá trị còn lại"
-                allowClear
-                className="input"
+                className='input w-full flex items-center'
+                formatter={(value) => {
+                  return `${value}`.replace(
+                    /\B(?=(\d{3})+(?!\d))/g,
+                    ','
+                  );
+                }}
+                precision={0}
               />
             </Form.Item>
             <Form.Item

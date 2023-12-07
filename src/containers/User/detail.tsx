@@ -124,20 +124,6 @@ const DetailUser = () => {
 
           <div className='grid grid-cols-2 gap-5'>
             <Form.Item
-              label="Khoa Phòng"
-              name="department_id"
-              required
-              rules={[
-                { required: true, message: 'Hãy chọn Khoa phòng!' },
-              ]}
-              className='mb-5'
-            >
-              <Select
-                placeholder="Chọn Khoa Phòng"
-                options={options(departments)}
-              />
-            </Form.Item>
-            <Form.Item
               label="Chức vụ"
               name="role_id"
               required
@@ -152,8 +138,6 @@ const DetailUser = () => {
                 options={options(roles)}
               />
             </Form.Item>
-          </div>
-          <div className='grid grid-cols-2 gap-5'>
             <Form.Item
               label="Số điện thoại"
               name="phone"
@@ -165,6 +149,8 @@ const DetailUser = () => {
                 className='rounded-lg h-9 border-[#A3ABEB] border-2'
               />
             </Form.Item>
+          </div>
+          <div className='grid grid-cols-2 gap-5'>
             <Form.Item
               label="Địa chỉ"
               name="address"
@@ -181,7 +167,7 @@ const DetailUser = () => {
             <Button
               htmlType="submit"
               loading={loading}
-              className={`button ${checkPermission(permissions.USER_UPDATE) ? '' : 'hidden'}`}
+              className={`button-primary ${checkPermission(permissions.USER_UPDATE) ? '' : 'hidden'}`}
             >
               Cập nhật
             </Button>

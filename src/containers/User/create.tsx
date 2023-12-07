@@ -12,7 +12,7 @@ const CreateUser = () => {
   const [selectedImage, setSelectedImage] = useState<any>('');
   const [image, setImage] = useState<any>('');
   const [loading, setLoading] = useState<boolean>(false);
-  const { roles , departments } = useContext(FilterContext);
+  const { roles, departments } = useContext(FilterContext);
 
   const options = (array: any) => {
     return array.map((item: any) => {
@@ -83,7 +83,7 @@ const CreateUser = () => {
               required
               rules={[
                 { required: true, message: 'Hãy nhập email!' },
-                { type: 'email', message: 'Nhập đúng định dạng email'}
+                { type: 'email', message: 'Nhập đúng định dạng email' }
               ]}
               className='mb-5'
             >
@@ -97,20 +97,6 @@ const CreateUser = () => {
 
           <div className='grid grid-cols-2 gap-5'>
             <Form.Item
-              label="Khoa Phòng"
-              name="department_id"
-              required
-              rules={[
-                { required: true, message: 'Hãy chọn Khoa phòng!' },
-              ]}
-              className='mb-5'
-            >
-              <Select
-                placeholder="Chọn Khoa Phòng"
-                options={options(departments)}
-              />
-            </Form.Item>
-            <Form.Item
               label="Chức vụ"
               name="role_id"
               required
@@ -119,18 +105,14 @@ const CreateUser = () => {
               ]}
               className='mb-5'
             >
-              <Select 
+              <Select
                 placeholder="Chọn Chức vụ"
                 options={options(roles)}
               />
             </Form.Item>
-          </div>
-          <div className='grid grid-cols-2 gap-5'>
             <Form.Item
               label="Số điện thoại"
               name="phone"
-              // required
-              // rules={[{ required: true, message: 'Hãy nhập liên hệ!' }]}
               className='mb-5'
             >
               <Input
@@ -139,11 +121,11 @@ const CreateUser = () => {
                 className='rounded-lg h-9 border-[#A3ABEB] border-2'
               />
             </Form.Item>
+          </div>
+          <div className='grid grid-cols-2 gap-5'>
             <Form.Item
               label="Địa chỉ"
               name="address"
-              // required
-              // rules={[{ required: true, message: 'Hãy nhập địa chỉ!' }]}
               className='mb-5'
             >
               <Input
@@ -154,8 +136,8 @@ const CreateUser = () => {
             </Form.Item>
           </div>
           <Form.Item>
-            <Button 
-              htmlType="submit" 
+            <Button
+              htmlType="submit"
               loading={loading}
               className='button-primary'
             >

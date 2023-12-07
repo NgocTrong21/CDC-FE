@@ -128,13 +128,6 @@ const User: FC<IUserProps> = ({
       render: (item: any) => <>{item?.Role?.name}</>,
     },
     {
-      title: 'Khoa phòng',
-      key: 'department_id',
-      show: true,
-      widthExcel: 30,
-      render: (item: any) => <>{item?.Department?.name}</>,
-    },
-    {
       title: 'Tác vụ',
       key: 'action',
       show: true,
@@ -330,22 +323,6 @@ const User: FC<IUserProps> = ({
             className="select-custom w-1/5"
             options={options(roles)}
             value={role}
-          />
-          <Select
-            showSearch
-            placeholder="Khoa Phòng"
-            optionFilterProp="children"
-            onChange={(value: any) => onChangeSelect('department_id', value)}
-            // onSearch={onSearch}
-            allowClear
-            filterOption={(input, option) =>
-              (option!.label as unknown as string)
-                .toLowerCase()
-                .includes(input.toLowerCase())
-            }
-            className={`select-custom w-1/5 ${department_id ? 'hidden' : ''}`}
-            options={options(departments)}
-            value={department}
           />
           <Input
             placeholder="Tìm kiếm người dùng"

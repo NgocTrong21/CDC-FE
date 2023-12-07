@@ -67,7 +67,7 @@ const List = () => {
   const navigate = useNavigate();
   const { increaseCount, getAllNotifications } =
     useContext(NotificationContext);
-  const { statuses, departments, levels, types } = useContext(FilterContext);
+  const { statuses, departments } = useContext(FilterContext);
   const [equipments, setEquipments] = useState<any>([]);
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState<any>({});
@@ -107,15 +107,15 @@ const List = () => {
   };
 
   const columns: any = [
-    // {
-    //   title: 'Ảnh đại diện',
-    //   dataIndex: 'image',
-    //   key: 'image',
-    //   show: false,
-    //   render(item: any) {
-    //     return <img src={image} alt="logo" className="w-32 h-32" />;
-    //   },
-    // },
+    {
+      title: 'Ảnh đại diện',
+      dataIndex: 'image',
+      key: 'image',
+      show: true,
+      render(item: any) {
+        return <img src={image} alt="logo" className="w-32 h-32" />;
+      },
+    },
     {
       title: 'Tên thiết bị',
       dataIndex: 'name',
@@ -339,15 +339,6 @@ const List = () => {
   const sender_id: number = current_user?.id;
   const current_username = current_user?.name;
   const isHasRole: boolean = checkRoleFromData();
-
-  const setHandoverFields = (item: any) => {
-    setDataHandover({
-      name: item.name,
-      equipment_id: item.id,
-      handover_create_id: current_user?.id,
-    });
-    setShowHandoverModal(true);
-  };
 
   const setReportFields = (item: any) => {
     setShowReportModal(true);
@@ -576,38 +567,6 @@ const List = () => {
               value={department}
             />
           )}
-
-          <Select
-            showSearch
-            placeholder="Mức độ rủi ro"
-            optionFilterProp="children"
-            onChange={(value: any) => onChangeSelect('risk_level', value)}
-            onSearch={onSearch}
-            allowClear
-            filterOption={(input, option) =>
-              (option!.label as unknown as string)
-                .toLowerCase()
-                .includes(input.toLowerCase())
-            }
-            options={options(levels)}
-            value={level}
-          />
-
-          <Select
-            showSearch
-            placeholder="Loại thiết bị"
-            optionFilterProp="children"
-            onChange={(value: any) => onChangeSelect('type_id', value)}
-            onSearch={onSearch}
-            allowClear
-            filterOption={(input, option) =>
-              (option!.label as unknown as string)
-                .toLowerCase()
-                .includes(input.toLowerCase())
-            }
-            options={options(types)}
-            value={type}
-          />
           <Input
             placeholder="Tìm kiếm thiết bị"
             allowClear

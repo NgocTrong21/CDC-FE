@@ -1,14 +1,18 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { FileExcelFilled } from '@ant-design/icons';
 import { Button, Divider, Form, Input } from 'antd';
 import { toast } from 'react-toastify';
 import * as xlsx from 'xlsx';
 import SupplyImportFileExcel from 'components/SupplyImportFileExcel';
 import supplyApi from 'api/suplly.api';
+import { FilterContext } from 'contexts/filter.context';
 
 const ImportSupplyByExcel = () => {
   const [form] = Form.useForm();
   const [data, setData] = useState<any>([]);
+  const {
+    units
+  } = useContext(FilterContext);
 
   const onFinish = () => {
     supplyApi
@@ -57,7 +61,7 @@ const ImportSupplyByExcel = () => {
           const expiration_date = new Date(
             (workSheet[`D${i}`]?.v - (25567 + 2)) * 86400000
           ).valueOf();
-          const unit = workSheet[`E${i}`]?.v;
+          const unit = (units.find((item: any) => item?.name === workSheet[`E${i}`]?.v) as any)?.id;
           const unit_price = workSheet[`F${i}`]?.v;
           const manufacturing_country = workSheet[`G${i}`]?.v;
           const provider = workSheet[`H${i}`]?.v;

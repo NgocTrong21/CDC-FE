@@ -1,4 +1,4 @@
-import { Button, DatePicker, Divider, Form, Input, Select } from 'antd';
+import { Button, DatePicker, Divider, Form, Input, InputNumber, Select } from 'antd';
 import { useEffect, useState, useContext } from 'react';
 import ava from 'assets/image.png';
 import { convertBase64, options } from 'utils/globalFunc.util';
@@ -11,6 +11,9 @@ import { toast } from 'react-toastify';
 const { TextArea } = Input;
 
 const SupplyUpdate = () => {
+  const {
+    units
+  } = useContext(FilterContext);
   const params = useParams();
   const navigate = useNavigate();
   const { id } = params;
@@ -75,7 +78,7 @@ const SupplyUpdate = () => {
             lot_number,
             manufacturing_country,
             provider,
-            unit,
+            unit: +unit,
             unit_price,
             expiration_date: moment(expiration_date),
             note,
@@ -146,18 +149,38 @@ const SupplyUpdate = () => {
             </Form.Item>
           </div>
           <div className="grid grid-cols-3 gap-5">
-            <Form.Item label="Đơn vị tính" name="unit" className="mb-5">
-              <Input
-                placeholder="Nhập đơn vị tính"
+            <Form.Item
+              label="Đơn vị tính"
+              name="unit"
+              required
+              rules={[{ required: false, message: 'Hãy nhập đơn vị tính!' }]}
+              className="mb-5"
+            >
+              <Select
+                showSearch
+                placeholder="Chọn đơn vị"
+                optionFilterProp="children"
                 allowClear
-                className="input"
+                filterOption={(input, option) =>
+                  (option!.label as unknown as string)
+                    .toLowerCase()
+                    .includes(input.toLowerCase())
+                }
+                options={options(units)}
               />
             </Form.Item>
             <Form.Item label="Đơn giá" name="unit_price" className="mb-5">
-              <Input
+              <InputNumber
+                min={0}
                 placeholder="Nhập đơn giá vật tư"
-                allowClear
-                className="input"
+                className='input w-full flex items-center'
+                formatter={(value) => {
+                  return `${value}`.replace(
+                    /\B(?=(\d{3})+(?!\d))/g,
+                    ','
+                  );
+                }}
+                precision={0}
               />
             </Form.Item>
             <Form.Item

@@ -1,4 +1,4 @@
-import { Button, DatePicker, Divider, Form, Input, Select } from 'antd';
+import { Button, DatePicker, Divider, Form, Input, InputNumber, Select } from 'antd';
 import { useContext, useEffect, useState } from 'react';
 import ava from 'assets/image.png';
 import { convertBase64 } from 'utils/globalFunc.util';
@@ -11,7 +11,7 @@ import Loading from 'components/Loading';
 const { TextArea } = Input;
 
 const UpdateEquipment = () => {
-  const { statuses, departments } =
+  const { statuses, departments, units } =
     useContext(FilterContext);
 
   const options = (array: any) => {
@@ -58,7 +58,7 @@ const UpdateEquipment = () => {
             model: equipment.model,
             serial: equipment.serial,
             status_id: equipment.status_id,
-            unit: equipment.unit,
+            unit_id: equipment.unit_id,
             year_in_use: equipment.year_in_use,
             fixed_asset_number: equipment.fixed_asset_number,
             initial_value: equipment.initial_value,
@@ -227,15 +227,22 @@ const UpdateEquipment = () => {
               </Form.Item>
               <Form.Item
                 label="Đơn vị tính"
-                name="unit"
+                name="unit_id"
                 required
-                rules={[{ required: true, message: 'Hãy nhập đơn vị tính!' }]}
+                rules={[{ required: false, message: 'Hãy nhập đơn vị tính!' }]}
                 className="mb-5"
               >
-                <Input
-                  placeholder="Nhập đơn vị tính"
+                <Select
+                  showSearch
+                  placeholder="Chọn đơn vị"
+                  optionFilterProp="children"
                   allowClear
-                  className="input"
+                  filterOption={(input, option) =>
+                    (option!.label as unknown as string)
+                      .toLowerCase()
+                      .includes(input.toLowerCase())
+                  }
+                  options={options(units)}
                 />
               </Form.Item>
             </div>
@@ -263,14 +270,21 @@ const UpdateEquipment = () => {
                 />
               </Form.Item>
               <Form.Item
-                label="Thành tiền"
+                label="Giá trị nhập"
                 name="initial_value"
                 className="mb-5"
               >
-                <Input
-                  placeholder="Nhập thành tiền thiết bị"
-                  allowClear
-                  className="input"
+                <InputNumber
+                  min={0}
+                  placeholder="Nhập giá trị thiết bị"
+                  className='input w-full flex items-center'
+                  formatter={(value) => {
+                    return `${value}`.replace(
+                      /\B(?=(\d{3})+(?!\d))/g,
+                      ','
+                    );
+                  }}
+                  precision={0}
                 />
               </Form.Item>
               <Form.Item
@@ -278,10 +292,18 @@ const UpdateEquipment = () => {
                 name="annual_depreciation"
                 className="mb-5"
               >
-                <Input
-                  placeholder="Nhập Khấu hao hàng năm"
-                  allowClear
-                  className="input"
+                <InputNumber
+                  min={0}
+                  max={100}
+                  className='input w-full flex items-center'
+                  placeholder='Nhập khấu hao'
+                  formatter={(value) => {
+                    return `${value}`.replace(
+                      /\B(?=(\d{3})+(?!\d))/g,
+                      ','
+                    );
+                  }}
+                  precision={0}
                 />
               </Form.Item>
               <Form.Item
@@ -289,10 +311,17 @@ const UpdateEquipment = () => {
                 name="residual_value"
                 className="mb-5"
               >
-                <Input
+                <InputNumber
+                  min={0}
                   placeholder="Nhập giá trị còn lại"
-                  allowClear
-                  className="input"
+                  className='input w-full flex items-center'
+                  formatter={(value) => {
+                    return `${value}`.replace(
+                      /\B(?=(\d{3})+(?!\d))/g,
+                      ','
+                    );
+                  }}
+                  precision={0}
                 />
               </Form.Item>
               <Form.Item

@@ -29,6 +29,7 @@ import { checkPermission, onChangeCheckbox } from 'utils/globalFunc.util';
 
 import type { PaginationProps } from 'antd';
 import { permissions } from 'constants/permission.constant';
+import { formatCurrencyVN } from 'utils/validateFunc.util';
 
 const TableFooter = ({ paginationProps }: any) => {
   return (
@@ -97,13 +98,14 @@ const Suplly = () => {
     {
       title: 'Đơn vị tính',
       key: 'unit',
-      dataIndex: 'unit',
       show: true,
+      render: (item: any) => <div>{item?.Equipment_Unit?.name}</div>,
     },
     {
       title: 'Đơn giá',
       key: 'unit_price',
       dataIndex: 'unit_price',
+      render: (item: any) => <p>{formatCurrencyVN(item)}</p>,
       show: true,
     },
     {

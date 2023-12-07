@@ -410,7 +410,7 @@ const Detail = () => {
 
     {
       key_1: 'Đơn vị tính',
-      value_1: `${equipment?.unit ? equipment?.unit : ''}`,
+      value_1: `${equipment?.Equipment_Unit?.name ? equipment?.Equipment_Unit?.name : ''}`,
       key_2: 'Thành tiền',
       value_2: `${equipment?.initial_value ? formatCurrency(equipment?.initial_value) : ''
         }`,
