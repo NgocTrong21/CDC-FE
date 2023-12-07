@@ -81,7 +81,7 @@ exports.detail = async (req, res) => {
     const equipment = await db.Equipment.findOne({
       where: { id },
       include: [
-        // { model: db.Equipment_Unit, attributes: ["id", "name"] },
+        { model: db.Equipment_Unit, attributes: ["id", "name"] },
         { model: db.Equipment_Status, attributes: ["id", "name"] },
         { model: db.Department, attributes: ["id", "name"] },
       ],

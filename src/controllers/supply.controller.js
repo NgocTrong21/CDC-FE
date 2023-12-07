@@ -70,7 +70,9 @@ exports.list = async (req, res) => {
         ],
       };
     }
-    let include = [];
+    let include = [
+      { model: db.Equipment_Unit, attributes: ["id", "name"] },
+    ];
     let supplies = await getList(+limit, page, filter, "Supply", include);
 
     return successHandler(res, { supplies, count: supplies.length }, 200);
@@ -85,6 +87,10 @@ exports.detail = async (req, res) => {
     const supply = await db.Supply.findOne({
       where: { id },
       raw: false,
+      include: [
+        { model: db.Equipment_Unit, attributes: ["id", "name"] },
+      ]
+      
     });
     return successHandler(res, { supply }, 200);
   } catch (error) {

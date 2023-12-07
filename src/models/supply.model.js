@@ -8,6 +8,7 @@ module.exports = (sequelize, DataTypes) => {
       });
       Supply.hasMany(models.Supply_Inbound_Order, { foreignKey: "supply_id" });
       Supply.hasMany(models.Supply_Outbound_Order, { foreignKey: "supply_id" });
+      Supply.belongsTo(models.Equipment_Unit, { foreignKey: "unit" });
     }
   }
   Supply.init(
