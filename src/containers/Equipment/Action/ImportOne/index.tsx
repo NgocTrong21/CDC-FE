@@ -1,4 +1,12 @@
-import { Button, DatePicker, Divider, Form, Input, InputNumber, Select } from 'antd';
+import {
+  Button,
+  DatePicker,
+  Divider,
+  Form,
+  Input,
+  InputNumber,
+  Select,
+} from 'antd';
 import { useContext, useState } from 'react';
 import ava from 'assets/image.png';
 import { convertBase64, options } from 'utils/globalFunc.util';
@@ -10,11 +18,7 @@ import moment from 'moment';
 const { TextArea } = Input;
 
 const ImportOne = () => {
-  const {
-    departments,
-    statuses,
-    units
-  } = useContext(FilterContext);
+  const { departments, statuses, units } = useContext(FilterContext);
   const [form] = Form.useForm();
   const [selectedImage, setSelectedImage] = useState<any>('');
   const [image, setImage] = useState<any>('');
@@ -39,10 +43,9 @@ const ImportOne = () => {
   const onFinish = (values: any) => {
     let data = {
       ...values,
-      handover_date: moment(
-        new Date(values.handover_date)
-      ).toISOString(),
-      image, status_id: 3
+      handover_date: moment(new Date(values.handover_date)).toISOString(),
+      image,
+      status_id: 3,
     };
     setLoading(true);
     equipmentApi
@@ -132,7 +135,7 @@ const ImportOne = () => {
               name="fixed_asset_number"
               rules={[
                 {
-                  required: false,
+                  required: true,
                   message: 'Hãy nhập Số hiệu TSCĐ thiết bị!',
                 },
               ]}
@@ -140,35 +143,21 @@ const ImportOne = () => {
             >
               <Input placeholder="Nhập mã TSCĐ" allowClear className="input" />
             </Form.Item>
-            <Form.Item
-              label="Model"
-              name="model"
-              className="mb-5"
-            >
+            <Form.Item label="Model" name="model" className="mb-5">
               <Input
                 placeholder="Nhập model của thiết bị"
                 allowClear
                 className="input"
               />
             </Form.Item>
-            <Form.Item
-              label="Serial"
-              name="serial"
-              className="mb-5"
-            >
+            <Form.Item label="Serial" name="serial" className="mb-5">
               <Input
                 placeholder="Nhập serial của thiết bị"
                 allowClear
                 className="input"
               />
             </Form.Item>
-            <Form.Item
-              label="Đơn vị tính"
-              name="unit_id"
-              required
-              rules={[{ required: false, message: 'Hãy nhập đơn vị tính!' }]}
-              className="mb-5"
-            >
+            <Form.Item label="Đơn vị tính" name="unit_id" className="mb-5">
               <Select
                 showSearch
                 placeholder="Chọn đơn vị"
@@ -202,16 +191,17 @@ const ImportOne = () => {
                 className="input"
               />
             </Form.Item>
-            <Form.Item label="Giá trị nhập" name="initial_value" className="mb-5">
+            <Form.Item
+              label="Giá trị nhập"
+              name="initial_value"
+              className="mb-5"
+            >
               <InputNumber
                 min={0}
                 placeholder="Nhập giá trị thiết bị"
-                className='input w-full flex items-center'
+                className="input w-full flex items-center"
                 formatter={(value) => {
-                  return `${value}`.replace(
-                    /\B(?=(\d{3})+(?!\d))/g,
-                    ','
-                  );
+                  return `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                 }}
                 precision={0}
               />
@@ -224,13 +214,10 @@ const ImportOne = () => {
               <InputNumber
                 min={0}
                 max={100}
-                className='input w-full flex items-center'
-                placeholder='Nhập khấu hao'
+                className="input w-full flex items-center"
+                placeholder="Nhập khấu hao"
                 formatter={(value) => {
-                  return `${value}`.replace(
-                    /\B(?=(\d{3})+(?!\d))/g,
-                    ','
-                  );
+                  return `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                 }}
                 precision={0}
               />
@@ -245,12 +232,9 @@ const ImportOne = () => {
               <InputNumber
                 min={0}
                 placeholder="Nhập giá trị còn lại"
-                className='input w-full flex items-center'
+                className="input w-full flex items-center"
                 formatter={(value) => {
-                  return `${value}`.replace(
-                    /\B(?=(\d{3})+(?!\d))/g,
-                    ','
-                  );
+                  return `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                 }}
                 precision={0}
               />

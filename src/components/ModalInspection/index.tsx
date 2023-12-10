@@ -1,13 +1,12 @@
 import { Button, DatePicker, Form, Input, Modal, Select } from 'antd';
 import moment from 'moment';
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { convertBase64, options } from 'utils/globalFunc.util';
 import MdEditor from 'react-markdown-editor-lite';
 import 'react-markdown-editor-lite/lib/index.css';
 import MarkdownIt from 'markdown-it';
 import equipmentInspection from 'api/equipment_inspection.api';
-import { FilterContext } from 'contexts/filter.context';
 const mdParser = new MarkdownIt(/* Markdown-it options */);
 
 const ModalInspection = (props: any) => {
@@ -18,7 +17,6 @@ const ModalInspection = (props: any) => {
     dataInspection,
   } = props;
 
-  const { providers } = useContext(FilterContext);
   const [form] = Form.useForm();
   const [loading, setLoading] = useState<boolean>(false);
   const [file, setFile] = useState<any>('');
@@ -125,24 +123,6 @@ const ModalInspection = (props: any) => {
           ]}
         >
           <DatePicker className="date" />
-        </Form.Item>
-        <Form.Item
-          label="Nhà cung cấp dịch vụ"
-          name="provider_id"
-          rules={[
-            {
-              required: true,
-              message: 'Hãy chọn Nhà cung cấp dịch vụ!',
-            },
-          ]}
-        >
-          <Select
-            showSearch
-            placeholder="Chọn nhà cung cấp dịch vụ"
-            optionFilterProp="children"
-            options={options(providers)}
-            allowClear
-          />
         </Form.Item>
         <Form.Item
           className="fileUploadInput"

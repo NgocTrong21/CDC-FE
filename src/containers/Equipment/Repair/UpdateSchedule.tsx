@@ -11,7 +11,6 @@ import {
 } from 'antd';
 import categoryApi from 'api/category.api';
 import equipmentRepairApi from 'api/equipment_repair.api';
-import { FilterContext } from 'contexts/filter.context';
 import moment from 'moment';
 import { useState, useEffect, useContext } from 'react';
 import { useParams } from 'react-router-dom';
@@ -37,7 +36,6 @@ const UpdateSchedule = () => {
   const current_user: any = getCurrentUser();
   const { increaseCount, getAllNotifications } =
     useContext(NotificationContext);
-  const { providers } = useContext(FilterContext);
   const query: any = useQuery();
   const param: any = useParams();
   const { id, repair_id } = param;
@@ -63,10 +61,7 @@ const UpdateSchedule = () => {
     if (status === 2) color = 'text-red-500';
     return (
       <span className={`${color}`}>
-        {
-          report_status.filter((item: any) => item.value === status)[0]
-            ?.label
-        }
+        {report_status.filter((item: any) => item.value === status)[0]?.label}
       </span>
     );
   };
@@ -130,7 +125,7 @@ const UpdateSchedule = () => {
               data?.schedule?.repair_date &&
               moment(data?.schedule?.repair_date),
             estimated_repair_cost: data?.schedule?.estimated_repair_cost,
-            provider_id: data?.schedule?.provider_id,
+            provider: data?.schedule?.provider,
             repair_completion_date:
               data?.schedule?.repair_completion_date &&
               moment(data?.schedule?.repair_completion_date),
@@ -141,7 +136,8 @@ const UpdateSchedule = () => {
               moment(data?.schedule?.schedule_repair_date),
             schedule_create_user_name:
               data?.schedule?.schedule_create_user?.name || current_user?.name,
-            schedule_create_user_id: data?.schedule?.schedule_create_user?.id || current_user?.id,
+            schedule_create_user_id:
+              data?.schedule?.schedule_create_user?.id || current_user?.id,
             test_user_name:
               data?.schedule?.test_user?.name || current_user?.name,
             schedule_approve_user_name:
@@ -262,8 +258,9 @@ const UpdateSchedule = () => {
 
   return (
     <div>
-      <div className="title text-center">{`${query?.edit === 'true' ? 'CẬP NHẬT' : ''
-        } PHIẾU SỬA CHỮA THIẾT BỊ`}</div>
+      <div className="title text-center">{`${
+        query?.edit === 'true' ? 'CẬP NHẬT' : ''
+      } PHIẾU SỬA CHỮA THIẾT BỊ`}</div>
       <Divider />
       <div>
         <div className="title">
@@ -354,14 +351,8 @@ const UpdateSchedule = () => {
                 onChange={(e) => handleChange(e, 'estimate_cost')}
               />
             </Form.Item>
-            <Form.Item label="Nhà cung cấp dịch vụ" name="provider_id">
-              <Select
-                showSearch
-                placeholder="Chọn nhà cung cấp dịch vụ"
-                optionFilterProp="children"
-                options={options(providers)}
-                allowClear
-              />
+            <Form.Item label="Nhà cung cấp dịch vụ" name="provider">
+              <Input className="input" type="text" />
             </Form.Item>
           </div>
           <div className="grid grid-cols-2 gap-5">
@@ -395,9 +386,7 @@ const UpdateSchedule = () => {
                 },
               ]}
             >
-              <DatePicker
-                className="date"
-              />
+              <DatePicker className="date" />
             </Form.Item>
           </div>
           <div className="grid grid-cols-3 gap-5">
@@ -419,20 +408,14 @@ const UpdateSchedule = () => {
               />
             </Form.Item>
             <Form.Item label="Ghi chú" name="note">
-              <TextArea
-                className="textarea"
-                rows={1}
-              />
+              <TextArea className="textarea" rows={1} />
             </Form.Item>
             <Form.Item
               className="fileUploadInput"
               name="file"
               label="Tài liệu đính kèm"
             >
-              <Input
-                type="file"
-                onChange={(e: any) => handleChangeFile(e)}
-              />
+              <Input type="file" onChange={(e: any) => handleChangeFile(e)} />
             </Form.Item>
           </div>
           <div className="grid grid-cols-3 gap-5">

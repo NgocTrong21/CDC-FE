@@ -8,10 +8,7 @@ import {
   FilterFilled,
   SelectOutlined,
   ImportOutlined,
-  RightCircleFilled,
-  PlusSquareFilled,
   RetweetOutlined,
-  CarFilled,
 } from '@ant-design/icons';
 import {
   Button,
@@ -35,7 +32,6 @@ import useQuery from 'hooks/useQuery';
 import { toast } from 'react-toastify';
 import { FilterContext } from 'contexts/filter.context';
 import { NotificationContext } from 'contexts/notification.context';
-import ModalHandover from 'components/ModalHandover';
 import ModalReport from 'components/ModalReport';
 import {
   checkPermission,
@@ -50,7 +46,6 @@ import useSearchName from 'hooks/useSearchName';
 import { permissions } from 'constants/permission.constant';
 import ExportToExcel from 'components/Excel';
 import type { PaginationProps } from 'antd';
-import Item from 'antd/lib/list/Item';
 import { formatCurrency } from 'utils/globalFunc.util';
 
 const TableFooter = ({ paginationProps }: any) => {
@@ -91,11 +86,9 @@ const List = () => {
   const [department, setDepartment] = useState<any>(currentDepartment);
   const [type, setType] = useState<any>(currentType);
   const [level, setLevel] = useState<any>(currentRiskLevel);
-  const [showHandoverModal, setShowHandoverModal] = useState<boolean>(false);
   const [showReportModal, setShowReportModal] = useState<boolean>(false);
   const [showTransferModal, setShowTransferModal] = useState<boolean>(false);
   const [isShowCustomTable, setIsShowCustomTable] = useState<boolean>(false);
-  const [dataHandover, setDataHandover] = useState<any>({});
   const [dataReport, setDataReport] = useState<any>({});
   const [dataTransfer, setDataTransfer] = useState<any>({});
 
@@ -113,8 +106,10 @@ const List = () => {
       key: 'image',
       show: true,
       render(item: any) {
-        return <img src={image} alt="logo" className="w-32 h-32" />;
+        return <img src={image} alt="logo" />;
       },
+      widthExcel: 30,
+      width: 100,
     },
     {
       title: 'Tên thiết bị',
@@ -122,6 +117,7 @@ const List = () => {
       key: 'name',
       show: true,
       widthExcel: 30,
+      width: 300,
     },
     {
       title: 'Model',
@@ -129,6 +125,7 @@ const List = () => {
       dataIndex: 'model',
       show: true,
       widthExcel: 30,
+      width: 200,
     },
     {
       title: 'Serial',
@@ -136,6 +133,7 @@ const List = () => {
       dataIndex: 'serial',
       show: true,
       widthExcel: 30,
+      width: 200,
     },
     {
       title: 'Nước sản xuất',
@@ -143,6 +141,7 @@ const List = () => {
       show: true,
       dataIndex: 'manufacturing_country_id',
       widthExcel: 30,
+      width: 200,
     },
     {
       title: 'Năm sử dụng',
@@ -150,6 +149,7 @@ const List = () => {
       show: true,
       dataIndex: 'year_in_use',
       widthExcel: 30,
+      width: 200,
     },
     {
       title: 'Số hiệu TSCĐ',
@@ -157,21 +157,16 @@ const List = () => {
       show: true,
       dataIndex: 'fixed_asset_number',
       widthExcel: 30,
+      width: 200,
     },
     {
-      title: 'Hãng sản xuất',
-      key: 'manufacturer_id',
-      show: false,
-      dataIndex: 'manufacturer_id',
-      widthExcel: 30,
-    },
-    {
-      title: 'Thành tiền',
+      title: 'Giá trị nhập',
       key: 'initial_value',
       show: true,
       dataIndex: 'initial_value',
       widthExcel: 30,
       render: (item: number) => <div>{formatCurrency(item)}</div>,
+      width: 200,
     },
     {
       title: 'Khấu hao hàng năm',
@@ -179,6 +174,7 @@ const List = () => {
       show: true,
       dataIndex: 'annual_depreciation',
       widthExcel: 30,
+      width: 200,
     },
     {
       title: 'Giá trị còn lại',
@@ -187,6 +183,7 @@ const List = () => {
       dataIndex: 'residual_value',
       widthExcel: 30,
       render: (item: number) => <div>{formatCurrency(item)}</div>,
+      width: 200,
     },
     {
       title: 'Ghi chú',
@@ -194,6 +191,7 @@ const List = () => {
       show: false,
       dataIndex: 'note',
       widthExcel: 30,
+      width: 200,
     },
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -204,13 +202,7 @@ const List = () => {
       show: true,
       render: (item: any) => <div>{item?.Equipment_Status?.name}</div>,
       widthExcel: 30,
-    },
-    {
-      title: 'Loại thiết bị',
-      key: 'type',
-      show: false,
-      render: (item: any) => <div>{item?.Equipment_Type?.name}</div>,
-      widthExcel: 30,
+      width: 200,
     },
     {
       title: 'Đơn vị tính',
@@ -218,6 +210,7 @@ const List = () => {
       show: false,
       render: (item: any) => <div>{item?.Equipment_Unit?.name}</div>,
       widthExcel: 30,
+      width: 200,
     },
     {
       title: 'Khoa - Phòng',
@@ -225,21 +218,15 @@ const List = () => {
       show: false,
       render: (item: any) => <div>{item?.Department?.name}</div>,
       widthExcel: 30,
+      width: 200,
     },
-    {
-      title: 'Mức độ rủi ro',
-      key: 'risk_level',
-      show: false,
-      render: (item: any) => <div>{item?.Equipment_Risk_Level?.name}</div>,
-      widthExcel: 30,
-    },
-
     {
       title: 'Năm sản xuất',
       key: 'year_of_manufacture',
       show: false,
       dataIndex: 'year_of_manufacture',
       widthExcel: 30,
+      width: 200,
     },
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -248,16 +235,18 @@ const List = () => {
       title: 'Tác vụ',
       key: 'action',
       show: true,
+      with: 800,
       render: (item: any) => (
         <Menu className="flex flex-row items-center">
           {item?.Equipment_Status?.id === 3 && (
             <>
               <Menu.Item
                 key="bell"
-                className={`${checkPermission(permissions.REPORT_EQUIPMENT_CREATE)
-                  ? ''
-                  : 'hidden'
-                  }`}
+                className={`${
+                  checkPermission(permissions.REPORT_EQUIPMENT_CREATE)
+                    ? ''
+                    : 'hidden'
+                }`}
               >
                 <Tooltip title="Báo hỏng thiết bị">
                   <ExclamationCircleFilled
@@ -269,10 +258,11 @@ const List = () => {
                 <>
                   <Menu.Item
                     key="transfer"
-                    className={`${checkPermission(permissions.TRANFER_EQUIPMENT_CREATE)
-                      ? ''
-                      : 'hidden'
-                      }`}
+                    className={`${
+                      checkPermission(permissions.TRANFER_EQUIPMENT_CREATE)
+                        ? ''
+                        : 'hidden'
+                    }`}
                   >
                     <Tooltip title="Điều chuyển thiết bị">
                       <RetweetOutlined
@@ -294,8 +284,9 @@ const List = () => {
           {item?.Equipment_Status?.id !== 7 && (
             <Menu.Item
               key="update_equipment"
-              className={`${checkPermission(permissions.EQUIPMENT_UPDATE) ? '' : 'hidden'
-                }`}
+              className={`${
+                checkPermission(permissions.EQUIPMENT_UPDATE) ? '' : 'hidden'
+              }`}
             >
               <Tooltip title="Cập nhật thiết bị">
                 <Link to={`/equipment/update/${item.id}`}>
@@ -315,8 +306,9 @@ const List = () => {
           )}
           <Menu.Item
             key="delete"
-            className={`${checkPermission(permissions.EQUIPMENT_DELETE) ? '' : 'hidden'
-              }`}
+            className={`${
+              checkPermission(permissions.EQUIPMENT_DELETE) ? '' : 'hidden'
+            }`}
           >
             <Tooltip title="Xóa thiết bị">
               <Popconfirm
@@ -594,16 +586,7 @@ const List = () => {
         footer={() => <TableFooter paginationProps={pagination} />}
         pagination={false}
         loading={loading}
-      />
-      <ModalHandover
-        showHandoverModal={showHandoverModal}
-        setShowHandoverModal={() => setShowHandoverModal(false)}
-        callback={() => {
-          increaseCount();
-          getAllNotifications();
-          search();
-        }}
-        dataHandover={dataHandover}
+        scroll={{ x: 2800, y: 500 }}
       />
       <ModalReport
         showReportModal={showReportModal}

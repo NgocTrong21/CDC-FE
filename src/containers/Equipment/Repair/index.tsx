@@ -26,7 +26,6 @@ import { FilterContext } from 'contexts/filter.context';
 import {
   checkPermission,
   checkRoleFromData,
-  getCurrentUser,
   handleReportStatus,
   onChangeCheckbox,
   options,
@@ -41,8 +40,6 @@ import { broken_status } from 'constants/dataFake.constant';
 import { permissions } from 'constants/permission.constant';
 import type { PaginationProps } from 'antd';
 import { formatCurrencyVN } from 'utils/validateFunc.util';
-import equipmentApi from 'api/equipment.api';
-import { toast } from 'react-toastify';
 
 const TableFooter = ({ paginationProps }: any) => {
   return (
@@ -54,15 +51,11 @@ const TableFooter = ({ paginationProps }: any) => {
 };
 
 const Repair = () => {
-  const { statuses, departments, types } = useContext(FilterContext);
+  const { statuses, departments } = useContext(FilterContext);
   const newStatus = statuses?.filter(
     (item: any) => item?.id === 4 || item?.id === 5
   );
   const isHasRole: boolean = checkRoleFromData();
-  const checkScheduleRepair = (status: any) => {
-    const scheduleStatus = [0, 1, 2];
-    return scheduleStatus.includes(status);
-  };
 
   const columns: any = [
     {
@@ -179,26 +172,6 @@ const Repair = () => {
       ),
     },
     {
-      title: 'Trạng thái xử lý phiếu báo hỏng',
-      key: 'report_status',
-      show: false,
-      widthExcel: 30,
-      render: (item: any) => {
-        return <>{handleReportStatus(item?.Repairs[0]?.report_status)}</>;
-      },
-    },
-    {
-      title: 'Trạng thái xử lý phiếu sửa chữa',
-      key: 'schedule_repair_status',
-      show: false,
-      widthExcel: 30,
-      render: (item: any) => {
-        return (
-          <>{handleReportStatus(item?.Repairs[0]?.schedule_repair_status)}</>
-        );
-      },
-    },
-    {
       title: 'Tác vụ',
       key: 'action',
       show: true,
@@ -218,29 +191,27 @@ const Repair = () => {
               </Link>
             </Tooltip>
           </Menu.Item>
-          {
-            (item?.Repairs[0]?.schedule_repair_status === null) && (
-              <Menu.Item key="word">
-                <Tooltip
-                  title='Tạo phiếu sửa chữa'
+          {item?.Repairs[0]?.schedule_repair_status === null && (
+            <Menu.Item key="word">
+              <Tooltip title="Tạo phiếu sửa chữa">
+                <Link
+                  to={`/equipment/repair/create_schedule/${item?.id}/${item?.Repairs[0]?.id}`}
                 >
-                  <Link
-                    to={`/equipment/repair/create_schedule/${item?.id}/${item?.Repairs[0]?.id}`}
-                  >
-                    <PlusCircleFilled />
-                  </Link>
-                </Tooltip>
-              </Menu.Item>
-            )}
-          {((item?.Repairs[0]?.schedule_repair_status === 1) &&
+                  <PlusCircleFilled />
+                </Link>
+              </Tooltip>
+            </Menu.Item>
+          )}
+          {item?.Repairs[0]?.schedule_repair_status === 1 && (
             <Menu.Item key="edit">
               <Tooltip
-                title={`${checkPermission(permissions.REPAIR_EQUIPMENT_UPDATE)
-                  ? item?.Repairs[0]?.repair_status === null
-                    ? 'Cập nhật phiếu sửa chữa'
+                title={`${
+                  checkPermission(permissions.REPAIR_EQUIPMENT_UPDATE)
+                    ? item?.Repairs[0]?.repair_status === null
+                      ? 'Cập nhật phiếu sửa chữa'
+                      : 'Xem phiếu sửa chữa'
                     : 'Xem phiếu sửa chữa'
-                  : 'Xem phiếu sửa chữa'
-                  }`}
+                }`}
               >
                 <Link
                   to={`/equipment/repair/update_schedule/${item?.id}/${item?.Repairs[0]?.id}?edit=true`}
@@ -286,7 +257,6 @@ const Repair = () => {
   const [type, setType] = useState<any>(currentType);
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingDownload, setLoadingDownload] = useState<boolean>(false);
-  const [loadingUnuse, setLoadingUnuse] = useState<boolean>(false);
   const [total, setTotal] = useState<number>(1);
   const [page, setPage] = useState<number>(currentPage || 1);
   const [limit, setLimit] = useState<number>(10);
@@ -294,32 +264,6 @@ const Repair = () => {
   const [showReHandoverModal, setShowReHandoverModal] =
     useState<boolean>(false);
   const [equipment, setEquipment] = useState({});
-  const [highestRepairCost, setHighestRepairCost] = useState<any>([]);
-  const current_user = getCurrentUser();
-
-  const handleUnuseEquipment = (item: any) => {
-    const data = {
-      equipment_id: item.equipment_id,
-      name: item?.Equipment?.name,
-      department: item?.Equipment?.Department?.name,
-      department_id: item?.Equipment?.Department?.id,
-      create_user_id: current_user.id,
-    };
-    setLoadingUnuse(true);
-    equipmentApi
-      .unUseEquipment(data)
-      .then((res: any) => {
-        const { success } = res.data;
-        if (success) {
-          toast.success('Cập nhật thành công!');
-          getHighestRepairCost();
-        } else {
-          toast.error('Cập nhật thất bại!');
-        }
-      })
-      .catch()
-      .finally(() => setLoadingUnuse(false));
-  };
 
   const onShowSizeChange: PaginationProps['onShowSizeChange'] = (
     current,
@@ -395,25 +339,9 @@ const Repair = () => {
       .finally(() => setLoading(false));
   };
 
-  const getHighestRepairCost = () => {
-    equipmentRepairApi
-      .getHighestRepairCost()
-      .then((res: any) => {
-        const { success, data } = res.data;
-        if (success) {
-          setHighestRepairCost(data.highest_repair_cost);
-        }
-      })
-      .catch();
-  };
-
   useEffect(() => {
     getAllEquipmentRepair();
   }, [nameSearch, status, type, department, page, limit]);
-
-  useEffect(() => {
-    getHighestRepairCost();
-  }, []);
 
   const pagination = {
     current: page,
@@ -532,20 +460,6 @@ const Repair = () => {
               value={department}
             />
           )}
-          <Select
-            showSearch
-            placeholder="Loại thiết bị"
-            optionFilterProp="children"
-            onChange={(value: any) => onChangeSelect('type_id', value)}
-            allowClear
-            filterOption={(input, option) =>
-              (option!.label as unknown as string)
-                .toLowerCase()
-                .includes(input.toLowerCase())
-            }
-            options={options(types)}
-          />
-
           <Input
             placeholder="Tìm kiếm thiết bị"
             allowClear
@@ -574,21 +488,6 @@ const Repair = () => {
         pagination={false}
         loading={loading}
       />
-
-      {/* <div className="mb-8 mt-10">
-        <div className="title mb-6">
-          Danh sách thiết bị có chi phí sửa chữa cao
-        </div>
-        <Table
-          columns={columns_highest_repair_cost}
-          dataSource={highestRepairCost}
-          className="mt-6 shadow-md"
-          // footer={() => <TableFooter paginationProps={pagination} />}
-          pagination={false}
-          loading={loadingUnuse}
-        />
-      </div> */}
-
       <ModalReHandover
         equipment={equipment}
         showReHandoverModal={showReHandoverModal}

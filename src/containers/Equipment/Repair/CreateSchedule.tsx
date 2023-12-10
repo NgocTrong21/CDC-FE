@@ -1,19 +1,11 @@
-import {
-  Button,
-  DatePicker,
-  Divider,
-  Form,
-  Input,
-  Select,
-} from 'antd';
+import { Button, DatePicker, Divider, Form, Input } from 'antd';
 import categoryApi from 'api/category.api';
 import equipmentRepairApi from 'api/equipment_repair.api';
-import { FilterContext } from 'contexts/filter.context';
 import moment from 'moment';
 import { useState, useEffect, useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { checkPermission, options } from 'utils/globalFunc.util';
+import { checkPermission } from 'utils/globalFunc.util';
 import BrokenReport from './BrokenReport';
 import { CURRENT_USER } from 'constants/auth.constant';
 import equipmentApi from 'api/equipment.api';
@@ -30,7 +22,6 @@ const CreateSchedule = () => {
   const { increaseCount, getAllNotifications } =
     useContext(NotificationContext);
   const navigate = useNavigate();
-  const { providers } = useContext(FilterContext);
   const param: any = useParams();
   const { id, repair_id } = param;
   const [form] = Form.useForm();
@@ -79,7 +70,7 @@ const CreateSchedule = () => {
       name: equipment?.name,
       department: equipment?.Department?.name,
       department_id: equipment?.Department?.id,
-      isEdit: 0
+      isEdit: 0,
     };
     setLoadingCreate(true);
     equipmentRepairApi
@@ -147,14 +138,8 @@ const CreateSchedule = () => {
             >
               <Input className="input" type="text" onChange={handleChange} />
             </Form.Item>
-            <Form.Item label="Nhà cung cấp dịch vụ" name="provider_id">
-              <Select
-                showSearch
-                placeholder="Chọn nhà cung cấp dịch vụ"
-                optionFilterProp="children"
-                options={options(providers)}
-                allowClear
-              />
+            <Form.Item label="Nhà cung cấp dịch vụ sửa chữa" name="provider">
+              <Input className="input" type="text" onChange={handleChange} />
             </Form.Item>
           </div>
           <div className="grid grid-cols-2 gap-5">

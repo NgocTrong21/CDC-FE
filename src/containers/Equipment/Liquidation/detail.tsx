@@ -78,6 +78,9 @@ const DetailLiquidation = () => {
             department: data?.equipment?.Equipment?.Department.name,
             department_id: data?.equipment?.Equipment?.Department.id,
             code: data?.equipment?.code,
+            liquidation_date: data?.equipment?.liquidation_date
+              ? moment(data?.equipment?.liquidation_date)
+              : '',
             liquidation_status: data?.equipment?.liquidation_status,
             create_user: data?.equipment?.create_user?.name,
             create_user_id: data?.equipment?.create_user?.id,

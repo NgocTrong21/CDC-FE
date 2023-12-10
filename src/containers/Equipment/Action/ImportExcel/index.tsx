@@ -10,12 +10,11 @@ import { options } from 'utils/globalFunc.util';
 
 const ImportEquipmentByExcel = () => {
   const [department, setDepartment] = useState<number>();
-  const { departments, statuses } = useContext(FilterContext);
+  const { departments, statuses, units } = useContext(FilterContext);
   const [loading, setLoading] = useState<boolean>(false);
   const [form] = Form.useForm();
   const [data, setData] = useState<any>([]);
   const [equipment, setEquipment] = useState<any>([]);
-
   const columns: any = [
     {
       title: 'Tên thiết bị',
@@ -48,12 +47,12 @@ const ImportEquipmentByExcel = () => {
       dataIndex: 'fixed_asset_number',
     },
     {
-      title: 'Mã hóa TB',
-      dataIndex: 'hash_code',
-      key: 'hash_code',
+      title: 'Đơn vị',
+      dataIndex: 'unit_id',
+      key: 'unit_id',
     },
     {
-      title: 'Thành tiền',
+      title: 'Giá trị',
       key: 'initial_value',
       dataIndex: 'initial_value',
     },
@@ -135,12 +134,15 @@ const ImportEquipmentByExcel = () => {
           const manufacturing_country_id = workSheet[`D${i}`]?.v;
           const year_in_use = workSheet[`E${i}`]?.v;
           const fixed_asset_number = workSheet[`F${i}`]?.v;
-          const hash_code = workSheet[`G${i}`]?.v;
-          const quantity = workSheet[`H${i}`]?.v;
-          const initial_value = workSheet[`I${i}`]?.v;
-          const annual_depreciation = workSheet[`J${i}`]?.v;
-          const residual_value = workSheet[`K${i}`]?.v;
-          const note = workSheet[`L${i}`]?.v;
+          const unit_id = (
+            units.find(
+              (item: any) => item?.name === workSheet[`G${i}`]?.v
+            ) as any
+          )?.id;
+          const initial_value = workSheet[`H${i}`]?.v;
+          const annual_depreciation = workSheet[`I${i}`]?.v;
+          const residual_value = workSheet[`J${i}`]?.v;
+          const note = workSheet[`K${i}`]?.v;
           newWorkSheet.push({
             name,
             model,
@@ -148,8 +150,7 @@ const ImportEquipmentByExcel = () => {
             manufacturing_country_id,
             year_in_use,
             fixed_asset_number,
-            hash_code,
-            quantity,
+            unit_id,
             initial_value,
             annual_depreciation,
             residual_value,
@@ -211,7 +212,13 @@ const ImportEquipmentByExcel = () => {
           </div>
           <div>
             <div className="grid grid-cols-2 gap-4">
-              <Form.Item label="Khoa Phòng" name="department" className="mb-5">
+              <Form.Item
+                label="Khoa Phòng"
+                name="department"
+                className="mb-5"
+                required
+                rules={[{ required: true, message: 'Hãy chọn khoa phòng!' }]}
+              >
                 <Select
                   showSearch
                   placeholder="Chọn Khoa - Phòng"
@@ -251,8 +258,8 @@ const ImportEquipmentByExcel = () => {
         <>
           <div className="italic text-red-600">
             * Những thiết bị có số thứ tự sau trong file excel đã bị trùng thông
-            tin về số hiệu TSCĐ với các thiết bị khác trong hệ thống. Vui
-            lòng kiểm tra và tạo file excel mới để nhập lại những thiết bị trên.
+            tin về số hiệu TSCĐ với các thiết bị khác trong hệ thống. Vui lòng
+            kiểm tra và tạo file excel mới để nhập lại những thiết bị trên.
           </div>
           <Table
             columns={columns}
