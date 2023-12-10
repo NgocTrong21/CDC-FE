@@ -44,8 +44,8 @@ const Profile = () => {
             phone: user?.phone,
             email: user?.email,
             address: user?.address,
-            role_id: user?.role_id,
-            department_id: user?.department_id,
+            role: user?.Role?.name,
+            department: user?.Department?.name,
             image: user?.image,
           });
           setError('');
@@ -104,31 +104,15 @@ const Profile = () => {
               <Input style={{ display: 'none' }} />
             </Form.Item>
             <div className="grid grid-cols-2 gap-5">
-              <Form.Item
-                label="Tên người dùng"
-                name="name"
-                required
-                rules={[
-                  { required: true, message: 'Hãy nhập tên người dùng!' },
-                ]}
-                className="mb-5"
-              >
+              <Form.Item label="Tên người dùng" name="name" className="mb-5">
                 <Input
                   placeholder="Nhập tên người dùng"
                   allowClear
                   className="rounded-lg h-9 border-[#A3ABEB] border-2"
+                  disabled
                 />
               </Form.Item>
-              <Form.Item
-                label="Email"
-                name="email"
-                className="mb-5"
-                required
-                rules={[
-                  { required: true, message: 'Hãy nhập email!' },
-                  { type: 'email', message: 'Nhập đúng định dạng email' },
-                ]}
-              >
+              <Form.Item label="Email" name="email" className="mb-5">
                 <Input
                   placeholder="Nhập email"
                   allowClear
@@ -139,30 +123,17 @@ const Profile = () => {
             </div>
 
             <div className="grid grid-cols-2 gap-5">
-              <Form.Item
-                label="Khoa Phòng"
-                name="department_id"
-                // required
-                // rules={[{ required: true, message: 'Hãy chọn Khoa phòng!' }]}
-                className="mb-5"
-              >
-                <Select
-                  placeholder="Chọn Khoa Phòng"
-                  options={options(departments)}
+              <Form.Item label="Khoa Phòng" name="department" className="mb-5">
+                <Input
+                  allowClear
+                  className="rounded-lg h-9 border-[#A3ABEB] border-2"
                   disabled
                 />
               </Form.Item>
-              <Form.Item
-                label="Chức vụ"
-                name="role_id"
-                required
-                rules={[{ required: true, message: 'Hãy chọn Chức vụ!' }]}
-                className="mb-5"
-              >
-                <Select
-                  style={{ width: '100%' }}
-                  placeholder="Hãy chọn Chức vụ"
-                  options={options(roles)}
+              <Form.Item label="Chức vụ" name="role" className="mb-5">
+                <Input
+                  allowClear
+                  className="rounded-lg h-9 border-[#A3ABEB] border-2"
                   disabled
                 />
               </Form.Item>
@@ -170,20 +141,20 @@ const Profile = () => {
             <div className="grid grid-cols-2 gap-5">
               <Form.Item label="Số điện thoại" name="phone" className="mb-5">
                 <Input
-                  placeholder="Nhập số điện thoại"
                   allowClear
                   className="rounded-lg h-9 border-[#A3ABEB] border-2"
+                  disabled
                 />
               </Form.Item>
               <Form.Item label="Địa chỉ" name="address" className="mb-5">
                 <Input
-                  placeholder="Nhập địa chỉ"
                   allowClear
                   className="rounded-lg h-9 border-[#A3ABEB] border-2"
+                  disabled
                 />
               </Form.Item>
             </div>
-            <Form.Item>
+            {/* <Form.Item>
               <Button
                 htmlType="submit"
                 loading={loadingUpdate}
@@ -191,11 +162,10 @@ const Profile = () => {
               >
                 Cập nhật
               </Button>
-            </Form.Item>
+            </Form.Item> */}
           </Form>
           <div className="flex flex-col gap-4 items-center basis-1/4 ">
             <div className="text-center leading-9 ">Hình ảnh người dùng</div>
-
             {selectedImage === '' ? (
               <img
                 src={image !== null ? image : ava}
@@ -209,13 +179,13 @@ const Profile = () => {
               ></div>
             )}
             {/* </label> */}
-            <div className="mt-6">Thay đổi hình ảnh người dùng</div>
+            {/* <div className="mt-6">Thay đổi hình ảnh người dùng</div>
             <input
               type="file"
               className="block file:bg-violet-100 file:text-violet-700 text-slate-500 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold hover:file:bg-violet-200"
               id="inputImage"
               onChange={(e: any) => handleChangeImg(e)}
-            />
+            /> */}
           </div>
         </div>
       )}

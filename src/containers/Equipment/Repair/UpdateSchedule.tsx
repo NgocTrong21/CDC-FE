@@ -265,8 +265,8 @@ const UpdateSchedule = () => {
       <div>
         <div className="title">
           <div className="flex items-center gap-2">
-            PHIẾU SỬA CHỮA (
-            <span className="italic">Mã phiếu: {schedule?.code}</span>) ___{' '}
+            PHIẾU SỬA CHỮA
+            {/* (<span className="italic">Mã phiếu: {schedule?.code}</span>) ___{' '} */}
             {/* {handleScheduleRepairStatus(schedule?.schedule_repair_status)} */}
             <Tooltip title="Chi tiết phiếu báo hỏng">
               <ExclamationCircleFilled

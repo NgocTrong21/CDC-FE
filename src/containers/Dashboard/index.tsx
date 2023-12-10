@@ -1,12 +1,4 @@
-import {
-  Card,
-  Divider,
-  Pagination,
-  Popconfirm,
-  Row,
-  Table,
-  Tooltip,
-} from 'antd';
+import { Card, Divider } from 'antd';
 import equipmentApi from 'api/equipment.api';
 import { useState, useEffect } from 'react';
 import news from 'assets/not_handed.png';
@@ -17,11 +9,10 @@ import unused from 'assets/inactive.png';
 import liquidation from 'assets/liquidation.png';
 import { Column, Pie } from '@ant-design/plots';
 import './index.css';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { checkRoleFromData, getCurrentUser } from 'utils/globalFunc.util';
 import User from 'containers/User';
 import Loading from 'components/Loading';
-import { ProfileFilled } from '@ant-design/icons';
 
 const { Meta } = Card;
 
@@ -29,7 +20,6 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [countByStatus, setCountByStatus] = useState<any>([]);
   const [countByDepartment, setCountByDepartment] = useState<any>([]);
-  const [countByLevel, setCountByLevel] = useState<any>([]);
   const [countBroken, setCountBroken] = useState<any>([]);
   const [sumBroken, setSumBroken] = useState<number>(0);
   const [countRepair, setCountRepair] = useState<any>([]);
@@ -46,7 +36,6 @@ const Dashboard = () => {
         const { success, data } = res.data;
         if (success) {
           setCountByDepartment(data.count_department);
-          setCountByLevel(data.count_level);
           let newCountStatus = data.count_status?.map((item: any) => {
             if (item.status_id === 2) {
               item.image = news;
@@ -126,28 +115,6 @@ const Dashboard = () => {
     },
   };
 
-  const data_level = countByLevel?.length > 0 ? countByLevel : [];
-  const config_level: any = {
-    appendPadding: 10,
-    data: data_level,
-    angleField: 'count',
-    colorField: 'Equipment_Risk_Level.name',
-    radius: 0.9,
-    label: {
-      type: 'inner',
-      offset: '-30%',
-      style: {
-        fontSize: 14,
-        textAlign: 'center',
-      },
-    },
-    interactions: [
-      {
-        type: 'element-active',
-      },
-    ],
-  };
-
   const data_broken = countBroken?.length > 0 ? countBroken : [];
   const config_broken: any = {
     appendPadding: 10,
@@ -201,7 +168,7 @@ const Dashboard = () => {
       </div>
       <Divider />
       <div>
-        {countByStatus.length > 0 && (
+        {countByStatus?.length > 0 && (
           <div className="mb-8">
             <div className="title mb-6">Thống kê thiết bị theo trạng thái</div>
             <div className="grid grid-cols-6">
@@ -227,7 +194,7 @@ const Dashboard = () => {
             </div>
           </div>
         )}
-        {countByDepartment.length > 0 && (
+        {countByDepartment?.length > 0 && (
           <div className="mb-8">
             <div className="title mb-6">Thống kê thiết bị theo khoa phòng</div>
             <Card title="Biểu đồ thống kê" hoverable>
@@ -245,7 +212,7 @@ const Dashboard = () => {
             </Card>
           </div>
         )}
-        {countBroken.length > 0 && (
+        {countBroken?.length > 0 && (
           <div className="mb-8">
             <div className="title mb-6">
               Thống kê thiết bị đang báo hỏng ({sumBroken} thiết bị)
@@ -263,7 +230,7 @@ const Dashboard = () => {
             />
           </div>
         )}
-        {countRepair.length > 0 && (
+        {countRepair?.length > 0 && (
           <div className="mb-8">
             <div className="title mb-6">
               Thống kê thiết bị đang sửa chữa ({sumRepair} thiết bị)
@@ -275,24 +242,6 @@ const Dashboard = () => {
                   const { data } = evt;
                   navigate(
                     `/equipment/list_eq?page_search=1&status_id=5&department_id=${data?.data?.department_id}`
-                  );
-                });
-              }}
-            />
-          </div>
-        )}
-        {countByLevel.length > 0 && (
-          <div className="mb-8">
-            <div className="title mb-6">
-              Thống kê thiết bị theo mức độ rủi ro
-            </div>
-            <Pie
-              {...config_level}
-              onReady={(plot) => {
-                plot.on('plot:click', (evt: any) => {
-                  const { data } = evt;
-                  navigate(
-                    `/equipment/list_eq?page_search=1&risk_level=${data?.data?.risk_level}`
                   );
                 });
               }}

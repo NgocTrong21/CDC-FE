@@ -50,8 +50,6 @@ const LayoutSystem = (props: LayoutProps) => {
   const user: any = JSON.parse(localStorage.getItem(CURRENT_USER) || '');
   const userPermissions = user?.Role?.Role_Permissions;
 
-  console.log(user);
-
   const getUserImage = () => {
     userApi
       .getProfile(user.id)
@@ -123,7 +121,11 @@ const LayoutSystem = (props: LayoutProps) => {
       permissions.CONSUMABLE_SUPPLY_READ,
       <SisternodeOutlined style={{ fontSize: '20px' }} />,
       [
-        getItem('Danh sách vật tư', '/list_sp', permissions.CONSUMABLE_SUPPLY_READ),
+        getItem(
+          'Danh sách vật tư',
+          '/list_sp',
+          permissions.CONSUMABLE_SUPPLY_READ
+        ),
         getItem(
           'Nhập vật tư theo Excel',
           '/import_excel_sp',
@@ -177,37 +179,34 @@ const LayoutSystem = (props: LayoutProps) => {
       '/report_supplies',
       permissions.IMPORT_SUPPLIES,
       <BarChartOutlined style={{ fontSize: '20px' }} />,
-      [getItem(
-        'Tồn kho',
-        '/all',
-        permissions.IMPORT_SUPPLIES
-      ),
-      getItem(
-        'Tồn vật tư theo kho',
-        '/report_supplies_by_warehouse',
-        permissions.IMPORT_SUPPLIES
-      )
+      [
+        getItem('Tồn kho', '/all', permissions.IMPORT_SUPPLIES),
+        getItem(
+          'Tồn vật tư theo kho',
+          '/report_supplies_by_warehouse',
+          permissions.IMPORT_SUPPLIES
+        ),
       ]
     ),
-    // getItem(
-    //   'Quản lý tổ chức',
-    //   '/organization',
-    //   permissions.DEPARTMENT_READ,
-    //   <UsergroupAddOutlined style={{ fontSize: '20px' }} />,
-    //   [
-    //     getItem('Khoa - Phòng', '/department', permissions.DEPARTMENT_READ),
-    //     getItem(
-    //       'Nhà cung cấp dịch vụ',
-    //       '/provider',
-    //       permissions.DEPARTMENT_READ
-    //     ),
-    //     getItem('Dịch vụ', '/service', permissions.DEPARTMENT_READ),
-    //   ]
-    // ),
+    getItem(
+      'Quản lý tổ chức',
+      '/organization',
+      permissions.DEPARTMENT_READ,
+      <UsergroupAddOutlined style={{ fontSize: '20px' }} />,
+      [
+        getItem('Khoa - Phòng', '/department', permissions.DEPARTMENT_READ),
+        // getItem(
+        //   'Nhà cung cấp dịch vụ',
+        //   '/provider',
+        //   permissions.DEPARTMENT_READ
+        // ),
+        // getItem('Dịch vụ', '/service', permissions.DEPARTMENT_READ),
+      ]
+    ),
     getItem(
       'Quản lý thành viên',
       '/user',
-      permissions.DEPARTMENT_READ,
+      permissions.USER_READ,
       <UserOutlined style={{ fontSize: '20px' }} />,
       [
         getItem('Danh sách thành viên', '/list_user', permissions.USER_READ),
@@ -307,7 +306,7 @@ const LayoutSystem = (props: LayoutProps) => {
     <>
       <div
         className="bg-white rounded-lg shadow-lg relative pt-2 pl-2 pb-2 "
-      // style={{ overflowY: 'scroll' }}
+        // style={{ overflowY: 'scroll' }}
       >
         <div className="flex items-center justify-between rounded-lg">
           <h1 className="font-bold text-2xl pl-3 pt-2 pb-1">Thông báo</h1>
@@ -325,8 +324,9 @@ const LayoutSystem = (props: LayoutProps) => {
               key: item.id,
               label: (
                 <div
-                  className={`${item.is_seen === 0 ? '' : 'text-gray-400'
-                    } text-base`}
+                  className={`${
+                    item.is_seen === 0 ? '' : 'text-gray-400'
+                  } text-base`}
                 >
                   <Row>
                     {/* <Link to={`${handleUrlInNotification(item)}`}>

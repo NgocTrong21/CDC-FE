@@ -23,9 +23,14 @@ import departmentApi from 'api/department.api';
 import ava from 'assets/logo.png';
 import { toast } from 'react-toastify';
 import useQuery from 'hooks/useQuery';
-import { onChangeCheckbox, resolveDataExcel } from 'utils/globalFunc.util';
+import {
+  checkPermission,
+  onChangeCheckbox,
+  resolveDataExcel,
+} from 'utils/globalFunc.util';
 import ExportToExcel from 'components/Excel';
 import useSearchName from 'hooks/useSearchName';
+import { permissions } from 'constants/permission.constant';
 
 const limit: number = 10;
 
@@ -121,15 +126,30 @@ const Department = () => {
     {
       title: 'Tác vụ',
       key: 'action',
-      show: true,
+      show:
+        checkPermission(permissions.DEPARTMENT_UPDATE) ||
+        checkPermission(permissions.DEPARTMENT_DELETE) ||
+        checkPermission(permissions.DEPARTMENT_READ),
       render: (item: any) => (
         <div>
-          <Tooltip title="Chi tiết khoa phòng" className="mr-4">
+          <Tooltip
+            title="Thông tin khoa phòng"
+            className={`${
+              checkPermission(permissions.DEPARTMENT_READ) ? 'mr-4' : 'hidden'
+            }`}
+          >
             <Link to={`/organization/department/detail/${item.id}`}>
               <EyeFilled />
             </Link>
           </Tooltip>
-          <Tooltip title="Xóa">
+          <Tooltip
+            title="Xóa"
+            className={`${
+              checkPermission(permissions.DEPARTMENT_DELETE)
+                ? 'button-primary'
+                : 'hidden'
+            }`}
+          >
             <Popconfirm
               title="Bạn muốn xóa Khoa - Phòng này?"
               onConfirm={() => handleDeleteDepartment(item.id)}
@@ -229,13 +249,15 @@ const Department = () => {
             callback={downloadDepartmentList}
             loading={loadingDownload}
           />
-          <Button
-            className="button_excel"
-            onClick={() => navigate('/organization/department/create')}
-          >
-            <PlusCircleFilled />
-            <div className="font-medium text-md text-[#5B69E6]">Thêm mới</div>
-          </Button>
+          {checkPermission(permissions.DEPARTMENT_CREATE) && (
+            <Button
+              className="button_excel"
+              onClick={() => navigate('/organization/department/create')}
+            >
+              <PlusCircleFilled />
+              <div className="font-medium text-md text-[#5B69E6]">Thêm mới</div>
+            </Button>
+          )}
         </div>
       </div>
       <Divider />

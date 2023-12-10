@@ -62,8 +62,8 @@ const BrokenReport = () => {
             approve_broken_report_date: data?.equipment
               ?.approve_broken_report_date
               ? moment(data?.equipment?.approve_broken_report_date).format(
-                'hh:mm:ss, DD-MM-YYYY'
-              )
+                  'hh:mm:ss, DD-MM-YYYY'
+                )
               : moment(new Date()).format('DD-MM-YYYY'),
             approve_report_person_id:
               data?.equipment?.approve_report_person?.id || current_user.id,
@@ -117,9 +117,9 @@ const BrokenReport = () => {
   ) : (
     <div>
       <div className="title">
-        PHIẾU BÁO HỎNG (
-        <span className="italic">Mã phiếu: {equipment?.code}</span>) ___{' '}
-        {handleReportStatus(equipment?.report_status)}
+        PHIẾU BÁO HỎNG
+        {/* (<span className="italic">Mã phiếu: {equipment?.code}</span>) ___{' '} */}
+        {/* {handleReportStatus(equipment?.report_status)} */}
       </div>
       <Form
         size="large"
@@ -147,17 +147,10 @@ const BrokenReport = () => {
         </div>
         <div className="grid grid-cols-2 gap-5">
           <Form.Item label="Lí do hỏng" name="reason">
-            <Input
-              disabled
-              className="input"
-            />
+            <Input disabled className="input" />
           </Form.Item>
           <Form.Item label="Mức độ ưu tiên" name="repair_priority">
-            <Select
-              disabled
-              options={broken_status}
-              className='text-black'
-            />
+            <Select disabled options={broken_status} className="text-black" />
           </Form.Item>
         </div>
         <div className="grid grid-cols-2 gap-5">

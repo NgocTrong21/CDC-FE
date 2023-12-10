@@ -58,7 +58,7 @@ const User: FC<IUserProps> = ({
   triggerLoading = false,
 }) => {
   const { onChangeSearch } = useSearchName();
-  const { roles, departments } = useContext(FilterContext);
+  const { roles } = useContext(FilterContext);
   const navigate = useNavigate();
   const location = useLocation();
   const pathName: any = location?.pathname;
@@ -308,7 +308,7 @@ const User: FC<IUserProps> = ({
           </div>
         )}
         <div className="flex-between-center gap-4 p-4">
-          <Select
+          {/* <Select
             showSearch
             placeholder="Vai trò"
             optionFilterProp="children"
@@ -323,7 +323,7 @@ const User: FC<IUserProps> = ({
             className="select-custom w-1/5"
             options={options(roles)}
             value={role}
-          />
+          /> */}
           <Input
             placeholder="Tìm kiếm người dùng"
             allowClear

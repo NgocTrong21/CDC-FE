@@ -7,7 +7,6 @@ import { FilterContext } from 'contexts/filter.context';
 import userApi from 'api/user.api';
 
 const CreateUser = () => {
-
   const [form] = Form.useForm();
   const [selectedImage, setSelectedImage] = useState<any>('');
   const [image, setImage] = useState<any>('');
@@ -20,8 +19,8 @@ const CreateUser = () => {
       o.value = item.id;
       o.label = item.name;
       return o;
-    })
-  }
+    });
+  };
 
   const handleChangeImg = async (e: any) => {
     let file = e.target.files[0];
@@ -31,23 +30,24 @@ const CreateUser = () => {
       setSelectedImage(img);
       setImage(fileBase64);
     }
-  }
+  };
 
   const onFinish = (values: any) => {
     setLoading(true);
-    userApi.create(values)
+    userApi
+      .create(values)
       .then((res) => {
         const { success, message } = res.data;
         if (success) {
           form.resetFields();
-          toast.success("Thêm mới thành công!");
+          toast.success('Thêm mới thành công!');
         } else {
           toast.error(message);
         }
       })
       .catch()
-      .finally(() => setLoading(false))
-  }
+      .finally(() => setLoading(false));
+  };
 
   return (
     <div>
@@ -55,26 +55,26 @@ const CreateUser = () => {
         <div className="title">THÊM MỚI NGƯỜI DÙNG</div>
       </div>
       <Divider />
-      <div className='flex-between mt-10'>
+      <div className="flex-between mt-10">
         <Form
           form={form}
-          className='basis-2/3'
+          className="basis-2/3"
           layout="vertical"
           size="large"
           onFinish={onFinish}
         >
-          <div className='grid grid-cols-2 gap-5'>
+          <div className="grid grid-cols-2 gap-5">
             <Form.Item
               label="Tên người dùng"
               name="name"
               required
               rules={[{ required: true, message: 'Hãy nhập tên người dùng!' }]}
-              className='mb-5'
+              className="mb-5"
             >
               <Input
                 placeholder="Nhập tên người dùng"
                 allowClear
-                className='rounded-lg h-9 border-[#A3ABEB] border-2'
+                className="rounded-lg h-9 border-[#A3ABEB] border-2"
               />
             </Form.Item>
             <Form.Item
@@ -83,55 +83,52 @@ const CreateUser = () => {
               required
               rules={[
                 { required: true, message: 'Hãy nhập email!' },
-                { type: 'email', message: 'Nhập đúng định dạng email' }
+                { type: 'email', message: 'Nhập đúng định dạng email' },
               ]}
-              className='mb-5'
+              className="mb-5"
             >
               <Input
                 placeholder="Nhập email"
                 allowClear
-                className='rounded-lg h-9 border-[#A3ABEB] border-2'
+                className="rounded-lg h-9 border-[#A3ABEB] border-2"
               />
             </Form.Item>
           </div>
 
-          <div className='grid grid-cols-2 gap-5'>
+          <div className="grid grid-cols-2 gap-5">
+            <Form.Item
+              label="Khoa Phòng"
+              name="department_id"
+              // required
+              // rules={[{ required: true, message: 'Hãy chọn Khoa phòng!' }]}
+              className="mb-5"
+            >
+              <Select
+                placeholder="Chọn Khoa Phòng"
+                options={options(departments)}
+              />
+            </Form.Item>
             <Form.Item
               label="Chức vụ"
               name="role_id"
               required
-              rules={[
-                { required: true, message: 'Hãy chọn Chức vụ!' },
-              ]}
-              className='mb-5'
+              rules={[{ required: true, message: 'Hãy chọn Chức vụ!' }]}
+              className="mb-5"
             >
-              <Select
-                placeholder="Chọn Chức vụ"
-                options={options(roles)}
-              />
+              <Select placeholder="Chọn Chức vụ" options={options(roles)} />
             </Form.Item>
-            <Form.Item
-              label="Số điện thoại"
-              name="phone"
-              className='mb-5'
-            >
+            <Form.Item label="Số điện thoại" name="phone" className="mb-5">
               <Input
                 placeholder="Nhập số điện thoại"
                 allowClear
-                className='rounded-lg h-9 border-[#A3ABEB] border-2'
+                className="rounded-lg h-9 border-[#A3ABEB] border-2"
               />
             </Form.Item>
-          </div>
-          <div className='grid grid-cols-2 gap-5'>
-            <Form.Item
-              label="Địa chỉ"
-              name="address"
-              className='mb-5'
-            >
+            <Form.Item label="Địa chỉ" name="address" className="mb-5">
               <Input
                 placeholder="Nhập địa chỉ"
                 allowClear
-                className='rounded-lg h-9 border-[#A3ABEB] border-2'
+                className="rounded-lg h-9 border-[#A3ABEB] border-2"
               />
             </Form.Item>
           </div>
@@ -139,14 +136,14 @@ const CreateUser = () => {
             <Button
               htmlType="submit"
               loading={loading}
-              className='button-primary'
+              className="button-primary"
             >
               Thêm
             </Button>
           </Form.Item>
         </Form>
-        <div className='basis-1/3 mt-4 flex flex-col items-center'>
-          <div className='text-center mb-4'>Ảnh đại diện</div>
+        <div className="basis-1/3 mt-4 flex flex-col items-center">
+          <div className="text-center mb-4">Ảnh đại diện</div>
           <div className="preview-content">
             <input
               type="file"
@@ -156,26 +153,20 @@ const CreateUser = () => {
               onChange={(e: any) => handleChangeImg(e)}
             />
             <label className="text-center" htmlFor="inputImage">
-              {
-                image === '' ?
-                  <img
-                    src={ava}
-                    alt="ava"
-                    className='w-52 h-52'
-                  /> :
-                  <div
-                    className="w-52 h-52 bg-center bg-no-repeat bg-cover"
-                    style={{ backgroundImage: `url(${selectedImage})` }}
-                  >
-                  </div>
-              }
+              {image === '' ? (
+                <img src={ava} alt="ava" className="w-52 h-52" />
+              ) : (
+                <div
+                  className="w-52 h-52 bg-center bg-no-repeat bg-cover"
+                  style={{ backgroundImage: `url(${selectedImage})` }}
+                ></div>
+              )}
             </label>
-
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default CreateUser
+export default CreateUser;
