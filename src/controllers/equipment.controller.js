@@ -60,7 +60,6 @@ exports.detailBasic = async (req, res) => {
       attributes: [
         "id",
         "name",
-        "code",
         "model",
         "serial",
         "department_id",
@@ -188,7 +187,7 @@ exports.search = async (req, res) => {
           { name: { [Op.like]: `%${name}%` } },
           { model: { [Op.like]: `%${name}%` } },
           { serial: { [Op.like]: `%${name}%` } },
-          { code: { [Op.like]: `%${name}%` } },
+          { fixed_asset_number: { [Op.like]: `%${name}%` } },
         ],
       };
     }
@@ -352,7 +351,7 @@ exports.statisticDashBoard = async (req, res) => {
         {
           model: db.Equipment,
           where: { ...filter },
-          attributes: ["id", "name", "code", "model", "serial"],
+          attributes: ["id", "name", "model", "serial"],
           include: [
             {
               model: db.Department,

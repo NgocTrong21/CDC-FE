@@ -50,18 +50,9 @@ router.post(
   roleMiddleware.isAdmin,
   categoryController.createStatus
 );
-router.get(
-  "/status/list",
-  authMiddleware,
-  roleMiddleware.isAdmin,
-  categoryController.listStatus
-);
-router.get(
-  "/status/detail",
-  authMiddleware,
-  roleMiddleware.isAdmin,
-  categoryController.detailStatus
-);
+router.get("/status/list", authMiddleware, categoryController.listStatus);
+router.get("/status/detail", authMiddleware, categoryController.detailStatus);
+router.get("/status/search", authMiddleware, categoryController.searchStatus);
 router.put(
   "/status/update",
   authMiddleware,
@@ -73,12 +64,6 @@ router.delete(
   authMiddleware,
   roleMiddleware.isAdmin,
   categoryController.deleteStatus
-);
-router.get(
-  "/status/search",
-  authMiddleware,
-  roleMiddleware.isAdmin,
-  categoryController.searchStatus
 );
 
 //Action API
@@ -97,9 +82,5 @@ router.get("/unit/list", authMiddleware, categoryController.listUnit);
 router.get("/unit/detail", authMiddleware, categoryController.detailUnit);
 
 router.get("/unit/search", authMiddleware, categoryController.searchUnit);
-
-router.get("/status/list", authMiddleware, categoryController.listStatus);
-router.get("/status/detail", authMiddleware, categoryController.detailStatus);
-router.get("/status/search", authMiddleware, categoryController.searchStatus);
 
 module.exports = router;
