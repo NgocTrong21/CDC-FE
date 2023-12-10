@@ -19,7 +19,7 @@ const { REPORT } = require("../enums");
 exports.reportEquipment = async (req, res) => {
   try {
     const data = req?.body;
-    data.code = `XXXX-${data?.equipment_id}-${new Date().getTime()}`;
+    // data.code = `XXXX-${data?.equipment_id}-${new Date().getTime()}`;
     const roles = await getRoleEmailConfig(REPORT.RECEIVE_REQUEST_BROKEN);
 
     const isHasEquipment = await db.Equipment.findOne({
@@ -426,7 +426,10 @@ exports.reHandoverEquipment = async (req, res) => {
       })
     );
     if (data?.status_id === 6) {
-      await db.Liquidation.create({ equipment_id: data?.equipment_id, liquidation_status: 0 });
+      await db.Liquidation.create({
+        equipment_id: data?.equipment_id,
+        liquidation_status: 0,
+      });
     }
     await db.sequelize.transaction(async (t) => {
       await Promise.all([
@@ -511,7 +514,7 @@ exports.getEquipmentRepair = async (req, res) => {
 
 exports.getBrokenAndRepairEqList = async (req, res) => {
   try {
-    let { limit, page, name, department_id, status_id, type_id } = req?.query;
+    let { limit, page, name, department_id, status_id } = req?.query;
 
     const { isHasRole, department_id_from_token } = await checkRoleFromToken(
       req
@@ -524,7 +527,6 @@ exports.getBrokenAndRepairEqList = async (req, res) => {
     let filter_equipment = {
       department_id,
       status_id,
-      type_id,
     };
 
     // phần tìm kiếm theo tên, serial, model, code (nếu có)
@@ -560,11 +562,9 @@ exports.getBrokenAndRepairEqList = async (req, res) => {
         "serial",
         "code",
         "status_id",
-        "type_id",
         "department_id",
       ],
       include: [
-        { model: db.Equipment_Type, attributes: ["id", "name"] },
         { model: db.Equipment_Status, attributes: ["id", "name"] },
         { model: db.Department, attributes: ["id", "name"] },
         { model: db.Repair, where: { done: 0 } },
@@ -643,7 +643,6 @@ exports.getHistoryRepair = async (req, res) => {
         "done",
         "actual_repair_cost",
         "estimated_repair_cost",
-        "provider_id",
         "broken_report_date",
         "schedule_repair_date",
         "repair_completion_date",
@@ -671,10 +670,6 @@ exports.getHistoryRepair = async (req, res) => {
           model: db.Repair_Status,
           attributes: ["id", "name"],
         },
-        {
-          model: db.Provider,
-          attributes: ["id", "name"],
-        },
       ],
       raw: false,
     });
@@ -697,7 +692,6 @@ exports.getRepairSchedule = async (req, res) => {
         "code",
         "actual_repair_cost",
         "estimated_repair_cost",
-        "provider_id",
         "schedule_repair_date",
         "repair_completion_date",
         "repair_date",
@@ -706,6 +700,7 @@ exports.getRepairSchedule = async (req, res) => {
         "schedule_create_user_id",
         "schedule_repair_status",
         "test_user_id",
+        "provider",
       ],
       include: [
         {
@@ -731,10 +726,6 @@ exports.getRepairSchedule = async (req, res) => {
         },
         {
           model: db.Repair_Status,
-          attributes: ["id", "name"],
-        },
-        {
-          model: db.Provider,
           attributes: ["id", "name"],
         },
       ],

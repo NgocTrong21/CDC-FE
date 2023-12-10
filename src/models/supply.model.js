@@ -15,14 +15,13 @@ module.exports = (sequelize, DataTypes) => {
     {
       name: DataTypes.STRING, // tên
       code: DataTypes.STRING, // mã số
-      unit: DataTypes.STRING, // đơn vị tính
+      unit: DataTypes.INTEGER, // đơn vị tính
       unit_price: DataTypes.INTEGER, // đơn giá
-      // control_number: DataTypes.STRING, // số kiểm soát
       lot_number: DataTypes.STRING, // số lô
       manufacturing_country: DataTypes.STRING, //nước sx
       expiration_date: DataTypes.DATE, //hạn sd
       note: DataTypes.TEXT, // ghi chú
-      provider: DataTypes.STRING, // ghi chú
+      provider: DataTypes.STRING, // nha cung cap
     },
     {
       sequelize,

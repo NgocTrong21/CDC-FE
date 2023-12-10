@@ -87,18 +87,7 @@ exports.detail = async (req, res) => {
       ],
       raw: false,
     });
-    const inventoyId = await db.Inventory.findOne({
-      where: { equipment_id: equipment.id },
-      attributes: [sequelize.fn("MAX", sequelize.col("times"))],
-    });
-
-    const inventory = await db.Inventory.findOne({
-      where: {
-        equipment_id: equipment.id,
-        times: Object.values(inventoyId),
-      },
-    });
-    return successHandler(res, { equipment, inventory }, 200);
+    return successHandler(res, { equipment }, 200);
   } catch (error) {
     return errorHandler(res, error);
   }
@@ -173,8 +162,6 @@ exports.search = async (req, res) => {
       name,
       department_id,
       status_id,
-      type_id,
-      risk_level,
       year_in_use,
       year_of_manufacture,
     } = req?.query;
@@ -190,8 +177,6 @@ exports.search = async (req, res) => {
     let filter = {
       department_id,
       status_id,
-      type_id,
-      risk_level,
       year_in_use,
       year_of_manufacture,
     };
@@ -208,10 +193,8 @@ exports.search = async (req, res) => {
       };
     }
     let include = [
-      { model: db.Equipment_Type, attributes: ["id", "name"] },
       { model: db.Equipment_Unit, attributes: ["id", "name"] },
       { model: db.Equipment_Status, attributes: ["id", "name"] },
-      { model: db.Equipment_Risk_Level, attributes: ["id", "name"] },
       { model: db.Department, attributes: ["id", "name"] },
       {
         model: db.Transfer,
@@ -265,7 +248,6 @@ exports.statisticDashBoard = async (req, res) => {
     let count_department,
       count_broken,
       count_repair,
-      count_level,
       count_status,
       most_repair_cost;
     let filter = {};
@@ -310,23 +292,6 @@ exports.statisticDashBoard = async (req, res) => {
         department_id: department_id_from_token,
       };
     }
-
-    count_level = await db.Equipment.findAll({
-      where: {
-        ...filter,
-        risk_level: {
-          [Op.lt]: 5,
-          [Op.gt]: 0,
-        },
-      },
-      attributes: [
-        "risk_level",
-        [sequelize.fn("COUNT", sequelize.col("Equipment.id")), "count"],
-      ],
-      group: ["risk_level"],
-      include: [{ model: db.Equipment_Risk_Level, attributes: ["id", "name"] }],
-      raw: true,
-    });
 
     const statuses = await db.Equipment_Status.findAll({
       attributes: ["id", "name"],
@@ -403,7 +368,6 @@ exports.statisticDashBoard = async (req, res) => {
       res,
       {
         count_department,
-        count_level,
         count_status,
         count_broken,
         count_repair,

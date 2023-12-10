@@ -58,17 +58,7 @@ exports.statisticEquipmentByDepartment = async (req, res) => {
       };
     });
 
-    const levels = await db.Equipment_Risk_Level.findAll();
-    const count_level = levels.map((x) => {
-      const array = equipments.filter((y) => y.risk_level === x.id);
-      return {
-        type: x.name,
-        value: array.length,
-        risk_level: x.id,
-      };
-    });
-
-    return successHandler(res, { count_status, count_level }, 200);
+    return successHandler(res, { count_status }, 200);
   } catch (error) {
     return errorHandler(res, error);
   }

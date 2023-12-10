@@ -188,32 +188,6 @@ module.exports.sendEmailUpdatePermission = async (users) => {
   );
 };
 
-module.exports.sendHandoverEquipmentEmail = async (req, data, users) => {
-  const domain = req?.headers?.origin || process.env.URL_REACT;
-  if (!domain) throw new Error(err.SEND_MAIL_ERROR.messageCode);
-  const url = `${domain}/equipment/detail/${data?.equipment_id}`;
-  const content = `
-    <p class="notification">Thiết bị ${data?.name} đã được bàn giao đến ${data.department}</p>
-  `;
-  const mailOptions = {
-    from: '"MDM-iBME" <mdm.ibme.lab@gmail.com>',
-    subject: "Bàn giao thiết bị thành công",
-    html: getEmailTemplate(url, "Thông tin bàn giao thiết bị", content),
-  };
-
-  await Promise.all(
-    users.map(async (user) => {
-      const userMailOptions = { ...mailOptions, to: user.email };
-      try {
-        const send = await smtpTrans.sendMail(userMailOptions);
-        if (!send) throw new Error(err.SEND_MAIL_ERROR.messageCode);
-      } catch (error) {
-        throw new Error(err.SEND_MAIL_ERROR.messageCode);
-      }
-    })
-  );
-};
-
 module.exports.sendReportEquipmentMail = async (req, users, data) => {
   const domain = req?.headers?.origin || process.env.URL_REACT;
   if (!domain) throw new Error(err.SEND_MAIL_ERROR.messageCode);

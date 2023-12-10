@@ -1,13 +1,13 @@
-'use strict';
+"use strict";
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Repairs', {
+    await queryInterface.createTable("Repairs", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       equipment_id: {
         allowNull: false,
@@ -28,9 +28,6 @@ module.exports = {
       broken_report_date: {
         allowNull: false,
         type: Sequelize.DATE,
-      },
-      provider_id: {
-        type: Sequelize.INTEGER,
       },
       repair_priority: {
         type: Sequelize.INTEGER,
@@ -61,15 +58,15 @@ module.exports = {
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Repairs');
-  }
+    await queryInterface.dropTable("Repairs");
+  },
 };

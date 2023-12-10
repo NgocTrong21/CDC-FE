@@ -10,16 +10,6 @@ module.exports = (sequelize, DataTypes) => {
       User.hasMany(models.Repair, {
         foreignKey: "test_user_id",
       });
-      User.hasMany(models.Repair, { foreignKey: "approve_report_person_id" });
-      User.hasMany(models.Repair, {
-        foreignKey: "schedule_approve_user_id",
-      });
-      User.hasMany(models.Handover, {
-        foreignKey: "handover_create_id",
-      });
-      User.hasMany(models.Handover, {
-        foreignKey: "handover_in_charge_id",
-      });
       User.hasMany(models.Liquidation, {
         foreignKey: "create_user_id",
       });
@@ -31,18 +21,6 @@ module.exports = (sequelize, DataTypes) => {
       });
       User.hasMany(models.Transfer, {
         foreignKey: "transfer_approver_id",
-      });
-      User.hasMany(models.Inventory, {
-        foreignKey: "inventory_create_user_id",
-      });
-      User.hasMany(models.Inventory, {
-        foreignKey: "inventory_approve_user_id",
-      });
-      User.hasMany(models.Inspection, {
-        foreignKey: "inspection_create_user_id",
-      });
-      User.hasMany(models.Inspection, {
-        foreignKey: "inspection_approve_user_id",
       });
       User.hasMany(models.Notification, { foreignKey: "user_id" });
     }

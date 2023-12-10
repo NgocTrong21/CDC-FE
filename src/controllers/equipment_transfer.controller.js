@@ -68,7 +68,7 @@ exports.transferEquipment = async (req, res) => {
 
 exports.search = async (req, res) => {
   try {
-    let { limit, page, name, status_id, type_id, department_id } = req?.query;
+    let { limit, page, name, status_id, department_id } = req?.query;
     const { isHasRole, department_id_from_token } = await checkRoleFromToken(
       req
     );
@@ -78,7 +78,6 @@ exports.search = async (req, res) => {
     }
     let filter = {
       status_id,
-      type_id,
     };
     for (let i in filter) {
       if (!filter[i]) {
@@ -113,7 +112,6 @@ exports.search = async (req, res) => {
     const attributes = ["id", "name", "model", "serial", "code"];
     const include = [
       { model: db.Equipment_Status, attributes: ["id", "name"] },
-      { model: db.Equipment_Type, attributes: ["id", "name"] },
       {
         model: db.Transfer,
         where: {

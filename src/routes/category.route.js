@@ -5,88 +5,6 @@ const authMiddleware = require("../midlewares/auth.middleware");
 const permissionMiddleware = require("../midlewares/permission.middleware");
 const roleMiddleware = require("../midlewares/role.middleware");
 
-// Equipment_Group API
-router.post(
-  "/group/create",
-  authMiddleware,
-  permissionMiddleware.GROUP_EQUIPMENT_CREATE,
-  categoryController.createGroup
-);
-router.get(
-  "/group/list",
-  authMiddleware,
-  permissionMiddleware.GROUP_EQUIPMENT_READ,
-  categoryController.listGroup
-);
-router.get(
-  "/group/detail",
-  authMiddleware,
-  permissionMiddleware.GROUP_EQUIPMENT_READ,
-  categoryController.detailGroup
-);
-router.put(
-  "/group/update",
-  authMiddleware,
-  permissionMiddleware.GROUP_EQUIPMENT_UPDATE,
-  categoryController.updateGroup
-);
-router.delete(
-  "/group/delete",
-  authMiddleware,
-  permissionMiddleware.GROUP_EQUIPMENT_DELETE,
-  categoryController.deleteGroup
-);
-router.get(
-  "/group/search",
-  authMiddleware,
-  permissionMiddleware.GROUP_EQUIPMENT_READ,
-  categoryController.searchGroup
-);
-
-//Equipment_Type API
-router.post(
-  "/type/create",
-  authMiddleware,
-  permissionMiddleware.TYPE_EQUIPMENT_CREATE,
-  categoryController.createType
-);
-router.get(
-  "/type/list",
-  authMiddleware,
-  permissionMiddleware.TYPE_EQUIPMENT_READ,
-  categoryController.listType
-);
-router.get(
-  "/type/list_base_group",
-  authMiddleware,
-  permissionMiddleware.TYPE_EQUIPMENT_READ,
-  categoryController.listTypeBaseGroupId
-);
-router.get(
-  "/type/detail",
-  authMiddleware,
-  permissionMiddleware.TYPE_EQUIPMENT_READ,
-  categoryController.detailType
-);
-router.put(
-  "/type/update",
-  authMiddleware,
-  permissionMiddleware.TYPE_EQUIPMENT_UPDATE,
-  categoryController.updateType
-);
-router.delete(
-  "/type/delete",
-  authMiddleware,
-  permissionMiddleware.TYPE_EQUIPMENT_DELETE,
-  categoryController.deleteType
-);
-router.get(
-  "/type/search",
-  authMiddleware,
-  permissionMiddleware.TYPE_EQUIPMENT_READ,
-  categoryController.searchType
-);
-
 //Equipment_Unit API
 router.post(
   "/unit/create",
@@ -163,44 +81,6 @@ router.get(
   categoryController.searchStatus
 );
 
-//Equipment_Risk_Level API
-router.post(
-  "/risk_level/create",
-  authMiddleware,
-  roleMiddleware.isAdmin,
-  categoryController.createRiskLevel
-);
-router.get(
-  "/risk_level/list",
-  authMiddleware,
-  roleMiddleware.isAdmin,
-  categoryController.listRiskLevel
-);
-router.get(
-  "/risk_level/detail",
-  authMiddleware,
-  roleMiddleware.isAdmin,
-  categoryController.detailRiskLevel
-);
-router.put(
-  "/risk_level/update",
-  authMiddleware,
-  roleMiddleware.isAdmin,
-  categoryController.updateRiskLevel
-);
-router.delete(
-  "/risk_level/delete",
-  authMiddleware,
-  roleMiddleware.isAdmin,
-  categoryController.deleteRiskLevel
-);
-router.get(
-  "/risk_level/search",
-  authMiddleware,
-  roleMiddleware.isAdmin,
-  categoryController.searchRiskLevel
-);
-
 //Action API
 
 //Repair_Status API
@@ -211,18 +91,6 @@ router.post(
   categoryController.createRepairStatus
 );
 router.get("/repair_status/list", categoryController.listRepairStatus);
-
-router.get("/group/list", categoryController.listGroup);
-router.get("/group/detail", authMiddleware, categoryController.detailGroup);
-
-router.get("/group/search", authMiddleware, categoryController.searchGroup);
-
-//Equipment_Type API
-router.get("/type/list", authMiddleware, categoryController.listType);
-
-router.get("/type/detail", authMiddleware, categoryController.detailType);
-
-router.get("/type/search", authMiddleware, categoryController.searchType);
 
 //Equipment_Unit API
 router.get("/unit/list", authMiddleware, categoryController.listUnit);

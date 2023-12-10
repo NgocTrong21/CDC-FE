@@ -3,24 +3,16 @@ const router = express.Router();
 const authRoute = require("./auth.route");
 const roleRoute = require("./role.route");
 const equipmentRoute = require("./equipment.route");
-const equipmentHandoverRoute = require("./equipement_handover.route");
 const equipmentRepairRoute = require("./equipment_repair.route");
 const equipmentLiquidationRoute = require("./equipment_liquidation.route");
 const equipmentTransferRoute = require("./equipment_transfer.route");
-const equipmentMaintenanceRoute = require("./equipment_maintenance.route");
-const equipmentInventoryRoute = require("./equipment_inventory.route");
-const supplyAccompanyRoute = require("./supply_accompany.route");
 const supplyRoute = require("./supply.route");
 const permissionRoute = require("./permission.route");
 const departmentRoute = require("./department.route");
-const providerRoute = require("./provider.route");
-const serviceRoute = require("./service.route");
 const categoryRoute = require("./category.route");
 const notificationRoute = require("./notification.route");
 const userRoute = require("./user.route");
 const docsRoute = require("./docs.route");
-const equipmentInspectionRoute = require("./equipment_inspection.route");
-const projectRoute = require("./project.route");
 const inboundOrderRoute = require("./inbound_order.route");
 const outboundOrderRoute = require("./outbound_order.route");
 const warehouseRoute = require("./warehouse.route");
@@ -43,10 +35,6 @@ const defaultRoutes = [
     route: equipmentRoute,
   },
   {
-    path: "/equipment_handover",
-    route: equipmentHandoverRoute,
-  },
-  {
     path: "/equipment_repair",
     route: equipmentRepairRoute,
   },
@@ -59,32 +47,12 @@ const defaultRoutes = [
     route: equipmentTransferRoute,
   },
   {
-    path: "/equipment_inspection",
-    route: equipmentInspectionRoute,
-  },
-  {
-    path: "/equipment_maintenance",
-    route: equipmentMaintenanceRoute,
-  },
-  {
-    path: "/equipment_inventory",
-    route: equipmentInventoryRoute,
-  },
-  {
     path: "/supplies",
     route: supplyRoute,
   },
   {
     path: "/department",
     route: departmentRoute,
-  },
-  {
-    path: "/provider",
-    route: providerRoute,
-  },
-  {
-    path: "/service",
-    route: serviceRoute,
   },
   {
     path: "/category",
@@ -97,14 +65,6 @@ const defaultRoutes = [
   {
     path: "/user",
     route: userRoute,
-  },
-  {
-    path: "/project",
-    route: projectRoute,
-  },
-  {
-    path: "/supply_accompany",
-    route: supplyAccompanyRoute,
   },
   {
     path: "/inbound_order",

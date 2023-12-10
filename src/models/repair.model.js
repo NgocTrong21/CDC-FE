@@ -13,9 +13,6 @@ module.exports = (sequelize, DataTypes) => {
       Repair.belongsTo(models.Repair_Status, {
         foreignKey: "repair_status",
       });
-      Repair.belongsTo(models.Provider, {
-        foreignKey: "provider_id",
-      });
       Repair.belongsTo(models.User, {
         foreignKey: "schedule_create_user_id",
         as: "schedule_create_user",
@@ -39,14 +36,13 @@ module.exports = (sequelize, DataTypes) => {
       code: DataTypes.STRING,
       reason: DataTypes.TEXT,
       broken_report_date: DataTypes.DATE,
-      approve_broken_report_date: DataTypes.DATE,
-      report_status: DataTypes.INTEGER,
       report_note: DataTypes.TEXT,
       repair_priority: DataTypes.INTEGER,
       schedule_repair_date: DataTypes.DATE,
       schedule_repair_status: DataTypes.INTEGER,
       repair_date: DataTypes.DATE,
       repair_status: DataTypes.INTEGER,
+      provider: DataTypes.STRING,
       done: DataTypes.INTEGER,
       file: DataTypes.TEXT,
       estimated_repair_cost: DataTypes.DOUBLE,

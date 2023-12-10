@@ -5,7 +5,6 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Department.hasMany(models.Equipment, { foreignKey: "department_id" });
       Department.hasMany(models.User, { foreignKey: "department_id" });
-      Department.hasMany(models.Handover, { foreignKey: "department_id" });
       Department.hasMany(models.Transfer, {
         foreignKey: "from_department_id",
         as: "from_department",
@@ -25,7 +24,6 @@ module.exports = (sequelize, DataTypes) => {
       address: DataTypes.STRING,
       head_of_department_id: DataTypes.INTEGER,
       chief_nursing_id: DataTypes.INTEGER,
-      manager_id: DataTypes.INTEGER,
     },
     {
       sequelize,

@@ -70,9 +70,7 @@ exports.list = async (req, res) => {
         ],
       };
     }
-    let include = [
-      { model: db.Equipment_Unit, attributes: ["id", "name"] },
-    ];
+    let include = [{ model: db.Equipment_Unit, attributes: ["id", "name"] }];
     let supplies = await getList(+limit, page, filter, "Supply", include);
 
     return successHandler(res, { supplies, count: supplies.length }, 200);
@@ -87,10 +85,7 @@ exports.detail = async (req, res) => {
     const supply = await db.Supply.findOne({
       where: { id },
       raw: false,
-      include: [
-        { model: db.Equipment_Unit, attributes: ["id", "name"] },
-      ]
-      
+      include: [{ model: db.Equipment_Unit, attributes: ["id", "name"] }],
     });
     return successHandler(res, { supply }, 200);
   } catch (error) {
@@ -204,14 +199,12 @@ exports.listEquipmentSupply = async (req, res) => {
       page,
       supply_id,
       name,
-      risk_level,
-      type_id,
       status_id,
       department_id,
       limit = 10,
     } = req?.query;
 
-    let filter = { risk_level, type_id, status_id, department_id };
+    let filter = { status_id, department_id };
     for (let i in filter) {
       if (!filter[i]) {
         delete filter[i];
@@ -237,10 +230,8 @@ exports.listEquipmentSupply = async (req, res) => {
           model: db.Equipment,
           where: { ...filter },
           include: [
-            { model: db.Equipment_Type, attributes: ["id", "name"] },
             { model: db.Equipment_Unit, attributes: ["id", "name"] },
             { model: db.Equipment_Status, attributes: ["id", "name"] },
-            { model: db.Equipment_Risk_Level, attributes: ["id", "name"] },
             { model: db.Department, attributes: ["id", "name"] },
           ],
           raw: false,
@@ -267,7 +258,6 @@ exports.listSupplyOfEquipment = async (req, res) => {
           include: [
             { model: db.Supply_Type, attributes: ["id", "name"] },
             { model: db.Equipment_Unit, attributes: ["id", "name"] },
-            { model: db.Equipment_Risk_Level, attributes: ["id", "name"] },
           ],
         },
       ],

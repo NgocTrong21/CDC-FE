@@ -203,7 +203,7 @@ exports.search = async (req, res) => {
 exports.uploadExcel = async (req, res) => {
   try {
     await db.sequelize.transaction(async (t) => {
-      await db.Equipment_Type.bulkCreate(req.body, { transaction: t });
+      // await db.Equipment_Type.bulkCreate(req.body, { transaction: t });
       return successHandler(res, {}, 200);
     });
   } catch (error) {
