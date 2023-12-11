@@ -25,12 +25,6 @@ router.post(
   equipmentRepairController.reportEquipment
 );
 router.put(
-  "/approve_broken_report",
-  authMiddleware,
-  permissionMiddleware.REPORT_EQUIPMENT_APPROVE,
-  equipmentRepairController.approveBrokenReport
-);
-router.put(
   "/update_broken_report",
   authMiddleware,
   permissionMiddleware.REPORT_EQUIPMENT_UPDATE,
@@ -53,12 +47,6 @@ router.patch(
   authMiddleware,
   permissionMiddleware.REPAIR_EQUIPMENT_UPDATE,
   equipmentRepairController.updateScheduleRepair
-);
-router.patch(
-  "/approve_schedule_repair",
-  authMiddleware,
-  permissionMiddleware.REPAIR_EQUIPMENT_APPROVE,
-  equipmentRepairController.approveScheduleRepair
 );
 router.patch(
   "/acceptance_repair",

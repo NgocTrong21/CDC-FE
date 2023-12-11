@@ -145,12 +145,12 @@ exports.update = async (req, res) => {
         where: { id: data?.id },
       });
       if (!isHas) return errorHandler(res, err.ORDER_NOT_FOUND);
-      const inboundOrderInDB = await db.Inbound_Order.findOne({
+      const inboundOrderInDB = await db.Inbound_Order.findAll({
         where: {
           code: data.code,
         },
       });
-      if (inboundOrderInDB)
+      if (inboundOrderInDB?.length > 1)
         return errorHandler(res, err.INBOUND_FIELD_DUPLICATED);
       await db.Inbound_Order.update(data, {
         where: { id: data?.id },

@@ -92,7 +92,6 @@ exports.search = async (req, res) => {
           { name: { [Op.like]: `%${name}%` } },
           { model: { [Op.like]: `%${name}%` } },
           { serial: { [Op.like]: `%${name}%` } },
-          { code: { [Op.like]: `%${name}%` } },
         ],
       };
     }
@@ -109,7 +108,7 @@ exports.search = async (req, res) => {
       }
     }
 
-    const attributes = ["id", "name", "model", "serial", "code"];
+    const attributes = ["id", "name", "model", "serial"];
     const include = [
       { model: db.Equipment_Status, attributes: ["id", "name"] },
       {
@@ -157,7 +156,7 @@ exports.detail = async (req, res) => {
       include: [
         {
           model: db.Equipment,
-          attributes: ["id", "name", "code", "model", "serial"],
+          attributes: ["id", "name",  "model", "serial"],
         },
         {
           model: db.Department,
@@ -358,7 +357,6 @@ exports.list = async (req, res) => {
           { name: { [Op.like]: `%${name}%` } },
           { model: { [Op.like]: `%${name}%` } },
           { serial: { [Op.like]: `%${name}%` } },
-          { code: { [Op.like]: `%${name}%` } },
         ],
       };
     }
@@ -370,7 +368,7 @@ exports.list = async (req, res) => {
         {
           model: db.Equipment,
           where: { ...filter },
-          attributes: ["id", "name", "code", "model", "serial"],
+          attributes: ["id", "name",  "model", "serial"],
         },
         {
           model: db.Department,

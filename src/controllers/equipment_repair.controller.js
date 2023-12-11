@@ -506,7 +506,6 @@ exports.getEquipmentRepair = async (req, res) => {
 exports.getBrokenAndRepairEqList = async (req, res) => {
   try {
     let { limit, page, name, department_id, status_id } = req?.query;
-
     const { isHasRole, department_id_from_token } = await checkRoleFromToken(
       req
     );

@@ -33,13 +33,13 @@ exports.update = async (req, res) => {
         raw: false,
       });
       if (!isHas) return errorHandler(res, err.EQUIPMENT_NOT_FOUND);
-      const supplyInDB = await db.Supply.findOne({
+      const supplyInDB = await db.Supply.findAll({
         where: {
           code: data.code,
           lot_number: data.lot_number,
         },
       });
-      if (supplyInDB) return errorHandler(res, err.SUPPLY_FIELD_DUPLICATED);
+      if (supplyInDB?.length > 1) return errorHandler(res, err.SUPPLY_FIELD_DUPLICATED);
       await db.Supply.update(data, {
         where: { id: data?.id },
         transaction: t,

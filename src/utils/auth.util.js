@@ -56,7 +56,7 @@ const verifyRefreshToken = (refresh_token) =>
 const checkRoleFromToken = async (req) => {
   const access_token = req?.headers?.authorization?.split(" ")[1];
   const data = await verifyAccessToken(access_token);
-  const roles = [1, 3, 7, 8];
+  const roles = [1, 3, 7, 8, 10, 12];
   const isHasRole = roles.includes(data?.data?.role_id);
   return {
     department_id_from_token: data?.data?.department_id,

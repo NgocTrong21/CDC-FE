@@ -16,12 +16,6 @@ router.get(
   permissionMiddleware.TRANFER_EQUIPMENT_READ,
   equipmentTransferController.list
 );
-router.post(
-  "/approver_transfer",
-  authMiddleware,
-  permissionMiddleware.ACCREDITATION_EQUIPMENT_APPROVE,
-  equipmentTransferController.approverTransfer
-);
 router.get(
   "/detail",
   authMiddleware,
@@ -55,7 +49,7 @@ router.get(
 router.patch(
   "/approve_transfer_report",
   authMiddleware,
-  permissionMiddleware.ACCREDITATION_EQUIPMENT_APPROVE,
+  permissionMiddleware.TRANFER_EQUIPMENT_APPROVE,
   equipmentTransferController.approverTransfer
 );
 module.exports = router;
