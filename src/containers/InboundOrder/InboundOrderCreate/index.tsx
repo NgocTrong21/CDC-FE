@@ -180,7 +180,7 @@ const InboundOrderCreate = () => {
             toast.error('Tạo đơn nhập thất bại!');
           });
       }
-    } catch (error) {}
+    } catch (error) { }
   };
   const options = (array: any) => {
     return (
@@ -188,9 +188,8 @@ const InboundOrderCreate = () => {
       array?.map((item: any) => {
         let o: any = {};
         o.value = item?.id;
-        o.label = `${item?.code || ''}${
-          item?.lot_number ? `(${item?.lot_number})` : ''
-        } - ${item?.name}`;
+        o.label = `${item?.code || ''}${item?.lot_number ? `(${item?.lot_number})` : ''
+          } - ${item?.name}`;
         return o;
       })
     );
@@ -362,7 +361,7 @@ const InboundOrderCreate = () => {
                     title="Số lượng đặt hàng"
                     dataIndex={'orderQuantity'}
                     key={'orderQuantity'}
-                    width="20%"
+                    width="10%"
                     render={(value, record, index) => (
                       <InputNumber
                         style={{
@@ -396,7 +395,7 @@ const InboundOrderCreate = () => {
                       return (
                         <InputNumber
                           value={parseFloat(value?.toFixed(1))}
-                          onChange={(value) => {}}
+                          onChange={(value) => { }}
                           formatter={(value) =>
                             ` ${value}`
                               .replace(/\./, '.')
@@ -413,6 +412,7 @@ const InboundOrderCreate = () => {
                     key={'totalValue'}
                     render={(value) => (
                       <InputNumber
+                        className='text-black w-fit'
                         value={parseFloat(value?.toFixed(1))}
                         formatter={(value) =>
                           ` ${value}`

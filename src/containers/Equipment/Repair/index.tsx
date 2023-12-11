@@ -191,7 +191,7 @@ const Repair = () => {
               </Link>
             </Tooltip>
           </Menu.Item>
-          {item?.Repairs[0]?.schedule_repair_status === null && (
+          {checkPermission(permissions.REPAIR_EQUIPMENT_CREATE) && item?.Repairs[0]?.schedule_repair_status === null && (
             <Menu.Item key="word">
               <Tooltip title="Tạo phiếu sửa chữa">
                 <Link
@@ -202,16 +202,15 @@ const Repair = () => {
               </Tooltip>
             </Menu.Item>
           )}
-          {item?.Repairs[0]?.schedule_repair_status === 1 && (
+          {checkPermission(permissions.REPAIR_EQUIPMENT_UPDATE) && item?.Repairs[0]?.schedule_repair_status === 1 && (
             <Menu.Item key="edit">
               <Tooltip
-                title={`${
-                  checkPermission(permissions.REPAIR_EQUIPMENT_UPDATE)
-                    ? item?.Repairs[0]?.repair_status === null
-                      ? 'Cập nhật phiếu sửa chữa'
-                      : 'Xem phiếu sửa chữa'
+                title={`${checkPermission(permissions.REPAIR_EQUIPMENT_UPDATE)
+                  ? item?.Repairs[0]?.repair_status === null
+                    ? 'Cập nhật phiếu sửa chữa'
                     : 'Xem phiếu sửa chữa'
-                }`}
+                  : 'Xem phiếu sửa chữa'
+                  }`}
               >
                 <Link
                   to={`/equipment/repair/update_schedule/${item?.id}/${item?.Repairs[0]?.id}?edit=true`}
@@ -223,7 +222,7 @@ const Repair = () => {
           )}
           {(item?.Repairs[0]?.repair_status === 3 ||
             item?.Repairs[0]?.repair_status === 4) &&
-            checkPermission(permissions.REPAIR_EQUIPMENT_APPROVE) && (
+            checkPermission(permissions.REPAIR_EQUIPMENT_UPDATE) && (
               <Menu.Item key="rehandover">
                 <Tooltip title="Bàn giao lại thiết bị">
                   <RightCircleFilled

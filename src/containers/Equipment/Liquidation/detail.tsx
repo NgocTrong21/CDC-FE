@@ -84,8 +84,8 @@ const DetailLiquidation = () => {
             liquidation_status: data?.equipment?.liquidation_status,
             create_user: data?.equipment?.create_user?.name,
             create_user_id: data?.equipment?.create_user?.id,
-            approver_id: data?.equipment?.approver?.id || current_user.id,
-            approver: data?.equipment?.approver?.name || current_user.name,
+            approver_id: current_user.id,
+            approver: current_user.name,
           };
           form.setFieldsValue(equipment);
           setEquipment(equipment);
@@ -157,9 +157,10 @@ const DetailLiquidation = () => {
   ) : (
     <div>
       <div className="title">
-        PHIẾU THANH LÝ (
+        PHIẾU THANH LÝ
+        {/* (
         <span className="italic">Mã phiếu: {equipment?.code}</span>) ___{' '}
-        {handleLiquidationStatus(equipment?.liquidation_status)}
+        {handleLiquidationStatus(equipment?.liquidation_status)} */}
       </div>
       <Form
         size="large"

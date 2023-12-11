@@ -15,7 +15,7 @@ const UpdateEquipment = () => {
     useContext(FilterContext);
 
   const options = (array: any) => {
-    return array.map((item: any) => {
+    return array?.map((item: any) => {
       let o: any = {};
       o.value = item.id;
       o.label = item.name;

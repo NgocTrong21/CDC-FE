@@ -107,19 +107,19 @@ const DetailDepartment = () => {
         setHeadId(head?.id);
         if (success) {
           setDepartment({
-            id: department.id,
-            name: department.name,
-            alias: department.alias,
-            phone: department.phone,
-            email: department.email,
+            id: department?.id,
+            name: department?.name,
+            alias: department?.alias,
+            phone: department?.phone,
+            email: department?.email,
             head_of_department_id: head?.id,
           });
           form.setFieldsValue({
-            id: department.id,
-            name: department.name,
-            alias: department.alias,
-            phone: department.phone,
-            email: department.email,
+            id: department?.id,
+            name: department?.name,
+            alias: department?.alias,
+            phone: department?.phone,
+            email: department?.email,
             head_of_department_id: head?.id,
           });
         }
@@ -272,11 +272,10 @@ const DetailDepartment = () => {
                     <Button
                       htmlType="submit"
                       loading={loadingUpdate}
-                      className={`${
-                        checkPermission(permissions.DEPARTMENT_UPDATE)
-                          ? 'button-primary'
-                          : 'hidden'
-                      }`}
+                      className={`${checkPermission(permissions.DEPARTMENT_UPDATE)
+                        ? 'button-primary'
+                        : 'hidden'
+                        }`}
                     >
                       Cập nhật
                     </Button>
@@ -302,7 +301,7 @@ const DetailDepartment = () => {
                   <div className="grid grid-cols-2 gap-5">
                     <p>Trưởng khoa</p>
                     {options(users)?.length > 0 &&
-                    options(users)?.length > 0 ? (
+                      options(users)?.length > 0 ? (
                       <p className="mb-5">
                         {
                           options(users).find(
@@ -330,11 +329,10 @@ const DetailDepartment = () => {
                     <Button
                       htmlType="submit"
                       loading={loadingUpdate}
-                      className={`${
-                        checkPermission(permissions.DEPARTMENT_UPDATE)
-                          ? 'button-primary'
-                          : 'hidden'
-                      }`}
+                      className={`${checkPermission(permissions.DEPARTMENT_UPDATE)
+                        ? 'button-primary'
+                        : 'hidden'
+                        }`}
                     >
                       Cập nhật
                     </Button>

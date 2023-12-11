@@ -80,7 +80,7 @@ const Detail = () => {
       key_1: 'Hạn sử dụng',
       value_1: `${supply?.expiration_date ? moment(supply?.expiration_date).format("DD-MM-YYYY") : ''}`,
       key_2: 'Xuất sứ',
-      value_2: ``,
+      value_2: `${supply?.Equipment_Unit?.name}`,
     },
     {
       key_1: 'Nhà cung cấp',

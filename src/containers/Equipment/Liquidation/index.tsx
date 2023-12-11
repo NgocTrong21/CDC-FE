@@ -95,8 +95,8 @@ const Liquidation = () => {
       render: (item: any) => {
         return (
           <>
-            {item?.Liquidation?.liquidation_date &&
-              moment(item?.Liquidation?.liquidation_date).format('DD-MM-YYYY')}
+            {item?.Liquidations?.length > 0 ?
+              moment(item?.Liquidations[0]?.liquidation_date).format('DD-MM-YYYY') : ''}
           </>
         );
       },

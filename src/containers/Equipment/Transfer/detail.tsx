@@ -159,9 +159,9 @@ const DetailTransfer = () => {
     <Loading />
   ) : (
     <div>
-      <div className="title">
-        PHIẾU ĐIỀU CHUYỂN (
-        <span className="italic">Mã phiếu: {equipment?.code}</span>) ___{' '}
+      <div className="title flex gap-2">
+        PHIẾU ĐIỀU CHUYỂN
+        {/* (<span className="italic">Mã phiếu: {equipment?.code}</span>) ___{' '} */}
         {handleTransferStatus(equipment?.transfer_status)}
       </div>
       <Form

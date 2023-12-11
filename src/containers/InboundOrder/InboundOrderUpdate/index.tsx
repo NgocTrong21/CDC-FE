@@ -108,7 +108,7 @@ const InboundOrderUpdate = () => {
             toast.error('Cập nhật đơn nhập thất bại!');
           });
       }
-    } catch (error) {}
+    } catch (error) { }
   };
   const seachWarehouses = () => {
     warehouseApi
@@ -386,7 +386,7 @@ const InboundOrderUpdate = () => {
                     title="Số lượng đặt hàng"
                     dataIndex={'orderQuantity'}
                     key={'orderQuantity'}
-                    width="20%"
+                    width="10%"
                     render={(value, record, index) => (
                       <InputNumber
                         style={{
@@ -420,7 +420,7 @@ const InboundOrderUpdate = () => {
                       return (
                         <InputNumber
                           value={parseFloat(value?.toFixed(1))}
-                          onChange={(value) => {}}
+                          onChange={(value) => { }}
                           formatter={(value) =>
                             ` ${value}`
                               .replace(/\./, '.')
@@ -437,6 +437,7 @@ const InboundOrderUpdate = () => {
                     key={'totalValue'}
                     render={(value) => (
                       <InputNumber
+                        className='w-fit text-black'
                         value={parseFloat(value?.toFixed(1))}
                         formatter={(value) =>
                           ` ${value}`

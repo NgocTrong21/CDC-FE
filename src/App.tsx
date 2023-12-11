@@ -282,32 +282,6 @@ const App = () => {
               </PrivateRoute>
             }
           />
-          {/* Statistic Routes */}
-          <Route
-            path="/statistic/department"
-            element={
-              <PrivateRoute permission={permissions.STATISTIC_EQUIPMENT}>
-                <StatisticByDepartment />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/statistic/status"
-            element={
-              <PrivateRoute permission={permissions.STATISTIC_EQUIPMENT}>
-                <StatisticByStatus />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/statistic/year"
-            element={
-              <PrivateRoute permission={permissions.STATISTIC_EQUIPMENT}>
-                <StatisticByYear />
-              </PrivateRoute>
-            }
-          />
-
           {/* Organization Routes */}
           <Route
             path="/organization/department"
@@ -505,7 +479,7 @@ const App = () => {
           <Route
             path="order/inbound_order"
             element={
-              <PrivateRoute permission={permissions.IMPORT_SUPPLIES}>
+              <PrivateRoute permission={permissions.INBOUND_ORDERS_READ}>
                 <InboundOrderList />
               </PrivateRoute>
             }
@@ -513,7 +487,7 @@ const App = () => {
           <Route
             path="order/inbound_order/import"
             element={
-              <PrivateRoute permission={permissions.IMPORT_SUPPLIES}>
+              <PrivateRoute permission={permissions.INBOUND_ORDERS_CREATE}>
                 <InboundOrderCreate />
               </PrivateRoute>
             }
@@ -521,7 +495,7 @@ const App = () => {
           <Route
             path="order/inbound_order/update/:id"
             element={
-              <PrivateRoute permission={permissions.IMPORT_SUPPLIES}>
+              <PrivateRoute permission={permissions.INBOUND_ORDERS_UPDATE}>
                 <InboundOrderUpdate />
               </PrivateRoute>
             }
@@ -529,7 +503,7 @@ const App = () => {
           <Route
             path="order/inbound_order/detail/:id"
             element={
-              <PrivateRoute permission={permissions.IMPORT_SUPPLIES}>
+              <PrivateRoute permission={permissions.INBOUND_ORDERS_READ}>
                 <InboundOrderDetail />
               </PrivateRoute>
             }
@@ -538,7 +512,7 @@ const App = () => {
           <Route
             path="order/outbound_order"
             element={
-              <PrivateRoute permission={permissions.IMPORT_SUPPLIES}>
+              <PrivateRoute permission={permissions.OUTBOUND_ORDERS_READ}>
                 <OutboundOrderList />
               </PrivateRoute>
             }
@@ -546,7 +520,7 @@ const App = () => {
           <Route
             path="order/outbound_order/import"
             element={
-              <PrivateRoute permission={permissions.IMPORT_SUPPLIES}>
+              <PrivateRoute permission={permissions.OUTBOUND_ORDERS_CREATE}>
                 <OutboundOrderCreate />
               </PrivateRoute>
             }
@@ -554,7 +528,7 @@ const App = () => {
           <Route
             path="order/outbound_order/update/:id"
             element={
-              <PrivateRoute permission={permissions.IMPORT_SUPPLIES}>
+              <PrivateRoute permission={permissions.OUTBOUND_ORDERS_UPDATE}>
                 <OutboundOrderUpdate />
               </PrivateRoute>
             }
@@ -562,7 +536,7 @@ const App = () => {
           <Route
             path="order/outbound_order/detail/:id"
             element={
-              <PrivateRoute permission={permissions.IMPORT_SUPPLIES}>
+              <PrivateRoute permission={permissions.OUTBOUND_ORDERS_READ}>
                 <OutboundOrderDetail />
               </PrivateRoute>
             }
@@ -571,7 +545,7 @@ const App = () => {
           <Route
             path="/report_supplies/all"
             element={
-              <PrivateRoute permission={permissions.IMPORT_SUPPLIES}>
+              <PrivateRoute permission={permissions.CONSUMABLE_SUPPLY_READ}>
                 <ReportSupply />
               </PrivateRoute>
             }
@@ -579,7 +553,7 @@ const App = () => {
           <Route
             path="/report_supplies/report_supplies_by_warehouse"
             element={
-              <PrivateRoute permission={permissions.IMPORT_SUPPLIES}>
+              <PrivateRoute permission={permissions.CONSUMABLE_SUPPLY_READ}>
                 <ReportSupplyByWarehouse />
               </PrivateRoute>
             }

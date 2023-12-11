@@ -76,13 +76,12 @@ const SupplyCreate = () => {
           size="large"
           onFinish={onFinish}
         >
-          <div className="grid grid-cols-2 gap-5">
+          <div className="grid grid-cols-2 gap-x-5">
             <Form.Item
               label="Tên vật tư"
               name="name"
               required
               rules={[{ required: true, message: 'Hãy nhập tên vật tư!' }]}
-              className="mb-5"
             >
               <Input
                 placeholder="Nhập tên vật tư"
@@ -93,7 +92,6 @@ const SupplyCreate = () => {
             <Form.Item
               label="Mã vật tư"
               name="code"
-              className="mb-5"
               required
               rules={[{ required: true, message: 'Hãy nhập mã vật tư!' }]}
             >
@@ -106,7 +104,6 @@ const SupplyCreate = () => {
             <Form.Item
               label="Số lô"
               name="lot_number"
-              className="mb-5"
               required
               rules={[{ required: true, message: 'Hãy nhập số lô!' }]}
             >

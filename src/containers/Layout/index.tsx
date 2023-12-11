@@ -26,7 +26,7 @@ import ModalChangePassword from 'components/ModalChangePassword';
 import { CURRENT_USER } from 'constants/auth.constant';
 import { permissions } from 'constants/permission.constant';
 import moment from 'moment';
-import { handleUrlInNotification } from 'utils/globalFunc.util';
+import { getCurrentUser, handleUrlInNotification } from 'utils/globalFunc.util';
 import './index.css';
 import userApi from 'api/user.api';
 
@@ -159,32 +159,32 @@ const LayoutSystem = (props: LayoutProps) => {
     getItem(
       'Quản lý phiếu',
       '/order',
-      permissions.IMPORT_SUPPLIES,
+      permissions.INBOUND_ORDERS_READ,
       <FileTextOutlined style={{ fontSize: '20px' }} />,
       [
         getItem(
           'Quản lý phiếu nhập',
           '/inbound_order',
-          permissions.IMPORT_SUPPLIES
+          permissions.INBOUND_ORDERS_READ
         ),
         getItem(
           'Quản lý phiếu xuất',
           '/outbound_order',
-          permissions.IMPORT_SUPPLIES
+          permissions.INBOUND_ORDERS_READ
         ),
       ]
     ),
     getItem(
       'Báo cáo tồn kho vật tư',
       '/report_supplies',
-      permissions.IMPORT_SUPPLIES,
+      permissions.CONSUMABLE_SUPPLY_READ,
       <BarChartOutlined style={{ fontSize: '20px' }} />,
       [
-        getItem('Tồn kho', '/all', permissions.IMPORT_SUPPLIES),
+        getItem('Tồn kho', '/all', permissions.CONSUMABLE_SUPPLY_READ),
         getItem(
           'Tồn vật tư theo kho',
           '/report_supplies_by_warehouse',
-          permissions.IMPORT_SUPPLIES
+          permissions.CONSUMABLE_SUPPLY_READ
         ),
       ]
     ),
@@ -194,7 +194,7 @@ const LayoutSystem = (props: LayoutProps) => {
       permissions.DEPARTMENT_READ,
       <UsergroupAddOutlined style={{ fontSize: '20px' }} />,
       [
-        getItem('Khoa - Phòng', '/department', permissions.DEPARTMENT_READ),
+        getItem('Khoa - Phòng', [2, 6].includes(getCurrentUser().role_id) ? `/department/detail/${getCurrentUser().department_id}` : `/department`, permissions.DEPARTMENT_READ),
         // getItem(
         //   'Nhà cung cấp dịch vụ',
         //   '/provider',
@@ -203,7 +203,7 @@ const LayoutSystem = (props: LayoutProps) => {
         // getItem('Dịch vụ', '/service', permissions.DEPARTMENT_READ),
       ]
     ),
-    getItem(
+    getCurrentUser().role_id !== 6 && getItem(
       'Quản lý thành viên',
       '/user',
       permissions.USER_READ,
@@ -216,7 +216,7 @@ const LayoutSystem = (props: LayoutProps) => {
     getItem(
       'Quản lý danh mục',
       '/category',
-      permissions.GROUP_EQUIPMENT_READ,
+      permissions.UNIT_EQUIPMENT_UPDATE,
       <UnorderedListOutlined style={{ fontSize: '20px' }} />,
       [
         // getItem('Nhóm thiết bị', '/group', permissions.GROUP_EQUIPMENT_READ),
@@ -301,12 +301,11 @@ const LayoutSystem = (props: LayoutProps) => {
       ]
     ),
   ];
-
   const menu = (
     <>
       <div
         className="bg-white rounded-lg shadow-lg relative pt-2 pl-2 pb-2 "
-        // style={{ overflowY: 'scroll' }}
+      // style={{ overflowY: 'scroll' }}
       >
         <div className="flex items-center justify-between rounded-lg">
           <h1 className="font-bold text-2xl pl-3 pt-2 pb-1">Thông báo</h1>
@@ -324,9 +323,8 @@ const LayoutSystem = (props: LayoutProps) => {
               key: item.id,
               label: (
                 <div
-                  className={`${
-                    item.is_seen === 0 ? '' : 'text-gray-400'
-                  } text-base`}
+                  className={`${item.is_seen === 0 ? '' : 'text-gray-400'
+                    } text-base`}
                 >
                   <Row>
                     {/* <Link to={`${handleUrlInNotification(item)}`}>

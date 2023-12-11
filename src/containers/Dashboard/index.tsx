@@ -66,7 +66,7 @@ const Dashboard = () => {
           ) {
             return acc + obj.count;
           },
-          0);
+            0);
           setSumBroken(sumBroken);
           let sumRepair = data?.count_repair?.reduce(function (
             acc: number,
@@ -74,7 +74,7 @@ const Dashboard = () => {
           ) {
             return acc + obj.count;
           },
-          0);
+            0);
           setSumRepair(sumRepair);
         }
       })
@@ -88,6 +88,7 @@ const Dashboard = () => {
 
   const data_department =
     countByDepartment?.length > 0 ? countByDepartment : [];
+  console.log('dât repair', data_department);
   const config_department: any = {
     data: data_department,
     xField: 'Department.name',
@@ -138,6 +139,7 @@ const Dashboard = () => {
   };
 
   const data_repair = countRepair?.length > 0 ? countRepair : [];
+
   const config_repair: any = {
     appendPadding: 10,
     data: data_repair,
