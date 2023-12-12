@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Supply.init(
     {
+      image: DataTypes.TEXT,
       name: DataTypes.STRING, // tên
       code: DataTypes.STRING, // mã số
       unit: DataTypes.INTEGER, // đơn vị tính

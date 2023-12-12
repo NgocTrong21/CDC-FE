@@ -425,12 +425,12 @@ exports.reHandoverEquipment = async (req, res) => {
         return user;
       })
     );
-    if (data?.status_id === 6) {
-      await db.Liquidation.create({
-        equipment_id: data?.equipment_id,
-        liquidation_status: 0,
-      });
-    }
+    // if (data?.status_id === 6) {
+    //   await db.Liquidation.create({
+    //     equipment_id: data?.equipment_id,
+    //     liquidation_status: 0,
+    //   });
+    // }
     await db.sequelize.transaction(async (t) => {
       await Promise.all([
         await db.Repair.update(
@@ -641,6 +641,7 @@ exports.getHistoryRepair = async (req, res) => {
         "schedule_create_user_id",
         "schedule_repair_status",
         "test_user_id",
+        "provider",
         "file",
       ],
       include: [

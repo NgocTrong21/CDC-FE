@@ -71,7 +71,7 @@ exports.getListUnusedEquipment = async (req, res) => {
 exports.createLiquidationNote = async (req, res) => {
   try {
     const data = req?.body;
-    data.code = `XXXX-${data?.equipment_id}-${new Date().getTime()}`;
+    // data.code = `XXXX-${data?.equipment_id}-${new Date().getTime()}`;
     const roles = await getRoleEmailConfig(REPORT.RECEIVE_REQUEST_LIQUIDATION);
     const isHasEquipment = await db.Equipment.findOne({
       where: { id: data?.equipment_id },

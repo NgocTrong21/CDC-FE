@@ -16,7 +16,17 @@ exports.create = async (req, res) => {
         },
       });
       if (supplyInDB) return errorHandler(res, err.SUPPLY_FIELD_DUPLICATED);
-      await db.Supply.create(data, { transaction: t });
+      if (data?.image) {
+        const result = await cloudinary.uploader.upload(data?.image, {
+          folder: "supplies",
+        });
+        await db.Supply.create(
+          { ...data, image: result?.secure_url },
+          { transaction: t }
+        );
+      } else {
+        await db.Supply.create(data, { transaction: t });
+      }
       return successHandler(res, {}, 201);
     });
   } catch (error) {
@@ -39,11 +49,22 @@ exports.update = async (req, res) => {
           lot_number: data.lot_number,
         },
       });
-      if (supplyInDB?.length > 1) return errorHandler(res, err.SUPPLY_FIELD_DUPLICATED);
-      await db.Supply.update(data, {
-        where: { id: data?.id },
-        transaction: t,
-      });
+      if (supplyInDB?.length > 1)
+        return errorHandler(res, err.SUPPLY_FIELD_DUPLICATED);
+      if (data?.image) {
+        const result = await cloudinary.uploader.upload(data?.image, {
+          folder: "supplies",
+        });
+        await db.Supply.update(
+          { ...data, image: result?.secure_url },
+          { where: { id: data?.id }, transaction: t }
+        );
+      } else {
+        await db.Supply.update(data, {
+          where: { id: data?.id },
+          transaction: t,
+        });
+      }
       return successHandler(res, {}, 201);
     });
   } catch (error) {
@@ -453,7 +474,12 @@ exports.create_report = async (req, res) => {
           supply_id: item.supply_id,
         },
         attributes: ["supply_id", "quantity"],
-        include: [{ model: db.Supply }],
+        include: [
+          {
+            model: db.Supply,
+            include: [{ model: db.Equipment_Unit, attributes: ["id", "name"] }],
+          },
+        ],
         raw: false,
       });
       const currentSupplyQuantity = supply_db.reduce((total, current) => {
@@ -653,9 +679,15 @@ exports.create_report_by_warehouse = async (req, res) => {
           warehouse_id: warehouseId,
         },
         attributes: ["supply_id", "quantity"],
-        include: [{ model: db.Supply }],
+        include: [
+          {
+            model: db.Supply,
+            include: [{ model: db.Equipment_Unit, attributes: ["id", "name"] }],
+          },
+        ],
         raw: false,
       });
+      console.log(supply_db);
       let inbound_during_period_quantity = 0;
       let outbound_during_period_quantity = 0;
       let from_start_to_now_merged = 0;

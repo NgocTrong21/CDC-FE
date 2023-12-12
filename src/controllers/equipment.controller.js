@@ -13,7 +13,6 @@ const { sendUnuseEquipmentEmail } = require("../utils/sendEmail.util");
 //Equipment Controller
 exports.create = async (req, res) => {
   try {
-    console.log(req.body);
     const data = req?.body;
     await db.sequelize.transaction(async (t) => {
       // const equipmentInDB = await db.Equipment.findOne({

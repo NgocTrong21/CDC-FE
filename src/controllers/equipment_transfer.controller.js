@@ -15,7 +15,7 @@ const { checkRoleFromToken } = require("../utils/auth.util");
 exports.transferEquipment = async (req, res) => {
   try {
     const data = req?.body;
-    data.code = `XXXX-${data?.equipment_id}-${new Date().getTime()}`;
+    // data.code = `XXXX-${data?.equipment_id}-${new Date().getTime()}`;
     const roles = await getRoleEmailConfig(REPORT.RECEIVE_REQUEST_TRANSFER);
     const isHasEquipment = await db.Equipment.findOne({
       where: { id: data?.equipment_id },
@@ -108,7 +108,7 @@ exports.search = async (req, res) => {
       }
     }
 
-    const attributes = ["id", "name", "model", "serial"];
+    const attributes = ["id", "name", "model", "serial","fixed_asset_number"];
     const include = [
       { model: db.Equipment_Status, attributes: ["id", "name"] },
       {

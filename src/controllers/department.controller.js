@@ -3,6 +3,7 @@ const db = require("../models");
 const { successHandler, errorHandler } = require("../utils/ResponseHandle");
 const { Op } = require("sequelize");
 const { getList } = require("../utils/query.util");
+const cloudinary = require("../utils/cloudinary.util");
 
 exports.create = async (req, res) => {
   try {
@@ -11,7 +12,17 @@ exports.create = async (req, res) => {
         where: { name: req?.body?.name },
       });
       if (isHasDepartment) return errorHandler(res, err.DEPARTMENT_DUPLICATED);
-      await db.Department.create(req.body, { transaction: t });
+      if (req.body?.image) {
+        const result = await cloudinary.uploader.upload(req.body?.image, {
+          folder: "departments",
+        });
+        await db.Department.create(
+          { ...req.body, image: result?.secure_url },
+          { transaction: t }
+        );
+      } else {
+        await db.Department.create(req.body, { transaction: t });
+      }
       return successHandler(res, {}, 201);
     });
   } catch (error) {
@@ -22,7 +33,7 @@ exports.create = async (req, res) => {
 exports.detail = async (req, res) => {
   try {
     const { id } = req?.query;
-    const department = await db.Department.findOne({
+    let department = await db.Department.findOne({
       where: { id },
       include: [
         {
@@ -34,8 +45,15 @@ exports.detail = async (req, res) => {
       ],
       raw: false,
     });
-
-    return successHandler(res, { department }, 200);
+    if(department) {
+      return successHandler(res, { department }, 200);
+    }else {
+      department = await db.Department.findOne({
+        where: { id },
+        raw: false,
+      });
+      return successHandler(res, { department }, 200);
+    }    
   } catch (error) {
     return errorHandler(res, error);
   }
@@ -72,27 +90,41 @@ exports.update = async (req, res) => {
         where: { id: data?.id },
       });
       if (!isHasDepartment) return errorHandler(res, err.DEPARTMENT_NOT_FOUND);
-
-      await Promise.all([
-        await db.Department.update(req.body, {
-          where: { id: data?.id },
-          transaction: t,
-        }),
-        await db.User.update(
-          { role_id: data?.id === 1 ? 3 : 2 },
-          {
-            where: { id: data?.prevChiefId },
+      if (req.body?.image) {
+        const result = await cloudinary.uploader.upload(req.body?.image, {
+          folder: "departments",
+        });
+        await Promise.all([
+          await db.Department.update(
+            { ...req.body, image: result?.secure_url },
+            {
+              where: { id: data?.id },
+              transaction: t,
+            }
+          ),
+          await db.User.update(
+            { role_id: data?.id === 1 ? 3 : 2 },
+            {
+              where: { id: data?.prevChiefId },
+              transaction: t,
+            }
+          ),
+        ]);
+      } else {
+        await Promise.all([
+          await db.Department.update(req.body, {
+            where: { id: data?.id },
             transaction: t,
-          }
-        ),
-        await db.User.update(
-          { role_id: data?.id === 1 ? 8 : 4 },
-          {
-            where: { id: data?.chief_nursing_id },
-            transaction: t,
-          }
-        ),
-      ]);
+          }),
+          await db.User.update(
+            { role_id: data?.id === 1 ? 3 : 2 },
+            {
+              where: { id: data?.prevChiefId },
+              transaction: t,
+            }
+          ),
+        ]);
+      }
       return successHandler(res, {}, 201);
     });
   } catch (error) {
