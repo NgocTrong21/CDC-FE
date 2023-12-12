@@ -156,11 +156,11 @@ const DetailLiquidation = () => {
     <Loading />
   ) : (
     <div>
-      <div className="title">
+      <div className="title flex gap-3">
         PHIẾU THANH LÝ
         {/* (
-        <span className="italic">Mã phiếu: {equipment?.code}</span>) ___{' '}
-        {handleLiquidationStatus(equipment?.liquidation_status)} */}
+        <span className="italic">Mã phiếu: {equipment?.code}</span>) ___{' '} */}
+        {handleLiquidationStatus(equipment?.liquidation_status)}
       </div>
       <Form
         size="large"
@@ -185,13 +185,13 @@ const DetailLiquidation = () => {
           <Form.Item label="Ngày thanh lý" name="liquidation_date">
             <DatePicker className="date" />
           </Form.Item>
-          <Form.Item
+          {/* <Form.Item
             label="Tài liệu đính kèm"
             name="file"
             className="fileUploadInput"
           >
             <Input type="file" onChange={(e: any) => handleChangeFile(e)} />
-          </Form.Item>
+          </Form.Item> */}
         </div>
         <div className="grid grid-cols-2 gap-5">
           <Form.Item name="create_user_id" className="hidden"></Form.Item>

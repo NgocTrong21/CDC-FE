@@ -124,13 +124,13 @@ const ModalInspection = (props: any) => {
         >
           <DatePicker className="date" />
         </Form.Item>
-        <Form.Item
+        {/* <Form.Item
           className="fileUploadInput"
           name="file"
           label="Tài liệu đính kèm"
         >
           <Input type="file" onChange={(e: any) => handleChangeFile(e)} />
-        </Form.Item>
+        </Form.Item> */}
         <div>
           <div className="mb-4">Nội dung kiểm định</div>
           <MdEditor

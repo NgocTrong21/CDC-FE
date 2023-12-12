@@ -144,13 +144,13 @@ const ModalHandover = (props: any) => {
         <Form.Item label="Ghi chú" name="note">
           <TextArea placeholder="Nhập ghi chú" className="input" />
         </Form.Item>
-        <Form.Item
+        {/* <Form.Item
           className="fileUploadInput"
           name="file"
           label="Tài liệu đính kèm"
         >
           <Input type="file" onChange={(e: any) => handleChangeFile(e)} />
-        </Form.Item>
+        </Form.Item> */}
         <Form.Item name="handover_create_id" className="hidden"></Form.Item>
         <div className="flex flex-row justify-end gap-4">
           <Form.Item>

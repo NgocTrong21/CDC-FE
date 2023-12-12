@@ -203,7 +203,7 @@ const LayoutSystem = (props: LayoutProps) => {
         // getItem('Dịch vụ', '/service', permissions.DEPARTMENT_READ),
       ]
     ),
-    getCurrentUser().role_id !== 6 && getItem(
+    ![2, 6].includes(getCurrentUser().role_id) && getItem(
       'Quản lý thành viên',
       '/user',
       permissions.USER_READ,

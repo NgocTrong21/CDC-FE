@@ -24,7 +24,6 @@ const ImportOne = () => {
   const [image, setImage] = useState<any>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [dataChange, setDataChange] = useState<any>({});
-
   const handleChangeImg = async (e: any) => {
     let file = e.target.files[0];
     if (file) {

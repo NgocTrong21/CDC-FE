@@ -17,6 +17,7 @@ import {
   Table,
   Tooltip,
 } from 'antd';
+import image from 'assets/image.png';
 import useDebounce from 'hooks/useDebounce';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import departmentApi from 'api/department.api';
@@ -67,9 +68,11 @@ const Department = () => {
       title: 'Ảnh đại diện',
       key: 'image',
       dataIndex: 'image',
-      show: false,
+      show: true,
       widthExcel: 25,
-      render: (item: any) => <img src={ava} alt="logo" className="w-20 h-20" />,
+      render: (item: any) => (
+        <img src={item || image} alt="logo" className="w-20 h-20" />
+      ),
     },
     {
       title: 'Tên hiển thị',
@@ -134,9 +137,8 @@ const Department = () => {
         <div>
           <Tooltip
             title="Thông tin khoa phòng"
-            className={`${
-              checkPermission(permissions.DEPARTMENT_READ) ? 'mr-4' : 'hidden'
-            }`}
+            className={`${checkPermission(permissions.DEPARTMENT_READ) ? 'mr-4' : 'hidden'
+              }`}
           >
             <Link to={`/organization/department/detail/${item.id}`}>
               <EyeFilled />
@@ -144,11 +146,10 @@ const Department = () => {
           </Tooltip>
           <Tooltip
             title="Xóa"
-            className={`${
-              checkPermission(permissions.DEPARTMENT_DELETE)
+            className={`${checkPermission(permissions.DEPARTMENT_DELETE)
                 ? 'button-primary'
                 : 'hidden'
-            }`}
+              }`}
           >
             <Popconfirm
               title="Bạn muốn xóa Khoa - Phòng này?"

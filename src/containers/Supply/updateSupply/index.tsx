@@ -20,7 +20,7 @@ const SupplyUpdate = () => {
   const [image, setImage] = useState<any>('');
   const [selectedImage, setSelectedImage] = useState<any>('');
   const [form] = Form.useForm();
-
+  const [loading, setLoading] = useState<boolean>(false);
   const handleChangeImg = async (e: any) => {
     let file = e.target.files[0];
     if (file) {
@@ -31,6 +31,7 @@ const SupplyUpdate = () => {
     }
   };
   const onFinish = (values: any) => {
+    setLoading(true);
     let data = {
       ...values,
       expiration_date: moment(new Date(values?.expiration_date)).toISOString(),
@@ -50,7 +51,8 @@ const SupplyUpdate = () => {
           toast.error(message || 'Cập nhật vật tư thất bại!');
         }
       })
-      .catch();
+      .catch()
+      .finally(() => setLoading(false));
   };
   const getDetailEquipment = (id: any) => {
     supplyApi
@@ -70,6 +72,7 @@ const SupplyUpdate = () => {
             unit,
             unit_price,
             note,
+            image
           } = data.supply;
           form.setFieldsValue({
             id,
@@ -83,6 +86,7 @@ const SupplyUpdate = () => {
             expiration_date: moment(expiration_date),
             note,
           });
+          setImage(image);
         }
       })
       .catch();
@@ -207,12 +211,34 @@ const SupplyUpdate = () => {
             </Form.Item>
           </div>
           <Form.Item>
-            <Button className="button-primary" htmlType="submit">
+            <Button className="button-primary" htmlType="submit" loading={loading}>
               Hoàn thành
             </Button>
           </Form.Item>
         </Form>
-        <div className="basis-1/3 mt-4 flex flex-col items-center">
+        <div className="flex flex-col gap-4 items-center basis-1/4 ">
+          <div className="text-center leading-9 ">Hình ảnh thiết bị</div>
+          {selectedImage === '' ? (
+            <img
+              src={image ? image : ava}
+              alt="Hình ảnh thiết bị"
+              className="w-52 h-52 rounded-lg object-contain"
+            />
+          ) : (
+            <div
+              className="w-52 h-52 rounded-lg bg-center bg-no-repeat bg-cover"
+              style={{ backgroundImage: `url(${selectedImage})` }}
+            ></div>
+          )}
+          <div className="mt-6">Thay đổi hình ảnh thiết bị</div>
+          <input
+            type="file"
+            className="block file:bg-violet-100 file:text-violet-700 text-slate-500 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold hover:file:bg-violet-200"
+            id="inputImage"
+            onChange={(e: any) => handleChangeImg(e)}
+          />
+        </div>
+        {/* <div className="basis-1/3 mt-4 flex flex-col items-center">
           <div className="text-center mb-4">Ảnh đại diện</div>
           <div className="preview-content">
             <input
@@ -233,7 +259,7 @@ const SupplyUpdate = () => {
               )}
             </label>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

@@ -17,10 +17,11 @@ import {
   getHeadersExcel,
   options,
 } from 'utils/globalFunc.util';
-
+import image from 'assets/image.png';
 import moment from 'moment';
 import warehouseApi from 'api/warehouse.api';
 import ExportToExcel from 'components/Excel';
+import { formatCurrencyVN } from 'utils/validateFunc.util';
 
 const TableFooter = ({ paginationProps }: any) => {
   return (
@@ -60,11 +61,24 @@ const ReportSupplyByWarehouse = () => {
 
   const columns: any = [
     {
+      title: 'Ảnh đại diện',
+      dataIndex: 'image',
+      key: 'image',
+      show: true,
+      render(item: any) {
+        return (
+          <img src={item || image} alt="logo" className='w-full  aspect-square object-contain' />
+        );
+      },
+      width: 100,
+    },
+    {
       title: 'Mã vật tư',
       dataIndex: 'code',
       key: 'code',
       show: true,
       widthExcel: 15,
+      width: 150,
     },
     {
       title: 'Số lô',
@@ -72,6 +86,7 @@ const ReportSupplyByWarehouse = () => {
       key: 'lot_number',
       show: true,
       widthExcel: 15,
+      width: 150,
     },
     {
       title: 'Tên vật tư',
@@ -79,13 +94,15 @@ const ReportSupplyByWarehouse = () => {
       key: 'name',
       show: true,
       widthExcel: 30,
+      width: 200,
     },
     {
       title: 'Đơn vị tính',
       key: 'unit',
-      dataIndex: 'unit',
       show: true,
       widthExcel: 12,
+      width: 100,
+      render: (item: any) => <p>{item?.Equipment_Unit?.name}</p>,
     },
     {
       title: 'Đơn giá',
@@ -93,20 +110,24 @@ const ReportSupplyByWarehouse = () => {
       dataIndex: 'unit_price',
       show: true,
       widthExcel: 20,
+      width: 100,
+      render: (item: any) => <p>{formatCurrencyVN(item)}</p>,
     },
     {
       title: 'Nhà cung cấp',
       key: 'provider',
-      show: false,
+      show: true,
       widthExcel: 30,
       dataIndex: 'provider',
+      width: 150,
     },
     {
       title: 'Xuất sứ',
       key: 'manufacturing_country',
-      show: false,
+      show: true,
       widthExcel: 15,
       dataIndex: 'manufacturing_country',
+      width: 100,
     },
     {
       title: 'Tồn đầu kỳ',
@@ -114,6 +135,7 @@ const ReportSupplyByWarehouse = () => {
       dataIndex: 'begin_quantity',
       show: true,
       widthExcel: 20,
+      width: 100,
     },
     {
       title: 'Nhập trong kỳ',
@@ -121,6 +143,7 @@ const ReportSupplyByWarehouse = () => {
       dataIndex: 'inbound_quantity',
       show: true,
       widthExcel: 20,
+      width: 100,
     },
     {
       title: 'xuất trong kỳ',
@@ -128,6 +151,7 @@ const ReportSupplyByWarehouse = () => {
       dataIndex: 'outbound_quantity',
       show: true,
       widthExcel: 20,
+      width: 100,
     },
     {
       title: 'Tồn cuối kỳ',
@@ -135,28 +159,16 @@ const ReportSupplyByWarehouse = () => {
       dataIndex: 'end_quantity',
       show: true,
       widthExcel: 20,
+      width: 100,
     },
     {
       title: 'Tổng giá trị',
       key: 'valueTotal',
       show: true,
       widthExcel: 20,
+      width: 200,
       render: (item: any) => (
-        <div>
-          <InputNumber
-            value={parseFloat(
-              (item?.unit_price * item?.end_quantity)?.toFixed(1)
-            )}
-            formatter={(value) =>
-              ` ${value}`
-                .replace(/\./, '.')
-                .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-            }
-            precision={1}
-            disabled
-            className="text-black"
-          />
-        </div>
+        <p>{formatCurrencyVN(item?.unit_price * item?.end_quantity)}</p>
       ),
     },
   ];
@@ -331,6 +343,7 @@ const ReportSupplyByWarehouse = () => {
         footer={() => <TableFooter paginationProps={pagination} />}
         pagination={false}
         loading={loading}
+        scroll={{ x: 2000, y: 600 }}
       />
     </div>
   );

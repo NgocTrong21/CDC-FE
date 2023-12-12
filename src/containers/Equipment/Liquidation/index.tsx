@@ -127,7 +127,7 @@ const Liquidation = () => {
               </Link>
             </Tooltip>
           </Menu.Item>
-          {item?.Liquidation !== null ? (
+          {item?.Liquidations?.length > 0 ? (
             <Menu.Item
               key="liquidation_detail"
               className={`${checkPermission(permissions.LIQUIDATION_EQUIPMENT_READ)

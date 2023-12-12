@@ -258,9 +258,8 @@ const UpdateSchedule = () => {
 
   return (
     <div>
-      <div className="title text-center">{`${
-        query?.edit === 'true' ? 'CẬP NHẬT' : ''
-      } PHIẾU SỬA CHỮA THIẾT BỊ`}</div>
+      <div className="title text-center">{`${query?.edit === 'true' ? 'CẬP NHẬT' : ''
+        } PHIẾU SỬA CHỮA THIẾT BỊ`}</div>
       <Divider />
       <div>
         <div className="title">
@@ -410,13 +409,13 @@ const UpdateSchedule = () => {
             <Form.Item label="Ghi chú" name="note">
               <TextArea className="textarea" rows={1} />
             </Form.Item>
-            <Form.Item
+            {/* <Form.Item
               className="fileUploadInput"
               name="file"
               label="Tài liệu đính kèm"
             >
               <Input type="file" onChange={(e: any) => handleChangeFile(e)} />
-            </Form.Item>
+            </Form.Item> */}
           </div>
           <div className="grid grid-cols-3 gap-5">
             <Form.Item

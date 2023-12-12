@@ -20,13 +20,13 @@ const HistoryLiquidation = () => {
   const [loadingDownload, setLoadingDownload] = useState<boolean>(false);
 
   const columns: any = [
-    {
-      title: 'Mã điều chuyển',
-      dataIndex: 'code',
-      key: 'code',
-      show: true,
-      widthExcel: 35,
-    },
+    // {
+    //   title: 'Mã điều chuyển',
+    //   dataIndex: 'code',
+    //   key: 'code',
+    //   show: true,
+    //   widthExcel: 35,
+    // },
     {
       title: 'Ngày điều chuyển',
       key: 'transfer_date',
@@ -67,18 +67,18 @@ const HistoryLiquidation = () => {
       widthExcel: 25,
       render: (item: any) => <>{item?.transfer_approver?.name}</>,
     },
-    {
-      title: 'Tài liệu điều chuyển',
-      key: 'file',
-      show: true,
-      widthExcel: 25,
-      render: (item: any) => {
-        if(!item?.file) return (<div>Không có tài liệu đính kèm</div>)
-        return (<a href={item?.file} download target='_blank' rel="noreferrer">
-          <EyeFilled />
-        </a>)
-      },
-    },
+    // {
+    //   title: 'Tài liệu điều chuyển',
+    //   key: 'file',
+    //   show: true,
+    //   widthExcel: 25,
+    //   render: (item: any) => {
+    //     if (!item?.file) return (<div>Không có tài liệu đính kèm</div>)
+    //     return (<a href={item?.file} download target='_blank' rel="noreferrer">
+    //       <EyeFilled />
+    //     </a>)
+    //   },
+    // },
     {
       title: 'Tác vụ',
       key: 'action',

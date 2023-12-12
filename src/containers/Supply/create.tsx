@@ -19,7 +19,7 @@ const SupplyCreate = () => {
   const [form] = Form.useForm();
   const [selectedImage, setSelectedImage] = useState<any>('');
   const [image, setImage] = useState<any>('');
-
+  const [loading, setLoading] = useState<boolean>(false);
   const handleChangeImg = async (e: any) => {
     let file = e.target.files[0];
     if (file) {
@@ -31,6 +31,7 @@ const SupplyCreate = () => {
   };
 
   const onFinish = (values: any) => {
+    setLoading(true);
     let data = {
       ...values,
       expiration_date: moment(new Date(values?.expiration_date)).toISOString(),
@@ -51,7 +52,8 @@ const SupplyCreate = () => {
           toast.error(message || 'Thêm mới vật tư thất bại!');
         }
       })
-      .catch();
+      .catch()
+      .finally(() => setLoading(false));
   };
   return (
     <div>
@@ -172,32 +174,32 @@ const SupplyCreate = () => {
             </Form.Item>
           </div>
           <Form.Item>
-            <Button className="button-primary" htmlType="submit">
+            <Button className="button-primary" htmlType="submit" loading={loading}>
               Thêm
             </Button>
           </Form.Item>
         </Form>
-        <div className="basis-1/3 mt-4 flex flex-col items-center">
-          <div className="text-center mb-4">Ảnh đại diện</div>
-          <div className="preview-content">
-            <input
-              type="file"
-              hidden
-              className="form-control"
-              id="inputImage"
-              onChange={(e: any) => handleChangeImg(e)}
+        <div className="flex flex-col gap-4 items-center basis-1/4 ">
+          <div className="text-center leading-9 ">Hình ảnh thiết bị</div>
+          {selectedImage === '' ? (
+            <img
+              src={image ? image : ava}
+              alt="Hình ảnh thiết bị"
+              className="w-52 h-52 rounded-lg object-contain"
             />
-            <label className="text-center" htmlFor="inputImage">
-              {image === '' ? (
-                <img src={ava} alt="ava" className="w-52 h-52" />
-              ) : (
-                <div
-                  className="w-52 h-52 bg-center bg-no-repeat bg-cover"
-                  style={{ backgroundImage: `url(${selectedImage})` }}
-                ></div>
-              )}
-            </label>
-          </div>
+          ) : (
+            <div
+              className="w-52 h-52 rounded-lg bg-center bg-no-repeat bg-cover"
+              style={{ backgroundImage: `url(${selectedImage})` }}
+            ></div>
+          )}
+          <div className="mt-6">Thay đổi hình ảnh thiết bị</div>
+          <input
+            type="file"
+            className="block file:bg-violet-100 file:text-violet-700 text-slate-500 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold hover:file:bg-violet-200"
+            id="inputImage"
+            onChange={(e: any) => handleChangeImg(e)}
+          />
         </div>
       </div>
     </div>

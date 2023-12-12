@@ -35,7 +35,10 @@ const CreateUser = () => {
   const onFinish = (values: any) => {
     setLoading(true);
     userApi
-      .create(values)
+      .create({
+        ...values,
+        image
+      })
       .then((res) => {
         const { success, message } = res.data;
         if (success) {
@@ -142,7 +145,29 @@ const CreateUser = () => {
             </Button>
           </Form.Item>
         </Form>
-        <div className="basis-1/3 mt-4 flex flex-col items-center">
+        <div className="flex flex-col gap-4 items-center basis-1/4 ">
+          <div className="text-center leading-9 ">Ảnh đại diện</div>
+          {selectedImage === '' ? (
+            <img
+              src={image ? image : ava}
+              alt="Ảnh đại diện"
+              className="w-52 h-52 rounded-lg object-contain"
+            />
+          ) : (
+            <div
+              className="w-52 h-52 rounded-lg bg-center bg-no-repeat bg-cover"
+              style={{ backgroundImage: `url(${selectedImage})` }}
+            ></div>
+          )}
+          <div className="mt-6">Thay đổi ảnh đại diện</div>
+          <input
+            type="file"
+            className="block file:bg-violet-100 file:text-violet-700 text-slate-500 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold hover:file:bg-violet-200"
+            id="inputImage"
+            onChange={(e: any) => handleChangeImg(e)}
+          />
+        </div>
+        {/* <div className="basis-1/3 mt-4 flex flex-col items-center">
           <div className="text-center mb-4">Ảnh đại diện</div>
           <div className="preview-content">
             <input
@@ -163,7 +188,7 @@ const CreateUser = () => {
               )}
             </label>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

@@ -65,11 +65,11 @@ const Detail = () => {
   ];
 
   const columns_repair: any = [
-    {
-      title: 'Mã sửa chữa',
-      dataIndex: 'code',
-      key: 'code',
-    },
+    // {
+    //   title: 'Mã sửa chữa',
+    //   dataIndex: 'code',
+    //   key: 'code',
+    // },
     {
       title: 'Ngày báo hỏng',
       key: 'broken_report_date',
@@ -123,76 +123,76 @@ const Detail = () => {
     },
     {
       title: 'Nhà cung cấp',
-      key: 'provider_id',
-      render: (item: any) => <>{item?.Provider?.name}</>,
+      key: 'provider',
+      dataIndex: "provider",
     },
     {
       title: 'Tình trạng thiết bị',
       key: 'repair_status',
       render: (item: any) => <>{item?.Repair_Status?.name}</>,
     },
-    {
-      title: 'Biên bản sửa chữa',
-      key: 'repair_word',
-      render: (item: any) => {
-        const schedule = {
-          id: item?.id,
-          equipment_id: item?.equipment_id,
-          name: equipment?.name,
-          model: equipment?.model,
-          serial: equipment?.serial,
-          department: equipment?.Department.name,
-          actual_repair_cost: item?.actual_repair_cost,
-          code: item?.code,
-          repair_date: item?.repair_date && moment(item?.repair_date),
-          estimated_repair_cost: item?.estimated_repair_cost,
-          provider_id: item?.provider_id,
-          repair_completion_date:
-            item?.repair_completion_date &&
-            moment(item?.repair_completion_date),
-          repair_status: item?.repair_status,
-          repair_status_name: item?.Repair_Status?.name,
-          schedule_repair_date:
-            item?.schedule_repair_date && moment(item?.schedule_repair_date),
-          schedule_create_user_name: item?.schedule_create_user?.name,
-          schedule_create_user_id: item?.schedule_create_user?.id,
-          test_user_name: item?.test_user?.name || current_user?.name,
-          test_user_id: item?.test_user?.id || current_user?.id,
-          schedule_approve_user_name:
-            item?.schedule_approve_user?.name || current_user?.name,
-          schedule_approve_user_id:
-            item?.schedule_approve_user?.id || current_user?.id,
-          schedule_repair_status: item?.schedule_repair_status,
-        };
-        return item.done ? (
-          <FileWordFilled onClick={() => downloadRepairSchedule(schedule)} />
-        ) : (
-          <div>Chưa bàn giao</div>
-        );
-      },
-    },
-    {
-      title: 'Tài liệu đính kèm',
-      key: 'file',
-      render: (item: any) => {
-        if (!item?.file) return <div>Không có tài liệu đính kèm</div>;
-        return (
-          <a href={item?.file} download target="_blank" rel="noreferrer">
-            <EyeFilled />
-          </a>
-        );
-      },
-    },
+    // {
+    //   title: 'Biên bản sửa chữa',
+    //   key: 'repair_word',
+    //   render: (item: any) => {
+    //     const schedule = {
+    //       id: item?.id,
+    //       equipment_id: item?.equipment_id,
+    //       name: equipment?.name,
+    //       model: equipment?.model,
+    //       serial: equipment?.serial,
+    //       department: equipment?.Department.name,
+    //       actual_repair_cost: item?.actual_repair_cost,
+    //       code: item?.code,
+    //       repair_date: item?.repair_date && moment(item?.repair_date),
+    //       estimated_repair_cost: item?.estimated_repair_cost,
+    //       provider_id: item?.provider_id,
+    //       repair_completion_date:
+    //         item?.repair_completion_date &&
+    //         moment(item?.repair_completion_date),
+    //       repair_status: item?.repair_status,
+    //       repair_status_name: item?.Repair_Status?.name,
+    //       schedule_repair_date:
+    //         item?.schedule_repair_date && moment(item?.schedule_repair_date),
+    //       schedule_create_user_name: item?.schedule_create_user?.name,
+    //       schedule_create_user_id: item?.schedule_create_user?.id,
+    //       test_user_name: item?.test_user?.name || current_user?.name,
+    //       test_user_id: item?.test_user?.id || current_user?.id,
+    //       schedule_approve_user_name:
+    //         item?.schedule_approve_user?.name || current_user?.name,
+    //       schedule_approve_user_id:
+    //         item?.schedule_approve_user?.id || current_user?.id,
+    //       schedule_repair_status: item?.schedule_repair_status,
+    //     };
+    //     return item.done ? (
+    //       <FileWordFilled onClick={() => downloadRepairSchedule(schedule)} />
+    //     ) : (
+    //       <div>Chưa bàn giao</div>
+    //     );
+    //   },
+    // },
+    // {
+    //   title: 'Tài liệu đính kèm',
+    //   key: 'file',
+    //   render: (item: any) => {
+    //     if (!item?.file) return <div>Không có tài liệu đính kèm</div>;
+    //     return (
+    //       <a href={item?.file} download target="_blank" rel="noreferrer">
+    //         <EyeFilled />
+    //       </a>
+    //     );
+    //   },
+    // },
   ];
 
   const columns_tranfer: any = [
-    {
-      title: 'Mã điều chuyển',
-      dataIndex: 'code',
-      key: 'code',
-      show: true,
-      widthExcel: 35,
-    },
+    // {
+    //   title: 'Mã điều chuyển',
+    //   dataIndex: 'code',
+    //   key: 'code',
+    //   show: true,
+    //   widthExcel: 35,
+    // },
     {
       title: 'Ngày điều chuyển',
       key: 'transfer_date',
@@ -233,44 +233,44 @@ const Detail = () => {
       widthExcel: 25,
       render: (item: any) => <>{item?.transfer_approver?.name}</>,
     },
-    {
-      title: 'Tài liệu điều chuyển',
-      key: 'file',
-      show: true,
-      widthExcel: 25,
-      render: (item: any) => {
-        if (!item?.file) return <div>Không có tài liệu đính kèm</div>;
-        return (
-          <a href={item?.file} download target="_blank" rel="noreferrer">
-            <EyeFilled />
-          </a>
-        );
-      },
-    },
-    {
-      title: 'Tác vụ',
-      key: 'action',
-      show: true,
-      render: (item: any) => (
-        <Tooltip title="Chi tiết phiếu điều chuyển">
-          <Link
-            to={`/equipment/transfer/detail/${id}/${item.id}?edit=${false}`}
-          >
-            <FileWordFilled />
-          </Link>
-        </Tooltip>
-      ),
-    },
+    // {
+    //   title: 'Tài liệu điều chuyển',
+    //   key: 'file',
+    //   show: true,
+    //   widthExcel: 25,
+    //   render: (item: any) => {
+    //     if (!item?.file) return <div>Không có tài liệu đính kèm</div>;
+    //     return (
+    //       <a href={item?.file} download target="_blank" rel="noreferrer">
+    //         <EyeFilled />
+    //       </a>
+    //     );
+    //   },
+    // },
+    // {
+    //   title: 'Tác vụ',
+    //   key: 'action',
+    //   show: true,
+    //   render: (item: any) => (
+    //     <Tooltip title="Chi tiết phiếu điều chuyển">
+    //       <Link
+    //         to={`/equipment/transfer/detail/${id}/${item.id}?edit=${false}`}
+    //       >
+    //         <FileWordFilled />
+    //       </Link>
+    //     </Tooltip>
+    //   ),
+    // },
   ];
 
   const columns_liquidation: any = [
-    {
-      title: 'Mã thanh lý',
-      dataIndex: 'code',
-      key: 'code',
-      show: true,
-      widthExcel: 35,
-    },
+    // {
+    //   title: 'Mã thanh lý',
+    //   dataIndex: 'code',
+    //   key: 'code',
+    //   show: true,
+    //   widthExcel: 35,
+    // },
     {
       title: 'Ngày thanh lý',
       key: 'liquidation_date',
@@ -297,34 +297,34 @@ const Detail = () => {
       widthExcel: 25,
       render: (item: any) => <>{item?.approver?.name}</>,
     },
-    {
-      title: 'Tài liệu thanh lý',
-      key: 'file',
-      show: true,
-      widthExcel: 25,
-      render: (item: any) => {
-        if (!item?.file) return <div>Không có tài liệu đính kèm</div>;
-        return (
-          <a href={item?.file} download target="_blank" rel="noreferrer">
-            <EyeFilled />
-          </a>
-        );
-      },
-    },
-    {
-      title: 'Tác vụ',
-      key: 'action',
-      show: true,
-      render: (item: any) => (
-        <Tooltip title="Chi tiết phiếu thanh lý">
-          <Link
-            to={`/equipment/liquidation/detail/${id}/${item.id}?edit=${false}`}
-          >
-            <FileWordFilled />
-          </Link>
-        </Tooltip>
-      ),
-    },
+    // {
+    //   title: 'Tài liệu thanh lý',
+    //   key: 'file',
+    //   show: true,
+    //   widthExcel: 25,
+    //   render: (item: any) => {
+    //     if (!item?.file) return <div>Không có tài liệu đính kèm</div>;
+    //     return (
+    //       <a href={item?.file} download target="_blank" rel="noreferrer">
+    //         <EyeFilled />
+    //       </a>
+    //     );
+    //   },
+    // },
+    // {
+    //   title: 'Tác vụ',
+    //   key: 'action',
+    //   show: true,
+    //   render: (item: any) => (
+    //     <Tooltip title="Chi tiết phiếu thanh lý">
+    //       <Link
+    //         to={`/equipment/liquidation/detail/${id}/${item.id}?edit=${false}`}
+    //       >
+    //         <FileWordFilled />
+    //       </Link>
+    //     </Tooltip>
+    //   ),
+    // },
   ];
   const getDetailEquipment = (id: any) => {
     setLoading(true);

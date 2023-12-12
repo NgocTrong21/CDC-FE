@@ -53,7 +53,7 @@ const ModelLiquidation = (props: any) => {
     equipmentLiquidation.createLiquidationNote(data)
       .then((res: any) => {
         const { success } = res?.data;
-        if(success) {
+        if (success) {
           toast.success("Tạo phiếu thanh lý thành công");
           callback();
         } else {
@@ -104,13 +104,13 @@ const ModelLiquidation = (props: any) => {
         >
           <DatePicker className="date" />
         </Form.Item>
-        <Form.Item
+        {/* <Form.Item
           className="fileUploadInput"
           name="file"
           label="Tài liệu đính kèm"
         >
           <Input type="file" onChange={(e: any) => handleChangeFile(e)} />
-        </Form.Item>
+        </Form.Item> */}
         <Form.Item
           name="create_user_id"
           style={{ display: 'none' }}

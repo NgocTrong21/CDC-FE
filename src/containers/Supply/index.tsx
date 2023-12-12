@@ -70,36 +70,41 @@ const Suplly = () => {
       title: 'Ảnh đại diện',
       dataIndex: 'image',
       key: 'image',
-      show: false,
+      show: true,
       render(item: any) {
         return (
-          <img src={item?.image || image} alt="logo" className="w-32 h-32" />
+          <img src={item || image} alt="logo" className='w-full  aspect-square object-contain' />
         );
       },
+      width: 100,
     },
     {
       title: 'Mã vật tư',
       dataIndex: 'code',
       key: 'code',
       show: true,
+      width: 150,
     },
     {
       title: 'Số lô',
       dataIndex: 'lot_number',
       key: 'lot_number',
       show: true,
+      width: 150,
     },
     {
       title: 'Tên vật tư',
       dataIndex: 'name',
       key: 'name',
       show: true,
+      width: 300,
     },
     {
       title: 'Đơn vị tính',
       key: 'unit',
       show: true,
       render: (item: any) => <div>{item?.Equipment_Unit?.name}</div>,
+      width: 100,
     },
     {
       title: 'Đơn giá',
@@ -107,23 +112,27 @@ const Suplly = () => {
       dataIndex: 'unit_price',
       render: (item: any) => <p>{formatCurrencyVN(item)}</p>,
       show: true,
+      width: 200,
     },
     {
       title: 'Nhà cung cấp',
       key: 'provider',
       show: true,
       dataIndex: 'provider',
+      width: 200,
     },
     {
       title: 'Xuất sứ',
       key: 'manufacturing_country',
       show: true,
       dataIndex: 'manufacturing_country',
+      width: 200,
     },
     {
       title: 'Tác vụ',
       key: 'action',
       show: true,
+      width: 200,
       render: (item: any) => (
         <Menu className="flex flex-row items-center">
           {checkPermission(permissions.CONSUMABLE_SUPPLY_READ) && (
@@ -236,9 +245,9 @@ const Suplly = () => {
           </Button>
         </div>
       </div>
-      <Divider />
+      {/* <Divider /> */}
       <div className="flex justify-between flex-col">
-        <div
+        {/* <div
           className="flex flex-row gap-4 items-center mb-4"
           onClick={() => setIsShowCustomTable(!isShowCustomTable)}
         >
@@ -246,7 +255,7 @@ const Suplly = () => {
           <div className="font-medium text-center cursor-pointer text-base">
             Tùy chọn trường hiển thị
           </div>
-        </div>
+        </div> */}
         {isShowCustomTable && (
           <div className="flex flex-row gap-4">
             {columnTable.length > 0 &&
@@ -279,6 +288,7 @@ const Suplly = () => {
         className="mt-6 shadow-md"
         footer={() => <TableFooter paginationProps={pagination} />}
         pagination={false}
+        scroll={{ x: 2000, y: 600 }}
         loading={loading}
       />
     </div>

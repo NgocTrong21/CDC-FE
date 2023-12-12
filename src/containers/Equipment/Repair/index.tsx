@@ -391,7 +391,7 @@ const Repair = () => {
     <div>
       <div className="flex-between-center">
         <div className="title">
-          DANH SÁCH THIẾT BỊ ĐANG BÁO HỎNG VÀ SỬA CHỮA
+          DANH SÁCH THIẾT BỊ ĐANG BÁO HỎNG
         </div>
         <ExportToExcel
           callback={downloadRepairList}

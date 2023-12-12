@@ -106,10 +106,10 @@ const List = () => {
       key: 'image',
       show: true,
       render(item: any) {
-        return <img src={image} alt="logo" />;
+        return <img src={item || image} alt="logo" />;
       },
       widthExcel: 30,
-      width: 100,
+      width: 120,
     },
     {
       title: 'Tên thiết bị',
@@ -207,7 +207,7 @@ const List = () => {
     {
       title: 'Đơn vị tính',
       key: 'unit',
-      show: false,
+      show: true,
       render: (item: any) => <div>{item?.Equipment_Unit?.name}</div>,
       widthExcel: 30,
       width: 200,
@@ -215,7 +215,7 @@ const List = () => {
     {
       title: 'Khoa - Phòng',
       key: 'department',
-      show: false,
+      show: true,
       render: (item: any) => <div>{item?.Department?.name}</div>,
       widthExcel: 30,
       width: 200,
@@ -242,11 +242,10 @@ const List = () => {
             <>
               <Menu.Item
                 key="bell"
-                className={`${
-                  checkPermission(permissions.REPORT_EQUIPMENT_CREATE)
-                    ? ''
-                    : 'hidden'
-                }`}
+                className={`${checkPermission(permissions.REPORT_EQUIPMENT_CREATE)
+                  ? ''
+                  : 'hidden'
+                  }`}
               >
                 <Tooltip title="Báo hỏng thiết bị">
                   <ExclamationCircleFilled
@@ -258,11 +257,10 @@ const List = () => {
                 <>
                   <Menu.Item
                     key="transfer"
-                    className={`${
-                      checkPermission(permissions.TRANFER_EQUIPMENT_CREATE)
-                        ? ''
-                        : 'hidden'
-                    }`}
+                    className={`${checkPermission(permissions.TRANFER_EQUIPMENT_CREATE)
+                      ? ''
+                      : 'hidden'
+                      }`}
                   >
                     <Tooltip title="Điều chuyển thiết bị">
                       <RetweetOutlined
@@ -284,9 +282,8 @@ const List = () => {
           {item?.Equipment_Status?.id !== 7 && (
             <Menu.Item
               key="update_equipment"
-              className={`${
-                checkPermission(permissions.EQUIPMENT_UPDATE) ? '' : 'hidden'
-              }`}
+              className={`${checkPermission(permissions.EQUIPMENT_UPDATE) ? '' : 'hidden'
+                }`}
             >
               <Tooltip title="Cập nhật thiết bị">
                 <Link to={`/equipment/update/${item.id}`}>
@@ -306,9 +303,8 @@ const List = () => {
           )}
           <Menu.Item
             key="delete"
-            className={`${
-              checkPermission(permissions.EQUIPMENT_DELETE) ? '' : 'hidden'
-            }`}
+            className={`${checkPermission(permissions.EQUIPMENT_DELETE) ? '' : 'hidden'
+              }`}
           >
             <Tooltip title="Xóa thiết bị">
               <Popconfirm
@@ -500,7 +496,7 @@ const List = () => {
       </div>
       <Divider />
       <div className="flex justify-between flex-col">
-        <div
+        {/* <div
           className="flex flex-row gap-4 items-center mb-4"
           onClick={() => setIsShowCustomTable(!isShowCustomTable)}
         >
@@ -524,7 +520,7 @@ const List = () => {
                 </div>
               ))}
           </div>
-        )}
+        )} */}
         <div className="flex-between-center gap-4 p-4">
           <Select
             showSearch
@@ -586,7 +582,7 @@ const List = () => {
         footer={() => <TableFooter paginationProps={pagination} />}
         pagination={false}
         loading={loading}
-        scroll={{ x: 2800, y: 500 }}
+        scroll={{ x: 2800, y: 580 }}
       />
       <ModalReport
         showReportModal={showReportModal}

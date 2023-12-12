@@ -107,7 +107,7 @@ const ImportWarehouse = () => {
             </Button>
           </Form.Item>
         </Form>
-        <div className="basis-1/3 mt-4 flex flex-col items-center">
+        {/* <div className="basis-1/3 mt-4 flex flex-col items-center">
           <div className="text-center mb-4">Ảnh đại diện</div>
           <div className="preview-content">
             <input
@@ -128,7 +128,7 @@ const ImportWarehouse = () => {
               )}
             </label>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

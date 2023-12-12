@@ -29,13 +29,13 @@ const HistoryRepair = () => {
   const [loadingDownload, setLoadingDownload] = useState<boolean>(false);
 
   const columns: any = [
-    {
-      title: 'Mã sửa chữa',
-      dataIndex: 'code',
-      key: 'code',
-      show: true,
-      widthExcel: 35,
-    },
+    // {
+    //   title: 'Mã sửa chữa',
+    //   dataIndex: 'code',
+    //   key: 'code',
+    //   show: true,
+    //   widthExcel: 35,
+    // },
     {
       title: 'Ngày báo hỏng',
       key: 'broken_report_date',
@@ -99,10 +99,10 @@ const HistoryRepair = () => {
     },
     {
       title: 'Nhà cung cấp',
-      key: 'provider_id',
+      dataIndex: 'provider',
+      key: 'provider',
       show: true,
       widthExcel: 25,
-      render: (item: any) => <>{item?.Provider?.name}</>,
     },
     {
       title: 'Tình trạng thiết bị',

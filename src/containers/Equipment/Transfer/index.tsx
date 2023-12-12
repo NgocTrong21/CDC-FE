@@ -37,10 +37,10 @@ const TableFooter = ({ paginationProps }: any) => {
 const Transfer = () => {
   const columns: any = [
     {
-      title: 'Mã thiết bị',
-      key: 'code',
+      title: 'Số hiệu TSCĐ',
+      key: 'fixed_asset_number',
       show: true,
-      dataIndex: 'code',
+      dataIndex: 'fixed_asset_number',
     },
     {
       title: 'Tên thiết bị',

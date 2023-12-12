@@ -86,10 +86,11 @@ const User: FC<IUserProps> = ({
     {
       title: 'Ảnh đại diện',
       key: 'image',
+      dataIndex: 'image',
       show: false,
       widthExcel: 25,
       render: (item: any) => (
-        <img src={image} alt="logo" className="w-20 h-20" />
+        <img src={item || image} alt="logo" className="w-20 h-20 object-contain" />
       ),
     },
     {
@@ -264,7 +265,7 @@ const User: FC<IUserProps> = ({
         <div className="title">
           {isDepartment ? 'Danh sách thành viên' : 'DANH SÁCH NGƯỜI DÙNG'}
         </div>
-        <div className="flex flex-row gap-6">
+        {/* <div className="flex flex-row gap-6">
           <ExportToExcel
             callback={downloadUserList}
             loading={loadingDownload}
@@ -278,7 +279,7 @@ const User: FC<IUserProps> = ({
               <div className="font-medium text-md text-[#5B69E6]">Thêm mới</div>
             </Button>
           )}
-        </div>
+        </div> */}
       </div>
       <Divider />
       <div className="flex justify-between flex-col">

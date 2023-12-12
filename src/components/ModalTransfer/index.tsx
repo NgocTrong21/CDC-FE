@@ -126,14 +126,13 @@ const ModalTransfer = (props: any) => {
         >
           <DatePicker className="date" />
         </Form.Item>
-        <Form.Item
+        {/* <Form.Item
           className="fileUploadInput"
           name="file"
           label="Tài liệu đính kèm"
         >
           <Input type="file" onChange={(e: any) => handleChangeFile(e)} />
-        </Form.Item>
-        
+        </Form.Item> */}
         <Form.Item label="Ghi chú" name="note">
           <TextArea placeholder="Nhập ghi chú" className="input" />
         </Form.Item>

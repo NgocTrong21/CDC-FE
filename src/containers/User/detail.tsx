@@ -46,6 +46,7 @@ const DetailUser = () => {
             department_id: user.department_id,
           });
         }
+        setImage(user?.image)
       })
       .catch();
   };
@@ -53,7 +54,10 @@ const DetailUser = () => {
   const onFinish = (values: any) => {
     setLoading(true);
     userApi
-      .update(values)
+      .update({
+        ...values,
+        image
+      })
       .then((res) => {
         const { success } = res.data;
         if (success) {
@@ -167,9 +171,8 @@ const DetailUser = () => {
               <Button
                 htmlType="submit"
                 loading={loading}
-                className={`button-primary ${
-                  checkPermission(permissions.USER_UPDATE) ? '' : 'hidden'
-                }`}
+                className={`button-primary ${checkPermission(permissions.USER_UPDATE) ? '' : 'hidden'
+                  }`}
               >
                 Cập nhật
               </Button>
@@ -197,38 +200,58 @@ const DetailUser = () => {
               <Button
                 htmlType="submit"
                 loading={loading}
-                className={`button-primary ${
-                  checkPermission(permissions.USER_UPDATE) ? '' : 'hidden'
-                }`}
+                className={`button-primary ${checkPermission(permissions.USER_UPDATE) ? '' : 'hidden'
+                  }`}
               >
                 Cập nhật
               </Button>
             </Form.Item>
           </div>
         )}
-
-        <div className="basis-1/3 mt-4 flex flex-col items-center">
-          <div className="text-center mb-4">Ảnh đại diện</div>
-          <div className="preview-content">
-            <input
-              type="file"
-              hidden
-              className="form-control"
-              id="inputImage"
-              onChange={(e: any) => handleChangeImg(e)}
+        <div className="flex flex-col gap-4 items-center basis-1/4 ">
+          <div className="text-center leading-9 ">Ảnh đại diện</div>
+          {selectedImage === '' ? (
+            <img
+              src={image ? image : ava}
+              alt="Ảnh đại diện"
+              className="w-52 h-52 rounded-lg object-contain"
             />
-            <label className="text-center" htmlFor="inputImage">
-              {image === '' ? (
-                <img src={ava} alt="ava" className="w-52 h-52" />
-              ) : (
-                <div
-                  className="w-52 h-52 bg-center bg-no-repeat bg-cover"
-                  style={{ backgroundImage: `url(${selectedImage})` }}
-                ></div>
-              )}
-            </label>
-          </div>
+          ) : (
+            <div
+              className="w-52 h-52 rounded-lg bg-center bg-no-repeat bg-contain"
+              style={{ backgroundImage: `url(${selectedImage})` }}
+            ></div>
+          )}
+          <div className="mt-6">Thay đổi ảnh đại diện</div>
+          <input
+            type="file"
+            className="block file:bg-violet-100 file:text-violet-700 text-slate-500 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold hover:file:bg-violet-200"
+            id="inputImage"
+            onChange={(e: any) => handleChangeImg(e)}
+          />
         </div>
+        {/* <div className="flex flex-col gap-4 items-center basis-1/4 ">
+          <div className="text-center leading-9 ">Ảnh đại diện</div>
+          {selectedImage === '' ? (
+            <img
+              src={image ? image : ava}
+              alt="Ảnh đại diện"
+              className="w-52 h-52 rounded-lg object-contain"
+            />
+          ) : (
+            <div
+              className="w-52 h-52 rounded-lg bg-center bg-no-repeat bg-cover"
+              style={{ backgroundImage: `url(${selectedImage})` }}
+            ></div>
+          )}
+          <div className="mt-6">Thay đổi ảnh đại diện</div>
+          <input
+            type="file"
+            className="block file:bg-violet-100 file:text-violet-700 text-slate-500 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold hover:file:bg-violet-200"
+            id="inputImage"
+            onChange={(e: any) => handleChangeImg(e)}
+          />
+        </div> */}
       </div>
     </div>
   );
