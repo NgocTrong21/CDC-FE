@@ -216,7 +216,7 @@ const Warehouses = () => {
       </div>
       <Divider />
       <div className="flex justify-between flex-col">
-        <div
+        {/* <div
           className="flex flex-row gap-4 items-center mb-4"
           onClick={() => setIsShowCustomTable(!isShowCustomTable)}
         >
@@ -224,7 +224,7 @@ const Warehouses = () => {
           <div className="font-medium text-center cursor-pointer text-base">
             Tùy chọn trường hiển thị
           </div>
-        </div>
+        </div> */}
         {isShowCustomTable && (
           <div className="flex flex-row gap-4">
             {columnTable.length > 0 &&

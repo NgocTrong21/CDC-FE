@@ -73,6 +73,7 @@ const Department = () => {
       render: (item: any) => (
         <img src={item || image} alt="logo" className="w-20 h-20" />
       ),
+      width: 80,
     },
     {
       title: 'Tên hiển thị',
@@ -80,6 +81,7 @@ const Department = () => {
       key: 'name',
       show: true,
       widthExcel: 30,
+      width: 120,
     },
     {
       title: 'Số điện thoại',
@@ -87,6 +89,7 @@ const Department = () => {
       dataIndex: 'phone',
       show: true,
       widthExcel: 20,
+      width: 100,
     },
     {
       title: 'Email',
@@ -94,6 +97,7 @@ const Department = () => {
       dataIndex: 'email',
       show: true,
       widthExcel: 40,
+      width: 120,
     },
     {
       title: 'Địa chỉ',
@@ -101,12 +105,14 @@ const Department = () => {
       dataIndex: 'address',
       show: true,
       widthExcel: 20,
+      width: 100,
     },
     {
       title: 'Trưởng khoa',
       key: 'head',
       show: true,
       widthExcel: 40,
+      width: 100,
       render: (item: any) => {
         const user = item?.Users?.find(
           (user: any) => user?.Role?.id === 6 || user?.Role?.id === 7
@@ -129,6 +135,7 @@ const Department = () => {
     {
       title: 'Tác vụ',
       key: 'action',
+      width: 50,
       show:
         checkPermission(permissions.DEPARTMENT_UPDATE) ||
         checkPermission(permissions.DEPARTMENT_DELETE) ||
@@ -147,8 +154,8 @@ const Department = () => {
           <Tooltip
             title="Xóa"
             className={`${checkPermission(permissions.DEPARTMENT_DELETE)
-                ? 'button-primary'
-                : 'hidden'
+              ? ''
+              : 'hidden'
               }`}
           >
             <Popconfirm
@@ -157,7 +164,11 @@ const Department = () => {
               okText="Xóa"
               cancelText="Hủy"
             >
-              <DeleteFilled />
+              <DeleteFilled
+                className={
+                  checkPermission(permissions.DEPARTMENT_DELETE) ? '' : 'hidden'
+                }
+              />
             </Popconfirm>
           </Tooltip>
         </div>
@@ -261,9 +272,9 @@ const Department = () => {
           )}
         </div>
       </div>
-      <Divider />
+      {/* <Divider /> */}
       <div className="flex justify-between flex-col">
-        <div
+        {/* <div
           className="flex flex-row gap-4 items-center mb-4"
           onClick={() => setIsShowCustomTable(!isShowCustomTable)}
         >
@@ -271,7 +282,7 @@ const Department = () => {
           <div className="font-medium text-center cursor-pointer text-base">
             Tùy chọn trường hiển thị
           </div>
-        </div>
+        </div> */}
         {isShowCustomTable && (
           <div className="flex flex-row gap-4">
             {columnTable.length > 0 &&
@@ -316,6 +327,7 @@ const Department = () => {
         footer={() => <TableFooter paginationProps={pagination} />}
         pagination={false}
         loading={loading}
+        scroll={{ x: 1500, y: 580 }}
       />
     </div>
   );

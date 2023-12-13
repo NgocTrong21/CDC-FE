@@ -141,7 +141,7 @@ const DetailDepartment = () => {
   };
 
   const onFinish = (values: any) => {
-    const data = { ...values, prevHeadId: headId };
+    const data = { ...values, prevHeadId: headId, image };
     setLoadingUpdate(true);
     departmentApi
       .update(data)

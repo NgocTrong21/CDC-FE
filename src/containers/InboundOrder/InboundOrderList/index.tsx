@@ -107,17 +107,20 @@ const InboundOrderList = () => {
       dataIndex: 'code',
       show: true,
       widthExcel: 30,
+      width: 80,
     },
     {
       title: 'Trạng thái',
       show: true,
       widthExcel: 30,
-      render: (_item: any, record: any) => record.Order_Note_Status.name
+      render: (_item: any, record: any) => record.Order_Note_Status.name,
+      width: 100,
     },
     {
       title: 'Ngày tạo',
       show: true,
       widthExcel: 30,
+      width: 100,
       render: (_item: any, record: any) => moment(new Date(record.createdAt)).format('DD/MM/YYYY')
     },
     {
@@ -126,11 +129,13 @@ const InboundOrderList = () => {
       show: true,
       dataIndex: 'provider',
       widthExcel: 30,
+      width: 100,
     },
     {
       title: 'Kho hàng',
       show: true,
       widthExcel: 30,
+      width: 100,
       render: (_item: any, record: any) => record.Warehouse.name
     },
     {
@@ -139,11 +144,13 @@ const InboundOrderList = () => {
       key: 'deliver',
       show: true,
       widthExcel: 30,
+      width: 100,
     },
     {
       title: 'Tác vụ',
       key: 'action',
       show: true,
+      width: 100,
       render: (item: any) => (
         <Menu className="flex flex-row items-center">
           {item?.status_id === 1 && (
@@ -168,7 +175,7 @@ const InboundOrderList = () => {
               </Link>
             </Tooltip>
           </Menu.Item>
-          <Menu.Item
+          {/* <Menu.Item
             key="delete"
             className={`${checkPermission(permissions.INBOUND_ORDERS_DELETE) ? '' : 'hidden'
               }`}
@@ -185,7 +192,7 @@ const InboundOrderList = () => {
                 <DeleteFilled />
               </Popconfirm>
             </Tooltip>
-          </Menu.Item>
+          </Menu.Item> */}
         </Menu>
       ),
     },
@@ -237,8 +244,8 @@ const InboundOrderList = () => {
         <div className="title">DANH SÁCH PHIẾU NHẬP</div>
       </div>
       <Divider />
-      <div className="flex justify-between">
-        <div
+      <div className="flex gap-10">
+        {/* <div
           className="flex flex-row gap-4 items-center mb-4"
           onClick={() => setIsShowCustomTable(!isShowCustomTable)}
         >
@@ -246,7 +253,14 @@ const InboundOrderList = () => {
           <div className="font-medium text-center cursor-pointer text-base">
             Tùy chọn trường hiển thị
           </div>
-        </div>
+        </div> */}
+        <Input
+          placeholder="Tìm kiếm phiếu (nhập số phiếu)"
+          allowClear
+          value={name}
+          className="rounded-lg h-9 border-[#A3ABEB] border-2"
+          onChange={(e) => onChangeSearch(e)}
+        />
         <Button
           className={`button_excel ${checkPermission(permissions.INBOUND_ORDERS_CREATE) ? '' : 'hidden'}`}
           onClick={() => {
@@ -275,13 +289,6 @@ const InboundOrderList = () => {
             ))}
         </div>
       )}
-      <Input
-        placeholder="Tìm kiếm phiếu (nhập số phiếu)"
-        allowClear
-        value={name}
-        className="rounded-lg h-9 border-[#A3ABEB] border-2"
-        onChange={(e) => onChangeSearch(e)}
-      />
       <Table
         columns={columnTable.filter((item: any) => item.show)}
         dataSource={inboundOrders}
@@ -289,6 +296,7 @@ const InboundOrderList = () => {
         footer={() => <TableFooter paginationProps={pagination} />}
         pagination={false}
         loading={loading}
+        scroll={{ x: 1000, y: 580 }}
       />
     </div>
   );

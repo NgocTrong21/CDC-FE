@@ -121,7 +121,7 @@ const InboundOrderCreate = () => {
         supplierName: selectedItem?.name,
         unitPrice: selectedItem?.unit_price,
         description: selectedItem?.note,
-        unit: selectedItem?.unit,
+        unit: selectedItem?.Equipment_Unit?.name,
       });
 
       setDataSource(listData);
@@ -365,7 +365,7 @@ const InboundOrderCreate = () => {
                     render={(value, record, index) => (
                       <InputNumber
                         style={{
-                          width: '100px',
+                          width: 'w-full',
                         }}
                         onBlur={(e) => {
                           handleChangeOrderQuantity(
@@ -412,7 +412,7 @@ const InboundOrderCreate = () => {
                     key={'totalValue'}
                     render={(value) => (
                       <InputNumber
-                        className='text-black w-fit'
+                        className='text-black w-full'
                         value={parseFloat(value?.toFixed(1))}
                         formatter={(value) =>
                           ` ${value}`

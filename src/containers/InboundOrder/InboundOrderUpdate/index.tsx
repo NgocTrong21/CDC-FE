@@ -167,7 +167,7 @@ const InboundOrderUpdate = () => {
                 supplierName: item.Supply?.name,
                 orderQuantity: item.quantity,
                 unitPrice: item.Supply?.unit_price,
-                unit: item.Supply?.unit,
+                unit: item.Supply?.Equipment_Unit?.name,
                 totalValue: item.quantity * item.Supply?.unit_price || 0,
                 description: item.Supply?.note,
               })
@@ -189,7 +189,7 @@ const InboundOrderUpdate = () => {
         supplierName: selectedItem?.name,
         unitPrice: selectedItem?.unit_price,
         description: selectedItem?.note,
-        unit: selectedItem?.unit,
+        unit: selectedItem?.Equipment_Unit?.name,
       });
       setDataSource(listData);
     }
