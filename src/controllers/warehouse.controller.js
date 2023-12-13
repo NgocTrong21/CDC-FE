@@ -60,7 +60,7 @@ exports.update = async (req, res) => {
   try {
     const { data } = req.body;
     await db.sequelize.transaction(async (t) => {
-      const isHas = await db.Warehouse.findOne({
+      const isHas = await db.Warehouse.findAll({
         where: { id: data?.id },
       });
       if (!isHas) return errorHandler(res, err.WAREHOUSE_NOT_FOUND);
@@ -69,7 +69,7 @@ exports.update = async (req, res) => {
           code: data.code,
         },
       });
-      if (warehouseInDB)
+      if (warehouseInDB?.length > 1)
         return errorHandler(res, err.WAREHOUSE_FIELD_DUPLICATED);
       await db.Warehouse.update(data, {
         where: { id: data?.id },
@@ -106,6 +106,7 @@ exports.search = async (req, res) => {
       filter = {
         ...filter,
         [Op.or]: [{ name: { [Op.like]: `%${name}%` } }],
+        [Op.or]: [{ code: { [Op.like]: `%${name}%` } }],
       };
     }
     let include = [];

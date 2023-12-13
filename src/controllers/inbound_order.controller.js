@@ -7,7 +7,6 @@ const { getList } = require("../utils/query.util");
 exports.create = async (req, res) => {
   try {
     const { data, supplies } = req.body;
-    let inbound_order;
     await db.sequelize.transaction(async (t) => {
       const inboundOrderInDB = await db.Inbound_Order.findOne({
         where: {
@@ -22,7 +21,28 @@ exports.create = async (req, res) => {
           transaction: t,
         }
       );
-      for (const supply of supplies) {
+      let inputSupplies = [];
+      const suppliesId = supplies.map(item => item.supply_id);
+      const itemList = new Set(suppliesId);
+      const realData = Array.from(itemList);
+      for (const dataItem of realData) {
+        const duplicateSupplies = supplies.filter(
+          (item) => item.supply_id === dataItem
+        );
+        if (duplicateSupplies.length > 1) {
+          const quantity = duplicateSupplies.reduce((total, currentValue) => {
+            total = total + currentValue.quantity;
+            return total;
+          }, 0);
+            inputSupplies.push({
+              ...supplies.find(item => item.supply_id === dataItem),
+              quantity
+            });
+        } else {
+          inputSupplies.push(supplies.find(item => item.supply_id === dataItem));
+        }
+      }
+      for (const supply of inputSupplies) {
         await db.Supply_Inbound_Order.create(
           {
             ...supply,
@@ -124,6 +144,9 @@ exports.detail = async (req, res) => {
           include: [
             {
               model: db.Supply,
+              include: [
+                { model: db.Equipment_Unit, attributes: ["id", "name"] },
+              ],
             },
           ],
         },
@@ -159,7 +182,28 @@ exports.update = async (req, res) => {
       await db.Supply_Inbound_Order.destroy({
         where: { inbound_order_id: data?.id },
       });
-      for (const supply of supplies) {
+      let inputSupplies = [];
+      const suppliesId = supplies.map(item => item.supply_id);
+      const itemList = new Set(suppliesId);
+      const realData = Array.from(itemList);
+      for (const dataItem of realData) {
+        const duplicateSupplies = supplies.filter(
+          (item) => item.supply_id === dataItem
+        );
+        if (duplicateSupplies.length > 1) {
+          const quantity = duplicateSupplies.reduce((total, currentValue) => {
+            total = total + currentValue.quantity;
+            return total;
+          }, 0);
+            inputSupplies.push({
+              ...supplies.find(item => item.supply_id === dataItem),
+              quantity
+            });
+        } else {
+          inputSupplies.push(supplies.find(item => item.supply_id === dataItem));
+        }
+      }
+      for (const supply of inputSupplies) {
         await db.Supply_Inbound_Order.create(
           {
             ...supply,

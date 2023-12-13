@@ -163,6 +163,7 @@ exports.detail = async (req, res) => {
           include: [
             {
               model: db.Supply,
+              include: [{ model: db.Equipment_Unit, attributes: ["id", "name"] }]
             },
           ],
         },

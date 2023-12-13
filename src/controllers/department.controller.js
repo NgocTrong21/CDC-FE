@@ -102,13 +102,13 @@ exports.update = async (req, res) => {
               transaction: t,
             }
           ),
-          await db.User.update(
-            { role_id: data?.id === 1 ? 3 : 2 },
-            {
-              where: { id: data?.prevChiefId },
-              transaction: t,
-            }
-          ),
+          // await db.User.update(
+          //   { role_id: data?.id === 1 ? 3 : 2 },
+          //   {
+          //     where: { id: data?.prevChiefId },
+          //     transaction: t,
+          //   }
+          // ),
         ]);
       } else {
         await Promise.all([
@@ -116,13 +116,13 @@ exports.update = async (req, res) => {
             where: { id: data?.id },
             transaction: t,
           }),
-          await db.User.update(
-            { role_id: data?.id === 1 ? 3 : 2 },
-            {
-              where: { id: data?.prevChiefId },
-              transaction: t,
-            }
-          ),
+          // await db.User.update(
+          //   { role_id: data?.id === 1 ? 3 : 2 },
+          //   {
+          //     where: { id: data?.prevChiefId },
+          //     transaction: t,
+          //   }
+          // ),
         ]);
       }
       return successHandler(res, {}, 201);
