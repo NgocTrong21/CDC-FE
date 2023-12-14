@@ -22,6 +22,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { options } from 'utils/globalFunc.util';
+import { formatCurrencyVN } from 'utils/validateFunc.util';
 
 const InboundOrderUpdate = () => {
   const params = useParams();
@@ -416,18 +417,9 @@ const InboundOrderUpdate = () => {
                     title="Đơn giá"
                     dataIndex="unitPrice"
                     key="unitPrice"
-                    render={(value, _record, index) => {
+                    render={(value) => {
                       return (
-                        <InputNumber
-                          value={parseFloat(value?.toFixed(1))}
-                          onChange={(value) => { }}
-                          formatter={(value) =>
-                            ` ${value}`
-                              .replace(/\./, '.')
-                              .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                          }
-                          precision={1}
-                        />
+                        <p>{formatCurrencyVN(value)}</p>
                       );
                     }}
                   />
@@ -436,17 +428,7 @@ const InboundOrderUpdate = () => {
                     dataIndex={'totalValue'}
                     key={'totalValue'}
                     render={(value) => (
-                      <InputNumber
-                        className='w-fit text-black'
-                        value={parseFloat(value?.toFixed(1))}
-                        formatter={(value) =>
-                          ` ${value}`
-                            .replace(/\./, '.')
-                            .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                        }
-                        precision={1}
-                        disabled
-                      />
+                      <p>{formatCurrencyVN(value)}</p>
                     )}
                   />
                   <Column

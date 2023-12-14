@@ -292,15 +292,6 @@ const List = () => {
               </Tooltip>
             </Menu.Item>
           )}
-          {item?.Equipment_Status?.id === 7 && (
-            <Menu.Item key="liquidation_word">
-              <Tooltip title="Biên bản thanh lý">
-                <Link to={`/equipment/liquidation_detail/${item?.id}`}>
-                  <FileWordFilled />
-                </Link>
-              </Tooltip>
-            </Menu.Item>
-          )}
           <Menu.Item
             key="delete"
             className={`${checkPermission(permissions.EQUIPMENT_DELETE) ? '' : 'hidden'
@@ -496,31 +487,6 @@ const List = () => {
       </div>
       <Divider />
       <div className="flex justify-between flex-col">
-        {/* <div
-          className="flex flex-row gap-4 items-center mb-4"
-          onClick={() => setIsShowCustomTable(!isShowCustomTable)}
-        >
-          <SelectOutlined />
-          <div className="font-medium text-center cursor-pointer text-base">
-            Tùy chọn trường hiển thị
-          </div>
-        </div>
-        {isShowCustomTable && (
-          <div className="flex flex-row gap-4">
-            {columnTable.length > 0 &&
-              columnTable.map((item: any) => (
-                <div>
-                  <Checkbox
-                    defaultChecked={item?.show}
-                    onChange={(e: any) =>
-                      onChangeCheckbox(item, e, columnTable, setColumnTable)
-                    }
-                  />
-                  <div>{item?.title}</div>
-                </div>
-              ))}
-          </div>
-        )} */}
         <div className="flex-between-center gap-4 p-4">
           <Select
             showSearch
@@ -582,7 +548,7 @@ const List = () => {
         footer={() => <TableFooter paginationProps={pagination} />}
         pagination={false}
         loading={loading}
-        scroll={{ x: 2800, y: 580 }}
+        scroll={{ x: 2900, y: 580 }}
       />
       <ModalReport
         showReportModal={showReportModal}

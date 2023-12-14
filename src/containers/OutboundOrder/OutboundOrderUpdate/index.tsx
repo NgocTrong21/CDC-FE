@@ -21,6 +21,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { options } from 'utils/globalFunc.util';
+import { formatCurrencyVN } from 'utils/validateFunc.util';
 
 const OutboundOrderUpdate = () => {
   const params = useParams();
@@ -44,6 +45,7 @@ const OutboundOrderUpdate = () => {
       unitPrice: 0,
       totalValue: 0,
       description: '',
+      stock: 0
     };
     setDataSource([...dataSource, defaultValue]);
   };
@@ -109,7 +111,7 @@ const OutboundOrderUpdate = () => {
             }
           });
       }
-    } catch (error) {}
+    } catch (error) { }
   };
   const seachWarehouses = () => {
     warehouseApi
@@ -157,9 +159,10 @@ const OutboundOrderUpdate = () => {
                 supplierName: item.Supply?.name,
                 orderQuantity: item.quantity,
                 unitPrice: item.Supply?.unit_price,
-                unit: item.Supply?.unit,
+                unit: item.Supply?.Equipment_Unit?.name,
                 totalValue: item.quantity * item.Supply?.unit_price || 0,
                 description: item.Supply?.note,
+                stock: item?.stock
               })
             )
           );
@@ -180,7 +183,8 @@ const OutboundOrderUpdate = () => {
         supplierName: selectedItem?.name,
         unitPrice: selectedItem?.unit_price,
         description: selectedItem?.note,
-        unit: selectedItem?.unit,
+        unit: selectedItem?.Equipment_Unit?.name,
+        stock: selectedItem?.quantity
       });
       setDataSource(listData);
     }
@@ -189,7 +193,6 @@ const OutboundOrderUpdate = () => {
   const handleChangeOrderQuantity = (
     value: number,
     index: number,
-    record: any
   ) => {
     const actualIndex = (currentPage - 1) * pageSize + index;
     const listData = [...dataSource];
@@ -213,7 +216,7 @@ const OutboundOrderUpdate = () => {
       .then((res: any) => {
         const { success, data } = res.data;
         if (success) {
-          const dataSupplies = data.supplies.map((item: any) => item.Supply);
+          const dataSupplies = data.supplies.map((item: any) => ({ ...item.Supply, quantity: item.quantity }));
           setSupplies(dataSupplies);
         }
       })
@@ -378,19 +381,17 @@ const OutboundOrderUpdate = () => {
                     title="Số lượng đặt hàng"
                     dataIndex={'orderQuantity'}
                     key={'orderQuantity'}
-                    width="20%"
+                    width="15%"
                     render={(value, record, index) => (
                       <InputNumber
-                        style={{
-                          width: '100px',
-                        }}
+                        className='w-full'
+                        min={1}
                         onBlur={(e) => {
                           handleChangeOrderQuantity(
                             Math.round(
                               parseFloat(e.target.value.replaceAll(',', ''))
                             ) as unknown as number,
                             index,
-                            record
                           );
                         }}
                         formatter={(value) => {
@@ -405,21 +406,22 @@ const OutboundOrderUpdate = () => {
                     )}
                   />
                   <Column
+                    title="Tồn kho"
+                    dataIndex="stock"
+                    key="stock"
+                    render={(value) => {
+                      return (
+                        <p>{value}</p>
+                      );
+                    }}
+                  />
+                  <Column
                     title="Đơn giá"
                     dataIndex="unitPrice"
                     key="unitPrice"
-                    render={(value, _record, index) => {
+                    render={(value) => {
                       return (
-                        <InputNumber
-                          value={parseFloat(value?.toFixed(1))}
-                          onChange={(value) => {}}
-                          formatter={(value) =>
-                            ` ${value}`
-                              .replace(/\./, '.')
-                              .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                          }
-                          precision={1}
-                        />
+                        <p>{formatCurrencyVN(value)}</p>
                       );
                     }}
                   />
@@ -428,17 +430,7 @@ const OutboundOrderUpdate = () => {
                     dataIndex={'totalValue'}
                     key={'totalValue'}
                     render={(value) => (
-                      <InputNumber
-                        className="text-black"
-                        value={parseFloat(value?.toFixed(1))}
-                        formatter={(value) =>
-                          ` ${value}`
-                            .replace(/\./, '.')
-                            .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                        }
-                        precision={1}
-                        disabled
-                      />
+                      <p>{formatCurrencyVN(value)}</p>
                     )}
                   />
                   <Column

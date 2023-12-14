@@ -22,36 +22,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { options } from 'utils/globalFunc.util';
-
-const mockDataSuppliers = [
-  {
-    key: 1,
-    supplierCode: 'code',
-    supplierName: 'name',
-    orderQuantity: 10,
-    unitPrice: 10,
-    totalValue: 20000,
-    description: 'note',
-  },
-  {
-    key: 2,
-    supplierCode: 'code',
-    supplierName: 'name',
-    orderQuantity: 10,
-    unitPrice: 10,
-    totalValue: 20000,
-    description: 'note',
-  },
-  {
-    key: 3,
-    supplierCode: 'code',
-    supplierName: 'name',
-    orderQuantity: 10,
-    unitPrice: 10,
-    totalValue: 20000,
-    description: 'note',
-  },
-];
+import { formatCurrencyVN } from 'utils/validateFunc.util';
 
 const OutboundOrderCreate = () => {
   const count = useRef(1);
@@ -64,6 +35,7 @@ const OutboundOrderCreate = () => {
       supplierName: '',
       orderQuantity: 0,
       unitPrice: 0,
+      stock: 0,
       totalValue: 0,
       description: '',
     },
@@ -99,6 +71,7 @@ const OutboundOrderCreate = () => {
       unitPrice: 0,
       totalValue: 0,
       description: '',
+      stock: 0
     };
     setDataSource([...dataSource, defaultValue]);
   };
@@ -139,7 +112,8 @@ const OutboundOrderCreate = () => {
         supplierName: selectedItem?.name,
         unitPrice: selectedItem?.unit_price,
         description: selectedItem?.note,
-        unit: selectedItem?.unit,
+        unit: selectedItem?.Equipment_Unit?.name,
+        stock: selectedItem?.quantity
       });
 
       setDataSource(listData);
@@ -153,7 +127,7 @@ const OutboundOrderCreate = () => {
         if (success) {
           const dataSupplies = data.supplies
             .filter((item: any) => item.quantity > 0)
-            .map((item: any) => item.Supply);
+            .map((item: any) => ({ ...item.Supply, quantity: item.quantity }));
           setSupplies(dataSupplies);
         }
       })
@@ -162,11 +136,15 @@ const OutboundOrderCreate = () => {
   const handleChangeOrderQuantity = (
     value: number,
     index: number,
-    record: any
   ) => {
     const actualIndex = (currentPage - 1) * pageSize + index;
     const listData = [...dataSource];
-    const orderQuantity = value || 0;
+    let orderQuantity
+    if (value > 0) {
+      orderQuantity = value;
+    } else {
+      orderQuantity = 1;
+    }
     const unitValue = listData[actualIndex]?.unitPrice as number;
     const totalValue = orderQuantity * unitValue || 0;
     listData[actualIndex] = {
@@ -195,7 +173,7 @@ const OutboundOrderCreate = () => {
             },
             supplies: dataSource?.map((item: any) => ({
               supply_id: item?.id,
-              quantity: parseInt(item?.orderQuantity) || 0,
+              quantity: parseInt(item?.orderQuantity) || 1,
             })),
           })
           .then((res) => {
@@ -211,7 +189,7 @@ const OutboundOrderCreate = () => {
             toast.error(error.response.data.message);
           });
       }
-    } catch (error) {}
+    } catch (error) { }
   };
   return (
     <Layout>
@@ -378,19 +356,16 @@ const OutboundOrderCreate = () => {
                     title="Số lượng đặt hàng"
                     dataIndex={'orderQuantity'}
                     key={'orderQuantity'}
-                    width="20%"
-                    render={(value, record, index) => (
+                    width="15%"
+                    render={(value, _record, index) => (
                       <InputNumber
-                        style={{
-                          width: '100px',
-                        }}
+                        className='w-full'
                         onBlur={(e) => {
                           handleChangeOrderQuantity(
                             Math.round(
                               parseFloat(e.target.value.replaceAll(',', ''))
                             ) as unknown as number,
                             index,
-                            record
                           );
                         }}
                         formatter={(value) => {
@@ -405,21 +380,22 @@ const OutboundOrderCreate = () => {
                     )}
                   />
                   <Column
+                    title="Tồn kho"
+                    dataIndex="stock"
+                    key="stock"
+                    render={(value) => {
+                      return (
+                        <p>{value}</p>
+                      );
+                    }}
+                  />
+                  <Column
                     title="Đơn giá"
                     dataIndex="unitPrice"
                     key="unitPrice"
-                    render={(value, _record, index) => {
+                    render={(value, _record) => {
                       return (
-                        <InputNumber
-                          value={parseFloat(value?.toFixed(1))}
-                          onChange={(value) => {}}
-                          formatter={(value) =>
-                            ` ${value}`
-                              .replace(/\./, '.')
-                              .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                          }
-                          precision={1}
-                        />
+                        <p>{formatCurrencyVN(value)}</p>
                       );
                     }}
                   />
@@ -428,16 +404,7 @@ const OutboundOrderCreate = () => {
                     dataIndex={'totalValue'}
                     key={'totalValue'}
                     render={(value) => (
-                      <InputNumber
-                        value={parseFloat(value?.toFixed(1))}
-                        formatter={(value) =>
-                          ` ${value}`
-                            .replace(/\./, '.')
-                            .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                        }
-                        precision={1}
-                        disabled
-                      />
+                      <p>{formatCurrencyVN(value)}</p>
                     )}
                   />
                   <Column

@@ -196,16 +196,6 @@ const DetailUser = () => {
               <p>Địa chỉ:</p>
               <p>{detailUser?.address}</p>
             </div>
-            <Form.Item>
-              <Button
-                htmlType="submit"
-                loading={loading}
-                className={`button-primary ${checkPermission(permissions.USER_UPDATE) ? '' : 'hidden'
-                  }`}
-              >
-                Cập nhật
-              </Button>
-            </Form.Item>
           </div>
         )}
         <div className="flex flex-col gap-4 items-center basis-1/4 ">

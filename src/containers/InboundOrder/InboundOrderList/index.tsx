@@ -1,28 +1,17 @@
 import { useContext, useEffect, useState } from 'react';
 import {
-  ExclamationCircleFilled,
-  DeleteFilled,
   EditFilled,
-  FileWordFilled,
   EyeFilled,
-  FilterFilled,
-  SelectOutlined,
-  ImportOutlined,
-  RightCircleFilled,
-  PlusSquareFilled,
-  RetweetOutlined,
   PlusCircleFilled,
 } from '@ant-design/icons';
 import {
   Button,
   Divider,
   Input,
-  Select,
   Table,
   Menu,
   Row,
   Pagination,
-  Popconfirm,
   Tooltip,
   Checkbox,
 } from 'antd';
@@ -30,13 +19,10 @@ import useDebounce from 'hooks/useDebounce';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { NotificationContext } from 'contexts/notification.context';
-import ModalHandover from 'components/ModalHandover';
-import ModalReport from 'components/ModalReport';
 import {
   checkPermission,
   onChangeCheckbox,
 } from 'utils/globalFunc.util';
-import ModalTransfer from 'components/ModalTransfer';
 import { permissions } from 'constants/permission.constant';
 import type { PaginationProps } from 'antd';
 import inboundOrderApi from 'api/inbound_order';
@@ -54,8 +40,6 @@ const TableFooter = ({ paginationProps }: any) => {
 const InboundOrderList = () => {
   const [inboundOrders, setInboundOrders] = useState<any>();
   const navigate = useNavigate();
-  const { increaseCount, getAllNotifications } =
-    useContext(NotificationContext);
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState<any>({});
   let searchQueryString: string;
@@ -66,9 +50,6 @@ const InboundOrderList = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [name, setName] = useState<string>('');
   const nameSearch = useDebounce(name, 500);
-  const [showHandoverModal, setShowHandoverModal] = useState<boolean>(false);
-  const [showReportModal, setShowReportModal] = useState<boolean>(false);
-  const [showTransferModal, setShowTransferModal] = useState<boolean>(false);
   const [isShowCustomTable, setIsShowCustomTable] = useState<boolean>(false);
 
   const onShowSizeChange: PaginationProps['onShowSizeChange'] = (

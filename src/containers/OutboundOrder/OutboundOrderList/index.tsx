@@ -269,6 +269,7 @@ const OutboundOrderList = () => {
         footer={() => <TableFooter paginationProps={pagination} />}
         pagination={false}
         loading={loading}
+        scroll={{ x: 1000, y: 580 }}
       />
     </div>
   );

@@ -1,7 +1,6 @@
 import {
   Button,
   Col,
-  DatePicker,
   Form,
   Input,
   InputNumber,
@@ -15,24 +14,21 @@ import {
 } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
 import outboundOrderApi from 'api/outbound_order';
-import supplyApi from 'api/suplly.api';
 import warehouseApi from 'api/warehouse.api';
 import moment from 'moment';
-import { useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams, useRoutes } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { options } from 'utils/globalFunc.util';
+import { formatCurrencyVN } from 'utils/validateFunc.util';
 
 const OutboundOrderDetail = () => {
   const params = useParams();
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const { id } = params;
-  const count = useRef(1);
   const { Column } = Table;
   const [dataSource, setDataSource] = useState<any[]>([]);
-  const [selectedItems, setSelectedItems] = useState<number[]>([]);
-  const [supllies, setSupplies] = useState<any>([]);
   const [warehouses, setWarehouses] = useState([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
@@ -76,9 +72,10 @@ const OutboundOrderDetail = () => {
             supplierName: item.Supply?.name,
             orderQuantity: item.quantity,
             unitPrice: item.Supply?.unit_price,
-            unit: item.Supply?.unit,
+            unit: item.Supply?.Equipment_Unit?.name,
             totalValue: item.quantity * item.Supply?.unit_price || 0,
             description: item.Supply?.note,
+            stock: item?.stock
           })));
         }
       })
@@ -97,10 +94,16 @@ const OutboundOrderDetail = () => {
         id,
         status: type,
       }
-    }).then(() => {
-      toast.success('Phê duyệt thành công');
-    }).catch(() => {
-      toast.error('Phê duyệt thất bại!');
+    }).then((res) => {
+      const { message, success } = res.data;
+      if (success) {
+        navigate('/order/outbound_order');
+        toast.success('Phê duyệt thành công');
+      } else {
+        toast.error(message || 'Phê duyệt thất bại!');
+      }
+    }).catch((error) => {
+      toast.error(error.response.data.message || 'Phê duyệt thất bại!');
     });
   }
   return (
@@ -214,42 +217,28 @@ const OutboundOrderDetail = () => {
                     title="Số lượng đặt hàng"
                     dataIndex={'orderQuantity'}
                     key={'orderQuantity'}
-                    width="20%"
+                    width="15%"
                     render={(value) => (
-                      <InputNumber
-                        disabled
-                        style={{
-                          width: '100px',
-                        }}
-                        formatter={(value) => {
-                          return `${value}`.replace(
-                            /\B(?=(\d{3})+(?!\d))/g,
-                            ','
-                          );
-                        }}
-                        value={value}
-                        precision={0}
-                        className='text-black'
-                      />
+                      <p>{value}</p>
                     )}
+                  />
+                  <Column
+                    title="Tồn kho"
+                    dataIndex="stock"
+                    key="stock"
+                    render={(value) => {
+                      return (
+                        <p>{value}</p>
+                      );
+                    }}
                   />
                   <Column
                     title="Đơn giá"
                     dataIndex="unitPrice"
                     key="unitPrice"
-                    render={(value, _record) => {
+                    render={(value) => {
                       return (
-                        <InputNumber
-                          disabled
-                          value={parseFloat(value?.toFixed(1))}
-                          formatter={(value) =>
-                            ` ${value}`
-                              .replace(/\./, '.')
-                              .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                          }
-                          precision={1}
-                          className='text-black'
-                        />
+                        <p>{formatCurrencyVN(value)}</p>
                       );
                     }}
                   />
@@ -258,17 +247,7 @@ const OutboundOrderDetail = () => {
                     dataIndex={'totalValue'}
                     key={'totalValue'}
                     render={(value) => (
-                      <InputNumber
-                        value={parseFloat(value?.toFixed(1))}
-                        formatter={(value) =>
-                          ` ${value}`
-                            .replace(/\./, '.')
-                            .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                        }
-                        precision={1}
-                        disabled
-                        className='text-black'
-                      />
+                      <p>{formatCurrencyVN(value)}</p>
                     )}
                   />
                   <Column

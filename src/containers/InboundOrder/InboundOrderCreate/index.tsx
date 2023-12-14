@@ -21,6 +21,7 @@ import moment from 'moment';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { formatCurrencyVN } from 'utils/validateFunc.util';
 
 const InboundOrderCreate = () => {
   const count = useRef(1);
@@ -367,6 +368,7 @@ const InboundOrderCreate = () => {
                         style={{
                           width: 'w-full',
                         }}
+                        min={1}
                         onBlur={(e) => {
                           handleChangeOrderQuantity(
                             Math.round(
@@ -382,7 +384,6 @@ const InboundOrderCreate = () => {
                             ','
                           );
                         }}
-                        value={value}
                         precision={0}
                       />
                     )}
@@ -391,18 +392,9 @@ const InboundOrderCreate = () => {
                     title="Đơn giá"
                     dataIndex="unitPrice"
                     key="unitPrice"
-                    render={(value, _record, index) => {
+                    render={(value) => {
                       return (
-                        <InputNumber
-                          value={parseFloat(value?.toFixed(1))}
-                          onChange={(value) => { }}
-                          formatter={(value) =>
-                            ` ${value}`
-                              .replace(/\./, '.')
-                              .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                          }
-                          precision={1}
-                        />
+                        <p>{formatCurrencyVN(value)}</p>
                       );
                     }}
                   />
@@ -411,17 +403,7 @@ const InboundOrderCreate = () => {
                     dataIndex={'totalValue'}
                     key={'totalValue'}
                     render={(value) => (
-                      <InputNumber
-                        className='text-black w-full'
-                        value={parseFloat(value?.toFixed(1))}
-                        formatter={(value) =>
-                          ` ${value}`
-                            .replace(/\./, '.')
-                            .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                        }
-                        precision={1}
-                        disabled
-                      />
+                      <p>{formatCurrencyVN(value)}</p>
                     )}
                   />
                   <Column

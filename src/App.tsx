@@ -67,6 +67,7 @@ import ReportSupplyByWarehouse from 'containers/ReportSupplyByWarehouse';
 import EquipmentUnit from 'containers/Category/Equipment_Unit';
 import CreateEquipmentUnit from 'containers/Category/Equipment_Unit/create';
 import DetailEquipmentUnit from 'containers/Category/Equipment_Unit/detail';
+import DetailWarehouse from 'containers/Warehouse/DetailWarehouse';
 
 const TRACKING_ID = process.env.REACT_APP_TRACKING_ID || '';
 ReactGA.initialize(TRACKING_ID);
@@ -472,6 +473,14 @@ const App = () => {
             element={
               <PrivateRoute permission={permissions.WAREHOUSES_MANAGEMENT_UPDATE}>
                 <UpdateWarehouse />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/warehouses/detail_warehouse/:id"
+            element={
+              <PrivateRoute permission={permissions.WAREHOUSES_MANAGEMENT_READ}>
+                <DetailWarehouse />
               </PrivateRoute>
             }
           />

@@ -21,6 +21,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { getCurrentUser, options } from 'utils/globalFunc.util';
+import { formatCurrencyVN } from 'utils/validateFunc.util';
 
 const InboundOrderDetail = () => {
   const params = useParams();
@@ -221,40 +222,16 @@ const InboundOrderDetail = () => {
                     key={'orderQuantity'}
                     width="20%"
                     render={(value) => (
-                      <InputNumber
-                        disabled
-                        style={{
-                          width: '100px',
-                        }}
-                        formatter={(value) => {
-                          return `${value}`.replace(
-                            /\B(?=(\d{3})+(?!\d))/g,
-                            ','
-                          );
-                        }}
-                        value={value}
-                        precision={0}
-                        className='text-black'
-                      />
+                      <p>{value}</p>
                     )}
                   />
                   <Column
                     title="Đơn giá"
                     dataIndex="unitPrice"
                     key="unitPrice"
-                    render={(value, _record) => {
+                    render={(value) => {
                       return (
-                        <InputNumber
-                          disabled
-                          value={parseFloat(value?.toFixed(1))}
-                          formatter={(value) =>
-                            ` ${value}`
-                              .replace(/\./, '.')
-                              .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                          }
-                          precision={1}
-                          className='text-black'
-                        />
+                        <p>{formatCurrencyVN(value)}</p>
                       );
                     }}
                   />
@@ -263,17 +240,7 @@ const InboundOrderDetail = () => {
                     dataIndex={'totalValue'}
                     key={'totalValue'}
                     render={(value) => (
-                      <InputNumber
-                        value={parseFloat(value?.toFixed(1))}
-                        formatter={(value) =>
-                          ` ${value}`
-                            .replace(/\./, '.')
-                            .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-                        }
-                        precision={1}
-                        disabled
-                        className='text-black'
-                      />
+                      <p>{formatCurrencyVN(value)}</p>
                     )}
                   />
                   <Column

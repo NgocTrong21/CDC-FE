@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import {
   DeleteFilled,
   EditFilled,
+  EyeFilled,
   FilterFilled,
   SelectOutlined,
 } from '@ant-design/icons';
@@ -136,16 +137,13 @@ const Warehouses = () => {
               </Link>
             </Tooltip>
           }
-          {/* <Tooltip title="Xóa">
-            <Popconfirm
-              title="Bạn muốn xóa kho này?"
-              onConfirm={() => { handleDelete(item.id) }}
-              okText="Xóa"
-              cancelText="Hủy"
-            >
-              <DeleteFilled />
-            </Popconfirm>
-          </Tooltip> */}
+          {checkPermission(permissions.WAREHOUSES_MANAGEMENT_READ) && (
+            <Tooltip title="Hồ sơ vật tư">
+              <Link to={`/warehouses/detail_warehouse/${item.id}`}>
+                <EyeFilled />
+              </Link>
+            </Tooltip>
+          )}
         </div>
       ),
     },
