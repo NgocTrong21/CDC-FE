@@ -347,7 +347,7 @@ module.exports.QUANTITY_NOT_ENOUGH = {
   status: 400,
   success: false,
   data: null,
-  message: "Số lượng vật tư trên hệ thống không đủ",
+  message: "Số lượng tồn kho vật tư không đủ",
   code: 1037,
   messageCode: "QUANTITY_NOT_ENOUGH",
 };

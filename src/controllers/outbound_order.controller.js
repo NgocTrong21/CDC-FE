@@ -5,7 +5,6 @@ const { Op } = require("sequelize");
 const { getList } = require("../utils/query.util");
 
 exports.create = async (req, res) => {
-  debugger;
   try {
     await db.sequelize.transaction(async (t) => {
       const { data, supplies } = req?.body;
@@ -54,7 +53,28 @@ exports.create = async (req, res) => {
             transaction: t,
           }
         );
-        for (const supply of supplies) {
+        let inputSupplies = [];
+        const suppliesId = supplies.map(item => item.supply_id);
+        const itemList = new Set(suppliesId);
+        const realData = Array.from(itemList);
+        for (const dataItem of realData) {
+          const duplicateSupplies = supplies.filter(
+            (item) => item.supply_id === dataItem
+          );
+          if (duplicateSupplies.length > 1) {
+            const quantity = duplicateSupplies.reduce((total, currentValue) => {
+              total = total + currentValue.quantity;
+              return total;
+            }, 0);
+            inputSupplies.push({
+              ...supplies.find(item => item.supply_id === dataItem),
+              quantity
+            });
+          } else {
+            inputSupplies.push(supplies.find(item => item.supply_id === dataItem));
+          }
+        }
+        for (const supply of inputSupplies) {
           await db.Supply_Outbound_Order.create(
             {
               ...supply,
@@ -170,8 +190,21 @@ exports.detail = async (req, res) => {
       ],
       raw: false,
     });
+    const supplies = await db.Warehouse_Supply.findAll({
+      where: {
+        warehouse_id: outbound_order.warehouse_id,
+      }
+    })
     if (!outbound_order) return errorHandler(res, err.ORDER_NOT_FOUND);
-    return successHandler(res, { outbound_order }, 200);
+    return successHandler(res, {
+      outbound_order: {
+        ...outbound_order.dataValues,
+        Supply_Outbound_Orders: outbound_order.dataValues.Supply_Outbound_Orders.map((item) => ({
+          ...item.dataValues,
+          stock: supplies.find(itemSup => itemSup.supply_id === item.dataValues.Supply?.id)?.quantity
+        }))
+      }
+    }, 200);
   } catch (error) {
     return errorHandler(res, error);
   }

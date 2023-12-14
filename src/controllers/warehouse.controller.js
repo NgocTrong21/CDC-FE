@@ -30,6 +30,16 @@ exports.detail = async (req, res) => {
     let { id } = req?.query;
     const warehouse = await db.Warehouse.findOne({
       where: { id },
+      include: [{
+        model: db.Warehouse_Supply,
+        include: [
+          {
+            model: db.Supply,
+            include: [{ model: db.Equipment_Unit, attributes: ["id", "name"] }]
+          },
+        ],
+      }
+      ],
       raw: false,
     });
     return successHandler(res, { warehouse }, 200);
@@ -46,8 +56,10 @@ exports.suppliesByWarehouse = async (req, res) => {
       include: [
         {
           model: db.Supply,
+          include: [{ model: db.Equipment_Unit, attributes: ["id", "name"] }]
         },
       ],
+      attributes: ['quantity'],
       raw: false,
     });
     return successHandler(res, { supplies }, 200);
