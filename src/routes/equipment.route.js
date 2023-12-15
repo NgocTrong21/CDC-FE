@@ -37,7 +37,7 @@ router.get(
 router.post(
   "/create_by_excel",
   authMiddleware,
-  permissionMiddleware.IMPORT_EQUIPMENT,
+  permissionMiddleware.EQUIPMENT_CREATE,
   equipmentController.createByExcel
 );
 router.get(

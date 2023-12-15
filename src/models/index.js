@@ -10,6 +10,24 @@ const config = require(__dirname + "/../config/config.js")[env];
 
 const db = {};
 let sequelize;
+const customizeConfig = {
+  host: process.env.DB_HOST,
+  port: process.env.DB_DATABASE_PORT,
+  dialect: "postgres",
+  logging: false,
+  dialectOptions:
+    process.env.DB_SSL === 'true' ?
+      {
+        ssl: {
+          require: true,
+          rejectUnauthorized: false
+        }
+      } : {},
+  query: {
+    "raw": true
+  },
+  timezone: "+07:00"
+}
 if (config.use_env_variable) {
   sequelize = new Sequelize(process.env[config.use_env_variable], config);
 } else {
@@ -17,7 +35,7 @@ if (config.use_env_variable) {
     config.database,
     config.username,
     config.password,
-    config
+    customizeConfig
   );
 }
 

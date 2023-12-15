@@ -57,7 +57,7 @@ router.get(
 router.post(
   "/import_by_excel",
   authMiddleware,
-  permissionMiddleware.IMPORT_SUPPLIES,
+  permissionMiddleware.CONSUMABLE_SUPPLY_CREATE,
   supplyController.importByExcel
 );
 router.post("/create_report", authMiddleware, supplyController.create_report);

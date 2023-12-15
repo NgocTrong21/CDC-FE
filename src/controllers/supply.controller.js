@@ -11,8 +11,8 @@ exports.create = async (req, res) => {
     await db.sequelize.transaction(async (t) => {
       const supplyInDB = await db.Supply.findOne({
         where: {
-          code: data.code,
-          lot_number: data.lot_number,
+          code: `${data.code}`,
+          lot_number: `${data.lot_number}`,
         },
       });
       if (supplyInDB) return errorHandler(res, err.SUPPLY_FIELD_DUPLICATED);
@@ -45,8 +45,8 @@ exports.update = async (req, res) => {
       if (!isHas) return errorHandler(res, err.EQUIPMENT_NOT_FOUND);
       const supplyInDB = await db.Supply.findAll({
         where: {
-          code: data.code,
-          lot_number: data.lot_number,
+          code: `${data.code}`,
+          lot_number: `${data.lot_number}`,
         },
       });
       if (supplyInDB?.length > 1)
@@ -293,6 +293,7 @@ exports.listSupplyOfEquipment = async (req, res) => {
 exports.importByExcel = async (req, res) => {
   let duplicateArray = [];
   const data = req.body;
+  console.log(data);
   try {
     await db.sequelize.transaction(async (t) => {
       await Promise.all(
@@ -300,12 +301,13 @@ exports.importByExcel = async (req, res) => {
           const isDuplicate = await db.Supply.findOne({
             where: {
               code: supply?.code,
-              lot_number: supply?.lot_number,
+              lot_number: `${supply?.lot_number}`,
             },
           });
           if (isDuplicate) {
             duplicateArray.push(supply);
-          } else {
+          } 
+          else {
             await db.Supply.create(supply, { transaction: t });
           }
         })

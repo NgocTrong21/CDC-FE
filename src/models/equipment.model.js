@@ -19,7 +19,6 @@ module.exports = (sequelize, DataTypes) => {
       manufacturing_country_id: DataTypes.STRING, // nước sản xuất
       year_in_use: DataTypes.INTEGER, // năm sử dụng
       fixed_asset_number: DataTypes.STRING, // số hiệu tscd
-      quantity: DataTypes.INTEGER, // số lượng
       initial_value: DataTypes.INTEGER, // giá trị ban đầu
       annual_depreciation: DataTypes.INTEGER, // khấu hao hàng năm
       residual_value: DataTypes.INTEGER, // Giá trị còn lại
