@@ -84,7 +84,7 @@ const ImportEquipmentByExcel = () => {
       line: index + 2,
       ...item,
       department_id: department,
-      status_id: 3,
+      status_id: 1,
     }));
     setLoading(true);
     equipmentApi
@@ -243,7 +243,7 @@ const ImportEquipmentByExcel = () => {
                 <Input
                   className="input"
                   defaultValue={
-                    options(statuses).find((item: any) => item.value === 3)
+                    options(statuses).find((item: any) => item.value === 1)
                       .label
                   }
                   disabled

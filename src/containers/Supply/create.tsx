@@ -35,14 +35,13 @@ const SupplyCreate = () => {
     let data = {
       ...values,
       expiration_date: moment(new Date(values?.expiration_date)).toISOString(),
+      lot_number: `${values?.lot_number}`,
       image,
     };
     supplyApi
       .create(data)
       .then((res: any) => {
         const { success, message } = res.data;
-        console.log(res.data);
-
         if (success) {
           toast.success('Thêm mới vật tư thành công!');
           setImage('');

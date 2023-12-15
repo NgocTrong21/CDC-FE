@@ -44,7 +44,7 @@ const ImportOne = () => {
       ...values,
       handover_date: moment(new Date(values.handover_date)).toISOString(),
       image,
-      status_id: 3,
+      status_id: 1,
     };
     setLoading(true);
     equipmentApi
@@ -122,7 +122,7 @@ const ImportOne = () => {
               <Input
                 className="input"
                 defaultValue={
-                  options(statuses).find((item: any) => item.value === 3).label
+                  options(statuses).find((item: any) => item.value === 1).label
                 }
                 disabled
               />

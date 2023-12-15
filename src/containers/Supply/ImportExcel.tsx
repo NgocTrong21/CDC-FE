@@ -57,7 +57,7 @@ const ImportSupplyByExcel = () => {
         for (let i = 2; i <= json?.length + 1; i++) {
           const name = workSheet[`A${i}`]?.v;
           const code = workSheet[`B${i}`]?.v;
-          const lot_number = workSheet[`C${i}`]?.v;
+          const lot_number = `${workSheet[`C${i}`]?.v}`;
           const expiration_date = new Date(
             (workSheet[`D${i}`]?.v - (25567 + 2)) * 86400000
           ).valueOf();
