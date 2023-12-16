@@ -296,7 +296,6 @@ exports.listSupplyOfEquipment = async (req, res) => {
 exports.importByExcel = async (req, res) => {
   let duplicateArray = [];
   const data = req.body;
-  console.log(data);
   try {
     await db.sequelize.transaction(async (t) => {
       await Promise.all(
@@ -691,7 +690,6 @@ exports.create_report_by_warehouse = async (req, res) => {
         ],
         raw: false,
       });
-      console.log(supply_db);
       let inbound_during_period_quantity = 0;
       let outbound_during_period_quantity = 0;
       let from_start_to_now_merged = 0;

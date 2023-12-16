@@ -58,10 +58,10 @@ const defaultRoutes = [
     path: "/category",
     route: categoryRoute,
   },
-  {
-    path: "/notification",
-    route: notificationRoute,
-  },
+  // {
+  //   path: "/notification",
+  //   route: notificationRoute,
+  // },
   {
     path: "/user",
     route: userRoute,

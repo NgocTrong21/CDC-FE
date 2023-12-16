@@ -74,7 +74,6 @@ exports.updatePermissionForRole = async (req, res) => {
         });
         await db.Role_Permission.bulkCreate(n, { transaction: t });
       } else {
-        console.log(roles, permissions);
         if (roles?.length === permissions?.length) {
           // Tìm số permission_id = role.permission_id
           let a = permissions.filter((permission) => {
@@ -92,10 +91,6 @@ exports.updatePermissionForRole = async (req, res) => {
           //không có trong mảng roles => thêm mảng các id này vào bảng Role_Permission
           let b = permissions.filter((permission) => {
             return !roles.some((item) => {
-              if (permission?.id === 6) {
-                console.log("check some", permission?.id, item?.permission_id);
-              }
-
               return permission?.id === item?.permission_id;
             });
           });
