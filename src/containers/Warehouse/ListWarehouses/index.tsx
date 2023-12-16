@@ -52,15 +52,14 @@ const Warehouses = () => {
   const seachWarehouses = (params: any) => {
     const { nameSearch, limit, page } = params;
     setLoading(true);
-    warehouseApi.search({
-      name: nameSearch,
-      limit,
-      page,
-    })
+    warehouseApi
+      .search({
+        name: nameSearch,
+        limit,
+        page,
+      })
       .then((res) => {
         const { success, data } = res.data;
-        console.log(data);
-
         if (success) {
           setWarehouses(data?.warehouses.rows || []);
           setTotal(data?.warehouses.count || 0);
@@ -68,13 +67,13 @@ const Warehouses = () => {
       })
       .catch()
       .finally(() => setLoading(false));
-  }
+  };
 
   useEffect(() => {
     seachWarehouses({
       nameSearch,
       page,
-      limit
+      limit,
     });
   }, [page, nameSearch]);
   // const handleDelete = (id: number) => {
@@ -130,13 +129,13 @@ const Warehouses = () => {
       show: checkPermission(permissions.WAREHOUSES_MANAGEMENT_UPDATE),
       render: (item: any) => (
         <div>
-          {
-            checkPermission(permissions.WAREHOUSES_MANAGEMENT_UPDATE) && <Tooltip className="mr-4" title="Cập nhật thông tin kho">
+          {checkPermission(permissions.WAREHOUSES_MANAGEMENT_UPDATE) && (
+            <Tooltip className="mr-4" title="Cập nhật thông tin kho">
               <Link to={`/warehouses/update_warehouse/${item.id}`}>
                 <EditFilled />
               </Link>
             </Tooltip>
-          }
+          )}
           {checkPermission(permissions.WAREHOUSES_MANAGEMENT_READ) && (
             <Tooltip title="Hồ sơ vật tư">
               <Link to={`/warehouses/detail_warehouse/${item.id}`}>
@@ -161,7 +160,6 @@ const Warehouses = () => {
     showTotal: (total: number) => `Tổng cộng: ${total} Kho`,
     onChange: onPaginationChange,
   };
-
 
   const onChangeSearch = (e: any) => {
     setName(e.target.value);
@@ -254,9 +252,7 @@ const Warehouses = () => {
         columns={columnTable.filter((item: any) => item.show)}
         dataSource={warehouses}
         className="mt-6 shadow-md"
-        footer={() =>
-          <TableFooter paginationProps={pagination} />
-        }
+        footer={() => <TableFooter paginationProps={pagination} />}
         pagination={false}
         loading={loading}
       />

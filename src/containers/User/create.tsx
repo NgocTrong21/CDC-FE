@@ -37,7 +37,7 @@ const CreateUser = () => {
     userApi
       .create({
         ...values,
-        image
+        image,
       })
       .then((res) => {
         const { success, message } = res.data;
@@ -66,7 +66,7 @@ const CreateUser = () => {
           size="large"
           onFinish={onFinish}
         >
-          <div className="grid grid-cols-2 gap-5">
+          <div className="grid grid-cols-2 gap-2">
             <Form.Item
               label="Tên người dùng"
               name="name"
@@ -96,9 +96,6 @@ const CreateUser = () => {
                 className="rounded-lg h-9 border-[#A3ABEB] border-2"
               />
             </Form.Item>
-          </div>
-
-          <div className="grid grid-cols-2 gap-5">
             <Form.Item
               label="Khoa Phòng"
               name="department_id"

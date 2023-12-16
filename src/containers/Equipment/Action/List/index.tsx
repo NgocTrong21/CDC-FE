@@ -1,12 +1,10 @@
 import { useContext, useEffect, useState } from 'react';
 import {
   ExclamationCircleFilled,
-  DeleteFilled,
+  // DeleteFilled,
   EditFilled,
-  FileWordFilled,
   EyeFilled,
   FilterFilled,
-  SelectOutlined,
   ImportOutlined,
   RetweetOutlined,
 } from '@ant-design/icons';
@@ -19,9 +17,8 @@ import {
   Menu,
   Row,
   Pagination,
-  Popconfirm,
+  // Popconfirm,
   Tooltip,
-  Checkbox,
 } from 'antd';
 import useDebounce from 'hooks/useDebounce';
 import './index.css';
@@ -29,7 +26,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import image from 'assets/image.png';
 import equipmentApi from 'api/equipment.api';
 import useQuery from 'hooks/useQuery';
-import { toast } from 'react-toastify';
+// import { toast } from 'react-toastify';
 import { FilterContext } from 'contexts/filter.context';
 import { NotificationContext } from 'contexts/notification.context';
 import ModalReport from 'components/ModalReport';
@@ -37,7 +34,6 @@ import {
   checkPermission,
   checkRoleFromData,
   getCurrentUser,
-  onChangeCheckbox,
   options,
   resolveDataExcel,
 } from 'utils/globalFunc.util';
@@ -88,7 +84,6 @@ const List = () => {
   const [level, setLevel] = useState<any>(currentRiskLevel);
   const [showReportModal, setShowReportModal] = useState<boolean>(false);
   const [showTransferModal, setShowTransferModal] = useState<boolean>(false);
-  const [isShowCustomTable, setIsShowCustomTable] = useState<boolean>(false);
   const [dataReport, setDataReport] = useState<any>({});
   const [dataTransfer, setDataTransfer] = useState<any>({});
 
@@ -124,7 +119,7 @@ const List = () => {
       key: 'model',
       dataIndex: 'model',
       show: true,
-      widthExcel: 30,
+      widthExcel: 20,
       width: 200,
     },
     {
@@ -132,7 +127,7 @@ const List = () => {
       key: 'serial',
       dataIndex: 'serial',
       show: true,
-      widthExcel: 30,
+      widthExcel: 20,
       width: 200,
     },
     {
@@ -140,7 +135,7 @@ const List = () => {
       key: 'manufacturing_country_id',
       show: true,
       dataIndex: 'manufacturing_country_id',
-      widthExcel: 30,
+      widthExcel: 20,
       width: 200,
     },
     {
@@ -148,7 +143,7 @@ const List = () => {
       key: 'year_in_use',
       show: true,
       dataIndex: 'year_in_use',
-      widthExcel: 30,
+      widthExcel: 15,
       width: 200,
     },
     {
@@ -156,7 +151,7 @@ const List = () => {
       key: 'fixed_asset_number',
       show: true,
       dataIndex: 'fixed_asset_number',
-      widthExcel: 30,
+      widthExcel: 20,
       width: 200,
     },
     {
@@ -164,7 +159,7 @@ const List = () => {
       key: 'initial_value',
       show: true,
       dataIndex: 'initial_value',
-      widthExcel: 30,
+      widthExcel: 20,
       render: (item: number) => <div>{formatCurrency(item)}</div>,
       width: 200,
     },
@@ -173,7 +168,7 @@ const List = () => {
       key: 'annual_depreciation',
       show: true,
       dataIndex: 'annual_depreciation',
-      widthExcel: 30,
+      widthExcel: 15,
       width: 200,
     },
     {
@@ -181,7 +176,7 @@ const List = () => {
       key: 'residual_value',
       show: true,
       dataIndex: 'residual_value',
-      widthExcel: 30,
+      widthExcel: 20,
       render: (item: number) => <div>{formatCurrency(item)}</div>,
       width: 200,
     },
@@ -193,15 +188,12 @@ const List = () => {
       widthExcel: 30,
       width: 200,
     },
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-
     {
       title: 'Trạng thái',
       key: 'status',
       show: true,
       render: (item: any) => <div>{item?.Equipment_Status?.name}</div>,
-      widthExcel: 30,
+      widthExcel: 20,
       width: 200,
     },
     {
@@ -217,7 +209,7 @@ const List = () => {
       key: 'department',
       show: true,
       render: (item: any) => <div>{item?.Department?.name}</div>,
-      widthExcel: 30,
+      widthExcel: 40,
       width: 200,
     },
     {
@@ -228,9 +220,6 @@ const List = () => {
       widthExcel: 30,
       width: 200,
     },
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-
     {
       title: 'Tác vụ',
       key: 'action',
@@ -238,14 +227,15 @@ const List = () => {
       with: 800,
       render: (item: any) => (
         <Menu className="flex flex-row items-center">
-          {item?.Equipment_Status?.id === 3 && (
+          {item?.Equipment_Status?.id === 1 && (
             <>
               <Menu.Item
                 key="bell"
-                className={`${checkPermission(permissions.REPORT_EQUIPMENT_CREATE)
-                  ? ''
-                  : 'hidden'
-                  }`}
+                className={`${
+                  checkPermission(permissions.REPORT_EQUIPMENT_CREATE)
+                    ? ''
+                    : 'hidden'
+                }`}
               >
                 <Tooltip title="Báo hỏng thiết bị">
                   <ExclamationCircleFilled
@@ -257,10 +247,11 @@ const List = () => {
                 <>
                   <Menu.Item
                     key="transfer"
-                    className={`${checkPermission(permissions.TRANFER_EQUIPMENT_CREATE)
-                      ? ''
-                      : 'hidden'
-                      }`}
+                    className={`${
+                      checkPermission(permissions.TRANFER_EQUIPMENT_CREATE)
+                        ? ''
+                        : 'hidden'
+                    }`}
                   >
                     <Tooltip title="Điều chuyển thiết bị">
                       <RetweetOutlined
@@ -282,8 +273,9 @@ const List = () => {
           {item?.Equipment_Status?.id !== 7 && (
             <Menu.Item
               key="update_equipment"
-              className={`${checkPermission(permissions.EQUIPMENT_UPDATE) ? '' : 'hidden'
-                }`}
+              className={`${
+                checkPermission(permissions.EQUIPMENT_UPDATE) ? '' : 'hidden'
+              }`}
             >
               <Tooltip title="Cập nhật thiết bị">
                 <Link to={`/equipment/update/${item.id}`}>
@@ -292,10 +284,11 @@ const List = () => {
               </Tooltip>
             </Menu.Item>
           )}
-          <Menu.Item
+          {/* <Menu.Item
             key="delete"
-            className={`${checkPermission(permissions.EQUIPMENT_DELETE) ? '' : 'hidden'
-              }`}
+            className={`${
+              checkPermission(permissions.EQUIPMENT_DELETE) ? '' : 'hidden'
+            }`}
           >
             <Tooltip title="Xóa thiết bị">
               <Popconfirm
@@ -307,13 +300,13 @@ const List = () => {
                 <DeleteFilled />
               </Popconfirm>
             </Tooltip>
-          </Menu.Item>
+          </Menu.Item> */}
         </Menu>
       ),
     },
   ];
 
-  const [columnTable, setColumnTable] = useState<any>(columns);
+  const columnTable = columns;
   const current_user: any = getCurrentUser();
   const sender_id: number = current_user?.id;
   const current_username = current_user?.name;
@@ -359,20 +352,20 @@ const List = () => {
     onShowSizeChange: onShowSizeChange,
   };
 
-  const handleDelete = (id: number) => {
-    equipmentApi
-      .delete(id)
-      .then((res: any) => {
-        const { success, message } = res.data;
-        if (success) {
-          search();
-          toast.success('Xóa thành công!');
-        } else {
-          toast.error(message);
-        }
-      })
-      .catch((error) => toast.error(error));
-  };
+  // const handleDelete = (id: number) => {
+  //   equipmentApi
+  //     .delete(id)
+  //     .then((res: any) => {
+  //       const { success, message } = res.data;
+  //       if (success) {
+  //         search();
+  //         toast.success('Xóa thành công!');
+  //       } else {
+  //         toast.error(message);
+  //       }
+  //     })
+  //     .catch((error) => toast.error(error));
+  // };
 
   const search = () => {
     setLoading(true);
@@ -428,10 +421,6 @@ const List = () => {
       setPage(1);
       navigate(`${pathName}?page=1`);
     }
-  };
-
-  const onSearch = (value: string) => {
-    console.log('search:', value);
   };
 
   const downloadEquipmentList = async () => {
@@ -493,7 +482,6 @@ const List = () => {
             placeholder="Tất cả Trạng thái"
             optionFilterProp="children"
             onChange={(value: any) => onChangeSelect('status_id', value)}
-            onSearch={onSearch}
             allowClear
             filterOption={(input, option) =>
               (option!.label as unknown as string)
@@ -510,7 +498,6 @@ const List = () => {
               placeholder="Khoa - Phòng"
               optionFilterProp="children"
               onChange={(value: any) => onChangeSelect('department_id', value)}
-              onSearch={onSearch}
               allowClear
               filterOption={(input, option) =>
                 (option!.label as unknown as string)

@@ -23,7 +23,11 @@ import useSearchName from 'hooks/useSearchName';
 import moment from 'moment';
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { handleReportStatus, onChangeCheckbox, resolveDataExcel } from 'utils/globalFunc.util';
+import {
+  handleReportStatus,
+  onChangeCheckbox,
+  resolveDataExcel,
+} from 'utils/globalFunc.util';
 
 const TableFooter = ({ paginationProps }: any) => {
   return (
@@ -53,12 +57,6 @@ const Transfer = () => {
       key: 'status',
       show: true,
       render: (item: any) => <div>{item?.Equipment_Status?.name}</div>,
-    },
-    {
-      title: 'Loại thiết bị',
-      key: 'type',
-      show: true,
-      render: (item: any) => <div>{item?.Equipment_Type?.name}</div>,
     },
     {
       title: 'Khoa - Phòng hiện tại',
@@ -98,9 +96,7 @@ const Transfer = () => {
       show: true,
       widthExcel: 30,
       render: (item: any) => {
-        return (
-          <>{handleReportStatus(item?.Transfers[0]?.transfer_status)}</>
-        );
+        return <>{handleReportStatus(item?.Transfers[0]?.transfer_status)}</>;
       },
     },
     {

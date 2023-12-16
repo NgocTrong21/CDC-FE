@@ -1,9 +1,11 @@
-import { Divider, Pagination, Row, Table } from 'antd';
+import { Divider, Input, Pagination, Row, Table } from 'antd';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import warehouseApi from 'api/warehouse.api';
 import image from 'assets/image.png';
 import { formatCurrencyVN } from 'utils/validateFunc.util';
+import supplyApi from 'api/suplly.api';
+import useDebounce from 'hooks/useDebounce';
 const TableFooter = ({ paginationProps }: any) => {
   return (
     <Row justify="space-between">
@@ -18,14 +20,18 @@ const DetailWarehouse = () => {
   const [supplies, setSupplies] = useState<any>();
   const [total, setTotal] = useState<number>(1);
   const [page, setPage] = useState<number>(1);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [name, setName] = useState<string>('');
+  const nameSearch = useDebounce(name, 500);
   useEffect(() => {
     if (id) {
+      setLoading(true);
       warehouseApi
         .detail(+id)
         .then((res: any) => {
           const { success, data } = res.data;
           if (success) {
-            const { name, code, note, storekeeper, id, Warehouse_Supplies } = data.warehouse;
+            const { name, code, note, storekeeper, id } = data.warehouse;
             setDetailWarehouse({
               id,
               name,
@@ -33,13 +39,36 @@ const DetailWarehouse = () => {
               storekeeper,
               note,
             });
-            setSupplies(Warehouse_Supplies)
-            setTotal(Warehouse_Supplies.length)
           }
         })
-        .catch();
+        .catch()
+        .finally(() => setLoading(false));
     }
   }, [id]);
+  const getSuppliesList = () => {
+    setLoading(true);
+    supplyApi
+      .list({
+        name: nameSearch,
+      })
+      .then((res: any) => {
+        const { success, data } = res.data;
+        if (success) {
+          const suppliesByWarehouse = data.supplies.filter((item: any) =>
+            item.Warehouse_Supplies.some(
+              (item: any) => item.warehouse_id === Number(id)
+            )
+          );
+          setSupplies(suppliesByWarehouse);
+          setTotal(suppliesByWarehouse.length);
+        }
+      })
+      .catch()
+      .finally(() => setLoading(false));
+  };
+  useEffect(() => {
+    getSuppliesList();
+  }, [nameSearch]);
   const columns: any = [
     {
       title: 'Ảnh đại diện',
@@ -47,7 +76,11 @@ const DetailWarehouse = () => {
       show: true,
       render(item: any) {
         return (
-          <img src={item?.Supply?.image || image} alt="logo" className='w-full  aspect-square object-contain' />
+          <img
+            src={item?.Supply?.image || image}
+            alt="logo"
+            className="w-full  aspect-square object-contain"
+          />
         );
       },
       width: 120,
@@ -55,38 +88,26 @@ const DetailWarehouse = () => {
     {
       title: 'Mã vật tư',
       key: 'code',
+      dataIndex: 'code',
       show: true,
       widthExcel: 15,
       width: 150,
-      render(item: any) {
-        return (
-          <p>{item?.Supply?.code}</p>
-        );
-      },
     },
     {
       title: 'Số lô',
       key: 'lot_number',
+      dataIndex: 'lot_number',
       show: true,
       widthExcel: 15,
       width: 150,
-      render(item: any) {
-        return (
-          <p>{item?.Supply?.lot_number}</p>
-        );
-      },
     },
     {
       title: 'Tên vật tư',
       key: 'name',
+      dataIndex: 'name',
       show: true,
       widthExcel: 30,
       width: 200,
-      render(item: any) {
-        return (
-          <p>{item?.Supply?.name}</p>
-        );
-      },
     },
     {
       title: 'Đơn vị tính',
@@ -95,42 +116,32 @@ const DetailWarehouse = () => {
       widthExcel: 12,
       width: 100,
       render(item: any) {
-        return (
-          <p>{item?.Supply?.Equipment_Unit?.name}</p>
-        );
+        return <p>{item?.Equipment_Unit?.name}</p>;
       },
     },
     {
       title: 'Đơn giá',
       key: 'unit_price',
+      dataIndex: 'unit_price',
       show: true,
       widthExcel: 20,
       width: 120,
-      render: (item: any) => <p>{formatCurrencyVN(item?.Supply?.unit_price)}</p>,
     },
     {
       title: 'Nhà cung cấp',
       key: 'provider',
+      dataIndex: 'provider',
       show: true,
       widthExcel: 30,
       width: 150,
-      render(item: any) {
-        return (
-          <p>{item?.Supply?.provider}</p>
-        );
-      },
     },
     {
       title: 'Xuất sứ',
       key: 'manufacturing_country',
+      dataIndex: 'manufacturing_country',
       show: true,
       widthExcel: 15,
       width: 120,
-      render(item: any) {
-        return (
-          <p>{item?.Supply?.manufacturing_country}</p>
-        );
-      },
     },
     {
       title: 'Số lượng',
@@ -139,7 +150,13 @@ const DetailWarehouse = () => {
       widthExcel: 20,
       width: 120,
       render: (item: any) => (
-        <p>{item?.quantity}</p>
+        <p>
+          {
+            item?.Warehouse_Supplies.find(
+              (item: any) => item.warehouse_id === Number(id)
+            )?.quantity
+          }
+        </p>
       ),
     },
     {
@@ -149,7 +166,14 @@ const DetailWarehouse = () => {
       widthExcel: 20,
       width: 200,
       render: (item: any) => (
-        <p>{formatCurrencyVN(item?.Supply?.unit_price * item?.quantity)}</p>
+        <p>
+          {formatCurrencyVN(
+            item?.unit_price *
+              item?.Warehouse_Supplies.find(
+                (item: any) => item.warehouse_id === Number(id)
+              )?.quantity
+          )}
+        </p>
       ),
     },
   ];
@@ -182,6 +206,17 @@ const DetailWarehouse = () => {
         </div>
       </div>
       <div className="title mt-5">Danh sách vật tư trong kho</div>
+      <div className="flex justify-start my-4">
+        <Input
+          placeholder="Tìm kiếm vật tư"
+          allowClear
+          value={name}
+          className="input w-1/2"
+          onChange={(e) => {
+            setName(e.target.value);
+          }}
+        />
+      </div>
       <Table
         columns={columns.filter((item: any) => item.show)}
         dataSource={supplies}
@@ -189,6 +224,7 @@ const DetailWarehouse = () => {
         footer={() => <TableFooter paginationProps={pagination} />}
         pagination={false}
         scroll={{ x: 1500, y: 600 }}
+        loading={loading}
       />
     </div>
   );

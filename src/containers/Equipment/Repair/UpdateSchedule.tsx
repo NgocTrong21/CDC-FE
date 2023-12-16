@@ -5,7 +5,6 @@ import {
   Form,
   Input,
   Modal,
-  Radio,
   Select,
   Tooltip,
 } from 'antd';
@@ -17,16 +16,13 @@ import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import {
   checkPermission,
-  convertBase64,
   getCurrentUser,
   options,
 } from 'utils/globalFunc.util';
 import BrokenReport from './BrokenReport';
 import equipmentApi from 'api/equipment.api';
 import { NotificationContext } from 'contexts/notification.context';
-import { report_status } from 'constants/dataFake.constant';
 import { permissions } from 'constants/permission.constant';
-import { downloadRepairSchedule } from 'utils/file.util';
 import { formatCurrencyVN } from 'utils/validateFunc.util';
 import useQuery from 'hooks/useQuery';
 import { ExclamationCircleFilled } from '@ant-design/icons';
@@ -45,43 +41,39 @@ const UpdateSchedule = () => {
   const [equipment, setEquipment] = useState<any>({});
   const [schedule, setSchedule] = useState({} as any);
   const [loadingUpdate, setLoadingUpdate] = useState(false);
-  const [loadingApprove, setLoadingApprove] = useState(false);
-  const [showApproveScheduleModal, setShowApproveScheduleModal] =
-    useState(false);
-  const [file, setFile] = useState<any>();
   const [estimateCost, setEstimateCost] = useState('');
   const [actualCost, setActualCost] = useState('');
   const [showBrokenReportModal, setShowBrokenReportModal] =
     useState<boolean>(false);
 
-  const handleScheduleRepairStatus = (status: any = 0) => {
-    let color: any;
-    if (status === 0 || status === null) color = 'text-orange-400';
-    if (status === 1) color = 'text-green-500';
-    if (status === 2) color = 'text-red-500';
-    return (
-      <span className={`${color}`}>
-        {report_status.filter((item: any) => item.value === status)[0]?.label}
-      </span>
-    );
-  };
+  // const handleScheduleRepairStatus = (status: any = 0) => {
+  //   let color: any;
+  //   if (status === 0 || status === null) color = 'text-orange-400';
+  //   if (status === 1) color = 'text-green-500';
+  //   if (status === 2) color = 'text-red-500';
+  //   return (
+  //     <span className={`${color}`}>
+  //       {report_status.filter((item: any) => item.value === status)[0]?.label}
+  //     </span>
+  //   );
+  // };
 
-  const handleChangeFile = async (e: any) => {
-    let file = e.target.files[0];
-    if (file.size > 1000000) {
-      form.resetFields(['file']);
-      form.setFields([
-        {
-          name: 'file',
-          errors: ['Vui lòng chọn file có dung lượng nhỏ hơn 1MB!'],
-        },
-      ]);
-      return;
-    } else {
-      let fileBase64 = await convertBase64(file);
-      setFile(fileBase64);
-    }
-  };
+  // const handleChangeFile = async (e: any) => {
+  //   let file = e.target.files[0];
+  //   if (file.size > 1000000) {
+  //     form.resetFields(['file']);
+  //     form.setFields([
+  //       {
+  //         name: 'file',
+  //         errors: ['Vui lòng chọn file có dung lượng nhỏ hơn 1MB!'],
+  //       },
+  //     ]);
+  //     return;
+  //   } else {
+  //     let fileBase64 = await convertBase64(file);
+  //     setFile(fileBase64);
+  //   }
+  // };
 
   const loadData = async () => {
     const [repair_status, equipment] = await Promise.all([
@@ -192,74 +184,75 @@ const UpdateSchedule = () => {
       .finally(() => setLoadingUpdate(false));
   };
 
-  const approveScheduleRepair = (values: any) => {
-    const data = {
-      id: repair_id,
-      equipment_id: values.equipment_id,
-      name: equipment.name,
-      department: equipment?.Department?.name,
-      department_id: equipment?.Department?.id,
-      schedule_repair_status: values.schedule_repair_status,
-      schedule_create_user_id: schedule.schedule_create_user_id,
-      schedule_approve_user_id: values.schedule_approve_user_id,
-      schedule_repair_note: values?.schedule_repair_note,
-    };
+  // const approveScheduleRepair = (values: any) => {
+  //   const data = {
+  //     id: repair_id,
+  //     equipment_id: values.equipment_id,
+  //     name: equipment.name,
+  //     department: equipment?.Department?.name,
+  //     department_id: equipment?.Department?.id,
+  //     schedule_repair_status: values.schedule_repair_status,
+  //     schedule_create_user_id: schedule.schedule_create_user_id,
+  //     schedule_approve_user_id: values.schedule_approve_user_id,
+  //     schedule_repair_note: values?.schedule_repair_note,
+  //   };
 
-    setLoadingApprove(true);
-    equipmentRepairApi
-      .approveScheduleRepair(data)
-      .then((res: any) => {
-        const { success } = res.data;
-        if (success) {
-          toast.success('Phê duyệt phiếu sửa chữa thành công!');
-          getRepairSchedule();
-          setShowApproveScheduleModal(false);
-          increaseCount();
-          getAllNotifications();
-        } else {
-          toast.error('Phê duyệt phiếu sửa chữa thất bại!');
-        }
-      })
-      .catch()
-      .finally(() => setLoadingApprove(false));
-  };
+  //   setLoadingApprove(true);
+  //   equipmentRepairApi
+  //     .approveScheduleRepair(data)
+  //     .then((res: any) => {
+  //       const { success } = res.data;
+  //       if (success) {
+  //         toast.success('Phê duyệt phiếu sửa chữa thành công!');
+  //         getRepairSchedule();
+  //         setShowApproveScheduleModal(false);
+  //         increaseCount();
+  //         getAllNotifications();
+  //       } else {
+  //         toast.error('Phê duyệt phiếu sửa chữa thất bại!');
+  //       }
+  //     })
+  //     .catch()
+  //     .finally(() => setLoadingApprove(false));
+  // };
 
-  const acceptanceRepair = (values: any) => {
-    const data = {
-      ...values,
-      test_user_id: current_user?.id,
-      id: repair_id,
-      equipment_id: values.equipment_id,
-      name: equipment.name,
-      department: equipment?.Department?.name,
-      department_id: equipment?.Department?.id,
-      repair_completion_date: moment(
-        new Date(values?.repair_completion_date)
-      ).toISOString(),
-      file,
-    };
-    setLoadingUpdate(true);
-    equipmentRepairApi
-      .acceptanceRepair(data)
-      .then((res: any) => {
-        const { success } = res?.data;
-        if (success) {
-          toast.success('Nghiệm thu phiếu sửa chữa thành công!');
-          getRepairSchedule();
-          increaseCount();
-          getAllNotifications();
-        } else {
-          toast.error('Nghiệm thu phiếu sửa chữa thất bại!');
-        }
-      })
-      .catch()
-      .finally(() => setLoadingUpdate(false));
-  };
+  // const acceptanceRepair = (values: any) => {
+  //   const data = {
+  //     ...values,
+  //     test_user_id: current_user?.id,
+  //     id: repair_id,
+  //     equipment_id: values.equipment_id,
+  //     name: equipment.name,
+  //     department: equipment?.Department?.name,
+  //     department_id: equipment?.Department?.id,
+  //     repair_completion_date: moment(
+  //       new Date(values?.repair_completion_date)
+  //     ).toISOString(),
+  //     file,
+  //   };
+  //   setLoadingUpdate(true);
+  //   equipmentRepairApi
+  //     .acceptanceRepair(data)
+  //     .then((res: any) => {
+  //       const { success } = res?.data;
+  //       if (success) {
+  //         toast.success('Nghiệm thu phiếu sửa chữa thành công!');
+  //         getRepairSchedule();
+  //         increaseCount();
+  //         getAllNotifications();
+  //       } else {
+  //         toast.error('Nghiệm thu phiếu sửa chữa thất bại!');
+  //       }
+  //     })
+  //     .catch()
+  //     .finally(() => setLoadingUpdate(false));
+  // };
 
   return (
     <div>
-      <div className="title text-center">{`${query?.edit === 'true' ? 'CẬP NHẬT' : ''
-        } PHIẾU SỬA CHỮA THIẾT BỊ`}</div>
+      <div className="title text-center">{`${
+        query?.edit === 'true' ? 'CẬP NHẬT' : ''
+      } PHIẾU SỬA CHỮA THIẾT BỊ`}</div>
       <Divider />
       <div>
         <div className="title">
@@ -279,11 +272,7 @@ const UpdateSchedule = () => {
           size="large"
           layout="vertical"
           form={form}
-          onFinish={
-            schedule.schedule_repair_status === 1
-              ? acceptanceRepair
-              : updateSchedule
-          }
+          onFinish={updateSchedule}
         >
           <Form.Item name="id" className="hidden"></Form.Item>
           <Form.Item name="equipment_id" className="hidden"></Form.Item>
@@ -431,7 +420,7 @@ const UpdateSchedule = () => {
             )}
           </div>
           <div className="flex gap-6">
-            {schedule.schedule_repair_status !== 1 &&
+            {schedule.schedule_repair_status === 1 &&
               checkPermission(permissions.REPAIR_EQUIPMENT_UPDATE) && (
                 <Form.Item>
                   <Button
@@ -443,9 +432,9 @@ const UpdateSchedule = () => {
                   </Button>
                 </Form.Item>
               )}
-            {schedule.schedule_repair_status === 1 && (
+            {/* {schedule.schedule_repair_status === 1 && (
               <>
-                {equipment.status_id !== 3 &&
+                {equipment.status_id !== 1 &&
                   checkPermission(permissions.REPAIR_EQUIPMENT_UPDATE) && (
                     <Form.Item>
                       <Button
@@ -466,7 +455,7 @@ const UpdateSchedule = () => {
                   </Button>
                 </Form.Item>
               </>
-            )}
+            )} */}
           </div>
         </Form>
       </div>

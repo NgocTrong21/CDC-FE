@@ -34,34 +34,33 @@ const columns: ColumnsType<DataType> = [
     title: 'Giá trị',
     dataIndex: 'value_2',
     key: 'value_2',
-  }
+  },
 ];
 
 const Detail = () => {
-
   const params = useParams();
   const { id } = params;
   const [supply, setSupply] = useState<any>({});
 
   const getDetailEquipment = (id: any) => {
-    supplyApi.detail(id)
+    supplyApi
+      .detail(id)
       .then((res: any) => {
         const { success, data } = res.data;
         if (success) {
           setSupply(data.supply);
         }
       })
-      .catch()
-  }
+      .catch();
+  };
 
   useEffect(() => {
     getDetailEquipment(id);
   }, [id]);
 
   const generatorPDF = () => {
-    const element: any = document.getElementById("detail");
-    console.log('element', element)
-  }
+    const element: any = document.getElementById('detail');
+  };
 
   const data: DataType[] = [
     {
@@ -78,7 +77,11 @@ const Detail = () => {
     },
     {
       key_1: 'Hạn sử dụng',
-      value_1: `${supply?.expiration_date ? moment(supply?.expiration_date).format("DD-MM-YYYY") : ''}`,
+      value_1: `${
+        supply?.expiration_date
+          ? moment(supply?.expiration_date).format('DD-MM-YYYY')
+          : ''
+      }`,
       key_2: 'Xuất sứ',
       value_2: `${supply?.Equipment_Unit?.name}`,
     },
@@ -88,7 +91,7 @@ const Detail = () => {
       key_2: 'Ghi chú',
       value_2: `${supply?.note || ''}`,
     },
-  ]
+  ];
 
   return (
     <div>
@@ -96,25 +99,27 @@ const Detail = () => {
         <div className="font-medium text-lg">HỒ SƠ VẬT TƯ</div>
       </div>
       <Divider />
-      <div id='detail' className=''>
-        <div className='flex flex-row gap-6 my-8'>
-          <div className='flex flex-col gap-4 items-center basis-1/3'>
-            <Image
-              src={supply?.image || image}
-              width={300}
-            />
+      <div id="detail" className="">
+        <div className="flex flex-row gap-6 my-8">
+          <div className="flex flex-col gap-4 items-center basis-1/3">
+            <Image src={supply?.image || image} width={300} />
             <div>Ảnh vật tư</div>
           </div>
-          <div className='basis-2/3'>
-            <div className='font-bold text-2xl'>{supply?.name}</div>
-            <div className='mt-4'>
-              <Table columns={columns} dataSource={data} pagination={false} className="shadow-md" />
+          <div className="basis-2/3">
+            <div className="font-bold text-2xl">{supply?.name}</div>
+            <div className="mt-4">
+              <Table
+                columns={columns}
+                dataSource={data}
+                pagination={false}
+                className="shadow-md"
+              />
             </div>
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Detail
+export default Detail;

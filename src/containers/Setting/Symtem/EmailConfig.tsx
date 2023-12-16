@@ -62,7 +62,6 @@ const EmailConfig = () => {
           approveTransfer: any = [],
           requestLiquidation: any = [],
           approveLiquidation: any = [];
-        console.log('data?.roles', data?.roles);
 
         data?.roles?.forEach((role: any) => {
           if (role.action_id === 1) {
@@ -121,7 +120,7 @@ const EmailConfig = () => {
         setApproveLiquidation(approveLiquidation);
       })
       .catch()
-      .finally(() => setLoading(false))
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => {
@@ -173,7 +172,7 @@ const EmailConfig = () => {
         .catch()
         .finally(() => setLoadingUpdate(false));
     } catch (error) {
-      console.log('error', error);
+      toast.error('Cập nhật thất bại!');
     }
   };
 
@@ -378,7 +377,11 @@ const EmailConfig = () => {
       </div>
 
       <div className="flex justify-center">
-        <Button className="button-primary mt-8" onClick={handleSubmitConfig} loading={loadingUpdate}>
+        <Button
+          className="button-primary mt-8"
+          onClick={handleSubmitConfig}
+          loading={loadingUpdate}
+        >
           Cập nhật
         </Button>
       </div>

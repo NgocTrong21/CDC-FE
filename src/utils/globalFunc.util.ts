@@ -51,7 +51,7 @@ const getDataExcel = (data: any, objectKey: any, fields: any) => {
 
 const getFields = (columnTable: any) => {
   return columnTable
-    ?.filter((x: any) => x?.show && x?.key !== 'action')
+    ?.filter((x: any) => x?.show && x?.key !== 'action' &&  x?.key !== 'image')
     ?.map((y: any) => ({ key: y.key, title: y.title, width: y.widthExcel }));
 };
 
@@ -115,8 +115,6 @@ const exportToExcelPro = async (
   const wb = new ExcelJS.Workbook();
   const ws = wb.addWorksheet(sheetName);
   const columns = myHeader?.length;
-  console.log('check report', report);
-
   const title = {
     border: true,
     height: 40,

@@ -15,6 +15,7 @@ import {
 import TextArea from 'antd/lib/input/TextArea';
 import inboundOrderApi from 'api/inbound_order';
 import warehouseApi from 'api/warehouse.api';
+import { order_status } from 'constants/dataFake.constant';
 import { permissions } from 'constants/permission.constant';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
@@ -28,6 +29,8 @@ const InboundOrderDetail = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const { id } = params;
+  const [loading, setLoading] = useState<boolean>(false);
+  const [loadingReject, setLoadingReject] = useState<boolean>(false);
   const { Column } = Table;
   const [dataSource, setDataSource] = useState<any[]>([]);
   const [warehouses, setWarehouses] = useState([]);
@@ -40,12 +43,8 @@ const InboundOrderDetail = () => {
   const checkPermission = (permission: number) => {
     const current_user: any = getCurrentUser();
     const permissions = current_user?.Role?.Role_Permissions;
-    console.log(permissions);
-
     return permissions?.find((item: any) => item.permission_id === permission);
   };
-  console.log('check per', checkPermission(permissions.APPROVE_ORDERS));
-
   const dataSourceByPage = (dataSourceInput: any) => {
     if (dataSourceInput && dataSourceInput?.length > 0) {
       const startIndex = (currentPage - 1) * pageSize;
@@ -56,41 +55,64 @@ const InboundOrderDetail = () => {
     }
   };
   const seachWarehouses = () => {
-    warehouseApi.search({
-    })
+    warehouseApi
+      .search({})
       .then((res) => {
         const { success, data } = res.data;
         if (success) {
           setWarehouses(data.warehouses);
         }
       })
-      .catch()
-  }
+      .catch();
+  };
   const getDetailInboundOrder = (id: any) => {
-    inboundOrderApi.detail(id)
+    inboundOrderApi
+      .detail(id)
       .then((res: any) => {
         const { success, data } = res.data;
         if (success) {
-          const { id, warehouse_id, code, status_id, provider, deliver, deliver_phone, estimated_delivery_date, note } = data.inbound_order;
+          const {
+            id,
+            code,
+            status_id,
+            provider,
+            deliver,
+            deliver_phone,
+            estimated_delivery_date,
+            note,
+          } = data.inbound_order;
           form.setFieldsValue({
-            id, warehouse_id, status_id, code, provider, deliver, deliver_phone, note, estimated_delivery_date: moment(estimated_delivery_date).format('DD/MM/YYYY')
+            id,
+            warehouse: data.inbound_order.Warehouse.name,
+            status_id,
+            code,
+            provider,
+            deliver,
+            deliver_phone,
+            note,
+            estimated_delivery_date: moment(estimated_delivery_date).format(
+              'DD/MM/YYYY'
+            ),
           });
-          setDataSource(data.inbound_order.Supply_Inbound_Orders.map((item: any, index: any) => ({
-            key: index,
-            supplierId: item.Supply?.id,
-            supplierCode: item.Supply?.code || '',
-            supplierName: item.Supply?.name,
-            orderQuantity: item.quantity,
-            unitPrice: item.Supply?.unit_price,
-            unit: item.Supply?.Equipment_Unit?.name,
-            totalValue: item.quantity * item.Supply?.unit_price || 0,
-            description: item.Supply?.note,
-          })));
+          setDataSource(
+            data.inbound_order.Supply_Inbound_Orders.map(
+              (item: any, index: any) => ({
+                key: index,
+                supplierId: item.Supply?.id,
+                supplierCode: item.Supply?.code || '',
+                supplierName: item.Supply?.name,
+                orderQuantity: item.quantity,
+                unitPrice: item.Supply?.unit_price,
+                unit: item.Supply?.Equipment_Unit?.name,
+                totalValue: item.quantity * item.Supply?.unit_price || 0,
+                description: item.Supply?.note,
+              })
+            )
+          );
         }
       })
-      .catch()
-  }
-
+      .catch();
+  };
 
   useEffect(() => {
     getDetailInboundOrder(id);
@@ -98,34 +120,80 @@ const InboundOrderDetail = () => {
   }, [id]);
 
   const handleAccept = (id: any, type: string) => {
-    inboundOrderApi.accept({
-      data: {
-        id,
-        status: type,
-      }
-    }).then(() => {
-      toast.success('Phê duyệt thành công');
-    }).catch(() => {
-      toast.error('Phê duyệt thất bại!');
-    });
-  }
+    if (type === 'accept') {
+      setLoading(true);
+    } else {
+      setLoadingReject(true);
+    }
+    inboundOrderApi
+      .accept({
+        data: {
+          id,
+          status: type,
+        },
+      })
+      .then(() => {
+        setLoading(false);
+        toast.success('Phê duyệt thành công');
+        navigate('/order/inbound_order');
+      })
+      .catch(() => {
+        setLoading(false);
+        toast.error('Phê duyệt thất bại!');
+      });
+  };
+  const handleOrderStatus = (status: any = 0) => {
+    let color: any;
+    if (status === 1) color = 'text-orange-400';
+    if (status === 2) color = 'text-green-500';
+    if (status === 3) color = 'text-red-500';
+    return (
+      <span className={`${color} text-lg pb-2`}>
+        {order_status.filter((item: any) => item.value === status)[0]?.label}
+      </span>
+    );
+  };
   return (
     <Layout>
-      <Form form={form} size="middle" layout="vertical" autoComplete="off" >
+      <Form form={form} size="middle" layout="vertical" autoComplete="off">
         <Layout>
           <Row align="middle" justify="space-between">
-            <Typography.Title level={4}>Thông tin phiếu nhập</Typography.Title>
+            <div className="flex gap-5 items-center">
+              <Typography.Title level={4}>
+                Thông tin phiếu nhập
+              </Typography.Title>
+              {handleOrderStatus(form.getFieldsValue()?.status_id)}
+            </div>
             <Row>
               <Space>
-                {(checkPermission(permissions.APPROVE_ORDERS) && form.getFieldValue('status_id') === 1) && <><Button type="default" className="button-primary" onClick={() => handleAccept(id, 'accept')}>
-                  Phê duyệt
-                </Button>
-                  <Button className="rounded-md" danger onClick={() => handleAccept(id, 'reject')}>
-                    Từ chối
-                  </Button></>}
-                <Button type="primary" className="rounded-md" onClick={() => {
-                  navigate('/order/inbound_order')
-                }}>
+                {checkPermission(permissions.APPROVE_ORDERS) &&
+                  form.getFieldValue('status_id') === 1 && (
+                    <>
+                      <Button
+                        type="default"
+                        className="button-primary"
+                        onClick={() => handleAccept(id, 'accept')}
+                        loading={loading}
+                      >
+                        Phê duyệt
+                      </Button>
+                      <Button
+                        className="rounded-md"
+                        danger
+                        onClick={() => handleAccept(id, 'reject')}
+                        loading={loading}
+                      >
+                        Từ chối
+                      </Button>
+                    </>
+                  )}
+                <Button
+                  type="primary"
+                  className="rounded-md"
+                  onClick={() => {
+                    navigate('/order/inbound_order');
+                  }}
+                >
                   Đóng
                 </Button>
               </Space>
@@ -139,43 +207,31 @@ const InboundOrderDetail = () => {
                 </Row>
                 <Row justify="space-between">
                   <Col span={12}>
-                    <Form.Item
-                      className='hidden'
-                      name="id"
-                    >
-                      <Input type='text' disabled />
+                    <Form.Item className="hidden" name="id">
+                      <Input type="text" disabled />
                     </Form.Item>
-                    <Form.Item
-                      className='hidden'
-                      name="status_id"
-                    >
-                      <Input type='text' disabled />
+                    <Form.Item className="hidden" name="status_id">
+                      <Input type="text" disabled />
                     </Form.Item>
-                    <Form.Item
-                      label="Kho hàng"
-                      name="warehouse_id"
-                      required
-                      rules={[{ required: true, message: 'Hãy chọn kho!' }]}
-                    >
-                      <Select
-                        placeholder="Kho hàng"
-                        options={options(warehouses)}
-                        disabled
-                      />
+                    <Form.Item label="Kho hàng" name="warehouse">
+                      <Input className="input" type="text" disabled />
                     </Form.Item>
                     <Form.Item label="Nhà cung cấp" name="provider">
-                      <Input className="input" type='text' disabled />
+                      <Input className="input" type="text" disabled />
                     </Form.Item>
                     <Form.Item label="Người giao hàng" name="deliver">
-                      <Input className="input" type='text' disabled />
+                      <Input className="input" type="text" disabled />
                     </Form.Item>
-                    <Form.Item label="Liên hệ người giao hàng" name="deliver_phone">
-                      <Input className="input" type='text' disabled />
+                    <Form.Item
+                      label="Liên hệ người giao hàng"
+                      name="deliver_phone"
+                    >
+                      <Input className="input" type="text" disabled />
                     </Form.Item>
                   </Col>
                   <Col span={11}>
                     <Form.Item label="Vị trí kho hàng">
-                      <Input className="input" type='text' disabled />
+                      <Input className="input" type="text" disabled />
                     </Form.Item>
                     <Form.Item label="Ghi chú" name="note">
                       <TextArea rows={9} className="textarea" disabled />
@@ -188,9 +244,12 @@ const InboundOrderDetail = () => {
                   <Typography.Title level={5}>Tài liệu</Typography.Title>
                 </Row>
                 <Form.Item label="Số phiếu nhập" name="code">
-                  <Input className="input" type='text' disabled />
+                  <Input className="input" type="text" disabled />
                 </Form.Item>
-                <Form.Item label="Ngày dự kiến nhận hàng" name="estimated_delivery_date">
+                <Form.Item
+                  label="Ngày dự kiến nhận hàng"
+                  name="estimated_delivery_date"
+                >
                   <Input className="input" disabled />
                 </Form.Item>
               </Col>
@@ -221,27 +280,21 @@ const InboundOrderDetail = () => {
                     dataIndex={'orderQuantity'}
                     key={'orderQuantity'}
                     width="20%"
-                    render={(value) => (
-                      <p>{value}</p>
-                    )}
+                    render={(value) => <p>{value}</p>}
                   />
                   <Column
                     title="Đơn giá"
                     dataIndex="unitPrice"
                     key="unitPrice"
                     render={(value) => {
-                      return (
-                        <p>{formatCurrencyVN(value)}</p>
-                      );
+                      return <p>{formatCurrencyVN(value)}</p>;
                     }}
                   />
                   <Column
                     title="Tổng giá trị"
                     dataIndex={'totalValue'}
                     key={'totalValue'}
-                    render={(value) => (
-                      <p>{formatCurrencyVN(value)}</p>
-                    )}
+                    render={(value) => <p>{formatCurrencyVN(value)}</p>}
                   />
                   <Column
                     title="Ghi chú"

@@ -37,8 +37,6 @@ const DetailDepartment = () => {
       })
     );
   };
-  console.log('check department', department);
-
   const data_status = countStatus?.length > 0 ? countStatus : [];
   const config_status: any = {
     appendPadding: 10,
@@ -122,7 +120,7 @@ const DetailDepartment = () => {
             email: department?.email,
             head_of_department_id: head?.id,
           });
-          setImage(department?.image)
+          setImage(department?.image);
         }
       })
       .catch()
@@ -273,10 +271,11 @@ const DetailDepartment = () => {
                     <Button
                       htmlType="submit"
                       loading={loadingUpdate}
-                      className={`${checkPermission(permissions.DEPARTMENT_UPDATE)
-                        ? 'button-primary'
-                        : 'hidden'
-                        }`}
+                      className={`${
+                        checkPermission(permissions.DEPARTMENT_UPDATE)
+                          ? 'button-primary'
+                          : 'hidden'
+                      }`}
                     >
                       Cập nhật
                     </Button>
@@ -302,7 +301,7 @@ const DetailDepartment = () => {
                   <div className="grid grid-cols-2 gap-5">
                     <p>Trưởng khoa</p>
                     {options(users)?.length > 0 &&
-                      options(users)?.length > 0 ? (
+                    options(users)?.length > 0 ? (
                       <p className="mb-5">
                         {
                           options(users).find(
@@ -330,10 +329,11 @@ const DetailDepartment = () => {
                     <Button
                       htmlType="submit"
                       loading={loadingUpdate}
-                      className={`${checkPermission(permissions.DEPARTMENT_UPDATE)
-                        ? 'button-primary'
-                        : 'hidden'
-                        }`}
+                      className={`${
+                        checkPermission(permissions.DEPARTMENT_UPDATE)
+                          ? 'button-primary'
+                          : 'hidden'
+                      }`}
                     >
                       Cập nhật
                     </Button>

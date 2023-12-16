@@ -44,6 +44,7 @@ const InboundOrderCreate = () => {
   const [pageSize, setPageSize] = useState<number>(10);
   const [warehouses, setWarehouses] = useState([]);
   const [supllies, setSupplies] = useState<any>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const seachWarehouses = () => {
     warehouseApi
@@ -150,6 +151,7 @@ const InboundOrderCreate = () => {
     try {
       await form.validateFields();
       if (data) {
+        setLoading(true);
         inboundOrderApi
           .create({
             data: {
@@ -169,6 +171,7 @@ const InboundOrderCreate = () => {
             })),
           })
           .then((res) => {
+            setLoading(false);
             const { success, message } = res.data;
             if (success) {
               navigate('/order/inbound_order');
@@ -178,10 +181,11 @@ const InboundOrderCreate = () => {
             }
           })
           .catch(() => {
+            setLoading(false);
             toast.error('Tạo đơn nhập thất bại!');
           });
       }
-    } catch (error) { }
+    } catch (error) {}
   };
   const options = (array: any) => {
     return (
@@ -189,8 +193,9 @@ const InboundOrderCreate = () => {
       array?.map((item: any) => {
         let o: any = {};
         o.value = item?.id;
-        o.label = `${item?.code || ''}${item?.lot_number ? `(${item?.lot_number})` : ''
-          } - ${item?.name}`;
+        o.label = `${item?.code || ''}${
+          item?.lot_number ? `(${item?.lot_number})` : ''
+        } - ${item?.name}`;
         return o;
       })
     );
@@ -212,6 +217,7 @@ const InboundOrderCreate = () => {
                   onClick={() => {
                     onFormSubmit(form.getFieldsValue());
                   }}
+                  loading={loading}
                 >
                   Lưu
                 </Button>
@@ -393,18 +399,14 @@ const InboundOrderCreate = () => {
                     dataIndex="unitPrice"
                     key="unitPrice"
                     render={(value) => {
-                      return (
-                        <p>{formatCurrencyVN(value)}</p>
-                      );
+                      return <p>{formatCurrencyVN(value)}</p>;
                     }}
                   />
                   <Column
                     title="Tổng giá trị"
                     dataIndex={'totalValue'}
                     key={'totalValue'}
-                    render={(value) => (
-                      <p>{formatCurrencyVN(value)}</p>
-                    )}
+                    render={(value) => <p>{formatCurrencyVN(value)}</p>}
                   />
                   <Column
                     title="Ghi chú"

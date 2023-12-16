@@ -1,4 +1,12 @@
-import { Button, DatePicker, Divider, Form, Input, InputNumber, Select } from 'antd';
+import {
+  Button,
+  DatePicker,
+  Divider,
+  Form,
+  Input,
+  InputNumber,
+  Select,
+} from 'antd';
 import { useEffect, useState, useContext } from 'react';
 import ava from 'assets/image.png';
 import { convertBase64, options } from 'utils/globalFunc.util';
@@ -11,9 +19,7 @@ import { toast } from 'react-toastify';
 const { TextArea } = Input;
 
 const SupplyUpdate = () => {
-  const {
-    units
-  } = useContext(FilterContext);
+  const { units } = useContext(FilterContext);
   const params = useParams();
   const navigate = useNavigate();
   const { id } = params;
@@ -60,7 +66,6 @@ const SupplyUpdate = () => {
       .then((res: any) => {
         const { success, data } = res.data;
         if (success) {
-          console.log(data.supply);
           const {
             id,
             name,
@@ -72,7 +77,7 @@ const SupplyUpdate = () => {
             unit,
             unit_price,
             note,
-            image
+            image,
           } = data.supply;
           form.setFieldsValue({
             id,
@@ -177,12 +182,9 @@ const SupplyUpdate = () => {
               <InputNumber
                 min={0}
                 placeholder="Nhập đơn giá vật tư"
-                className='input w-full flex items-center'
+                className="input w-full flex items-center"
                 formatter={(value) => {
-                  return `${value}`.replace(
-                    /\B(?=(\d{3})+(?!\d))/g,
-                    ','
-                  );
+                  return `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                 }}
                 precision={0}
               />
@@ -211,7 +213,11 @@ const SupplyUpdate = () => {
             </Form.Item>
           </div>
           <Form.Item>
-            <Button className="button-primary" htmlType="submit" loading={loading}>
+            <Button
+              className="button-primary"
+              htmlType="submit"
+              loading={loading}
+            >
               Hoàn thành
             </Button>
           </Form.Item>

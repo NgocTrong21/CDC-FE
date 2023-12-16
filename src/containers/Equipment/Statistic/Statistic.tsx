@@ -15,10 +15,7 @@ import image from 'assets/image.png';
 import useQuery from 'hooks/useQuery';
 import useDebounce from 'hooks/useDebounce';
 import { searchByQuery } from './Strategy_Pattern';
-import {
-  options,
-  resolveDataExcel,
-} from 'utils/globalFunc.util';
+import { options, resolveDataExcel } from 'utils/globalFunc.util';
 import ExportToExcel from 'components/Excel';
 import useSearchName from 'hooks/useSearchName';
 
@@ -104,13 +101,13 @@ const Statistic = ({
       widthExcel: 20,
       render: (item: any) => <div>{item?.Equipment_Status?.name}</div>,
     },
-    {
-      title: 'Loại thiết bị',
-      key: 'type_id',
-      widthExcel: 30,
-      show: true,
-      render: (item: any) => <div>{item?.Equipment_Type?.name}</div>,
-    },
+    // {
+    //   title: 'Loại thiết bị',
+    //   key: 'type_id',
+    //   widthExcel: 30,
+    //   show: true,
+    //   render: (item: any) => <div>{item?.Equipment_Type?.name}</div>,
+    // },
     {
       title: 'Đơn vị tính',
       key: 'unit_id',
@@ -229,10 +226,6 @@ const Statistic = ({
     }
   };
 
-  const onSearch = (value: string) => {
-    console.log('search:', value);
-  };
-
   const onChangeCheckbox = (item: any, e: any) => {
     let newColumns: any = columnTable.map((column: any) => {
       if (item.title === column.title) {
@@ -328,7 +321,6 @@ const Statistic = ({
             placeholder={title}
             optionFilterProp="children"
             onChange={onChangeSelect}
-            onSearch={onSearch}
             allowClear
             filterOption={(input, option) =>
               (option!.label as unknown as string)

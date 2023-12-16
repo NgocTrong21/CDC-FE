@@ -25,7 +25,7 @@ import CreateEquipmentStatus from 'containers/Category/Equipment_Status/create';
 import DetailEquipmentStatus from 'containers/Category/Equipment_Status/detail';
 import ActiveAccount from 'containers/ActiveAccount';
 import SetRole from 'containers/Setting/SetRole';
-import Notification from 'containers/Notification';
+// import Notification from 'containers/Notification';
 import UpdatePermission from 'containers/Setting/SetRole/update';
 import StatisticByDepartment from 'containers/Equipment/Statistic/ByDepartment';
 import StatisticByStatus from 'containers/Equipment/Statistic/ByStatus';
@@ -83,15 +83,14 @@ const App = () => {
     <div className="app">
       <BrowserRouter>
         <Routes>
-          <Route
+          {/* <Route
             path="/"
             element={
               <PrivateRoute permission={permissions.DASHBOARD_READ}>
                 <Dashboard />
               </PrivateRoute>
             }
-          />
-
+          /> */}
           {/* Equipment Routes */}
           <Route
             path="/equipment/list_eq"
@@ -435,14 +434,14 @@ const App = () => {
               </PrivateRoute>
             }
           />
-          <Route
+          {/* <Route
             path="/setting/notification"
             element={
               <PrivateRoute permission={permissions.SETTING_ROLE}>
                 <Notification />
               </PrivateRoute>
             }
-          />
+          /> */}
           <Route
             path="/setting/email-config"
             element={
@@ -463,7 +462,9 @@ const App = () => {
           <Route
             path="/warehouses/import_warehouse"
             element={
-              <PrivateRoute permission={permissions.WAREHOUSES_MANAGEMENT_CREATE}>
+              <PrivateRoute
+                permission={permissions.WAREHOUSES_MANAGEMENT_CREATE}
+              >
                 <ImportWarehouse />
               </PrivateRoute>
             }
@@ -471,7 +472,9 @@ const App = () => {
           <Route
             path="/warehouses/update_warehouse/:id"
             element={
-              <PrivateRoute permission={permissions.WAREHOUSES_MANAGEMENT_UPDATE}>
+              <PrivateRoute
+                permission={permissions.WAREHOUSES_MANAGEMENT_UPDATE}
+              >
                 <UpdateWarehouse />
               </PrivateRoute>
             }

@@ -36,7 +36,6 @@ const Profile = () => {
       .then((res: any) => {
         const { success, data } = res.data;
         let user = data?.user;
-        console.log(res.data.success);
         if (success) {
           form.setFieldsValue({
             id: user?.id,
@@ -80,8 +79,6 @@ const Profile = () => {
   useEffect(() => {
     getDetail();
   }, [id]);
-
-  console.log(error);
 
   return (
     <div>

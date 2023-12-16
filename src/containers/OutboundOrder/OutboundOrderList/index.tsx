@@ -21,10 +21,7 @@ import {
 import useDebounce from 'hooks/useDebounce';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import {
-  checkPermission,
-  onChangeCheckbox,
-} from 'utils/globalFunc.util';
+import { checkPermission, onChangeCheckbox } from 'utils/globalFunc.util';
 import { permissions } from 'constants/permission.constant';
 import type { PaginationProps } from 'antd';
 import outboundOrderApi from 'api/outbound_order';
@@ -81,18 +78,22 @@ const OutboundOrderList = () => {
       dataIndex: 'code',
       show: true,
       widthExcel: 30,
+      with: 100,
     },
     {
       title: 'Trạng thái',
       show: true,
       widthExcel: 30,
-      render: (_item: any, record: any) => record.Order_Note_Status.name
+      with: 100,
+      render: (_item: any, record: any) => record.Order_Note_Status.name,
     },
     {
       title: 'Ngày tạo',
       show: true,
       widthExcel: 30,
-      render: (_item: any, record: any) => moment(new Date(record.createdAt)).format('DD/MM/YYYY')
+      with: 100,
+      render: (_item: any, record: any) =>
+        moment(new Date(record.createdAt)).format('DD/MM/YYYY'),
     },
     {
       title: 'Người nhận',
@@ -100,12 +101,14 @@ const OutboundOrderList = () => {
       show: true,
       dataIndex: 'receiver',
       widthExcel: 30,
+      with: 100,
     },
     {
       title: 'Kho hàng',
       show: true,
       widthExcel: 30,
-      render: (_item: any, record: any) => record.Warehouse.name
+      with: 100,
+      render: (_item: any, record: any) => record.Warehouse.name,
     },
     {
       title: 'Khách hàng',
@@ -113,18 +116,23 @@ const OutboundOrderList = () => {
       key: 'customer',
       show: true,
       widthExcel: 30,
+      with: 100,
     },
     {
       title: 'Tác vụ',
       key: 'action',
+      with: 100,
       show: true,
       render: (item: any) => (
         <Menu className="flex flex-row items-center">
           {item?.status_id === 1 && (
             <Menu.Item
               key="update_equipment"
-              className={`${checkPermission(permissions.OUTBOUND_ORDERS_UPDATE) ? '' : 'hidden'
-                }`}
+              className={`${
+                checkPermission(permissions.OUTBOUND_ORDERS_UPDATE)
+                  ? ''
+                  : 'hidden'
+              }`}
             >
               <Tooltip title="Cập nhật phiếu">
                 <Link to={`/order/outbound_order/update/${item.id}`}>
@@ -134,7 +142,9 @@ const OutboundOrderList = () => {
             </Menu.Item>
           )}
           <Menu.Item
-            className={`${checkPermission(permissions.OUTBOUND_ORDERS_READ) ? '' : 'hidden'}`}
+            className={`${
+              checkPermission(permissions.OUTBOUND_ORDERS_READ) ? '' : 'hidden'
+            }`}
           >
             <Tooltip title="Chi tiết phiếu">
               <Link to={`/order/outbound_order/detail/${item.id}`}>
@@ -142,10 +152,13 @@ const OutboundOrderList = () => {
               </Link>
             </Tooltip>
           </Menu.Item>
-          <Menu.Item
+          {/* <Menu.Item
             key="delete"
-            className={`${checkPermission(permissions.OUTBOUND_ORDERS_DELETE) ? '' : 'hidden'
-              }`}
+            className={`${
+              checkPermission(permissions.OUTBOUND_ORDERS_DELETE)
+                ? ''
+                : 'hidden'
+            }`}
           >
             <Tooltip title="Xóa phiếu">
               <Popconfirm
@@ -157,7 +170,7 @@ const OutboundOrderList = () => {
                 <DeleteFilled />
               </Popconfirm>
             </Tooltip>
-          </Menu.Item>
+          </Menu.Item> */}
         </Menu>
       ),
     },
@@ -184,7 +197,7 @@ const OutboundOrderList = () => {
   };
   useEffect(() => {
     getOutboundOrderList();
-  }, [limit, page, nameSearch])
+  }, [limit, page, nameSearch]);
 
   const onPaginationChange = (page: number) => {
     setPage(page);
@@ -228,7 +241,9 @@ const OutboundOrderList = () => {
           </div>
         </div>
         <Button
-          className={`button_excel ${checkPermission(permissions.OUTBOUND_ORDERS_CREATE) ? '' : 'hidden'}`}
+          className={`button_excel ${
+            checkPermission(permissions.OUTBOUND_ORDERS_CREATE) ? '' : 'hidden'
+          }`}
           onClick={() => {
             navigate('/order/outbound_order/import');
           }}
@@ -269,7 +284,7 @@ const OutboundOrderList = () => {
         footer={() => <TableFooter paginationProps={pagination} />}
         pagination={false}
         loading={loading}
-        scroll={{ x: 1000, y: 580 }}
+        scroll={{ x: 1100, y: 580 }}
       />
     </div>
   );

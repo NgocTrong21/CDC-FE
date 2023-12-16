@@ -40,6 +40,7 @@ const OutboundOrderCreate = () => {
       description: '',
     },
   ]);
+  const [loading, setLoading] = useState<boolean>(false);
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
@@ -71,7 +72,7 @@ const OutboundOrderCreate = () => {
       unitPrice: 0,
       totalValue: 0,
       description: '',
-      stock: 0
+      stock: 0,
     };
     setDataSource([...dataSource, defaultValue]);
   };
@@ -113,7 +114,7 @@ const OutboundOrderCreate = () => {
         unitPrice: selectedItem?.unit_price,
         description: selectedItem?.note,
         unit: selectedItem?.Equipment_Unit?.name,
-        stock: selectedItem?.quantity
+        stock: selectedItem?.quantity,
       });
 
       setDataSource(listData);
@@ -133,13 +134,10 @@ const OutboundOrderCreate = () => {
       })
       .catch();
   };
-  const handleChangeOrderQuantity = (
-    value: number,
-    index: number,
-  ) => {
+  const handleChangeOrderQuantity = (value: number, index: number) => {
     const actualIndex = (currentPage - 1) * pageSize + index;
     const listData = [...dataSource];
-    let orderQuantity
+    let orderQuantity;
     if (value > 0) {
       orderQuantity = value;
     } else {
@@ -158,6 +156,7 @@ const OutboundOrderCreate = () => {
     try {
       await form.validateFields();
       if (data) {
+        setLoading(true);
         outboundOrderApi
           .create({
             data: {
@@ -187,9 +186,10 @@ const OutboundOrderCreate = () => {
           })
           .catch((error) => {
             toast.error(error.response.data.message);
-          });
+          })
+          .finally(() => setLoading(false));
       }
-    } catch (error) { }
+    } catch (error) {}
   };
   return (
     <Layout>
@@ -208,6 +208,7 @@ const OutboundOrderCreate = () => {
                   onClick={() => {
                     onFormSubmit(form.getFieldsValue());
                   }}
+                  loading={loading}
                 >
                   Lưu
                 </Button>
@@ -359,13 +360,13 @@ const OutboundOrderCreate = () => {
                     width="15%"
                     render={(value, _record, index) => (
                       <InputNumber
-                        className='w-full'
+                        className="w-full"
                         onBlur={(e) => {
                           handleChangeOrderQuantity(
                             Math.round(
                               parseFloat(e.target.value.replaceAll(',', ''))
                             ) as unknown as number,
-                            index,
+                            index
                           );
                         }}
                         formatter={(value) => {
@@ -384,9 +385,7 @@ const OutboundOrderCreate = () => {
                     dataIndex="stock"
                     key="stock"
                     render={(value) => {
-                      return (
-                        <p>{value}</p>
-                      );
+                      return <p>{value}</p>;
                     }}
                   />
                   <Column
@@ -394,18 +393,14 @@ const OutboundOrderCreate = () => {
                     dataIndex="unitPrice"
                     key="unitPrice"
                     render={(value, _record) => {
-                      return (
-                        <p>{formatCurrencyVN(value)}</p>
-                      );
+                      return <p>{formatCurrencyVN(value)}</p>;
                     }}
                   />
                   <Column
                     title="Tổng giá trị"
                     dataIndex={'totalValue'}
                     key={'totalValue'}
-                    render={(value) => (
-                      <p>{formatCurrencyVN(value)}</p>
-                    )}
+                    render={(value) => <p>{formatCurrencyVN(value)}</p>}
                   />
                   <Column
                     title="Ghi chú"

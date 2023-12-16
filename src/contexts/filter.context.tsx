@@ -36,15 +36,13 @@ const FilterContextProvider: React.FC<FilterContextProps> = ({ children }) => {
       filterApi.getDepartmentApi(),
       filterApi.getStatusEquipmentApi(),
       filterApi.getAllUnitApi(),
-    ])
-      .then((res: any) => {
-        const [roles, departments, statuses, units] = res;
-        setRoles(roles?.data?.data?.roles);
-        setDepartments(departments?.data?.data?.departments);
-        setStatuses(statuses?.data?.data?.statuses);
-        setUnits(units?.data?.data?.units);
-      })
-      .catch((error) => console.log('error', error));
+    ]).then((res: any) => {
+      const [roles, departments, statuses, units] = res;
+      setRoles(roles?.data?.data?.roles);
+      setDepartments(departments?.data?.data?.departments);
+      setStatuses(statuses?.data?.data?.statuses);
+      setUnits(units?.data?.data?.units);
+    });
   };
 
   useEffect(() => {

@@ -67,7 +67,11 @@ const ReportSupplyByWarehouse = () => {
       show: true,
       render(item: any) {
         return (
-          <img src={item || image} alt="logo" className='w-full  aspect-square object-contain' />
+          <img
+            src={item || image}
+            alt="logo"
+            className="w-full  aspect-square object-contain"
+          />
         );
       },
       width: 100,
@@ -191,6 +195,7 @@ const ReportSupplyByWarehouse = () => {
     end: any,
     selectedWarehouse: any
   ) => {
+    setLoading(true);
     supplyApi
       .getReportSuppliesByWarehouse({
         data: {

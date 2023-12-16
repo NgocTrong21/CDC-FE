@@ -41,10 +41,9 @@ const ReportSupply = () => {
   const [supllies, setSupplies] = useState<any>([]);
   const [page, setPage] = useState<number>(1);
   const [total, setTotal] = useState<number>(1);
-  const [loading, setLoading] = useState<boolean>(false);
   const [name, setName] = useState<string>('');
   const nameSearch = useDebounce(name, 500);
-
+  const [loading, setLoading] = useState<boolean>(false);
   const columns: any = [
     {
       title: 'Ảnh đại diện',
@@ -53,7 +52,11 @@ const ReportSupply = () => {
       show: true,
       render(item: any) {
         return (
-          <img src={item || image} alt="logo" className='w-full  aspect-square object-contain' />
+          <img
+            src={item || image}
+            alt="logo"
+            className="w-full  aspect-square object-contain"
+          />
         );
       },
       width: 100,
@@ -173,6 +176,7 @@ const ReportSupply = () => {
   };
 
   const handleGetReportSupplies = (start: any, end: any, search: any) => {
+    setLoading(true);
     supplyApi
       .getReportSupplies({
         data: {

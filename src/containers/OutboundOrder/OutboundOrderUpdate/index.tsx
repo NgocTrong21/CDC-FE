@@ -29,6 +29,7 @@ const OutboundOrderUpdate = () => {
   const { id } = params;
   const count = useRef(1);
   const { Column } = Table;
+  const [loading, setLoading] = useState<boolean>(false);
   const [dataSource, setDataSource] = useState<any[]>([]);
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [supllies, setSupplies] = useState<any>([]);
@@ -45,7 +46,7 @@ const OutboundOrderUpdate = () => {
       unitPrice: 0,
       totalValue: 0,
       description: '',
-      stock: 0
+      stock: 0,
     };
     setDataSource([...dataSource, defaultValue]);
   };
@@ -76,6 +77,7 @@ const OutboundOrderUpdate = () => {
     try {
       await form.validateFields();
       if (data) {
+        setLoading(true);
         outboundOrderApi
           .update({
             data: {
@@ -109,9 +111,10 @@ const OutboundOrderUpdate = () => {
             } else {
               toast.error('Cập nhật phiếu nhập thất bại!');
             }
-          });
+          })
+          .finally(() => setLoading(false));
       }
-    } catch (error) { }
+    } catch (error) {}
   };
   const seachWarehouses = () => {
     warehouseApi
@@ -162,7 +165,7 @@ const OutboundOrderUpdate = () => {
                 unit: item.Supply?.Equipment_Unit?.name,
                 totalValue: item.quantity * item.Supply?.unit_price || 0,
                 description: item.Supply?.note,
-                stock: item?.stock
+                stock: item?.stock,
               })
             )
           );
@@ -184,16 +187,13 @@ const OutboundOrderUpdate = () => {
         unitPrice: selectedItem?.unit_price,
         description: selectedItem?.note,
         unit: selectedItem?.Equipment_Unit?.name,
-        stock: selectedItem?.quantity
+        stock: selectedItem?.quantity,
       });
       setDataSource(listData);
     }
   };
 
-  const handleChangeOrderQuantity = (
-    value: number,
-    index: number,
-  ) => {
+  const handleChangeOrderQuantity = (value: number, index: number) => {
     const actualIndex = (currentPage - 1) * pageSize + index;
     const listData = [...dataSource];
     const orderQuantity = value || 0;
@@ -216,7 +216,10 @@ const OutboundOrderUpdate = () => {
       .then((res: any) => {
         const { success, data } = res.data;
         if (success) {
-          const dataSupplies = data.supplies.map((item: any) => ({ ...item.Supply, quantity: item.quantity }));
+          const dataSupplies = data.supplies.map((item: any) => ({
+            ...item.Supply,
+            quantity: item.quantity,
+          }));
           setSupplies(dataSupplies);
         }
       })
@@ -238,6 +241,7 @@ const OutboundOrderUpdate = () => {
                   onClick={() => {
                     onFormSubmit(form.getFieldsValue());
                   }}
+                  loading={loading}
                 >
                   Lưu
                 </Button>
@@ -384,14 +388,14 @@ const OutboundOrderUpdate = () => {
                     width="15%"
                     render={(value, record, index) => (
                       <InputNumber
-                        className='w-full'
+                        className="w-full"
                         min={1}
                         onBlur={(e) => {
                           handleChangeOrderQuantity(
                             Math.round(
                               parseFloat(e.target.value.replaceAll(',', ''))
                             ) as unknown as number,
-                            index,
+                            index
                           );
                         }}
                         formatter={(value) => {
@@ -410,9 +414,7 @@ const OutboundOrderUpdate = () => {
                     dataIndex="stock"
                     key="stock"
                     render={(value) => {
-                      return (
-                        <p>{value}</p>
-                      );
+                      return <p>{value}</p>;
                     }}
                   />
                   <Column
@@ -420,18 +422,14 @@ const OutboundOrderUpdate = () => {
                     dataIndex="unitPrice"
                     key="unitPrice"
                     render={(value) => {
-                      return (
-                        <p>{formatCurrencyVN(value)}</p>
-                      );
+                      return <p>{formatCurrencyVN(value)}</p>;
                     }}
                   />
                   <Column
                     title="Tổng giá trị"
                     dataIndex={'totalValue'}
                     key={'totalValue'}
-                    render={(value) => (
-                      <p>{formatCurrencyVN(value)}</p>
-                    )}
+                    render={(value) => <p>{formatCurrencyVN(value)}</p>}
                   />
                   <Column
                     title="Ghi chú"

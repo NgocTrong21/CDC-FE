@@ -1,9 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import {
-  EditFilled,
-  EyeFilled,
-  PlusCircleFilled,
-} from '@ant-design/icons';
+import { EditFilled, EyeFilled, PlusCircleFilled } from '@ant-design/icons';
 import {
   Button,
   Divider,
@@ -19,10 +15,7 @@ import useDebounce from 'hooks/useDebounce';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { NotificationContext } from 'contexts/notification.context';
-import {
-  checkPermission,
-  onChangeCheckbox,
-} from 'utils/globalFunc.util';
+import { checkPermission, onChangeCheckbox } from 'utils/globalFunc.util';
 import { permissions } from 'constants/permission.constant';
 import type { PaginationProps } from 'antd';
 import inboundOrderApi from 'api/inbound_order';
@@ -68,8 +61,6 @@ const InboundOrderList = () => {
       })
       .then((res: any) => {
         const { success, data } = res.data;
-        console.log('check data', data);
-
         if (success) {
           setInboundOrders(data.inbound_orders.rows);
           setTotal(data.inbound_orders.count);
@@ -80,7 +71,7 @@ const InboundOrderList = () => {
   };
   useEffect(() => {
     getInboundOrderList();
-  }, [limit, page, nameSearch])
+  }, [limit, page, nameSearch]);
   const columns: any = [
     {
       title: 'Số phiếu',
@@ -102,7 +93,8 @@ const InboundOrderList = () => {
       show: true,
       widthExcel: 30,
       width: 100,
-      render: (_item: any, record: any) => moment(new Date(record.createdAt)).format('DD/MM/YYYY')
+      render: (_item: any, record: any) =>
+        moment(new Date(record.createdAt)).format('DD/MM/YYYY'),
     },
     {
       title: 'Nhà cung cấp',
@@ -117,7 +109,7 @@ const InboundOrderList = () => {
       show: true,
       widthExcel: 30,
       width: 100,
-      render: (_item: any, record: any) => record.Warehouse.name
+      render: (_item: any, record: any) => record.Warehouse.name,
     },
     {
       title: 'Người giao hàng',
@@ -137,8 +129,11 @@ const InboundOrderList = () => {
           {item?.status_id === 1 && (
             <Menu.Item
               key="update_equipment"
-              className={`${checkPermission(permissions.INBOUND_ORDERS_UPDATE) ? '' : 'hidden'
-                }`}
+              className={`${
+                checkPermission(permissions.INBOUND_ORDERS_UPDATE)
+                  ? ''
+                  : 'hidden'
+              }`}
             >
               <Tooltip title="Cập nhật phiếu">
                 <Link to={`/order/inbound_order/update/${item.id}`}>
@@ -148,7 +143,9 @@ const InboundOrderList = () => {
             </Menu.Item>
           )}
           <Menu.Item
-            className={`${checkPermission(permissions.INBOUND_ORDERS_READ) ? '' : 'hidden'}`}
+            className={`${
+              checkPermission(permissions.INBOUND_ORDERS_READ) ? '' : 'hidden'
+            }`}
           >
             <Tooltip title="Chi tiết phiếu">
               <Link to={`/order/inbound_order/detail/${item.id}`}>
@@ -243,7 +240,9 @@ const InboundOrderList = () => {
           onChange={(e) => onChangeSearch(e)}
         />
         <Button
-          className={`button_excel ${checkPermission(permissions.INBOUND_ORDERS_CREATE) ? '' : 'hidden'}`}
+          className={`button_excel ${
+            checkPermission(permissions.INBOUND_ORDERS_CREATE) ? '' : 'hidden'
+          }`}
           onClick={() => {
             navigate('/order/inbound_order/import');
           }}

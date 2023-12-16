@@ -15,11 +15,11 @@ export const broken_status = [
 
 export const repaired_status = [
   {
-    value: 3,
+    value: 1,
     label: 'Sửa được, hoạt động bình thường'
   },
   {
-    value: 6,
+    value: 4,
     label: 'Không sửa được, chờ thanh lý'
   }
 ]
@@ -46,6 +46,21 @@ export const report_status = [
   },
   {
     value: 2,
+    label: 'Hủy yêu cầu'
+  }
+]
+
+export const order_status = [
+  {
+    value: 1,
+    label: 'Chờ phê duyệt'
+  },
+  {
+    value: 2,
+    label: 'Đã phê duyệt'
+  },
+  {
+    value: 3,
     label: 'Hủy yêu cầu'
   }
 ]

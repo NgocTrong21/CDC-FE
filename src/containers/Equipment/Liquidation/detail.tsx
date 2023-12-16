@@ -26,29 +26,28 @@ const DetailLiquidation = () => {
     localStorage.getItem(CURRENT_USER) || ''
   );
   const [form] = Form.useForm();
-  const query: any = useQuery();
   const param: any = useParams();
   const { id, liquidation_id } = param;
   const { increaseCount, getAllNotifications } =
     useContext(NotificationContext);
   const [file, setFile] = useState<any>('');
 
-  const handleChangeFile = async (e: any) => {
-    let file = e.target.files[0];
-    if (file.size > 1000000) {
-      form.resetFields(['file']);
-      form.setFields([
-        {
-          name: 'file',
-          errors: ['Vui lòng chọn file có dung lượng nhỏ hơn 1MB!'],
-        },
-      ]);
-      return;
-    } else {
-      let fileBase64 = await convertBase64(file);
-      setFile(fileBase64);
-    }
-  };
+  // const handleChangeFile = async (e: any) => {
+  //   let file = e.target.files[0];
+  //   if (file.size > 1000000) {
+  //     form.resetFields(['file']);
+  //     form.setFields([
+  //       {
+  //         name: 'file',
+  //         errors: ['Vui lòng chọn file có dung lượng nhỏ hơn 1MB!'],
+  //       },
+  //     ]);
+  //     return;
+  //   } else {
+  //     let fileBase64 = await convertBase64(file);
+  //     setFile(fileBase64);
+  //   }
+  // };
 
   const handleLiquidationStatus = (status: any = 0) => {
     let color: any;
@@ -78,6 +77,7 @@ const DetailLiquidation = () => {
             department: data?.equipment?.Equipment?.Department.name,
             department_id: data?.equipment?.Equipment?.Department.id,
             code: data?.equipment?.code,
+            reason: data?.equipment?.reason,
             liquidation_date: data?.equipment?.liquidation_date
               ? moment(data?.equipment?.liquidation_date)
               : '',
@@ -130,6 +130,7 @@ const DetailLiquidation = () => {
     const data = {
       ...equipment,
       liquidation_status: 0,
+      reason: values.reason,
       liquidation_date: values.liquidation_date,
       file,
       isEdit: 1,
@@ -185,13 +186,9 @@ const DetailLiquidation = () => {
           <Form.Item label="Ngày thanh lý" name="liquidation_date">
             <DatePicker className="date" />
           </Form.Item>
-          {/* <Form.Item
-            label="Tài liệu đính kèm"
-            name="file"
-            className="fileUploadInput"
-          >
-            <Input type="file" onChange={(e: any) => handleChangeFile(e)} />
-          </Form.Item> */}
+          <Form.Item label="Lý do thanh lý" name="reason">
+            <Input className="input" />
+          </Form.Item>
         </div>
         <div className="grid grid-cols-2 gap-5">
           <Form.Item name="create_user_id" className="hidden"></Form.Item>

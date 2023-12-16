@@ -9,7 +9,6 @@ import {
   UnorderedListOutlined,
   UsergroupAddOutlined,
   BarChartOutlined,
-  FileDoneOutlined,
   SisternodeOutlined,
   ShopOutlined,
   ClusterOutlined,
@@ -194,110 +193,46 @@ const LayoutSystem = (props: LayoutProps) => {
       permissions.DEPARTMENT_READ,
       <UsergroupAddOutlined style={{ fontSize: '20px' }} />,
       [
-        getItem('Khoa - Phòng', [2, 6].includes(getCurrentUser().role_id) ? `/department/detail/${getCurrentUser().department_id}` : `/department`, permissions.DEPARTMENT_READ),
-        // getItem(
-        //   'Nhà cung cấp dịch vụ',
-        //   '/provider',
-        //   permissions.DEPARTMENT_READ
-        // ),
-        // getItem('Dịch vụ', '/service', permissions.DEPARTMENT_READ),
+        getItem(
+          'Khoa - Phòng',
+          [2, 6].includes(getCurrentUser().role_id)
+            ? `/department/detail/${getCurrentUser().department_id}`
+            : `/department`,
+          permissions.DEPARTMENT_READ
+        ),
       ]
     ),
-    ![2, 6].includes(getCurrentUser().role_id) && getItem(
-      'Quản lý thành viên',
-      '/user',
-      permissions.USER_READ,
-      <UserOutlined style={{ fontSize: '20px' }} />,
-      [
-        getItem('Danh sách thành viên', '/list_user', permissions.USER_READ),
-        getItem('Thêm mới thành viên', '/create_user', permissions.USER_CREATE),
-      ]
-    ),
+    ![2, 6].includes(getCurrentUser().role_id) &&
+      getItem(
+        'Quản lý thành viên',
+        '/user',
+        permissions.USER_READ,
+        <UserOutlined style={{ fontSize: '20px' }} />,
+        [
+          getItem('Danh sách thành viên', '/list_user', permissions.USER_READ),
+          getItem(
+            'Thêm mới thành viên',
+            '/create_user',
+            permissions.USER_CREATE
+          ),
+        ]
+      ),
     getItem(
       'Quản lý danh mục',
       '/category',
       permissions.UNIT_EQUIPMENT_UPDATE,
       <UnorderedListOutlined style={{ fontSize: '20px' }} />,
-      [
-        // getItem('Nhóm thiết bị', '/group', permissions.GROUP_EQUIPMENT_READ),
-        // getItem('Loại thiết bị', '/type', permissions.TYPE_EQUIPMENT_READ),
-        getItem('Đơn vị tính', '/unit', permissions.UNIT_EQUIPMENT_READ),
-        // getItem('Trạng thái', '/status', true),
-        // getItem('Chu kỳ', '/cycle'),
-      ]
+      [getItem('Đơn vị tính', '/unit', permissions.UNIT_EQUIPMENT_READ)]
     ),
-    // getItem(
-    //   'Thống kê thiết bị',
-    //   '/statistic',
-    //   permissions.STATISTIC_EQUIPMENT,
-    //   <BarChartOutlined style={{ fontSize: '20px' }} />,
-    //   [
-    //     getItem(
-    //       'Theo khoa phòng',
-    //       '/department',
-    //       permissions.STATISTIC_EQUIPMENT
-    //     ),
-    //     getItem(
-    //       'Theo trạng thái sử dụng',
-    //       '/status',
-    //       permissions.STATISTIC_EQUIPMENT
-    //     ),
-    //     getItem(
-    //       'Theo mức độ rủi ro',
-    //       '/risk_level',
-    //       permissions.STATISTIC_EQUIPMENT
-    //     ),
-    //     getItem(
-    //       'Theo loại thiết bị',
-    //       '/equipment_type',
-    //       permissions.STATISTIC_EQUIPMENT
-    //     ),
-    //     getItem('Theo năm', '/year', permissions.STATISTIC_EQUIPMENT),
-    //     getItem('Theo dự án', '/project', permissions.STATISTIC_EQUIPMENT),
-    //     getItem(
-    //       'Theo thời gian kiểm định',
-    //       '/accreditation',
-    //       permissions.STATISTIC_EQUIPMENT
-    //     ),
-    //     getItem(
-    //       'Theo thời gian hết hạn bảo hành',
-    //       '/warranty_expires',
-    //       permissions.STATISTIC_EQUIPMENT
-    //     ),
-    //     getItem(
-    //       'Thống kê vật tư',
-    //       '/supplies',
-    //       permissions.STATISTIC_EQUIPMENT
-    //     ),
-    //   ]
-    // ),
-    // getItem(
-    //   'Kiểm kê',
-    //   '/inventories',
-    //   permissions.INVENTORY_EQUIPMENT_READ,
-    //   <FileDoneOutlined style={{ fontSize: '20px' }} />,
-    //   [
-    //     getItem(
-    //       'Danh sách kiểm kê thiết bị',
-    //       '/equipment',
-    //       permissions.INVENTORY_EQUIPMENT_READ
-    //     ),
-    //     getItem(
-    //       'Danh sách kiểm kê vật tư',
-    //       '/supplies',
-    //       permissions.INVENTORY_EQUIPMENT_READ
-    //     ),
-    //   ]
-    // ),
     getItem(
       'Cài đặt',
       '/setting',
-      permissions.SETTING_INFO,
+      permissions.SETTING_ROLE,
       <SettingOutlined style={{ fontSize: '20px' }} />,
       [
         // getItem('Cấu hình hệ thống', '/email-config', permissions.SETTING_INFO),
         getItem('Phân quyền', '/role', permissions.SETTING_ROLE),
-        getItem('Thông báo', '/notification', permissions.SETTING_INFO),
+        // getItem('Thông báo', '/notification', permissions.SETTING_INFO),
       ]
     ),
   ];
@@ -305,7 +240,7 @@ const LayoutSystem = (props: LayoutProps) => {
     <>
       <div
         className="bg-white rounded-lg shadow-lg relative pt-2 pl-2 pb-2 "
-      // style={{ overflowY: 'scroll' }}
+        // style={{ overflowY: 'scroll' }}
       >
         <div className="flex items-center justify-between rounded-lg">
           <h1 className="font-bold text-2xl pl-3 pt-2 pb-1">Thông báo</h1>
@@ -323,8 +258,9 @@ const LayoutSystem = (props: LayoutProps) => {
               key: item.id,
               label: (
                 <div
-                  className={`${item.is_seen === 0 ? '' : 'text-gray-400'
-                    } text-base`}
+                  className={`${
+                    item.is_seen === 0 ? '' : 'text-gray-400'
+                  } text-base`}
                 >
                   <Row>
                     {/* <Link to={`${handleUrlInNotification(item)}`}>
@@ -389,7 +325,7 @@ const LayoutSystem = (props: LayoutProps) => {
         )}
         <div
           className="flex flex-row items-center cursor-pointer  "
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/equipment/list_eq')}
         >
           <Space>
             <img src={logo} alt="logo" className="logo" />
@@ -398,10 +334,9 @@ const LayoutSystem = (props: LayoutProps) => {
             </div>
           </Space>
         </div>
-
         <Space className="h-[40px] flex flex-row items-center">
           {/* notifications */}
-          <Dropdown
+          {/* <Dropdown
             overlay={menu}
             placement="bottomRight"
             arrow
@@ -414,7 +349,7 @@ const LayoutSystem = (props: LayoutProps) => {
                 className="trigger text-[20px] "
               />
             </Badge>
-          </Dropdown>
+          </Dropdown> */}
 
           {/* Avatar */}
           <Dropdown
@@ -471,7 +406,6 @@ const LayoutSystem = (props: LayoutProps) => {
             className="font-medium "
           />
         </Sider>
-
         <Layout>
           <Content
             style={{

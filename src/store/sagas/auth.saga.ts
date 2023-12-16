@@ -28,7 +28,6 @@ function* handleRegister(action: any) {
       );
     else yield put(authActions.registerRequestFinish(message));
   } catch (error: any) {
-    console.log(`error`, error?.response);
     yield put(authActions.registerRequestFinish(''));
   }
 }
@@ -43,7 +42,7 @@ function* handleLogin(action: any) {
       localStorage.setItem(REFRESH_TOKEN, data?.refresh_token);
       localStorage.setItem(CURRENT_USER, JSON.stringify(data?.user || {}));
       yield put(authActions.loginSuccess(data?.user));
-      yield put(push('/'));
+      yield put(push('/equipment/list_eq'));
       window.location.reload();
     } else {
       yield put(authActions.loginFailed(message));

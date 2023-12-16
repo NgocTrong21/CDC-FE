@@ -195,13 +195,13 @@ const DetailTransfer = () => {
           <Form.Item label="Ngày điều chuyển" name="transfer_date">
             <Input disabled className="input" />
           </Form.Item>
-          <Form.Item
+          {/* <Form.Item
             label="Tài liệu đính kèm"
             name="file"
             className="fileUploadInput"
           >
             <Input type="file" onChange={(e: any) => handleChangeFile(e)} />
-          </Form.Item>
+          </Form.Item> */}
         </div>
         <div className="grid grid-cols-2 gap-5">
           <Form.Item
@@ -232,7 +232,7 @@ const DetailTransfer = () => {
               </Form.Item>
             )}
 
-          {equipment.transfer_status !== 1 &&
+          {/* {equipment.transfer_status !== 1 &&
             checkPermission(permissions.TRANFER_EQUIPMENT_UPDATE) && (
               <Form.Item>
                 <Button
@@ -243,7 +243,7 @@ const DetailTransfer = () => {
                   Cập nhật
                 </Button>
               </Form.Item>
-            )}
+            )} */}
         </div>
         {equipment.transfer_status === 1 && (
           <Form.Item>

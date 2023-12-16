@@ -1,19 +1,18 @@
 import {
-  DeleteFilled,
+  // DeleteFilled,
   EditFilled,
   EyeFilled,
   FileExcelFilled,
   ImportOutlined,
-  SelectOutlined,
+  // SelectOutlined,
 } from '@ant-design/icons';
 import {
   Button,
   Checkbox,
-  Divider,
   Input,
   Menu,
   Pagination,
-  Popconfirm,
+  // Popconfirm,
   Row,
   Table,
   Tooltip,
@@ -24,12 +23,17 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import useQuery from 'hooks/useQuery';
 import useDebounce from 'hooks/useDebounce';
 import supplyApi from 'api/suplly.api';
-import { toast } from 'react-toastify';
-import { checkPermission, onChangeCheckbox } from 'utils/globalFunc.util';
+// import { toast } from 'react-toastify';
+import {
+  checkPermission,
+  onChangeCheckbox,
+  resolveDataExcel,
+} from 'utils/globalFunc.util';
 
 import type { PaginationProps } from 'antd';
 import { permissions } from 'constants/permission.constant';
 import { formatCurrencyVN } from 'utils/validateFunc.util';
+import ExportToExcel from 'components/Excel';
 
 const TableFooter = ({ paginationProps }: any) => {
   return (
@@ -42,6 +46,7 @@ const TableFooter = ({ paginationProps }: any) => {
 
 const Suplly = () => {
   const navigate = useNavigate();
+  const [loadingDownload, setLoadingDownload] = useState<boolean>(false);
   const [supllies, setSupplies] = useState<any>([]);
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState<any>({});
@@ -56,7 +61,6 @@ const Suplly = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [name, setName] = useState<string>(currentName);
   const nameSearch = useDebounce(name, 500);
-  const [isShowCustomTable, setIsShowCustomTable] = useState<boolean>(false);
 
   const onShowSizeChange: PaginationProps['onShowSizeChange'] = (
     _current,
@@ -73,7 +77,11 @@ const Suplly = () => {
       show: true,
       render(item: any) {
         return (
-          <img src={item || image} alt="logo" className='w-full  aspect-square object-contain' />
+          <img
+            src={item || image}
+            alt="logo"
+            className="w-full  aspect-square object-contain"
+          />
         );
       },
       width: 100,
@@ -84,6 +92,7 @@ const Suplly = () => {
       key: 'code',
       show: true,
       width: 150,
+      widthExcel: 30,
     },
     {
       title: 'Số lô',
@@ -91,6 +100,7 @@ const Suplly = () => {
       key: 'lot_number',
       show: true,
       width: 150,
+      widthExcel: 30,
     },
     {
       title: 'Tên vật tư',
@@ -98,6 +108,7 @@ const Suplly = () => {
       key: 'name',
       show: true,
       width: 300,
+      widthExcel: 30,
     },
     {
       title: 'Đơn vị tính',
@@ -105,6 +116,7 @@ const Suplly = () => {
       show: true,
       render: (item: any) => <div>{item?.Equipment_Unit?.name}</div>,
       width: 100,
+      widthExcel: 20,
     },
     {
       title: 'Đơn giá',
@@ -113,6 +125,7 @@ const Suplly = () => {
       render: (item: any) => <p>{formatCurrencyVN(item)}</p>,
       show: true,
       width: 200,
+      widthExcel: 30,
     },
     {
       title: 'Nhà cung cấp',
@@ -120,6 +133,7 @@ const Suplly = () => {
       show: true,
       dataIndex: 'provider',
       width: 200,
+      widthExcel: 30,
     },
     {
       title: 'Xuất sứ',
@@ -127,6 +141,7 @@ const Suplly = () => {
       show: true,
       dataIndex: 'manufacturing_country',
       width: 200,
+      widthExcel: 30,
     },
     {
       title: 'Tác vụ',
@@ -144,17 +159,17 @@ const Suplly = () => {
               </Tooltip>
             </Menu.Item>
           )}
-          {
-            checkPermission(permissions.CONSUMABLE_SUPPLY_UPDATE) && <Menu.Item key="update_supplies">
+          {checkPermission(permissions.CONSUMABLE_SUPPLY_UPDATE) && (
+            <Menu.Item key="update_supplies">
               <Tooltip title="Cập nhật vật tư">
                 <Link to={`/supplies/update/${item.id}`}>
                   <EditFilled />
                 </Link>
               </Tooltip>
             </Menu.Item>
-          }
-          {
-            checkPermission(permissions.CONSUMABLE_SUPPLY_DELETE) && <Menu.Item key="delete">
+          )}
+          {/* {checkPermission(permissions.CONSUMABLE_SUPPLY_DELETE) && (
+            <Menu.Item key="delete">
               <Tooltip title="Xóa vật tư">
                 <Popconfirm
                   title="Bạn muốn xóa vật tư này?"
@@ -166,12 +181,12 @@ const Suplly = () => {
                 </Popconfirm>
               </Tooltip>
             </Menu.Item>
-          }
+          )} */}
         </Menu>
       ),
     },
   ];
-  const [columnTable, setColumnTable] = useState<any>(columns);
+  const columnTable = columns;
 
   const onPaginationChange = (page: number) => {
     setPage(page);
@@ -190,20 +205,20 @@ const Suplly = () => {
     onShowSizeChange: onShowSizeChange,
   };
 
-  const handleDelete = (id: number) => {
-    supplyApi
-      .delete(id)
-      .then((res: any) => {
-        const { success, message } = res.data;
-        if (success) {
-          getSuppliesList();
-          toast.success('Xóa thành công!');
-        } else {
-          toast.error(message);
-        }
-      })
-      .catch((error) => toast.error(error));
-  };
+  // const handleDelete = (id: number) => {
+  //   supplyApi
+  //     .delete(id)
+  //     .then((res: any) => {
+  //       const { success, message } = res.data;
+  //       if (success) {
+  //         getSuppliesList();
+  //         toast.success('Xóa thành công!');
+  //       } else {
+  //         toast.error(message);
+  //       }
+  //     })
+  //     .catch((error) => toast.error(error));
+  // };
 
   const getSuppliesList = () => {
     setLoading(true);
@@ -212,7 +227,6 @@ const Suplly = () => {
         page,
         limit,
         name: nameSearch,
-
       })
       .then((res: any) => {
         const { success, data } = res.data;
@@ -226,16 +240,30 @@ const Suplly = () => {
   };
   useEffect(() => {
     getSuppliesList();
-  }, [limit, page, nameSearch])
+  }, [limit, page, nameSearch]);
+  const downloadSuppliesList = async () => {
+    setLoadingDownload(true);
+    const data = supllies.map((x: any) => ({
+      code: x.code,
+      lot_numbe: x.lot_number,
+      name: x.name,
+      unit: x?.Equipment_Unit?.name,
+      unit_price: x?.unit_price,
+      provider: x?.provider,
+      manufacturing_country: x?.manufacturing_country,
+    }));
+    resolveDataExcel(data, 'Danh sách vật tư', columnTable);
+    setLoadingDownload(false);
+  };
   return (
     <div>
       <div className="flex-between-center">
         <div className="title">DANH SÁCH VẬT TƯ</div>
         <div className="flex flex-row gap-6">
-          <Button className="flex-center text-slate-900 gap-2 rounded-3xl border-[#5B69E6] border-2">
-            <FileExcelFilled />
-            <div className="font-medium text-md text-[#5B69E6]">Xuất Excel</div>
-          </Button>
+          <ExportToExcel
+            callback={downloadSuppliesList}
+            loading={loadingDownload}
+          />
           <Button
             className="flex-center text-slate-900 gap-2 rounded-3xl border-[#5B69E6] border-2"
             onClick={() => navigate('/supplies/import_excel_sp')}
@@ -256,7 +284,7 @@ const Suplly = () => {
             Tùy chọn trường hiển thị
           </div>
         </div> */}
-        {isShowCustomTable && (
+        {/* {isShowCustomTable && (
           <div className="flex flex-row gap-4">
             {columnTable.length > 0 &&
               columnTable.map((item: any) => (
@@ -271,14 +299,16 @@ const Suplly = () => {
                 </div>
               ))}
           </div>
-        )}
+        )} */}
         <div className="flex justify-end p-4">
           <Input
             placeholder="Tìm kiếm vật tư"
             allowClear
             value={name}
             className="input w-1/2"
-            onChange={(e) => { setName(e.target.value) }}
+            onChange={(e) => {
+              setName(e.target.value);
+            }}
           />
         </div>
       </div>

@@ -37,6 +37,7 @@ const InboundOrderUpdate = () => {
   const [warehouses, setWarehouses] = useState([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
+  const [loading, setLoading] = useState<boolean>(false);
   const addRow = () => {
     count.current++;
     const defaultValue = {
@@ -77,6 +78,7 @@ const InboundOrderUpdate = () => {
     try {
       await form.validateFields();
       if (data) {
+        setLoading(true);
         inboundOrderApi
           .update({
             data: {
@@ -97,6 +99,7 @@ const InboundOrderUpdate = () => {
             })),
           })
           .then((res) => {
+            setLoading(false);
             const { success, message } = res.data;
             if (success) {
               navigate('/order/inbound_order');
@@ -106,10 +109,11 @@ const InboundOrderUpdate = () => {
             }
           })
           .catch(() => {
+            setLoading(false);
             toast.error('Cập nhật đơn nhập thất bại!');
           });
       }
-    } catch (error) { }
+    } catch (error) {}
   };
   const seachWarehouses = () => {
     warehouseApi
@@ -241,6 +245,7 @@ const InboundOrderUpdate = () => {
                   onClick={() => {
                     onFormSubmit(form.getFieldsValue());
                   }}
+                  loading={loading}
                 >
                   Lưu
                 </Button>
@@ -362,8 +367,6 @@ const InboundOrderUpdate = () => {
                   <Column
                     title="Tên vật tư"
                     render={(item, record: any, index) => {
-                      console.log('check item', item);
-
                       return (
                         <Select
                           showSearch
@@ -418,18 +421,14 @@ const InboundOrderUpdate = () => {
                     dataIndex="unitPrice"
                     key="unitPrice"
                     render={(value) => {
-                      return (
-                        <p>{formatCurrencyVN(value)}</p>
-                      );
+                      return <p>{formatCurrencyVN(value)}</p>;
                     }}
                   />
                   <Column
                     title="Tổng giá trị"
                     dataIndex={'totalValue'}
                     key={'totalValue'}
-                    render={(value) => (
-                      <p>{formatCurrencyVN(value)}</p>
-                    )}
+                    render={(value) => <p>{formatCurrencyVN(value)}</p>}
                   />
                   <Column
                     title="Ghi chú"
