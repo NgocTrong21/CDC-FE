@@ -14,7 +14,7 @@ const { REPORT } = require("../enums");
 exports.getListUnusedEquipment = async (req, res) => {
   try {
     let { limit, page, name, department_id } = req?.query;
-    let status_id = 6;
+    let status_id = 4;
     const { isHasRole, department_id_from_token } = await checkRoleFromToken(
       req
     );
@@ -243,7 +243,7 @@ exports.approveLiquidationNote = async (req, res) => {
         }),
         data.liquidation_status === 1 &&
           (await db.Equipment.update(
-            { status_id: 7 },
+            { status_id: 5 },
             { where: { id: data?.equipment_id }, transaction: t }
           )),
 

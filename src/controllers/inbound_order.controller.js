@@ -22,7 +22,7 @@ exports.create = async (req, res) => {
         }
       );
       let inputSupplies = [];
-      const suppliesId = supplies.map(item => item.supply_id);
+      const suppliesId = supplies.map((item) => item.supply_id);
       const itemList = new Set(suppliesId);
       const realData = Array.from(itemList);
       for (const dataItem of realData) {
@@ -34,12 +34,14 @@ exports.create = async (req, res) => {
             total = total + currentValue.quantity;
             return total;
           }, 0);
-            inputSupplies.push({
-              ...supplies.find(item => item.supply_id === dataItem),
-              quantity
-            });
+          inputSupplies.push({
+            ...supplies.find((item) => item.supply_id === dataItem),
+            quantity,
+          });
         } else {
-          inputSupplies.push(supplies.find(item => item.supply_id === dataItem));
+          inputSupplies.push(
+            supplies.find((item) => item.supply_id === dataItem)
+          );
         }
       }
       for (const supply of inputSupplies) {
@@ -150,6 +152,10 @@ exports.detail = async (req, res) => {
             },
           ],
         },
+        {
+          model: db.Warehouse,
+          attributes: ["name", "id"],
+        },
       ],
       raw: false,
     });
@@ -183,7 +189,7 @@ exports.update = async (req, res) => {
         where: { inbound_order_id: data?.id },
       });
       let inputSupplies = [];
-      const suppliesId = supplies.map(item => item.supply_id);
+      const suppliesId = supplies.map((item) => item.supply_id);
       const itemList = new Set(suppliesId);
       const realData = Array.from(itemList);
       for (const dataItem of realData) {
@@ -195,12 +201,14 @@ exports.update = async (req, res) => {
             total = total + currentValue.quantity;
             return total;
           }, 0);
-            inputSupplies.push({
-              ...supplies.find(item => item.supply_id === dataItem),
-              quantity
-            });
+          inputSupplies.push({
+            ...supplies.find((item) => item.supply_id === dataItem),
+            quantity,
+          });
         } else {
-          inputSupplies.push(supplies.find(item => item.supply_id === dataItem));
+          inputSupplies.push(
+            supplies.find((item) => item.supply_id === dataItem)
+          );
         }
       }
       for (const supply of inputSupplies) {

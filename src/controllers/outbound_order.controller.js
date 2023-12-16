@@ -54,7 +54,7 @@ exports.create = async (req, res) => {
           }
         );
         let inputSupplies = [];
-        const suppliesId = supplies.map(item => item.supply_id);
+        const suppliesId = supplies.map((item) => item.supply_id);
         const itemList = new Set(suppliesId);
         const realData = Array.from(itemList);
         for (const dataItem of realData) {
@@ -67,11 +67,13 @@ exports.create = async (req, res) => {
               return total;
             }, 0);
             inputSupplies.push({
-              ...supplies.find(item => item.supply_id === dataItem),
-              quantity
+              ...supplies.find((item) => item.supply_id === dataItem),
+              quantity,
             });
           } else {
-            inputSupplies.push(supplies.find(item => item.supply_id === dataItem));
+            inputSupplies.push(
+              supplies.find((item) => item.supply_id === dataItem)
+            );
           }
         }
         for (const supply of inputSupplies) {
@@ -183,9 +185,15 @@ exports.detail = async (req, res) => {
           include: [
             {
               model: db.Supply,
-              include: [{ model: db.Equipment_Unit, attributes: ["id", "name"] }]
+              include: [
+                { model: db.Equipment_Unit, attributes: ["id", "name"] },
+              ],
             },
           ],
+        },
+        {
+          model: db.Warehouse,
+          attributes: ["name", "id"],
         },
       ],
       raw: false,
@@ -193,18 +201,25 @@ exports.detail = async (req, res) => {
     const supplies = await db.Warehouse_Supply.findAll({
       where: {
         warehouse_id: outbound_order.warehouse_id,
-      }
-    })
+      },
+    });
     if (!outbound_order) return errorHandler(res, err.ORDER_NOT_FOUND);
-    return successHandler(res, {
-      outbound_order: {
-        ...outbound_order.dataValues,
-        Supply_Outbound_Orders: outbound_order.dataValues.Supply_Outbound_Orders.map((item) => ({
-          ...item.dataValues,
-          stock: supplies.find(itemSup => itemSup.supply_id === item.dataValues.Supply?.id)?.quantity
-        }))
-      }
-    }, 200);
+    return successHandler(
+      res,
+      {
+        outbound_order: {
+          ...outbound_order.dataValues,
+          Supply_Outbound_Orders:
+            outbound_order.dataValues.Supply_Outbound_Orders.map((item) => ({
+              ...item.dataValues,
+              stock: supplies.find(
+                (itemSup) => itemSup.supply_id === item.dataValues.Supply?.id
+              )?.quantity,
+            })),
+        },
+      },
+      200
+    );
   } catch (error) {
     return errorHandler(res, error);
   }
@@ -237,12 +252,12 @@ exports.update = async (req, res) => {
       } else {
         return errorHandler(res, err.EMPTY_SUPPLIES);
       }
-      const outboundOrderInDB = await db.Outbound_Order.findOne({
+      const outboundOrderInDB = await db.Outbound_Order.findAll({
         where: {
           code: data.code,
         },
       });
-      if (outboundOrderInDB)
+      if (outboundOrderInDB.length > 1)
         return errorHandler(res, err.OUTBOUND_FIELD_DUPLICATED);
       if (validate) {
         await db.Outbound_Order.update(data, {

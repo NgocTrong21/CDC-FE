@@ -91,7 +91,10 @@ exports.list = async (req, res) => {
         ],
       };
     }
-    let include = [{ model: db.Equipment_Unit, attributes: ["id", "name"] }];
+    let include = [
+      { model: db.Equipment_Unit, attributes: ["id", "name"] },
+      { model: db.Warehouse_Supply, attributes: ["quantity", "warehouse_id"] },
+    ];
     let supplies = await getList(+limit, page, filter, "Supply", include);
 
     return successHandler(res, { supplies, count: supplies.length }, 200);
@@ -306,8 +309,7 @@ exports.importByExcel = async (req, res) => {
           });
           if (isDuplicate) {
             duplicateArray.push(supply);
-          } 
-          else {
+          } else {
             await db.Supply.create(supply, { transaction: t });
           }
         })

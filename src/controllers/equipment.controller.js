@@ -382,7 +382,6 @@ exports.unUseEquipment = async (req, res) => {
   try {
     const data = req.body;
     const roles = await getRoleEmailConfig(3);
-
     const users = await Promise.all(
       roles.map(async (role) => {
         const user = await db.User.findAll({
@@ -401,7 +400,7 @@ exports.unUseEquipment = async (req, res) => {
       }
       await Promise.all([
         await db.Equipment.update(
-          { status_id: 6 },
+          { status_id: 4 },
           {
             where: { id: data?.equipment_id },
             transaction: t,
@@ -429,7 +428,7 @@ exports.updateEquipment = async (req, res) => {
     await db.sequelize.transaction(async (t) => {
       await db.Equipment.update(
         { regular_inspection: 12 },
-        { where: { status_id: 3 }, transaction: t }
+        { where: { status_id: 1 }, transaction: t }
       );
       return successHandler(res, {}, 201);
     });

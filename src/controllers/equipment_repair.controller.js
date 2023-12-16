@@ -56,7 +56,7 @@ exports.reportEquipment = async (req, res) => {
       }
       await Promise.all([
         await db.Equipment.update(
-          { status_id: 4 },
+          { status_id: 2 },
           {
             where: { id: data?.equipment_id },
             transaction: t,
@@ -218,7 +218,7 @@ exports.createScheduleRepair = async (req, res) => {
         }),
         data.schedule_repair_status === 1 &&
           (await db.Equipment.update(
-            { status_id: 5 },
+            { status_id: 3 },
             { where: { id: data?.equipment_id }, transaction: t }
           )),
         await db.Notification.create(
@@ -335,7 +335,7 @@ exports.approveScheduleRepair = async (req, res) => {
 
         data.schedule_repair_status === 1 &&
           (await db.Equipment.update(
-            { status_id: 5 },
+            { status_id: 3 },
             { where: { id: data?.equipment_id }, transaction: t }
           )),
         await db.Notification.create(
@@ -543,7 +543,7 @@ exports.getBrokenAndRepairEqList = async (req, res) => {
       offset: page > 1 ? +limit * (page - 1) : 0,
       where: {
         ...filter_equipment,
-        [Op.or]: [{ status_id: 4 }, { status_id: 5 }],
+        [Op.or]: [{ status_id: 2 }, { status_id: 3 }],
       },
       attributes: [
         "id",

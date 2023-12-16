@@ -9,10 +9,9 @@ module.exports.getList = async (
   model,
   include,
   attributes = [],
-  order = [["createdAt", "DESC"]],
+  order = [["createdAt", "DESC"]]
 ) => {
   try {
-    console.log(order);
     for (let i in filter) {
       if (!filter[i]) {
         delete filter[i];
