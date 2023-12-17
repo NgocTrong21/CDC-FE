@@ -1,29 +1,12 @@
 import { useEffect, useState } from 'react';
-import {
-  DeleteFilled,
-  EditFilled,
-  EyeFilled,
-  FilterFilled,
-  SelectOutlined,
-} from '@ant-design/icons';
-import {
-  Checkbox,
-  Divider,
-  Input,
-  Pagination,
-  Popconfirm,
-  Row,
-  Table,
-  Tooltip,
-} from 'antd';
+import { EditFilled, EyeFilled, FilterFilled } from '@ant-design/icons';
+import { Divider, Input, Pagination, Row, Table, Tooltip } from 'antd';
 import useDebounce from 'hooks/useDebounce';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import useQuery from 'hooks/useQuery';
 import providerApi from 'api/provider.api';
 import ExportToExcel from 'components/Excel';
 import { checkPermission, resolveDataExcel } from 'utils/globalFunc.util';
 import warehouseApi from 'api/warehouse.api';
-import { toast } from 'react-toastify';
 import { permissions } from 'constants/permission.constant';
 
 const limit: number = 10;
@@ -48,7 +31,6 @@ const Warehouses = () => {
   const [loadingDownload, setLoadingDownload] = useState<boolean>(false);
   const [name, setName] = useState<string>('');
   const nameSearch = useDebounce(name, 500);
-  const [isShowCustomTable, setIsShowCustomTable] = useState<boolean>(false);
   const seachWarehouses = (params: any) => {
     const { nameSearch, limit, page } = params;
     setLoading(true);
@@ -126,7 +108,7 @@ const Warehouses = () => {
     {
       title: 'Tác vụ',
       key: 'action',
-      show: checkPermission(permissions.WAREHOUSES_MANAGEMENT_UPDATE),
+      show: true,
       render: (item: any) => (
         <div>
           {checkPermission(permissions.WAREHOUSES_MANAGEMENT_UPDATE) && (
@@ -147,7 +129,7 @@ const Warehouses = () => {
       ),
     },
   ];
-  const [columnTable, setColumnTable] = useState<any>(columns);
+  const columnTable = columns;
   const onPaginationChange = (page: number, pageSize: number) => {
     setPage(page);
     navigate(`${pathName}?page=${page}`);
@@ -167,16 +149,6 @@ const Warehouses = () => {
     } else {
       setPage(1);
     }
-  };
-
-  const onChangeCheckbox = (item: any, e: any) => {
-    let newColumns: any = columnTable.map((column: any) => {
-      if (item.title === column.title) {
-        column.show = e.target.checked;
-      }
-      return column;
-    });
-    setColumnTable(newColumns);
   };
 
   const downloadProviderList = async () => {
@@ -221,20 +193,6 @@ const Warehouses = () => {
             Tùy chọn trường hiển thị
           </div>
         </div> */}
-        {isShowCustomTable && (
-          <div className="flex flex-row gap-4">
-            {columnTable.length > 0 &&
-              columnTable.map((item: any) => (
-                <div>
-                  <Checkbox
-                    defaultChecked={item?.show}
-                    onChange={(e: any) => onChangeCheckbox(item, e)}
-                  />
-                  <div>{item?.title}</div>
-                </div>
-              ))}
-          </div>
-        )}
         <div className="flex-between-center gap-4 p-4">
           <Input
             placeholder="Tìm kiếm kho"

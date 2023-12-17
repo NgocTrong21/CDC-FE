@@ -2,13 +2,13 @@ import {
   // DeleteFilled,
   EditFilled,
   EyeFilled,
-  FileExcelFilled,
+  // FileExcelFilled,
   ImportOutlined,
   // SelectOutlined,
 } from '@ant-design/icons';
 import {
   Button,
-  Checkbox,
+  // Checkbox,
   Input,
   Menu,
   Pagination,
@@ -26,7 +26,7 @@ import supplyApi from 'api/suplly.api';
 // import { toast } from 'react-toastify';
 import {
   checkPermission,
-  onChangeCheckbox,
+  // onChangeCheckbox,
   resolveDataExcel,
 } from 'utils/globalFunc.util';
 

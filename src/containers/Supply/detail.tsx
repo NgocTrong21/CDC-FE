@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react';
-import { FilePdfFilled } from '@ant-design/icons';
-import { Button, Divider, Image, Table } from 'antd';
+import { Divider, Image, Table } from 'antd';
 import { useParams } from 'react-router-dom';
 import image from 'assets/image.png';
-import qrcode from 'assets/qrcode.png';
 import type { ColumnsType } from 'antd/es/table';
 import supplyApi from 'api/suplly.api';
 import moment from 'moment';
@@ -57,10 +55,6 @@ const Detail = () => {
   useEffect(() => {
     getDetailEquipment(id);
   }, [id]);
-
-  const generatorPDF = () => {
-    const element: any = document.getElementById('detail');
-  };
 
   const data: DataType[] = [
     {

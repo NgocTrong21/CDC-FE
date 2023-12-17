@@ -1,7 +1,5 @@
 import { Button, Divider, Form, Input } from 'antd';
 import { useEffect, useState } from 'react';
-import ava from 'assets/image.png';
-import { convertBase64 } from 'utils/globalFunc.util';
 import { useNavigate, useParams } from 'react-router-dom';
 import warehouseApi from 'api/warehouse.api';
 import TextArea from 'antd/lib/input/TextArea';
@@ -11,18 +9,18 @@ const UpdateWarehouse = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [form] = Form.useForm();
-  const [selectedImage, setSelectedImage] = useState<any>('');
-  const [image, setImage] = useState<any>('');
+  // const [selectedImage, setSelectedImage] = useState<any>('');
+  // const [image, setImage] = useState<any>('');
   const [loading, setLoading] = useState<boolean>(false);
-  const handleChangeImg = async (e: any) => {
-    let file = e.target.files[0];
-    if (file) {
-      let img = URL.createObjectURL(file);
-      let fileBase64 = await convertBase64(file);
-      setSelectedImage(img);
-      setImage(fileBase64);
-    }
-  };
+  // const handleChangeImg = async (e: any) => {
+  //   let file = e.target.files[0];
+  //   if (file) {
+  //     let img = URL.createObjectURL(file);
+  //     let fileBase64 = await convertBase64(file);
+  //     setSelectedImage(img);
+  //     setImage(fileBase64);
+  //   }
+  // };
   useEffect(() => {
     if (id) {
       warehouseApi
@@ -52,8 +50,8 @@ const UpdateWarehouse = () => {
         const { success, message } = res.data;
         if (success) {
           toast.success('Cập nhật kho thành công!');
-          setImage('');
-          setSelectedImage('');
+          // setImage('');
+          // setSelectedImage('');
           form.resetFields();
           navigate(`/warehouses/list_warehouses`);
         } else {

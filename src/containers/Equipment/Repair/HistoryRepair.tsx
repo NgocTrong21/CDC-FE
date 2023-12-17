@@ -1,4 +1,4 @@
-import { EyeFilled, SelectOutlined, ToolFilled } from '@ant-design/icons';
+import { EyeFilled, SelectOutlined } from '@ant-design/icons';
 import { Checkbox, Divider, Table, Tooltip } from 'antd';
 import equipmentApi from 'api/equipment.api';
 import equipmentRepairApi from 'api/equipment_repair.api';
@@ -88,14 +88,18 @@ const HistoryRepair = () => {
       key: 'estimated_repair_cost',
       show: true,
       widthExcel: 20,
-      render: (item: any) => <div>{formatCurrencyVN(item?.estimated_repair_cost)}</div>,
+      render: (item: any) => (
+        <div>{formatCurrencyVN(item?.estimated_repair_cost)}</div>
+      ),
     },
     {
       title: 'Chi phí thực tế',
       key: 'actual_repair_cost',
       show: true,
       widthExcel: 20,
-      render: (item: any) => <div>{formatCurrencyVN(item?.actual_repair_cost)}</div>,
+      render: (item: any) => (
+        <div>{formatCurrencyVN(item?.actual_repair_cost)}</div>
+      ),
     },
     {
       title: 'Nhà cung cấp',
@@ -117,7 +121,9 @@ const HistoryRepair = () => {
       show: checkRoleApproveRepair(),
       render: (item: any) => (
         <Tooltip title="Chi tiết phiếu sửa chữa">
-          <Link to={`/equipment/repair/update_schedule/${id}/${item.id}?edit=false`}>
+          <Link
+            to={`/equipment/repair/update_schedule/${id}/${item.id}?edit=false`}
+          >
             <EyeFilled />
           </Link>
         </Tooltip>
@@ -137,13 +143,14 @@ const HistoryRepair = () => {
   };
 
   const getDetailEquipment = (id: number) => {
-    equipmentApi.detailBasic(id)
+    equipmentApi
+      .detailBasic(id)
       .then((res: any) => {
         const { data } = res.data;
         setEquipment(data.equipment);
       })
-      .catch()
-  }
+      .catch();
+  };
 
   const getHistoryRepair = (id: number) => {
     setLoading(true);
@@ -153,9 +160,7 @@ const HistoryRepair = () => {
         const { success, data } = res?.data;
         if (success) {
           setRepairInfo(
-            data.equipment.filter(
-              (item: any) => item?.schedule_create_user_id
-            )
+            data.equipment.filter((item: any) => item?.schedule_create_user_id)
           );
         }
       })

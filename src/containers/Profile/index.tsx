@@ -1,9 +1,8 @@
-import { Button, Divider, Form, Input, Select } from 'antd';
+import { Divider, Form, Input } from 'antd';
 import userApi from 'api/user.api';
-import { FilterContext } from 'contexts/filter.context';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { convertBase64, options } from 'utils/globalFunc.util';
+// import { convertBase64 } from 'utils/globalFunc.util';
 import ava from 'assets/image.png';
 import { CURRENT_USER } from 'constants/auth.constant';
 import Loading from 'components/Loading';
@@ -12,22 +11,22 @@ const Profile = () => {
   const user: any = JSON.parse(localStorage.getItem(CURRENT_USER) || '');
   const { id } = user;
   const [form] = Form.useForm();
-  const [selectedImage, setSelectedImage] = useState<any>('');
+  const [selectedImage, _setSelectedImage] = useState<any>('');
   const [image, setImage] = useState<any>('');
-  const [loadingUpdate, setLoadingUpdate] = useState<boolean>(false);
+  // const [loadingUpdate, setLoadingUpdate] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
-  const { roles, departments } = useContext(FilterContext);
-  const [error, setError] = useState<any>();
+  // const { roles, departments } = useContext(FilterContext);
+  // const [error, setError] = useState<any>();
 
-  const handleChangeImg = async (e: any) => {
-    let file = e.target.files[0];
-    if (file) {
-      let img = URL.createObjectURL(file);
-      let fileBase64 = await convertBase64(file);
-      setSelectedImage(img);
-      setImage(fileBase64);
-    }
-  };
+  // const handleChangeImg = async (e: any) => {
+  //   let file = e.target.files[0];
+  //   if (file) {
+  //     let img = URL.createObjectURL(file);
+  //     let fileBase64 = await convertBase64(file);
+  //     setSelectedImage(img);
+  //     setImage(fileBase64);
+  //   }
+  // };
 
   const getDetail = () => {
     setLoading(true);
@@ -47,34 +46,34 @@ const Profile = () => {
             department: user?.Department?.name,
             image: user?.image,
           });
-          setError('');
+          // setError('');
           // setUser('');
           setImage(user.image);
         } else {
           toast.error('Bạn không có quyền truy cập tài khoản này!');
-          setError('Bạn không có quyền truy cập tài khoản này!');
+          // setError('Bạn không có quyền truy cập tài khoản này!');
         }
       })
       .catch()
       .finally(() => setLoading(false));
   };
 
-  const onFinish = (values: any) => {
-    const data = { ...values, image };
-    setLoadingUpdate(true);
-    userApi
-      .updateProfile(data)
-      .then((res) => {
-        const { success } = res.data;
-        if (success) {
-          toast.success('Cập nhật thông tin thành công!');
-        } else {
-          toast.error('Cập nhật thông tin thất bại!');
-        }
-      })
-      .catch()
-      .finally(() => setLoadingUpdate(false));
-  };
+  // const onFinish = (values: any) => {
+  //   const data = { ...values, image };
+  //   setLoadingUpdate(true);
+  //   userApi
+  //     .updateProfile(data)
+  //     .then((res) => {
+  //       const { success } = res.data;
+  //       if (success) {
+  //         toast.success('Cập nhật thông tin thành công!');
+  //       } else {
+  //         toast.error('Cập nhật thông tin thất bại!');
+  //       }
+  //     })
+  //     .catch()
+  //     .finally(() => setLoadingUpdate(false));
+  // };
 
   useEffect(() => {
     getDetail();
@@ -95,7 +94,7 @@ const Profile = () => {
             className="basis-3/4"
             layout="vertical"
             size="large"
-            onFinish={onFinish}
+            // onFinish={onFinish}
           >
             <Form.Item name="id" required style={{ display: 'none' }}>
               <Input style={{ display: 'none' }} />

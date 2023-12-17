@@ -3,24 +3,20 @@ import {
   Col,
   Form,
   Input,
-  InputNumber,
   Layout,
   Pagination,
   Row,
-  Select,
   Space,
   Table,
   Typography,
 } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
 import outboundOrderApi from 'api/outbound_order';
-import warehouseApi from 'api/warehouse.api';
 import { order_status } from 'constants/dataFake.constant';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { options } from 'utils/globalFunc.util';
 import { formatCurrencyVN } from 'utils/validateFunc.util';
 
 const OutboundOrderDetail = () => {
@@ -30,7 +26,6 @@ const OutboundOrderDetail = () => {
   const { id } = params;
   const { Column } = Table;
   const [dataSource, setDataSource] = useState<any[]>([]);
-  const [warehouses, setWarehouses] = useState([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const handleChangePage = (page: number, size: number) => {
@@ -45,17 +40,6 @@ const OutboundOrderDetail = () => {
     } else {
       return [];
     }
-  };
-  const searchWarehouses = () => {
-    warehouseApi
-      .search({})
-      .then((res) => {
-        const { success, data } = res.data;
-        if (success) {
-          setWarehouses(data.warehouses);
-        }
-      })
-      .catch();
   };
   const getDetailOutboundOrder = (id: any) => {
     outboundOrderApi
@@ -109,7 +93,6 @@ const OutboundOrderDetail = () => {
 
   useEffect(() => {
     getDetailOutboundOrder(id);
-    searchWarehouses();
   }, [id]);
 
   const handleAccept = (id: any, type: string) => {

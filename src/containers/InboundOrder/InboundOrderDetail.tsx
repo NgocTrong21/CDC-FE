@@ -3,25 +3,22 @@ import {
   Col,
   Form,
   Input,
-  InputNumber,
   Layout,
   Pagination,
   Row,
-  Select,
   Space,
   Table,
   Typography,
 } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
 import inboundOrderApi from 'api/inbound_order';
-import warehouseApi from 'api/warehouse.api';
 import { order_status } from 'constants/dataFake.constant';
 import { permissions } from 'constants/permission.constant';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { getCurrentUser, options } from 'utils/globalFunc.util';
+import { getCurrentUser } from 'utils/globalFunc.util';
 import { formatCurrencyVN } from 'utils/validateFunc.util';
 
 const InboundOrderDetail = () => {
@@ -33,7 +30,6 @@ const InboundOrderDetail = () => {
   const [loadingReject, setLoadingReject] = useState<boolean>(false);
   const { Column } = Table;
   const [dataSource, setDataSource] = useState<any[]>([]);
-  const [warehouses, setWarehouses] = useState([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const handleChangePage = (page: number, size: number) => {
@@ -53,17 +49,6 @@ const InboundOrderDetail = () => {
     } else {
       return [];
     }
-  };
-  const seachWarehouses = () => {
-    warehouseApi
-      .search({})
-      .then((res) => {
-        const { success, data } = res.data;
-        if (success) {
-          setWarehouses(data.warehouses);
-        }
-      })
-      .catch();
   };
   const getDetailInboundOrder = (id: any) => {
     inboundOrderApi
@@ -116,7 +101,6 @@ const InboundOrderDetail = () => {
 
   useEffect(() => {
     getDetailInboundOrder(id);
-    seachWarehouses();
   }, [id]);
 
   const handleAccept = (id: any, type: string) => {
@@ -181,7 +165,7 @@ const InboundOrderDetail = () => {
                         className="rounded-md"
                         danger
                         onClick={() => handleAccept(id, 'reject')}
-                        loading={loading}
+                        loading={loadingReject}
                       >
                         Từ chối
                       </Button>

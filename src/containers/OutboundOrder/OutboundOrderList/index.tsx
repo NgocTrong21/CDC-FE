@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import {
-  DeleteFilled,
   EditFilled,
   EyeFilled,
   SelectOutlined,
@@ -14,7 +13,6 @@ import {
   Menu,
   Row,
   Pagination,
-  Popconfirm,
   Tooltip,
   Checkbox,
 } from 'antd';
@@ -57,20 +55,20 @@ const OutboundOrderList = () => {
   ) => {
     setLimit(pageSize);
   };
-  const handleDelete = (id: number) => {
-    outboundOrderApi
-      .delete(id)
-      .then((res: any) => {
-        const { success, message } = res.data;
-        getOutboundOrderList();
-        if (success) {
-          toast.success('Xóa thành công!');
-        } else {
-          toast.error(message);
-        }
-      })
-      .catch((error) => toast.error(error));
-  };
+  // const handleDelete = (id: number) => {
+  //   outboundOrderApi
+  //     .delete(id)
+  //     .then((res: any) => {
+  //       const { success, message } = res.data;
+  //       getOutboundOrderList();
+  //       if (success) {
+  //         toast.success('Xóa thành công!');
+  //       } else {
+  //         toast.error(message);
+  //       }
+  //     })
+  //     .catch((error) => toast.error(error));
+  // };
   const columns: any = [
     {
       title: 'Số phiếu',

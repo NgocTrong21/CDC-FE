@@ -15,7 +15,6 @@ import {
 } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
 import outboundOrderApi from 'api/outbound_order';
-import supplyApi from 'api/suplly.api';
 import warehouseApi from 'api/warehouse.api';
 import moment from 'moment';
 import { useEffect, useRef, useState } from 'react';

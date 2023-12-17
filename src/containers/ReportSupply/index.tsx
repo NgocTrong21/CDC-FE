@@ -1,14 +1,5 @@
-import {
-  DatePicker,
-  Divider,
-  Input,
-  InputNumber,
-  Pagination,
-  Row,
-  Table,
-} from 'antd';
+import { DatePicker, Divider, Input, Pagination, Row, Table } from 'antd';
 import { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import useDebounce from 'hooks/useDebounce';
 import image from 'assets/image.png';
 import supplyApi from 'api/suplly.api';

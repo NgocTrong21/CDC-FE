@@ -195,14 +195,14 @@ const LayoutSystem = (props: LayoutProps) => {
       [
         getItem(
           'Khoa - Phòng',
-          [2, 6].includes(getCurrentUser().role_id)
+          [2, 6, 4].includes(getCurrentUser().role_id)
             ? `/department/detail/${getCurrentUser().department_id}`
             : `/department`,
           permissions.DEPARTMENT_READ
         ),
       ]
     ),
-    ![2, 6].includes(getCurrentUser().role_id) &&
+    ![2, 6, 4].includes(getCurrentUser().role_id) &&
       getItem(
         'Quản lý thành viên',
         '/user',
@@ -330,7 +330,7 @@ const LayoutSystem = (props: LayoutProps) => {
           <Space>
             <img src={logo} alt="logo" className="logo" />
             <div className="font-medium text-base ">
-              <h2>Quản lý thiết bị và vật tư y tế CPC HP DEMO</h2>
+              <h2>Quản lý thiết bị và vật tư y tế CDC HP DEMO</h2>
             </div>
           </Space>
         </div>

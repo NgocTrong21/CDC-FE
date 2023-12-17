@@ -27,9 +27,6 @@ import ActiveAccount from 'containers/ActiveAccount';
 import SetRole from 'containers/Setting/SetRole';
 // import Notification from 'containers/Notification';
 import UpdatePermission from 'containers/Setting/SetRole/update';
-import StatisticByDepartment from 'containers/Equipment/Statistic/ByDepartment';
-import StatisticByStatus from 'containers/Equipment/Statistic/ByStatus';
-import StatisticByYear from 'containers/Equipment/Statistic/ByYear';
 import CreateSchedule from 'containers/Equipment/Repair/CreateSchedule';
 import HistoryRepair from 'containers/Equipment/Repair/HistoryRepair';
 import UpdateSchedule from 'containers/Equipment/Repair/UpdateSchedule';
@@ -362,7 +359,7 @@ const App = () => {
           <Route
             path="/profile"
             element={
-              <PrivateRoute permission={permissions.DASHBOARD_READ}>
+              <PrivateRoute permission={permissions.USER_READ}>
                 <Profile />
               </PrivateRoute>
             }

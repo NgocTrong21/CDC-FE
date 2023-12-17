@@ -3,18 +3,15 @@ import {
   DeleteFilled,
   EyeFilled,
   FilterFilled,
-  PlusCircleFilled,
   SelectOutlined,
 } from '@ant-design/icons';
 import {
-  Button,
   Checkbox,
   Divider,
   Input,
   Pagination,
   Popconfirm,
   Row,
-  Select,
   Table,
   Tooltip,
 } from 'antd';
@@ -27,10 +24,8 @@ import userApi from 'api/user.api';
 import {
   checkPermission,
   onChangeCheckbox,
-  options,
-  resolveDataExcel,
+  // resolveDataExcel,
 } from 'utils/globalFunc.util';
-import ExportToExcel from 'components/Excel';
 import { FilterContext } from 'contexts/filter.context';
 import useSearchName from 'hooks/useSearchName';
 import { permissions } from 'constants/permission.constant';
@@ -75,7 +70,7 @@ const User: FC<IUserProps> = ({
   const [page, setPage] = useState<number>(currentPage || 1);
   const [total, setTotal] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
-  const [loadingDownload, setLoadingDownload] = useState<boolean>(false);
+  // const [loadingDownload, setLoadingDownload] = useState<boolean>(false);
   const [showFooter, setShowFooter] = useState<boolean>(
     currentName ? false : true
   );
@@ -90,7 +85,11 @@ const User: FC<IUserProps> = ({
       show: false,
       widthExcel: 25,
       render: (item: any) => (
-        <img src={item || image} alt="logo" className="w-20 h-20 object-contain" />
+        <img
+          src={item || image}
+          alt="logo"
+          className="w-20 h-20 object-contain"
+        />
       ),
     },
     {
@@ -239,25 +238,25 @@ const User: FC<IUserProps> = ({
     }
   };
 
-  const downloadUserList = async () => {
-    setLoadingDownload(true);
-    const res = await userApi.search({
-      keyword: name,
-      role_id: role,
-      department_id: department_id || department,
-    });
-    const { users } = res?.data?.data;
-    const data = users.map((x: any) => ({
-      name: x.name,
-      email: x.email,
-      phone: x.phone || '',
-      address: x.address || '',
-      role_id: x.Role?.name,
-      department_id: x.Department?.name || '',
-    }));
-    resolveDataExcel(data, 'Danh sách người dùng', columnTable);
-    setLoadingDownload(false);
-  };
+  // const downloadUserList = async () => {
+  //   setLoadingDownload(true);
+  //   const res = await userApi.search({
+  //     keyword: name,
+  //     role_id: role,
+  //     department_id: department_id || department,
+  //   });
+  //   const { users } = res?.data?.data;
+  //   const data = users.map((x: any) => ({
+  //     name: x.name,
+  //     email: x.email,
+  //     phone: x.phone || '',
+  //     address: x.address || '',
+  //     role_id: x.Role?.name,
+  //     department_id: x.Department?.name || '',
+  //   }));
+  //   resolveDataExcel(data, 'Danh sách người dùng', columnTable);
+  //   setLoadingDownload(false);
+  // };
 
   return (
     <div>

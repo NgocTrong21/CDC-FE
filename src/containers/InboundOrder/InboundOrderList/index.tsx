@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { EditFilled, EyeFilled, PlusCircleFilled } from '@ant-design/icons';
 import {
   Button,
@@ -9,13 +9,11 @@ import {
   Row,
   Pagination,
   Tooltip,
-  Checkbox,
 } from 'antd';
 import useDebounce from 'hooks/useDebounce';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { NotificationContext } from 'contexts/notification.context';
-import { checkPermission, onChangeCheckbox } from 'utils/globalFunc.util';
+import { checkPermission } from 'utils/globalFunc.util';
 import { permissions } from 'constants/permission.constant';
 import type { PaginationProps } from 'antd';
 import inboundOrderApi from 'api/inbound_order';
@@ -43,7 +41,6 @@ const InboundOrderList = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [name, setName] = useState<string>('');
   const nameSearch = useDebounce(name, 500);
-  const [isShowCustomTable, setIsShowCustomTable] = useState<boolean>(false);
 
   const onShowSizeChange: PaginationProps['onShowSizeChange'] = (
     current,
@@ -253,7 +250,7 @@ const InboundOrderList = () => {
           </div>
         </Button>
       </div>
-      {isShowCustomTable && (
+      {/* {isShowCustomTable && (
         <div className="flex flex-row gap-4">
           {columnTable.length > 0 &&
             columnTable.map((item: any) => (
@@ -268,7 +265,7 @@ const InboundOrderList = () => {
               </div>
             ))}
         </div>
-      )}
+      )} */}
       <Table
         columns={columnTable.filter((item: any) => item.show)}
         dataSource={inboundOrders}

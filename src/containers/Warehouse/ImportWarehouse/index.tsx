@@ -1,44 +1,43 @@
-import { Button, Divider, Form, Input, Select } from 'antd';
-import { useContext, useState } from 'react';
-import ava from 'assets/image.png';
-import { convertBase64 } from 'utils/globalFunc.util';
+import { Button, Divider, Form, Input } from 'antd';
+import { useState } from 'react';
+// import { convertBase64 } from 'utils/globalFunc.util';
 import { toast } from 'react-toastify';
-import { FilterContext } from 'contexts/filter.context';
-import providerApi from 'api/provider.api';
 import TextArea from 'antd/lib/input/TextArea';
 import warehouseApi from 'api/warehouse.api';
 
 const ImportWarehouse = () => {
   const [form] = Form.useForm();
-  const [selectedImage, setSelectedImage] = useState<any>('');
-  const [image, setImage] = useState<any>('');
+  // const [selectedImage, setSelectedImage] = useState<any>('');
+  // const [image, setImage] = useState<any>('');
   const [loading, setLoading] = useState<boolean>(false);
 
-  const handleChangeImg = async (e: any) => {
-    let file = e.target.files[0];
-    if (file) {
-      let img = URL.createObjectURL(file);
-      let fileBase64 = await convertBase64(file);
-      setSelectedImage(img);
-      setImage(fileBase64);
-    }
-  };
+  // const handleChangeImg = async (e: any) => {
+  //   let file = e.target.files[0];
+  //   if (file) {
+  //     let img = URL.createObjectURL(file);
+  //     let fileBase64 = await convertBase64(file);
+  //     setSelectedImage(img);
+  //     setImage(fileBase64);
+  //   }
+  // };
 
   const onFinish = (values: any) => {
+    setLoading(true);
     warehouseApi
       .create({ data: values })
       .then((res: any) => {
         const { success, message } = res.data;
         if (success) {
           toast.success('Thêm mới kho thành công!');
-          setImage('');
-          setSelectedImage('');
+          // setImage('');
+          // setSelectedImage('');
           form.resetFields();
         } else {
           toast.error(message || 'Thêm mới kho thất bại!');
         }
       })
-      .catch();
+      .catch()
+      .finally(() => setLoading(false));
   };
 
   return (

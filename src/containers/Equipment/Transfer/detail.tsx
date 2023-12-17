@@ -5,12 +5,11 @@ import { NotificationContext } from 'contexts/notification.context';
 import moment from 'moment';
 import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { downloadTransferDocx } from 'utils/file.util';
+// import { downloadTransferDocx } from 'utils/file.util';
 import { toast } from 'react-toastify';
-import { checkPermission, convertBase64 } from 'utils/globalFunc.util';
+import { checkPermission } from 'utils/globalFunc.util';
 import { permissions } from 'constants/permission.constant';
 import Loading from 'components/Loading';
-import useQuery from 'hooks/useQuery';
 import equipmentTransferApi from 'api/equipment_transfer.api';
 
 const { TextArea } = Input;
@@ -19,36 +18,35 @@ const DetailTransfer = () => {
   const [equipment, setEquipment] = useState<any>({});
   const [loading, setLoading] = useState(false);
   const [loadingApprove, setLoadingApprove] = useState(false);
-  const [loadingUpdate, setLoadingUpdate] = useState(false);
+  // const [loadingUpdate, setLoadingUpdate] = useState(false);
   const [showApproveTransferModal, setShowApproveTransferModal] =
     useState(false);
   const current_user: any = JSON.parse(
     localStorage.getItem(CURRENT_USER) || ''
   );
   const [form] = Form.useForm();
-  const query: any = useQuery();
   const param: any = useParams();
   const { id, transfer_id } = param;
   const { increaseCount, getAllNotifications } =
     useContext(NotificationContext);
-  const [file, setFile] = useState<any>('');
+  // const [file, setFile] = useState<any>('');
 
-  const handleChangeFile = async (e: any) => {
-    let file = e.target.files[0];
-    if (file.size > 1000000) {
-      form.resetFields(['file']);
-      form.setFields([
-        {
-          name: 'file',
-          errors: ['Vui lòng chọn file có dung lượng nhỏ hơn 1MB!'],
-        },
-      ]);
-      return;
-    } else {
-      let fileBase64 = await convertBase64(file);
-      setFile(fileBase64);
-    }
-  };
+  // const handleChangeFile = async (e: any) => {
+  //   let file = e.target.files[0];
+  //   if (file.size > 1000000) {
+  //     form.resetFields(['file']);
+  //     form.setFields([
+  //       {
+  //         name: 'file',
+  //         errors: ['Vui lòng chọn file có dung lượng nhỏ hơn 1MB!'],
+  //       },
+  //     ]);
+  //     return;
+  //   } else {
+  //     let fileBase64 = await convertBase64(file);
+  //     setFile(fileBase64);
+  //   }
+  // };
 
   const handleTransferStatus = (status: any = 0) => {
     let color: any;
@@ -130,30 +128,30 @@ const DetailTransfer = () => {
       .finally(() => setLoadingApprove(false));
   };
 
-  const updateTransfer = (values: any) => {
-    const data = {
-      ...equipment,
-      transfer_status: 0,
-      file,
-      isEdit: 1,
-    };
-    setLoadingUpdate(true);
-    equipmentTransferApi
-      .updateTransferReport(data)
-      .then((res: any) => {
-        const { success } = res.data;
-        if (success) {
-          detailTransfer();
-          toast.success('Cập nhật phiếu điều chuyển thành công!');
-          increaseCount();
-          getAllNotifications();
-        } else {
-          toast.error('Cập nhật phiếu điều chuyển thất bại!');
-        }
-      })
-      .catch()
-      .finally(() => setLoadingUpdate(false));
-  };
+  // const updateTransfer = (values: any) => {
+  //   const data = {
+  //     ...equipment,
+  //     transfer_status: 0,
+  //     file,
+  //     isEdit: 1,
+  //   };
+  //   setLoadingUpdate(true);
+  //   equipmentTransferApi
+  //     .updateTransferReport(data)
+  //     .then((res: any) => {
+  //       const { success } = res.data;
+  //       if (success) {
+  //         detailTransfer();
+  //         toast.success('Cập nhật phiếu điều chuyển thành công!');
+  //         increaseCount();
+  //         getAllNotifications();
+  //       } else {
+  //         toast.error('Cập nhật phiếu điều chuyển thất bại!');
+  //       }
+  //     })
+  //     .catch()
+  //     .finally(() => setLoadingUpdate(false));
+  // };
 
   return loading ? (
     <Loading />
@@ -168,7 +166,7 @@ const DetailTransfer = () => {
         size="large"
         layout="vertical"
         form={form}
-        onFinish={updateTransfer}
+        // onFinish={updateTransfer}
       >
         <Form.Item name="id" className="hidden"></Form.Item>
         <Form.Item name="equipment_id" className="hidden"></Form.Item>
@@ -245,7 +243,7 @@ const DetailTransfer = () => {
               </Form.Item>
             )} */}
         </div>
-        {equipment.transfer_status === 1 && (
+        {/* {equipment.transfer_status === 1 && (
           <Form.Item>
             <Button
               className="button-primary"
@@ -254,7 +252,7 @@ const DetailTransfer = () => {
               In phiếu điều chuyển
             </Button>
           </Form.Item>
-        )}
+        )} */}
       </Form>
       <Modal
         title="Phê duyệt phiếu điều chuyển thiết bị"

@@ -1,14 +1,5 @@
-import {
-  DatePicker,
-  Divider,
-  InputNumber,
-  Pagination,
-  Row,
-  Select,
-  Table,
-} from 'antd';
+import { DatePicker, Divider, Pagination, Row, Select, Table } from 'antd';
 import { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import supplyApi from 'api/suplly.api';
 import {
   exportToExcelReport,

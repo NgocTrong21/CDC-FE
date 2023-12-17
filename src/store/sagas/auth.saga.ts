@@ -42,7 +42,11 @@ function* handleLogin(action: any) {
       localStorage.setItem(REFRESH_TOKEN, data?.refresh_token);
       localStorage.setItem(CURRENT_USER, JSON.stringify(data?.user || {}));
       yield put(authActions.loginSuccess(data?.user));
-      yield put(push('/equipment/list_eq'));
+      if(data?.user.role_id === 6) {
+        yield put(push('/supplies/list_sp'));
+      }else {
+        yield put(push('/equipment/list_eq'));
+      }
       window.location.reload();
     } else {
       yield put(authActions.loginFailed(message));

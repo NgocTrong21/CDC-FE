@@ -110,7 +110,7 @@ const DetailDepartment = () => {
             alias: department?.alias,
             phone: department?.phone,
             email: department?.email,
-            head_of_department_id: head?.id,
+            head_of_department_id: department?.head_of_department_id,
           });
           form.setFieldsValue({
             id: department?.id,
@@ -118,7 +118,7 @@ const DetailDepartment = () => {
             alias: department?.alias,
             phone: department?.phone,
             email: department?.email,
-            head_of_department_id: head?.id,
+            head_of_department_id: department?.head_of_department_id,
           });
           setImage(department?.image);
         }
@@ -283,37 +283,33 @@ const DetailDepartment = () => {
                 </Form>
               ) : (
                 <div>
-                  <div className="grid grid-cols-2 gap-5">
+                  <div className="grid grid-cols-2 gap-2">
                     {/* <Form.Item name="id" required style={{ display: 'none' }}>
                       <Input style={{ display: 'none' }} />
                     </Form.Item> */}
-                    <p>Tên khoa - phòng</p>
+                    <p className="font-bold">Tên khoa - phòng</p>
                     <p className="mb-5">{department?.name}</p>
-                    <p>Alias</p>
+                    <p className="font-bold">Alias</p>
                     <p className="mb-5">{department?.alias}</p>
-                  </div>
-                  <div className="grid grid-cols-2 gap-5">
-                    <p>Số điện thoại</p>
+                    <p className="font-bold">Số điện thoại</p>
                     <p className="mb-5">{department?.phone}</p>
-                    <p>Email</p>
+                    <p className="font-bold">Email</p>
                     <p className="mb-5">{department?.email}</p>
-                  </div>
-                  <div className="grid grid-cols-2 gap-5">
-                    <p>Trưởng khoa</p>
+                    <p className="font-bold">Trưởng khoa</p>
                     {options(users)?.length > 0 &&
                     options(users)?.length > 0 ? (
                       <p className="mb-5">
-                        {
-                          options(users).find(
-                            (item: any) =>
-                              item?.id === department?.head_of_department_id
-                          )?.label
-                        }
+                        {options(users).find(
+                          (item: any) =>
+                            item?.value === department?.head_of_department_id
+                        )?.label || ''}
                       </p>
                     ) : (
                       <></>
                     )}
-                    {/* <Form.Item
+                  </div>
+                  {/* <div className="grid grid-cols-2 gap-5">
+                    <Form.Item
                       label="Điều dưỡng trưởng/Phụ trách phòng Vật tư"
                       name="chief_nursing_id"
                       className="mb-5"
@@ -323,8 +319,8 @@ const DetailDepartment = () => {
                         allowClear
                         options={options(users)}
                       />
-                    </Form.Item> */}
-                  </div>
+                    </Form.Item>
+                  </div> */}
                   <Form.Item>
                     <Button
                       htmlType="submit"
@@ -340,31 +336,48 @@ const DetailDepartment = () => {
                   </Form.Item>
                 </div>
               )}
-              <div className="flex flex-col gap-4 items-center basis-1/4 ">
-                <div className="text-center leading-9 ">Ảnh đại diện</div>
-                {selectedImage === '' ? (
-                  <img
-                    src={image ? image : ava}
-                    alt="Ảnh đại diện"
-                    className="w-52 h-52 rounded-lg object-contain"
+              {checkPermission(permissions.DEPARTMENT_UPDATE) ? (
+                <div className="flex flex-col gap-4 items-center basis-1/4 ">
+                  <div className="text-center leading-9 ">Ảnh đại diện</div>
+                  {selectedImage === '' ? (
+                    <img
+                      src={image ? image : ava}
+                      alt="Ảnh đại diện"
+                      className="w-52 h-52 rounded-lg object-contain"
+                    />
+                  ) : (
+                    <div
+                      className="w-52 h-52 rounded-lg bg-center bg-no-repeat bg-contain"
+                      style={{ backgroundImage: `url(${selectedImage})` }}
+                    ></div>
+                  )}
+                  <div className="mt-6">Thay đổi ảnh đại diện</div>
+                  <input
+                    type="file"
+                    className="block file:bg-violet-100 file:text-violet-700 text-slate-500 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold hover:file:bg-violet-200"
+                    id="inputImage"
+                    onChange={(e: any) => handleChangeImg(e)}
                   />
-                ) : (
-                  <div
-                    className="w-52 h-52 rounded-lg bg-center bg-no-repeat bg-contain"
-                    style={{ backgroundImage: `url(${selectedImage})` }}
-                  ></div>
-                )}
-                <div className="mt-6">Thay đổi ảnh đại diện</div>
-                <input
-                  type="file"
-                  className="block file:bg-violet-100 file:text-violet-700 text-slate-500 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold hover:file:bg-violet-200"
-                  id="inputImage"
-                  onChange={(e: any) => handleChangeImg(e)}
-                />
-              </div>
+                </div>
+              ) : (
+                <div className=" flex flex-col gap-4 items-center basis-1/4 ">
+                  <div className="text-center leading-9 ">Ảnh đại diện</div>
+                  {selectedImage === '' ? (
+                    <img
+                      src={image ? image : ava}
+                      alt="Ảnh đại diện"
+                      className="w-52 h-52 rounded-lg object-contain"
+                    />
+                  ) : (
+                    <div
+                      className="w-52 h-52 rounded-lg bg-center bg-no-repeat bg-contain"
+                      style={{ backgroundImage: `url(${selectedImage})` }}
+                    ></div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
-
           {/* <div className="mb-8">
             <div className="title text-center">
               THỐNG KÊ THIẾT BỊ THEO TRẠNG THÁI

@@ -1,4 +1,4 @@
-import { EyeFilled, FileWordFilled, SelectOutlined } from '@ant-design/icons';
+import { FileWordFilled, SelectOutlined } from '@ant-design/icons';
 import { Checkbox, Divider, Table, Tooltip } from 'antd';
 import equipmentApi from 'api/equipment.api';
 import equipmentTransferApi from 'api/equipment_transfer.api';
@@ -10,7 +10,6 @@ import { Link, useParams } from 'react-router-dom';
 import { resolveDataExcel } from 'utils/globalFunc.util';
 
 const HistoryTransfer = () => {
-
   const param: any = useParams();
   const { id } = param;
   const [equipment, setEquipment] = useState<any>({});
