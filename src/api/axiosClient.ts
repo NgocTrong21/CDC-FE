@@ -62,7 +62,7 @@ axiosClient.interceptors.response.use(
         return axiosClient(originalRequest);
       } catch (err) {
         window.localStorage.removeItem(ACCESS_TOKEN);
-        window.location.href = '/signin';
+        window.location.href = '/';
         return Promise.reject(err);
       }
     } else {

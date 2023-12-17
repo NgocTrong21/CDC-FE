@@ -27,7 +27,7 @@ const PrivateRoute = ({ children, permission, role }: PrivateProps) => {
       )}
     </>
   ) : (
-    <Navigate to="/signin" />
+    <Navigate to="/" />
   );
 };
 
