@@ -3,27 +3,13 @@ import categoryApi from 'api/category.api';
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { toast } from 'react-toastify';
-import { convertBase64 } from 'utils/globalFunc.util';
-import ava from 'assets/image.png';
 
 const DetailEquipmentUnit = () => {
 
   const params: any = useParams();
   const { id } = params;
   const [form] = Form.useForm();
-  const [selectedImage, setSelectedImage] = useState<any>('');
-  const [image, setImage] = useState<any>('');
   const [loading, setLoading] = useState<boolean>(false);
-
-  const handleChangeImg = async (e: any) => {
-    let file = e.target.files[0];
-    if (file) {
-      let img = URL.createObjectURL(file);
-      let fileBase64 = await convertBase64(file);
-      setSelectedImage(img);
-      setImage(fileBase64);
-    }
-  }
 
   const getDetail = () => {
     categoryApi.detailUnit(id)
@@ -42,7 +28,7 @@ const DetailEquipmentUnit = () => {
 
   const onFinish = (values: any) => {
     setLoading(true);
-    categoryApi.updateGroup(values)
+    categoryApi.updateUnit(values)
       .then((res: any) => {
         const { success, message } = res.data;
         if (success) {
@@ -97,41 +83,13 @@ const DetailEquipmentUnit = () => {
             <Button
               htmlType="submit"
               loading={loading}
-              className='button'
+              className='button-primary'
             >
               Cập nhật
             </Button>
           </Form.Item>
         </Form>
-        <div className='basis-1/3 mt-4 flex flex-col items-center'>
-          <div className='text-center mb-4'>Ảnh đại diện</div>
-          <div className="preview-content">
-            <input
-              type="file"
-              hidden
-              className="form-control"
-              id="inputImage"
-              onChange={(e: any) => handleChangeImg(e)}
-            />
-            <label className="text-center" htmlFor="inputImage">
-              {
-                image === '' ?
-                  <img
-                    src={ava}
-                    alt="ava"
-                    className='w-52 h-52'
-                  /> :
-                  <div
-                    className="w-52 h-52 bg-center bg-no-repeat bg-cover"
-                    style={{ backgroundImage: `url(${selectedImage})` }}
-                  >
-                  </div>
-              }
-            </label>
-          </div>
-        </div>
       </div>
-
     </div>
   )
 }

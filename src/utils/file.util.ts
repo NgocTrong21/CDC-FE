@@ -8,6 +8,7 @@ import {
   LevelFormat
 } from "docx";
 import * as fs from 'file-saver';
+import moment from "moment";
 
 const common_style: any = {
   numbering: {
@@ -165,6 +166,10 @@ export const downloadBrokenDocx = (equipment: any) => {
             style: 'paragraph',
           }),
           new Paragraph({
+            text: `Thời gian phê duyệt: ${equipment?.approve_broken_report_date}`,
+            style: 'paragraph',
+          }),
+          new Paragraph({
             children: [
               new TextRun({
                 text: "Cán bộ thực hiện",
@@ -178,7 +183,25 @@ export const downloadBrokenDocx = (equipment: any) => {
             }
           }),
           new Paragraph({
-            text: `${equipment?.reporting_person_id}`,
+            text: `${equipment?.reporting_person}`,
+            style: 'paragraph',
+            alignment: AlignmentType.RIGHT
+          }),
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: "Cán bộ phê duyệt",
+                bold: true
+              }),
+            ],
+            style: 'paragraph',
+            alignment: AlignmentType.RIGHT,
+            spacing: {
+              before: 1000
+            }
+          }),
+          new Paragraph({
+            text: `${equipment?.approve_report_person}`,
             style: 'paragraph',
             alignment: AlignmentType.RIGHT
           }),
@@ -239,20 +262,107 @@ export const downloadHandoverDocx = (equipment: any) => {
 }
 
 export const downloadRepairSchedule = (equipment: any) => {
-  const commonText = common_text(equipment, "PHIẾU YÊU CẦU SỬA CHỮA THIẾT BỊ");
+  const commonText = common_text(equipment, "PHIẾU SỬA CHỮA THIẾT BỊ Y TẾ");
   const doc = new Document({
     ...common_style,
     sections: [
       {
         children: [
           ...commonText,
-          
-        ]
-      }
-    ]
+          new Paragraph({
+            text: `Khoa Phòng sử dụng: ${equipment?.department}`,
+            style: 'paragraph'
+          }),
+          new Paragraph({
+            text: `Ngày lên lịch sửa: ${moment(equipment?.schedule_repair_date).format(
+              'hh:mm:ss, DD-MM-YYYY'
+            )}`,
+            style: 'paragraph'
+          }),
+          new Paragraph({
+            text: `Ngày sửa chữa: ${moment(equipment?.repair_date).format(
+              'hh:mm:ss, DD-MM-YYYY'
+            )}`,
+            style: 'paragraph'
+          }),
+          new Paragraph({
+            text: `Chi phí sửa chữa dự kiến: ${equipment?.estimated_repair_cost}`,
+            style: 'paragraph'
+          }),
+          new Paragraph({
+            text: `Ngày sửa xong: ${moment(equipment?.repair_completion_date).format(
+              'hh:mm:ss, DD-MM-YYYY'
+            )}`,
+            style: 'paragraph'
+          }),
+          new Paragraph({
+            text: `Chi phí sửa chữa thực tế: ${equipment?.actual_repair_cost}`,
+            style: 'paragraph'
+          }),
+          new Paragraph({
+            text: `Kết quả nghiệm thu: ${equipment?.repair_status_name}`,
+            style: 'paragraph'
+          }),
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: "Cán bộ lập phiếu sửa chữa",
+                bold: true
+              }),
+            ],
+            style: 'paragraph',
+            alignment: AlignmentType.RIGHT,
+            spacing: {
+              before: 1000
+            }
+          }),
+          new Paragraph({
+            text: `${equipment?.schedule_create_user_name}`,
+            style: 'paragraph',
+            alignment: AlignmentType.RIGHT
+          }),
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: "Cán bộ phê duyệt phiếu sửa chữa",
+                bold: true
+              }),
+            ],
+            style: 'paragraph',
+            alignment: AlignmentType.RIGHT,
+            spacing: {
+              before: 1000
+            }
+          }),
+          new Paragraph({
+            text: `${equipment?.schedule_approve_user_name}`,
+            style: 'paragraph',
+            alignment: AlignmentType.RIGHT
+          }),
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: "Cán bộ nghiệm thu",
+                bold: true
+              }),
+            ],
+            style: 'paragraph',
+            alignment: AlignmentType.RIGHT,
+            spacing: {
+              before: 1000
+            }
+          }),
+          new Paragraph({
+            text: `${equipment?.test_user_name}`,
+            style: 'paragraph',
+            alignment: AlignmentType.RIGHT
+          }),
+        ],
+      },
+    ],
   })
   Packer.toBlob(doc).then(blob => {
-    fs.saveAs(blob, `Phiếu yêu cầu sửa chữa - ${equipment?.name} - ${new Date().toISOString().substring(0, 10)}.docx`);
+    fs.saveAs(blob, `Phiếu sửa chữa - ${equipment?.name} - ${new Date().toISOString().substring(0, 10)}.docx`);
   });
 }
 

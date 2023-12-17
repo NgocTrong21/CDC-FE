@@ -4,3 +4,12 @@ export const KEY_CODE = {
   BACK: 8,
   DEL: 46
 }
+
+export const action = {
+  HANDOVER: 'bàn giao',
+  BROKEN: 'báo hỏng',
+  REPAIR: 'sửa chữa',
+  INSPECTION: 'kiểm định',
+  TRANSFER: 'điều chuyển',
+  LIQUIDATION: 'thanh lý'
+}

@@ -7,14 +7,25 @@ import { addRow } from 'utils/globalFunc.util';
 const EquipmentImportFileExcel = () => {
   const exportToExcel = () => {
     const myHeader = [
-      'Tên thiết bị', 'Code', 'Model', 'Serial',
-      'Hãng sản xuất', 'Xuất xứ', 'Năm sản xuất', 'Năm sử dụng',
-      'Ngày nhập kho', 'Dự án', 'Ghi chú', 'Giá trị ban đầu', 'Khấu hao hằng năm',
-      'Thông số kỹ thuật', 'Cấu hình kỹ thuật', 'Giá nhập', 'Mức độ rủi ro',
-      'Quy trình sử dụng', 'Đơn vị tính'
-    ]
+      'Tên thiết bị',
+      'Model',
+      'Serial',
+      'Nước sản xuất',
+      'Năm sử dụng',
+      'Số hiệu TSCĐ',
+      'Đơn vị',
+      'Giá trị',
+      'Khấu hao hằng năm',
+      'Giá trị còn lại',
+      'Ghi chú',
+    ];
     const widths = myHeader.map((item: any) => ({ width: 25 }));
-    exportToExcelPro('File excel mẫu nhập thiết bị', 'Sheet A', myHeader, widths);
+    exportToExcelPro(
+      'File excel mẫu nhập thiết bị',
+      'Sheet A',
+      myHeader,
+      widths
+    );
   };
 
   const exportToExcelPro = async (
@@ -23,7 +34,6 @@ const EquipmentImportFileExcel = () => {
     myHeader: any,
     widths: any
   ) => {
-
     const wb = new ExcelJS.Workbook();
     const ws = wb.addWorksheet(sheetName);
 
@@ -40,18 +50,14 @@ const EquipmentImportFileExcel = () => {
     addRow(ws, myHeader, header);
     const buf = await wb.xlsx.writeBuffer();
     fs.saveAs(new Blob([buf]), `${fileName}.xlsx`);
-  }
-
+  };
 
   return (
     <Button className="button_excel" onClick={() => exportToExcel()}>
       <FileExcelFilled />
-      <div className="font-medium text-md text-[#5B69E6]">EXCEL mẫu</div>
+      <div className="font-medium text-md text-[#5B69E6]">Mẫu Excel</div>
     </Button>
   );
 };
-
-
-
 
 export default EquipmentImportFileExcel;

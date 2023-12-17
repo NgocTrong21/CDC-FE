@@ -1,245 +1,291 @@
-import { CheckCircleFilled, EditFilled, FileWordFilled } from '@ant-design/icons';
-import { Button, Divider, Form, Input, Menu, Modal, Radio, Table, Tooltip } from 'antd';
-import equipmentLiquidationApi from 'api/equipment_liquidation.api';
+import { Button, DatePicker, Form, Input, Modal, Radio } from 'antd';
 import { CURRENT_USER } from 'constants/auth.constant';
-import { liquidation_status } from 'constants/dataFake.constant';
+import { report_status } from 'constants/dataFake.constant';
+import { NotificationContext } from 'contexts/notification.context';
 import moment from 'moment';
-import { useState, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import { downloadLiquidationDocx } from 'utils/file.util';
+import { toast } from 'react-toastify';
+import { checkPermission, convertBase64 } from 'utils/globalFunc.util';
+import { permissions } from 'constants/permission.constant';
+import Loading from 'components/Loading';
+import useQuery from 'hooks/useQuery';
+import equipmentLiquidationApi from 'api/equipment_liquidation.api';
 
-const LiquidationDetail = () => {
-  const param: any = useParams();
-  const { id } = param;
-  const [equipment, setEquipment] = useState<any>([]);
-  const [data, setData] = useState<any>({});
-  const columns: any = [
-    {
-      title: 'Người tạo phiếu',
-      key: 'create_user_id',
-      show: true,
-      widthExcel: 35,
-      render: (item: any) => (
-        <>{item?.create_user?.name}</>
-      )
-    },
-    {
-      title: 'Ngày tạo phiếu',
-      key: 'liquidation_date',
-      show: true,
-      widthExcel: 30,
-      render: (item: any) => (
-        <>{item?.liquidation_date && moment(item?.liquidation_date).format("DD-MM-YYYY")}</>
-      )
-    },
-    {
-      title: 'Lý do thanh lý',
-      key: 'reason',
-      show: true,
-      widthExcel: 25,
-      dataIndex: 'reason'
-    },
-    {
-      title: 'Tình trạng xử lý',
-      key: 'liquidation_status',
-      show: true,
-      widthExcel: 20,
-      render: (item: any) => (
-        <>{handleLiquidationStatus(item?.liquidation_status)}</>
-      )
-    },
-    {
-      title: 'Người phê duyệt',
-      key: 'approver_id',
-      show: true,
-      widthExcel: 30,
-      render: (item: any) => (
-        <>{item?.approver?.name}</>
-      )
-    },
-    {
-      title: 'Ghi chú',
-      key: 'note',
-      dataIndex: 'note',
-      show: true,
-      widthExcel: 30,
-    },
-    {
-      title: 'Tác vụ',
-      key: 'action',
-      show: true,
-      render: (item: any) => (
-        <Menu className='flex flex-row'>
-          {
-            item?.liquidation_status !== 1 &&
-            <Menu.Item key="approver">
-              <Tooltip title='Phê duyệt'>
-                <EditFilled onClick={() => setLiquidationApproveField()} />
-              </Tooltip>
-            </Menu.Item>
-          }
-          {
-            item?.liquidation_status === 1 &&
-            <Menu.Item key="liquidation_word">
-              <Tooltip title='Hoàn thành'>
-                <CheckCircleFilled />
-              </Tooltip>
-            </Menu.Item>
-          }
-        </Menu>
-      ),
-    },
-  ];
-  const [columnTable, setColumnTable] = useState<any>(columns);
-  const [isShowCustomTable, setIsShowCustomTable] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [showLiquidationApproveModal, setShowLiquidationApproveModal] = useState<boolean>(false);
-  const user: any = JSON.parse(localStorage.getItem(CURRENT_USER) || '');
+const { TextArea } = Input;
+
+const DetailLiquidation = () => {
+  const [equipment, setEquipment] = useState<any>({});
+  const [loading, setLoading] = useState(false);
+  const [loadingApprove, setLoadingApprove] = useState(false);
+  const [loadingUpdate, setLoadingUpdate] = useState(false);
+  const [showApproveLiquidationModal, setShowApproveLiquidationModal] =
+    useState(false);
+  const current_user: any = JSON.parse(
+    localStorage.getItem(CURRENT_USER) || ''
+  );
   const [form] = Form.useForm();
-  const { TextArea } = Input;
+  const param: any = useParams();
+  const { id, liquidation_id } = param;
+  const { increaseCount, getAllNotifications } =
+    useContext(NotificationContext);
+  const [file, setFile] = useState<any>('');
 
-  const getLiquidationDetail = (id: number) => {
-    equipmentLiquidationApi.getLiquidationDetail(id)
+  // const handleChangeFile = async (e: any) => {
+  //   let file = e.target.files[0];
+  //   if (file.size > 1000000) {
+  //     form.resetFields(['file']);
+  //     form.setFields([
+  //       {
+  //         name: 'file',
+  //         errors: ['Vui lòng chọn file có dung lượng nhỏ hơn 1MB!'],
+  //       },
+  //     ]);
+  //     return;
+  //   } else {
+  //     let fileBase64 = await convertBase64(file);
+  //     setFile(fileBase64);
+  //   }
+  // };
+
+  const handleLiquidationStatus = (status: any = 0) => {
+    let color: any;
+    if (status === 0) color = 'text-orange-400';
+    if (status === 1) color = 'text-green-500';
+    if (status === 2) color = 'text-red-500';
+    return (
+      <span className={`${color}`}>
+        {report_status.filter((item: any) => item.value === status)[0]?.label}
+      </span>
+    );
+  };
+
+  const detailLiquidation = () => {
+    setLoading(true);
+    equipmentLiquidationApi
+      .getLiquidationDetail(id, liquidation_id)
       .then((res: any) => {
-        const { success, data } = res?.data;
-        if (success) {       
-          let equipment = [];
-          let x: any = data?.equipment;
-          // let y: any = {
-          //   name: x?.Equipment?.name,
-          //   model: x?.Equipment?.model,
-          //   serial: x?.Equipment?.serial,
-          //   department: x?.Equipment?.Department?.name,
-          //   liquidation_date: moment(x?.liquidation_date).format("DD-MM-YYYY"),
-          //   reason: x?.reason,
-          //   note: x?.note,
-          //   create_user: x?.create_user?.name,
-          //   approver: x?.approver?.name
-          // };
-          // setData(y);
-          // equipment.push(x);
-          setEquipment(x);
-
+        const { success, data } = res.data;
+        if (success) {
+          const equipment = {
+            id: data?.equipment?.id,
+            equipment_id: data?.equipment?.Equipment?.id,
+            name: data?.equipment?.Equipment?.name,
+            model: data?.equipment?.Equipment?.model,
+            serial: data?.equipment?.Equipment?.serial,
+            department: data?.equipment?.Equipment?.Department.name,
+            department_id: data?.equipment?.Equipment?.Department.id,
+            code: data?.equipment?.code,
+            reason: data?.equipment?.reason,
+            liquidation_date: data?.equipment?.liquidation_date
+              ? moment(data?.equipment?.liquidation_date)
+              : '',
+            liquidation_status: data?.equipment?.liquidation_status,
+            create_user: data?.equipment?.create_user?.name,
+            create_user_id: data?.equipment?.create_user?.id,
+            approver_id: current_user.id,
+            approver: current_user.name,
+          };
+          form.setFieldsValue(equipment);
+          setEquipment(equipment);
         }
       })
       .catch()
-  }
+      .finally(() => setLoading(false));
+  };
 
   useEffect(() => {
-    getLiquidationDetail(id);
-  }, [id])
+    detailLiquidation();
+  }, [id, liquidation_id]);
 
-  const handleLiquidationStatus = (status: any) => {
-    return liquidation_status.filter((item: any) => item.value === status)[0]?.label;
-  }
-
-  const setLiquidationApproveField = () => {
-    setShowLiquidationApproveModal(true);
-    form.setFieldsValue({
-      approver_id: user?.id,
-      equipment_id: +id
-    })
-  }
-
-  const handleApproverLiquidationNote = (values: any) => {
-    let data = {
-      ...values,
-      equipment_name: equipment[0]?.Equipment?.name,
-      department_name: equipment[0]?.Equipment?.Department?.name,
-      department_id: equipment[0]?.Equipment?.Department?.id
-    }
-    setLoading(true);
-    equipmentLiquidationApi.approveLiquidationNote(data)
+  const handleApproveLiquidation = (values: any) => {
+    const data = {
+      ...equipment,
+      liquidation_status: values.liquidation_status,
+      liquidation_date: values.liquidation_date,
+      liquidation_note: values.liquidation_note,
+    };
+    delete data.file;
+    setLoadingApprove(true);
+    equipmentLiquidationApi
+      .approveLiquidationNote(data)
       .then((res: any) => {
-        const { success } = res?.data;
+        const { success } = res.data;
         if (success) {
-          toast.success("Phê duyệt thành công");
-          getLiquidationDetail(id);
+          detailLiquidation();
+          setShowApproveLiquidationModal(false);
+          toast.success('Phê duyệt phiếu thanh lý thành công!');
+          increaseCount();
+          getAllNotifications();
         } else {
-          toast.error("Phê duyệt thất bại")
+          toast.error('Phê duyệt phiếu thanh lý thất bại!');
         }
-        setShowLiquidationApproveModal(false);
       })
       .catch()
-      .finally(() => setLoading(false))
-  }
+      .finally(() => setLoadingApprove(false));
+  };
 
-  return (
+  const updateliquidation = (values: any) => {
+    const data = {
+      ...equipment,
+      liquidation_status: 0,
+      reason: values.reason,
+      liquidation_date: values.liquidation_date,
+      file,
+      isEdit: 1,
+    };
+    setLoadingUpdate(true);
+    equipmentLiquidationApi
+      .updateLiquidationNote(data)
+      .then((res: any) => {
+        const { success } = res.data;
+        if (success) {
+          detailLiquidation();
+          toast.success('Cập nhật phiếu thanh lý thành công!');
+          increaseCount();
+          getAllNotifications();
+        } else {
+          toast.error('Cập nhật phiếu thanh lý thất bại!');
+        }
+      })
+      .catch()
+      .finally(() => setLoadingUpdate(false));
+  };
+
+  return loading ? (
+    <Loading />
+  ) : (
     <div>
-      <div className="title text-center">PHIẾU YÊU CẦU THANH LÝ THIẾT BỊ</div>
-      <Divider />
-      <div>
-        <div className='title'>THÔNG TIN THIẾT BỊ</div>
-        <div>Tên: {equipment[0]?.Equipment?.name}</div>
-        <div>Khoa Phòng: {equipment[0]?.Equipment?.Department?.name}</div>
-        <div>Model: {equipment[0]?.Equipment?.model}</div>
-        <div>Serial: {equipment[0]?.Equipment?.serial}</div>
+      <div className="title flex gap-3">
+        PHIẾU THANH LÝ
+        {/* (
+        <span className="italic">Mã phiếu: {equipment?.code}</span>) ___{' '} */}
+        {handleLiquidationStatus(equipment?.liquidation_status)}
       </div>
-      <Divider />
-      <div className='flex flex-row justify-between'>
-        <div className='title'>CHI TIẾT PHIẾU YÊU CẦU THANH LÝ</div>
-        {/* {
-          equipment[0]?.liquidation_status === 1 &&
-          <Button
-            className="flex-center text-slate-900 gap-2 rounded-3xl border-[#5B69E6] border-2"
-            onClick={() => downloadLiquidationDocx(data)}
-          >
-            <FileWordFilled />
-            <div className="font-medium text-md text-[#5B69E6]">Xuất biên bản thanh lý</div>
-          </Button>
-        } */}
-      </div>
+      <Form
+        size="large"
+        layout="vertical"
+        form={form}
+        onFinish={updateliquidation}
+      >
+        <Form.Item name="id" className="hidden"></Form.Item>
+        <Form.Item name="equipment_id" className="hidden"></Form.Item>
+        <Form.Item label="Tên thiết bị" name="name">
+          <Input disabled className="input" />
+        </Form.Item>
+        <div className="grid grid-cols-2 gap-5">
+          <Form.Item label="Model" name="model">
+            <Input disabled className="input" />
+          </Form.Item>
+          <Form.Item label="Serial" name="serial">
+            <Input disabled className="input" />
+          </Form.Item>
+        </div>
+        <div className="grid grid-cols-2 gap-5">
+          <Form.Item label="Ngày thanh lý" name="liquidation_date">
+            <DatePicker className="date" />
+          </Form.Item>
+          <Form.Item label="Lý do thanh lý" name="reason">
+            <Input className="input" />
+          </Form.Item>
+        </div>
+        <div className="grid grid-cols-2 gap-5">
+          <Form.Item name="create_user_id" className="hidden"></Form.Item>
+          <Form.Item label="Người tạo phiếu thanh lý" name="create_user">
+            <Input disabled className="input" />
+          </Form.Item>
+          <Form.Item label="Người phê duyệt" name="approver">
+            <Input disabled className="input" />
+          </Form.Item>
+          <Form.Item name="approver_id" className="hidden"></Form.Item>
+        </div>
+        <div className="flex items-center justify-center gap-4 mt-4">
+          {equipment.liquidation_status !== 1 &&
+            checkPermission(permissions.LIQUIDATION_EQUIPMENT_APPROVE) && (
+              <Form.Item>
+                <Button
+                  className="button-primary"
+                  onClick={() => setShowApproveLiquidationModal(true)}
+                >
+                  Phê duyệt
+                </Button>
+              </Form.Item>
+            )}
 
-      <Table
-        columns={columnTable.filter((item: any) => item.show)}
-        dataSource={equipment}
-        className="mt-6 shadow-md"
-        pagination={false}
-      />
+          {equipment.liquidation_status !== 1 &&
+            checkPermission(permissions.LIQUIDATION_EQUIPMENT_UPDATE) && (
+              <Form.Item>
+                <Button
+                  className="button-primary"
+                  htmlType="submit"
+                  loading={loadingUpdate}
+                >
+                  Cập nhật
+                </Button>
+              </Form.Item>
+            )}
+        </div>
+        {equipment.liquidation_status === 1 && (
+          <Form.Item>
+            <Button
+              className="button-primary"
+              onClick={() => downloadLiquidationDocx(equipment)}
+            >
+              In phiếu thanh lý
+            </Button>
+          </Form.Item>
+        )}
+      </Form>
       <Modal
-        title="Phê duyệt phiếu đề nghị thanh lý thiết bị"
-        open={showLiquidationApproveModal}
-        onCancel={() => setShowLiquidationApproveModal(false)}
+        title="Phê duyệt phiếu thanh lý thiết bị"
+        open={showApproveLiquidationModal}
+        onCancel={() => setShowApproveLiquidationModal(false)}
         footer={null}
       >
         <Form
-          form={form}
-          layout="vertical"
           size="large"
-          onFinish={handleApproverLiquidationNote}
+          layout="vertical"
+          form={form}
+          onFinish={handleApproveLiquidation}
         >
-          <Form.Item name='equipment_id' style={{ display: 'none' }}></Form.Item>
-          <Form.Item name='approver_id' style={{ display: 'none' }}></Form.Item>
-          <Form.Item label='Người phê duyệt'>
-            <Input disabled className='input' value={user?.name} />
-          </Form.Item>
           <Form.Item
-            label='Trạng thái phê duyệt'
-            name='liquidation_status'
+            label="Trạng thái phê duyệt"
+            name="liquidation_status"
             required
             rules={[{ required: true, message: 'Hãy chọn mục này!' }]}
           >
             <Radio.Group>
-              <Radio value={1}>Đồng ý</Radio>
-              <Radio value={2}>Không đồng ý</Radio>
+              <Radio value={1}>Phê duyệt</Radio>
+              <Radio value={2}>Từ chối</Radio>
             </Radio.Group>
           </Form.Item>
-          <Form.Item label='Ghi chú' name='note'>
-            <TextArea placeholder='Nhập ghi chú' rows={4} className='textarea' />
+          <Form.Item label="Ghi chú" name="liquidation_note">
+            <TextArea placeholder="Nhập ghi chú" className="input" />
           </Form.Item>
-          <div className='flex flex-row justify-end gap-4'>
+          <div className="flex flex-row justify-end gap-4">
             <Form.Item>
-              <Button htmlType="submit" className='button' loading={loading}>Xác nhận</Button>
+              <Button
+                htmlType="submit"
+                className="button-primary"
+                loading={loadingApprove}
+              >
+                Xác nhận
+              </Button>
             </Form.Item>
             <Form.Item>
-              <Button onClick={() => setShowLiquidationApproveModal(false)} className='button'>Đóng</Button>
+              <Button
+                onClick={() => setShowApproveLiquidationModal(false)}
+                className="button-primary"
+              >
+                Đóng
+              </Button>
             </Form.Item>
           </div>
         </Form>
       </Modal>
     </div>
-  )
-}
+  );
+};
 
-export default LiquidationDetail
+export default DetailLiquidation;

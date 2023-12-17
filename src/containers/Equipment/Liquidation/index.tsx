@@ -1,29 +1,53 @@
-import { EyeFilled, FilterFilled, PlusCircleFilled, ProfileFilled, SelectOutlined } from '@ant-design/icons'
-import { Checkbox, Divider, Input, Menu, Pagination, Row, Select, Table, Tooltip } from 'antd'
-import equipmentLiquidationApi from 'api/equipment_liquidation.api'
-import ExportToExcel from 'components/Excel'
-import ModelLiquidation from 'components/ModelLiquidation'
-import { FilterContext } from 'contexts/filter.context'
-import useDebounce from 'hooks/useDebounce'
-import useQuery from 'hooks/useQuery'
-import useSearchName from 'hooks/useSearchName'
-import { useState, useEffect, useContext } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { getDataExcel, getFields, onChangeCheckbox, options } from 'utils/globalFunc.util'
-
-const limit: number = 10;
+import {
+  EyeFilled,
+  FilterFilled,
+  PlusCircleFilled,
+  ProfileFilled,
+  SelectOutlined,
+} from '@ant-design/icons';
+import {
+  Checkbox,
+  Divider,
+  Input,
+  Menu,
+  Pagination,
+  Row,
+  Select,
+  Table,
+  Tooltip,
+} from 'antd';
+import equipmentLiquidationApi from 'api/equipment_liquidation.api';
+import ExportToExcel from 'components/Excel';
+import ModelLiquidation from 'components/ModelLiquidation';
+import { permissions } from 'constants/permission.constant';
+import { FilterContext } from 'contexts/filter.context';
+import { NotificationContext } from 'contexts/notification.context';
+import useDebounce from 'hooks/useDebounce';
+import useQuery from 'hooks/useQuery';
+import useSearchName from 'hooks/useSearchName';
+import moment from 'moment';
+import { useState, useEffect, useContext } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import {
+  checkPermission,
+  getDataExcel,
+  getFields,
+  handleReportStatus,
+  onChangeCheckbox,
+  options,
+  resolveDataExcel,
+} from 'utils/globalFunc.util';
 
 const TableFooter = ({ paginationProps }: any) => {
   return (
-    <Row justify='space-between'>
+    <Row justify="space-between">
       <div></div>
       <Pagination {...paginationProps} />
     </Row>
-  )
-}
+  );
+};
 
 const Liquidation = () => {
-
   const { departments } = useContext(FilterContext);
   const columns: any = [
     {
@@ -31,36 +55,28 @@ const Liquidation = () => {
       key: 'name',
       show: true,
       widthExcel: 35,
-      render: (item: any) => (
-        <div>{item?.name}</div>
-      )
+      render: (item: any) => <div>{item?.name}</div>,
     },
     {
-      title: 'Code',
-      key: 'code',
+      title: 'Mã TSCĐ',
+      key: 'fixed_asset_number',
       show: true,
       widthExcel: 35,
-      render: (item: any) => (
-        <div>{item?.code}</div>
-      )
+      render: (item: any) => <div>{item?.fixed_asset_number}</div>,
     },
     {
       title: 'Model',
       key: 'model',
       show: true,
       widthExcel: 30,
-      render: (item: any) => (
-        <div>{item?.model}</div>
-      )
+      render: (item: any) => <div>{item?.model}</div>,
     },
     {
       title: 'Serial',
       key: 'serial',
       show: true,
       widthExcel: 30,
-      render: (item: any) => (
-        <div>{item?.serial}</div>
-      )
+      render: (item: any) => <div>{item?.serial}</div>,
     },
     {
       title: 'Khoa - Phòng',
@@ -68,35 +84,78 @@ const Liquidation = () => {
       show: true,
       widthExcel: 30,
       render: (item: any) => {
+        return <div>{item?.Department?.name}</div>;
+      },
+    },
+    {
+      title: 'Ngày thanh lý',
+      key: 'liquidation_date',
+      show: true,
+      widthExcel: 30,
+      render: (item: any) => {
         return (
-          <div>{item?.Department?.name}</div>
-        )
-      }
+          <>
+            {item?.Liquidations?.length > 0 ?
+              moment(item?.Liquidations[0]?.liquidation_date).format('DD-MM-YYYY') : ''}
+          </>
+        );
+      },
+    },
+    {
+      title: 'Trạng thái xử lý',
+      key: 'liquidation_status',
+      show: true,
+      widthExcel: 30,
+      render: (item: any) => {
+        return (
+          <>
+            {handleReportStatus(item?.Liquidations[0]?.liquidation_status)}
+          </>
+        );
+      },
     },
     {
       title: 'Tác vụ',
       key: 'action',
       show: true,
       render: (item: any) => (
-        <Menu className='flex flex-row'>
+        <Menu className="flex flex-row">
           <Menu.Item key="detail">
-            <Tooltip title='Hồ sơ thiết bị'>
-              <Link to={`/equipment/detail/${item?.id}`}><EyeFilled /></Link>
+            <Tooltip title="Hồ sơ thiết bị">
+              <Link to={`/equipment/detail/${item?.id}`}>
+                <EyeFilled />
+              </Link>
             </Tooltip>
           </Menu.Item>
-          <Menu.Item key="liquidation">
-            <Tooltip title='Phiếu yêu cầu thanh lý'>
-              <Link to={`/equipment/liquidation_detail/${item?.id}`}><ProfileFilled /></Link>
-            </Tooltip>
-          </Menu.Item>
-          {
-            item?.status_id === 6 &&
-            <Menu.Item key="create">
-              <Tooltip title='Tạo phiếu yêu cầu thanh lý'>
+          {item?.Liquidations?.length > 0 ? (
+            <Menu.Item
+              key="liquidation_detail"
+              className={`${checkPermission(permissions.LIQUIDATION_EQUIPMENT_READ)
+                ? ''
+                : 'hidden'
+                }`}
+            >
+              <Tooltip title="Phiếu yêu cầu thanh lý">
+                <Link
+                  to={`/equipment/liquidation/detail/${item?.id}/${item?.Liquidations[0]?.id}`}
+                >
+                  <ProfileFilled />
+                </Link>
+              </Tooltip>
+            </Menu.Item>
+          ) : (
+            <Menu.Item
+              key="liquidation_create"
+              className={`${checkPermission(permissions.LIQUIDATION_EQUIPMENT_CREATE)
+                ? ''
+                : 'hidden'
+                }`}
+            >
+              <Tooltip title="Tạo phiếu yêu cầu thanh lý">
                 <PlusCircleFilled onClick={() => setLiquidationFields(item)} />
               </Tooltip>
             </Menu.Item>
-          }
+          )}
         </Menu>
       ),
     },
@@ -117,11 +176,16 @@ const Liquidation = () => {
   const [name, setName] = useState<string>(currentName);
   const [department, setDepartment] = useState<number>(currentDepartment);
   const [loading, setLoading] = useState<boolean>(false);
+  const [loadingDownload, setLoadingDownload] = useState<boolean>(false);
   const [total, setTotal] = useState<number>(1);
   const [page, setPage] = useState<number>(currentPage || 1);
+  const [limit, setLimit] = useState<number>(10);
   const nameSearch = useDebounce(name, 500);
-  const [showLiquidationModal, setShowLiquidationModal] = useState<boolean>(false);
+  const [showLiquidationModal, setShowLiquidationModal] =
+    useState<boolean>(false);
   const [equipment, setEquipment] = useState<any>({});
+  const { increaseCount, getAllNotifications } =
+    useContext(NotificationContext);
 
   const onChangeSelect = (key: string, value: any) => {
     if (key === 'department_id') {
@@ -140,7 +204,7 @@ const Liquidation = () => {
       setPage(1);
       navigate(`${pathName}?page=1`);
     }
-  }
+  };
 
   const onPaginationChange = (page: number) => {
     setPage(page);
@@ -148,7 +212,7 @@ const Liquidation = () => {
     setSearchQuery(searchQuery);
     searchQueryString = new URLSearchParams(searchQuery).toString();
     navigate(`${pathName}?${searchQueryString}`);
-  }
+  };
 
   const pagination = {
     current: page,
@@ -156,11 +220,12 @@ const Liquidation = () => {
     pageSize: limit,
     showTotal: (total: number) => `Tổng cộng: ${total} thiết bị`,
     onChange: onPaginationChange,
-  }
+  };
 
-  const getListUnusedEquipment = (page: number, name: string, department_id: any) => {
+  const getListUnusedEquipment = () => {
     setLoading(true);
-    equipmentLiquidationApi.getListUnusedEquipment({page, name, department_id})
+    equipmentLiquidationApi
+      .getListUnusedEquipment({ page, name, department, limit })
       .then((res: any) => {
         const { success, data } = res.data;
         if (success) {
@@ -169,12 +234,12 @@ const Liquidation = () => {
         }
       })
       .catch()
-      .finally(() => setLoading(false))
-  }
+      .finally(() => setLoading(false));
+  };
 
   useEffect(() => {
-    getListUnusedEquipment(page, nameSearch, department)
-  }, [nameSearch, department, page])
+    getListUnusedEquipment();
+  }, [nameSearch, department, page, limit]);
 
   const setLiquidationFields = (item: any) => {
     setShowLiquidationModal(true);
@@ -182,66 +247,64 @@ const Liquidation = () => {
       id: item?.id,
       name: item?.name,
       department: item?.Department?.name,
-      department_id: item?.Department?.id
-    })
-  }
+      department_id: item?.Department?.id,
+    });
+  };
 
-  const downloadLiquidationList = () => {
-    let fields: any = getFields(columnTable);
-    let data = equipments
-      .map((x: any) => ({
-        name: x.name,
-        code: x.code,
-        model: x.model,
-        serial: x.serial,
-        department: x.Department?.name
-      }))
-    let objectKey = Object.keys(data[0]);
-    let newData: any = getDataExcel(data, objectKey, fields);
-    const workSheetColumnName = fields?.map((item: any) => ({title: item?.title, width: item?.width}));
-    const workSheetName = 'Danh sách thiết bị ngừng sử dụng';
-    const fileName = `Danh sách thiết bị ngừng sử dụng ${new Date().toISOString().substring(0, 10)}.xlsx`;
-    const finalData: any = [workSheetColumnName, ...newData];
-
-    return {
-      data: finalData,
-      sheetName: workSheetName,
-      fileName,
-      headerName: workSheetName
-    }
-  }
+  const downloadLiquidationList = async () => {
+    setLoadingDownload(true);
+    const res = await equipmentLiquidationApi.getListUnusedEquipment({
+      name: nameSearch,
+      department_id: department,
+    });
+    const { equipments } = res?.data?.data;
+    const data = equipments.map((x: any) => ({
+      name: x.name,
+      code: x.code,
+      model: x.model,
+      serial: x.serial,
+      department: x.Department?.name,
+    }));
+    resolveDataExcel(data, 'Danh sách thiết bị ngừng sử dụng', columnTable);
+    setLoadingDownload(false);
+  };
 
   return (
     <div>
       <div className="flex-between-center">
         <div className="title">DANH SÁCH THIẾT BỊ NGỪNG SỬ DỤNG</div>
-        <ExportToExcel getData={downloadLiquidationList} />
+        <ExportToExcel
+          callback={downloadLiquidationList}
+          loading={loadingDownload}
+        />
       </div>
       <Divider />
       <div className="flex justify-between flex-col">
         <div
-          className='flex flex-row gap-4 items-center mb-4'
+          className="flex flex-row gap-4 items-center mb-4"
           onClick={() => setIsShowCustomTable(!isShowCustomTable)}
         >
           <SelectOutlined />
-          <div className='font-medium text-center cursor-pointer text-base'>Tùy chọn trường hiển thị</div>
+          <div className="font-medium text-center cursor-pointer text-base">
+            Tùy chọn trường hiển thị
+          </div>
         </div>
-        {
-          isShowCustomTable &&
-          <div className='flex flex-row gap-4'>
-            {
-              columnTable.length > 0 && columnTable.map((item: any) => (
+        {isShowCustomTable && (
+          <div className="flex flex-row gap-4">
+            {columnTable.length > 0 &&
+              columnTable.map((item: any) => (
                 <div>
                   <Checkbox
                     defaultChecked={item?.show}
-                    onChange={(e: any) => onChangeCheckbox(item, e, columnTable, setColumnTable)}
+                    onChange={(e: any) =>
+                      onChangeCheckbox(item, e, columnTable, setColumnTable)
+                    }
                   />
                   <div>{item?.title}</div>
                 </div>
-              ))
-            }
+              ))}
           </div>
-        }
+        )}
       </div>
       <div className="flex justify-between">
         <div></div>
@@ -253,17 +316,27 @@ const Liquidation = () => {
             onChange={(value: any) => onChangeSelect('department_id', value)}
             allowClear
             filterOption={(input, option) =>
-              (option!.label as unknown as string).toLowerCase().includes(input.toLowerCase())
+              (option!.label as unknown as string)
+                .toLowerCase()
+                .includes(input.toLowerCase())
             }
             options={options(departments)}
             value={department}
           />
           <Input
-            placeholder='Tìm kiếm thiết bị'
+            placeholder="Tìm kiếm thiết bị"
             allowClear
             value={name}
             className="rounded-lg h-9 border-[#A3ABEB] border-2"
-            onChange={(e) => onChangeSearch(e, setName, searchQuery, setSearchQuery, searchQueryString)}
+            onChange={(e) =>
+              onChangeSearch(
+                e,
+                setName,
+                searchQuery,
+                setSearchQuery,
+                searchQueryString
+              )
+            }
           />
           <div>
             <FilterFilled />
@@ -278,14 +351,19 @@ const Liquidation = () => {
         pagination={false}
         loading={loading}
       />
-      <ModelLiquidation 
+      <ModelLiquidation
         showLiquidationModal={showLiquidationModal}
         setShowLiquidationModal={() => setShowLiquidationModal(false)}
         loading={loading}
         equipment={equipment}
+        callback={() => {
+          getListUnusedEquipment();
+          increaseCount();
+          getAllNotifications();
+        }}
       />
     </div>
-  )
-}
+  );
+};
 
-export default Liquidation
+export default Liquidation;

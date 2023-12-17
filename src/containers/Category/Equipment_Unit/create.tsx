@@ -1,26 +1,12 @@
 import { Button, Divider, Form, Input } from 'antd';
 import { useState } from 'react';
-import ava from 'assets/image.png';
-import { convertBase64 } from 'utils/globalFunc.util';
 import { toast } from 'react-toastify';
 import categoryApi from 'api/category.api';
 
 const CreateEquipmentUnit = () => {
 
   const [form] = Form.useForm();
-  const [selectedImage, setSelectedImage] = useState<any>('');
-  const [image, setImage] = useState<any>('');
   const [loading, setLoading] = useState<boolean>(false);
-
-  const handleChangeImg = async (e: any) => {
-    let file = e.target.files[0];
-    if (file) {
-      let img = URL.createObjectURL(file);
-      let fileBase64 = await convertBase64(file);
-      setSelectedImage(img);
-      setImage(fileBase64);
-    }
-  }
 
   const onFinish = (values: any) => {
     setLoading(true);
@@ -69,40 +55,12 @@ const CreateEquipmentUnit = () => {
             <Button
               htmlType="submit"
               loading={loading}
-              className='button'
+              className='button-primary'
             >
               Thêm
             </Button>
           </Form.Item>
         </Form>
-        <div className='basis-1/3 mt-4 flex flex-col items-center'>
-          <div className='text-center mb-4'>Ảnh đại diện</div>
-          <div className="preview-content">
-            <input
-              type="file"
-              hidden
-              className="form-control"
-              id="inputImage"
-              onChange={(e: any) => handleChangeImg(e)}
-            />
-            <label className="text-center" htmlFor="inputImage">
-              {
-                image === '' ?
-                  <img
-                    src={ava}
-                    alt="ava"
-                    className='w-52 h-52'
-                  /> :
-                  <div
-                    className="w-52 h-52 bg-center bg-no-repeat bg-cover"
-                    style={{ backgroundImage: `url(${selectedImage})` }}
-                  >
-                  </div>
-              }
-            </label>
-
-          </div>
-        </div>
       </div>
     </div>
   )

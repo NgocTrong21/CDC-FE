@@ -7,11 +7,9 @@ import { addRow } from 'utils/globalFunc.util';
 const SupplyImportFileExcel = () => {
   const exportToExcel = () => {
     const myHeader = [
-      'Tên vật tư', 'Code', 'Model', 'Serial',
-      'Hãng sản xuất', 'Xuất xứ', 'Năm sản xuất', 'Năm sử dụng',
-      'Ngày nhập kho', 'Dự án', 'Ghi chú', 'Thông số kỹ thuật', 
-      'Cấu hình kỹ thuật', 'Giá nhập', 'Mức độ rủi ro',
-      'Quy trình sử dụng', 'Đơn vị tính', 'Loại vật tư'
+      'Tên vật tư', 'Mã vật tư', 'Số lô', 'Ngày hết hạn',
+      'Đơn vị tính', 'Đơn giá', 'Nước sản xuất', 'Nhà cung cấp',
+      'Ghi chú'
     ]
     const widths = myHeader.map((item: any) => ({ width: 25 }));
     exportToExcelPro('File excel mẫu nhập vật tư', 'Sheet A', myHeader, widths);

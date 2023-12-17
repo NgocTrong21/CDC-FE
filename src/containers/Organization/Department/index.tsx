@@ -1,41 +1,50 @@
 import { useEffect, useState } from 'react';
 import {
-  EyeFilled, FilterFilled,
-  PlusCircleFilled, DeleteFilled, SelectOutlined,
+  EyeFilled,
+  FilterFilled,
+  PlusCircleFilled,
+  DeleteFilled,
+  SelectOutlined,
 } from '@ant-design/icons';
 import {
-  Button, Checkbox, Divider,
-  Input, Pagination, Popconfirm,
-  Row, Table, Tooltip
+  Button,
+  Checkbox,
+  Divider,
+  Input,
+  Pagination,
+  Popconfirm,
+  Row,
+  Table,
+  Tooltip,
 } from 'antd';
+import image from 'assets/image.png';
 import useDebounce from 'hooks/useDebounce';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import departmentApi from 'api/department.api';
 import ava from 'assets/logo.png';
 import { toast } from 'react-toastify';
 import useQuery from 'hooks/useQuery';
-import { getDataExcel, getFields, onChangeCheckbox } from 'utils/globalFunc.util';
+import {
+  checkPermission,
+  onChangeCheckbox,
+  resolveDataExcel,
+} from 'utils/globalFunc.util';
 import ExportToExcel from 'components/Excel';
 import useSearchName from 'hooks/useSearchName';
+import { permissions } from 'constants/permission.constant';
 
 const limit: number = 10;
 
-const TableFooter = ({
-  paginationProps
-}: any) => {
-
+const TableFooter = ({ paginationProps }: any) => {
   return (
-    <Row
-      justify='space-between'
-    >
+    <Row justify="space-between">
       <div></div>
       <Pagination {...paginationProps} />
     </Row>
-  )
-}
+  );
+};
 
 const Department = () => {
-
   const { onChangeSearch } = useSearchName();
   const navigate = useNavigate();
   const location = useLocation();
@@ -49,6 +58,7 @@ const Department = () => {
   const [page, setPage] = useState<number>(currentPage || 1);
   const [total, setTotal] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
+  const [loadingDownload, setLoadingDownload] = useState<boolean>(false);
   const [name, setName] = useState<string>(currentName);
   const nameSearch = useDebounce(name, 500);
   const [isShowCustomTable, setIsShowCustomTable] = useState<boolean>(false);
@@ -58,15 +68,12 @@ const Department = () => {
       title: 'Ảnh đại diện',
       key: 'image',
       dataIndex: 'image',
-      show: false,
+      show: true,
       widthExcel: 25,
       render: (item: any) => (
-        <img
-          src={ava}
-          alt="logo"
-          className='w-20 h-20'
-        />
-      )
+        <img src={item || image} alt="logo" className="w-20 h-20" />
+      ),
+      width: 80,
     },
     {
       title: 'Tên hiển thị',
@@ -74,6 +81,7 @@ const Department = () => {
       key: 'name',
       show: true,
       widthExcel: 30,
+      width: 120,
     },
     {
       title: 'Số điện thoại',
@@ -81,6 +89,7 @@ const Department = () => {
       dataIndex: 'phone',
       show: true,
       widthExcel: 20,
+      width: 100,
     },
     {
       title: 'Email',
@@ -88,6 +97,7 @@ const Department = () => {
       dataIndex: 'email',
       show: true,
       widthExcel: 40,
+      width: 120,
     },
     {
       title: 'Địa chỉ',
@@ -95,42 +105,70 @@ const Department = () => {
       dataIndex: 'address',
       show: true,
       widthExcel: 20,
+      width: 100,
     },
     {
       title: 'Trưởng khoa',
       key: 'head',
       show: true,
-      widthExcel: 20,
-      render: (item: any) => (
-        <Row>{item?.head?.name}</Row>
-      ),
+      widthExcel: 40,
+      width: 100,
+      render: (item: any) => {
+        const user = item?.Users?.find(
+          (user: any) => user?.Role?.id === 6 || user?.Role?.id === 7
+        );
+        return <Row>{user?.name}</Row>;
+      },
     },
-    {
-      title: 'Điều dưỡng trưởng',
-      key: 'nurse',
-      show: true,
-      widthExcel: 20,
-      render: (item: any) => (
-        <Row>{item?.nurse?.name}</Row>
-      ),
-    },
+    // {
+    //   title: 'Điều dưỡng trưởng/Phụ trách phòng Vật tư',
+    //   key: 'nurse',
+    //   show: true,
+    //   widthExcel: 45,
+    //   render: (item: any) => {
+    //     const user = item?.Users?.find(
+    //       (user: any) => user?.Role?.id === 4 || user?.Role?.id === 8
+    //     );
+    //     return <Row>{user?.name}</Row>;
+    //   },
+    // },
     {
       title: 'Tác vụ',
       key: 'action',
-      show: true,
+      width: 50,
+      show:
+        checkPermission(permissions.DEPARTMENT_UPDATE) ||
+        checkPermission(permissions.DEPARTMENT_DELETE) ||
+        checkPermission(permissions.DEPARTMENT_READ),
       render: (item: any) => (
         <div>
-          <Tooltip title='Chi tiết khoa phòng' className='mr-4'>
-            <Link to={`/organization/department/detail/${item.id}`}><EyeFilled /></Link>
+          <Tooltip
+            title="Thông tin khoa phòng"
+            className={`${checkPermission(permissions.DEPARTMENT_READ) ? 'mr-4' : 'hidden'
+              }`}
+          >
+            <Link to={`/organization/department/detail/${item.id}`}>
+              <EyeFilled />
+            </Link>
           </Tooltip>
-          <Tooltip title='Xóa'>
+          <Tooltip
+            title="Xóa"
+            className={`${checkPermission(permissions.DEPARTMENT_DELETE)
+              ? ''
+              : 'hidden'
+              }`}
+          >
             <Popconfirm
               title="Bạn muốn xóa Khoa - Phòng này?"
               onConfirm={() => handleDeleteDepartment(item.id)}
               okText="Xóa"
               cancelText="Hủy"
             >
-              <DeleteFilled />
+              <DeleteFilled
+                className={
+                  checkPermission(permissions.DEPARTMENT_DELETE) ? '' : 'hidden'
+                }
+              />
             </Popconfirm>
           </Tooltip>
         </div>
@@ -140,18 +178,19 @@ const Department = () => {
   const [columnTable, setColumnTable] = useState<any>(columns);
 
   const handleDeleteDepartment = (id: number) => {
-    departmentApi.delete(id)
+    departmentApi
+      .delete(id)
       .then((res: any) => {
         const { success, message } = res.data;
         if (success) {
-          toast.success("Xóa thành công!");
-
+          toast.success('Xóa thành công!');
+          searchDepartments();
         } else {
           toast.error(message);
         }
       })
-      .catch(error => toast.error(error))
-  }
+      .catch((error) => toast.error(error));
+  };
 
   const onPaginationChange = (page: number) => {
     setPage(page);
@@ -159,7 +198,7 @@ const Department = () => {
     setSearchQuery(newSearchQuery);
     searchQueryString = new URLSearchParams(newSearchQuery).toString();
     navigate(`${pathName}?${searchQueryString}`);
-  }
+  };
 
   const pagination = {
     current: page,
@@ -167,98 +206,113 @@ const Department = () => {
     pageSize: limit,
     showTotal: (total: number) => `Tổng cộng: ${total} Khoa - Phòng`,
     onChange: onPaginationChange,
-  }
+  };
 
   const searchDepartments = () => {
-    departmentApi.search({ keyword: nameSearch, page})
+    setLoading(true);
+    departmentApi
+      .search({ keyword: nameSearch, page })
       .then((res: any) => {
         const { success, data } = res.data;
         if (success) {
           setDepartments(data.departments.rows);
-          setTotal(data.departments.count);
+          setTotal(data.count);
         }
       })
       .catch()
-  }
+      .finally(() => setLoading(false));
+  };
 
   useEffect(() => {
     searchDepartments();
-  }, [nameSearch, page])
+  }, [nameSearch, page]);
 
-
-  const downloadDepartmentList = () => {
-    let fields: any = getFields(columnTable);
-    let data = departments
-      .map((x: any) => ({
+  const downloadDepartmentList = async () => {
+    setLoadingDownload(true);
+    const res = await departmentApi.search({ keyword: nameSearch });
+    const { departments } = res?.data?.data;
+    const data = departments.map((x: any) => {
+      const head = x?.Users?.find(
+        (user: any) => user?.Role?.id === 6 || user?.Role?.id === 7
+      ).name;
+      const nurse = x?.Users?.find(
+        (user: any) => user?.Role?.id === 4 || user?.Role?.id === 8
+      ).name;
+      return {
         name: x.name,
         alias: x.alias,
         phone: x.phone || '',
         email: x.email || '',
         address: x.address || '',
-        head: x.head?.name || '',
-        nurse: x.nurse?.name || '',
-      }))
-    let objectKey = Object.keys(data[0]);
-    let newData: any = getDataExcel(data, objectKey, fields);
-    const workSheetColumnName = fields?.map((item: any) => ({ title: item?.title, width: item?.width }));
-    const workSheetName = 'Danh sách khoa phòng';
-    const fileName = `Danh sách khoa phòng ${new Date().toISOString().substring(0, 10)}.xlsx`;
-    const finalData: any = [workSheetColumnName, ...newData];
-
-    return {
-      data: finalData,
-      sheetName: workSheetName,
-      fileName,
-      headerName: workSheetName
-    }
-  }
+        head,
+        nurse,
+      };
+    });
+    resolveDataExcel(data, 'Danh sách khoa phòng', columnTable);
+    setLoadingDownload(false);
+  };
 
   return (
     <div>
       <div className="flex-between-center">
         <div className="title">DANH SÁCH KHOA - PHÒNG</div>
-        <div className='flex flex-row gap-6'>
-          <ExportToExcel getData={downloadDepartmentList} />
-          <Button
-            className="flex-center text-slate-900 gap-2 rounded-3xl border-[#5B69E6] border-2"
-            onClick={() => navigate('/organization/department/create')}
-          >
-            <PlusCircleFilled />
-            <div className="font-medium text-md text-[#5B69E6]">Thêm mới</div>
-          </Button>
+        <div className="flex flex-row gap-6">
+          <ExportToExcel
+            callback={downloadDepartmentList}
+            loading={loadingDownload}
+          />
+          {checkPermission(permissions.DEPARTMENT_CREATE) && (
+            <Button
+              className="button_excel"
+              onClick={() => navigate('/organization/department/create')}
+            >
+              <PlusCircleFilled />
+              <div className="font-medium text-md text-[#5B69E6]">Thêm mới</div>
+            </Button>
+          )}
         </div>
       </div>
-      <Divider />
+      {/* <Divider /> */}
       <div className="flex justify-between flex-col">
-        <div
-          className='flex flex-row gap-4 items-center mb-4'
+        {/* <div
+          className="flex flex-row gap-4 items-center mb-4"
           onClick={() => setIsShowCustomTable(!isShowCustomTable)}
         >
           <SelectOutlined />
-          <div className='font-medium text-center cursor-pointer text-base'>Tùy chọn trường hiển thị</div>
-        </div>
-        {
-          isShowCustomTable &&
-          <div className='flex flex-row gap-4'>
-            {
-              columnTable.length > 0 && columnTable.map((item: any) => (
+          <div className="font-medium text-center cursor-pointer text-base">
+            Tùy chọn trường hiển thị
+          </div>
+        </div> */}
+        {isShowCustomTable && (
+          <div className="flex flex-row gap-4">
+            {columnTable.length > 0 &&
+              columnTable.map((item: any) => (
                 <div>
                   <Checkbox
                     defaultChecked={item?.show}
-                    onChange={(e: any) => onChangeCheckbox(item, e, columnTable, setColumnTable)}
+                    onChange={(e: any) =>
+                      onChangeCheckbox(item, e, columnTable, setColumnTable)
+                    }
                   />
                   <div>{item?.title}</div>
                 </div>
-              ))
-            }
+              ))}
           </div>
-        }
+        )}
         <div className="flex-between-center gap-4 p-4">
           <Input
-            placeholder='Tìm kiếm khoa phòng'
+            placeholder="Tìm kiếm khoa phòng"
             allowClear
             value={name}
-            onChange={(e: any) => onChangeSearch(e, setName, searchQuery, setSearchQuery, searchQueryString)}
+            onChange={(e: any) =>
+              onChangeSearch(
+                e,
+                setName,
+                searchQuery,
+                setSearchQuery,
+                searchQueryString
+              )
+            }
             className="input"
           />
           <div>
@@ -273,9 +327,10 @@ const Department = () => {
         footer={() => <TableFooter paginationProps={pagination} />}
         pagination={false}
         loading={loading}
+        scroll={{ x: 1500, y: 580 }}
       />
     </div>
-  )
-}
+  );
+};
 
-export default Department
+export default Department;
