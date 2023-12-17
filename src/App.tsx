@@ -80,14 +80,6 @@ const App = () => {
     <div className="app">
       <BrowserRouter>
         <Routes>
-          {/* <Route
-            path="/"
-            element={
-              <PrivateRoute permission={permissions.DASHBOARD_READ}>
-                <Dashboard />
-              </PrivateRoute>
-            }
-          /> */}
           {/* Equipment Routes */}
           <Route
             path="/equipment/list_eq"
@@ -568,7 +560,7 @@ const App = () => {
             }
           />
           {/* Auth Routes */}
-          <Route path="/signin" element={<Signin />} />
+          <Route path="/" element={<Signin />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/active/:active_token" element={<ActiveAccount />} />
           <Route path="/reset_password" element={<ResetPassword />} />

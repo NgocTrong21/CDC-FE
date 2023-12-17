@@ -60,7 +60,7 @@ function* handleLogout() {
   localStorage.removeItem(ACCESS_TOKEN);
   localStorage.removeItem(REFRESH_TOKEN);
   localStorage.removeItem(CURRENT_USER);
-  yield put(push('/signin'));
+  yield put(push('/'));
   window.location.reload();
 }
 

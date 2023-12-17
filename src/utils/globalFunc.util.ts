@@ -296,7 +296,12 @@ const onChangeCheckbox = (
 };
 
 const getCurrentUser = () => {
-  return JSON.parse(localStorage.getItem(CURRENT_USER) || '');
+  if(localStorage.getItem(CURRENT_USER)) {
+    return JSON.parse(localStorage.getItem(CURRENT_USER) || '');
+  }
+  else {
+    return {}
+  }
 };
 
 const checkRoleFromData = () => {
