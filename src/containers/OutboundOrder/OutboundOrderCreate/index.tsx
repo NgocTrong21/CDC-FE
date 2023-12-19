@@ -140,7 +140,7 @@ const OutboundOrderCreate = () => {
     if (value > 0) {
       orderQuantity = value;
     } else {
-      orderQuantity = 1;
+      orderQuantity = 0;
     }
     const unitValue = listData[actualIndex]?.unitPrice as number;
     const totalValue = orderQuantity * unitValue || 0;
@@ -171,7 +171,7 @@ const OutboundOrderCreate = () => {
             },
             supplies: dataSource?.map((item: any) => ({
               supply_id: item?.id,
-              quantity: parseInt(item?.orderQuantity) || 1,
+              quantity: parseInt(item?.orderQuantity) || 0,
             })),
           })
           .then((res) => {
@@ -188,7 +188,7 @@ const OutboundOrderCreate = () => {
           })
           .finally(() => setLoading(false));
       }
-    } catch (error) {}
+    } catch (error) { }
   };
   return (
     <Layout>

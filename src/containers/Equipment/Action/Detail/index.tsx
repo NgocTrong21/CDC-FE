@@ -458,10 +458,10 @@ const Detail = () => {
       <div className="flex-between-center">
         <div className="font-medium text-lg">HỒ SƠ THIẾT BỊ</div>
         <div className="flex flex-row gap-6">
-          <Button className="button_excel ">
+          {/* <Button className="button_excel ">
             <FilePdfFilled />
             <div className="font-medium text-md text-[#5B69E6]">Xuất PDF</div>
-          </Button>
+          </Button> */}
           <Button
             className={`${checkPermission(permissions.EQUIPMENT_UPDATE)
               ? 'button_excel'

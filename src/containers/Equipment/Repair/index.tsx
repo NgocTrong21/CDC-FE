@@ -5,11 +5,9 @@ import {
   PlusCircleFilled,
   ProfileFilled,
   RightCircleFilled,
-  SelectOutlined,
   ToolFilled,
 } from '@ant-design/icons';
 import {
-  Checkbox,
   Divider,
   Input,
   Menu,
@@ -26,8 +24,6 @@ import { FilterContext } from 'contexts/filter.context';
 import {
   checkPermission,
   checkRoleFromData,
-  handleReportStatus,
-  onChangeCheckbox,
   options,
   resolveDataExcel,
 } from 'utils/globalFunc.util';
@@ -235,8 +231,7 @@ const Repair = () => {
       ),
     },
   ];
-  const [columnTable, setColumnTable] = useState<any>(columns);
-  const [isShowCustomTable, setIsShowCustomTable] = useState<boolean>(false);
+  const columnTable = columns;
   const navigate = useNavigate();
   const location = useLocation();
   const pathName: any = location?.pathname;
@@ -247,13 +242,11 @@ const Repair = () => {
   const currentName = query?.name;
   const currentStatus = query?.status_id;
   const currentDepartment = query?.department_id;
-  const currentType = query?.type_id;
   const currentPage = query?.page;
   const [equipments, setEquipments] = useState<any>([]);
   const [name, setName] = useState<string>(currentName);
   const [status, setStatus] = useState<number>(currentStatus);
   const [department, setDepartment] = useState<number>(currentDepartment);
-  const [type, setType] = useState<any>(currentType);
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingDownload, setLoadingDownload] = useState<boolean>(false);
   const [total, setTotal] = useState<number>(1);
@@ -286,9 +279,6 @@ const Repair = () => {
   const onChangeSelect = (key: string, value: any) => {
     if (key === 'status_id') {
       setStatus(value);
-    }
-    if (key === 'type_id') {
-      setType(value);
     }
     if (key === 'department_id') {
       setDepartment(value);
@@ -324,7 +314,6 @@ const Repair = () => {
         limit,
         name: nameSearch,
         status_id: status,
-        type_id: type,
         department_id: department,
       })
       .then((res: any) => {
@@ -340,7 +329,7 @@ const Repair = () => {
 
   useEffect(() => {
     getAllEquipmentRepair();
-  }, [nameSearch, status, type, department, page, limit]);
+  }, [nameSearch, status, department, page, limit]);
 
   const pagination = {
     current: page,
@@ -353,35 +342,31 @@ const Repair = () => {
 
   const downloadRepairList = async () => {
     setLoadingDownload(true);
-    const res = await equipmentRepairApi.getBrokenAndRepairEqList({
-      name,
-      status_id: status,
-      type_id: type,
-      department_id: department,
-    });
-    const { equipments } = res?.data?.data;
     const data = equipments.map((x: any) => ({
-      name: x?.Equipment?.name,
-      department: x?.Equipment?.Department?.name,
-      status: x?.Equipment?.Equipment_Status?.name || '',
-      repair_priority: x.repair_priority,
+      name: x?.name,
+      department: x?.Department?.name,
+      status: x?.Equipment_Status?.name || '',
+      repair_priority: broken_status.find(
+        (broken_status) =>
+          broken_status.value === x?.Repairs[0]?.repair_priority
+      )?.label,
       broken_report_date:
-        x?.broken_report_date &&
-        moment(x?.broken_report_date).format('DD-MM-YYYY'),
+        x?.Repairs[0]?.broken_report_date &&
+        moment(x?.Repairs[0]?.broken_report_date).format('DD-MM-YYYY'),
       schedule_repair_date:
-        x?.schedule_repair_date &&
-        moment(x?.schedule_repair_date).format('DD-MM-YYYY'),
+        x?.Repairs[0]?.schedule_repair_date &&
+        moment(x?.Repairs[0]?.schedule_repair_date).format('DD-MM-YYYY'),
       repair_date:
-        x?.repair_date && moment(x?.repair_date).format('DD-MM-YYYY'),
+        x?.Repairs[0]?.repair_date && moment(x?.Repairs[0]?.repair_date).format('DD-MM-YYYY'),
       repair_completion_date:
-        x?.repair_completion_date &&
-        moment(x?.repair_completion_date).format('DD-MM-YYYY'),
-      estimated_repair_cost: x?.estimated_repair_cost,
-      actual_repair_cost: x?.actual_repair_cost,
+        x?.Repairs[0]?.repair_completion_date &&
+        moment(x?.Repairs[0]?.repair_completion_date).format('DD-MM-YYYY'),
+      estimated_repair_cost: x?.Repairs[0]?.estimated_repair_cost,
+      actual_repair_cost: x?.Repairs[0]?.actual_repair_cost,
     }));
     resolveDataExcel(
       data,
-      'Danh sách thiết bị đang báo hỏng và sửa chữa',
+      'Danh sách thiết bị đang báo hỏng',
       columnTable
     );
     setLoadingDownload(false);
@@ -399,7 +384,7 @@ const Repair = () => {
         />
       </div>
       <Divider />
-      <div className="flex justify-between flex-col">
+      {/* <div className="flex justify-between flex-col">
         <div
           className="flex flex-row gap-4 items-center mb-4"
           onClick={() => setIsShowCustomTable(!isShowCustomTable)}
@@ -425,7 +410,7 @@ const Repair = () => {
               ))}
           </div>
         )}
-      </div>
+      </div> */}
       <div className="flex justify-between">
         <div></div>
         <div className="flex-between-center gap-4 p-4">

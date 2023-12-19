@@ -229,23 +229,17 @@ const Department = () => {
 
   const downloadDepartmentList = async () => {
     setLoadingDownload(true);
-    const res = await departmentApi.search({ keyword: nameSearch });
-    const { departments } = res?.data?.data;
     const data = departments.map((x: any) => {
       const head = x?.Users?.find(
-        (user: any) => user?.Role?.id === 6 || user?.Role?.id === 7
-      ).name;
-      const nurse = x?.Users?.find(
-        (user: any) => user?.Role?.id === 4 || user?.Role?.id === 8
-      ).name;
+        (user: any) => user?.Role?.id === 4
+      )?.name;
       return {
-        name: x.name,
-        alias: x.alias,
-        phone: x.phone || '',
-        email: x.email || '',
-        address: x.address || '',
+        name: x?.name,
+        alias: x?.alias,
+        phone: x?.phone || '',
+        email: x?.email || '',
+        address: x?.address || '',
         head,
-        nurse,
       };
     });
     resolveDataExcel(data, 'Danh sách khoa phòng', columnTable);

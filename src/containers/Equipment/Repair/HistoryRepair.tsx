@@ -175,8 +175,6 @@ const HistoryRepair = () => {
 
   const downloadHistoryRepair = async () => {
     setLoadingDownload(true);
-    const res = await equipmentRepairApi.getHistoryRepair(id);
-    const repairInfo = res?.data?.data?.repair_info;
     const data = repairInfo.map((x: any) => ({
       code: x?.code,
       broken_report_date:
@@ -192,7 +190,7 @@ const HistoryRepair = () => {
         moment(x?.repair_completion_date).format('DD-MM-YYYY'),
       estimated_repair_cost: x?.estimated_repair_cost,
       actual_repair_cost: x?.actual_repair_cost,
-      provider_id: x?.Provider?.name,
+      provider_id: x?.provider,
       repair_status: x?.Repair_Status?.name,
     }));
     resolveDataExcel(data, 'Lịch sử sửa chữa', columnTable);

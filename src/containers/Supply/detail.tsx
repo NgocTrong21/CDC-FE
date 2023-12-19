@@ -71,11 +71,10 @@ const Detail = () => {
     },
     {
       key_1: 'Hạn sử dụng',
-      value_1: `${
-        supply?.expiration_date
+      value_1: `${supply?.expiration_date
           ? moment(supply?.expiration_date).format('DD-MM-YYYY')
           : ''
-      }`,
+        }`,
       key_2: 'Xuất sứ',
       value_2: `${supply?.Equipment_Unit?.name}`,
     },
@@ -96,7 +95,7 @@ const Detail = () => {
       <div id="detail" className="">
         <div className="flex flex-row gap-6 my-8">
           <div className="flex flex-col gap-4 items-center basis-1/3">
-            <Image src={supply?.image || image} width={300} />
+            <Image preview={false} src={supply?.image || image} width={300} />
             <div>Ảnh vật tư</div>
           </div>
           <div className="basis-2/3">
