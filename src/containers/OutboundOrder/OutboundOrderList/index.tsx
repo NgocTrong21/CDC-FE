@@ -4,6 +4,7 @@ import {
   EyeFilled,
   SelectOutlined,
   PlusCircleFilled,
+  DeleteFilled,
 } from '@ant-design/icons';
 import {
   Button,
@@ -15,6 +16,7 @@ import {
   Pagination,
   Tooltip,
   Checkbox,
+  Popconfirm,
 } from 'antd';
 import useDebounce from 'hooks/useDebounce';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -55,20 +57,20 @@ const OutboundOrderList = () => {
   ) => {
     setLimit(pageSize);
   };
-  // const handleDelete = (id: number) => {
-  //   outboundOrderApi
-  //     .delete(id)
-  //     .then((res: any) => {
-  //       const { success, message } = res.data;
-  //       getOutboundOrderList();
-  //       if (success) {
-  //         toast.success('Xóa thành công!');
-  //       } else {
-  //         toast.error(message);
-  //       }
-  //     })
-  //     .catch((error) => toast.error(error));
-  // };
+  const handleDelete = (id: number) => {
+    outboundOrderApi
+      .delete(id)
+      .then((res: any) => {
+        const { success, message } = res.data;
+        getOutboundOrderList();
+        if (success) {
+          toast.success('Xóa thành công!');
+        } else {
+          toast.error(message);
+        }
+      })
+      .catch((error) => toast.error(error));
+  };
   const columns: any = [
     {
       title: 'Số phiếu',
@@ -126,11 +128,10 @@ const OutboundOrderList = () => {
           {item?.status_id === 1 && (
             <Menu.Item
               key="update_equipment"
-              className={`${
-                checkPermission(permissions.OUTBOUND_ORDERS_UPDATE)
-                  ? ''
-                  : 'hidden'
-              }`}
+              className={`${checkPermission(permissions.OUTBOUND_ORDERS_UPDATE)
+                ? ''
+                : 'hidden'
+                }`}
             >
               <Tooltip title="Cập nhật phiếu">
                 <Link to={`/order/outbound_order/update/${item.id}`}>
@@ -140,9 +141,8 @@ const OutboundOrderList = () => {
             </Menu.Item>
           )}
           <Menu.Item
-            className={`${
-              checkPermission(permissions.OUTBOUND_ORDERS_READ) ? '' : 'hidden'
-            }`}
+            className={`${checkPermission(permissions.OUTBOUND_ORDERS_READ) ? '' : 'hidden'
+              }`}
           >
             <Tooltip title="Chi tiết phiếu">
               <Link to={`/order/outbound_order/detail/${item.id}`}>
@@ -150,13 +150,12 @@ const OutboundOrderList = () => {
               </Link>
             </Tooltip>
           </Menu.Item>
-          {/* <Menu.Item
+          {(item?.status_id === 1 || item?.status_id === 3) && <Menu.Item
             key="delete"
-            className={`${
-              checkPermission(permissions.OUTBOUND_ORDERS_DELETE)
-                ? ''
-                : 'hidden'
-            }`}
+            className={`${checkPermission(permissions.OUTBOUND_ORDERS_DELETE)
+              ? ''
+              : 'hidden'
+              }`}
           >
             <Tooltip title="Xóa phiếu">
               <Popconfirm
@@ -168,7 +167,8 @@ const OutboundOrderList = () => {
                 <DeleteFilled />
               </Popconfirm>
             </Tooltip>
-          </Menu.Item> */}
+          </Menu.Item>
+          }
         </Menu>
       ),
     },
@@ -239,9 +239,8 @@ const OutboundOrderList = () => {
           </div>
         </div>
         <Button
-          className={`button_excel ${
-            checkPermission(permissions.OUTBOUND_ORDERS_CREATE) ? '' : 'hidden'
-          }`}
+          className={`button_excel ${checkPermission(permissions.OUTBOUND_ORDERS_CREATE) ? '' : 'hidden'
+            }`}
           onClick={() => {
             navigate('/order/outbound_order/import');
           }}

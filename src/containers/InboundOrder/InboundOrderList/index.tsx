@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { EditFilled, EyeFilled, PlusCircleFilled } from '@ant-design/icons';
+import { DeleteFilled, EditFilled, EyeFilled, PlusCircleFilled } from '@ant-design/icons';
 import {
   Button,
   Divider,
@@ -9,6 +9,7 @@ import {
   Row,
   Pagination,
   Tooltip,
+  Popconfirm,
 } from 'antd';
 import useDebounce from 'hooks/useDebounce';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -126,11 +127,10 @@ const InboundOrderList = () => {
           {item?.status_id === 1 && (
             <Menu.Item
               key="update_equipment"
-              className={`${
-                checkPermission(permissions.INBOUND_ORDERS_UPDATE)
-                  ? ''
-                  : 'hidden'
-              }`}
+              className={`${checkPermission(permissions.INBOUND_ORDERS_UPDATE)
+                ? ''
+                : 'hidden'
+                }`}
             >
               <Tooltip title="Cập nhật phiếu">
                 <Link to={`/order/inbound_order/update/${item.id}`}>
@@ -140,9 +140,8 @@ const InboundOrderList = () => {
             </Menu.Item>
           )}
           <Menu.Item
-            className={`${
-              checkPermission(permissions.INBOUND_ORDERS_READ) ? '' : 'hidden'
-            }`}
+            className={`${checkPermission(permissions.INBOUND_ORDERS_READ) ? '' : 'hidden'
+              }`}
           >
             <Tooltip title="Chi tiết phiếu">
               <Link to={`/order/inbound_order/detail/${item.id}`}>
@@ -150,30 +149,31 @@ const InboundOrderList = () => {
               </Link>
             </Tooltip>
           </Menu.Item>
-          {/* <Menu.Item
-            key="delete"
-            className={`${checkPermission(permissions.INBOUND_ORDERS_DELETE) ? '' : 'hidden'
-              }`}
-          >
-            <Tooltip title="Xóa phiếu">
-              <Popconfirm
-                title="Bạn muốn xóa phiếu này?"
-                onConfirm={() => {
-                  handleDelete(item.id)
-                }}
-                okText="Xóa"
-                cancelText="Hủy"
-              >
-                <DeleteFilled />
-              </Popconfirm>
-            </Tooltip>
-          </Menu.Item> */}
+          {
+            (item?.status_id === 1 || item?.status_id === 3) && <Menu.Item
+              key="delete"
+              className={`${checkPermission(permissions.INBOUND_ORDERS_DELETE) ? '' : 'hidden'
+                }`}
+            >
+              <Tooltip title="Xóa phiếu">
+                <Popconfirm
+                  title="Bạn muốn xóa phiếu này?"
+                  onConfirm={() => {
+                    handleDelete(item.id)
+                  }}
+                  okText="Xóa"
+                  cancelText="Hủy"
+                >
+                  <DeleteFilled />
+                </Popconfirm>
+              </Tooltip>
+            </Menu.Item>}
         </Menu>
       ),
     },
   ];
 
-  const [columnTable, setColumnTable] = useState<any>(columns);
+  const columnTable = columns;
 
   const onPaginationChange = (page: number) => {
     setPage(page);
@@ -237,9 +237,8 @@ const InboundOrderList = () => {
           onChange={(e) => onChangeSearch(e)}
         />
         <Button
-          className={`button_excel ${
-            checkPermission(permissions.INBOUND_ORDERS_CREATE) ? '' : 'hidden'
-          }`}
+          className={`button_excel ${checkPermission(permissions.INBOUND_ORDERS_CREATE) ? '' : 'hidden'
+            }`}
           onClick={() => {
             navigate('/order/inbound_order/import');
           }}

@@ -3,9 +3,7 @@ import { EditFilled, EyeFilled, FilterFilled } from '@ant-design/icons';
 import { Divider, Input, Pagination, Row, Table, Tooltip } from 'antd';
 import useDebounce from 'hooks/useDebounce';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import providerApi from 'api/provider.api';
-import ExportToExcel from 'components/Excel';
-import { checkPermission, resolveDataExcel } from 'utils/globalFunc.util';
+import { checkPermission } from 'utils/globalFunc.util';
 import warehouseApi from 'api/warehouse.api';
 import { permissions } from 'constants/permission.constant';
 
@@ -28,7 +26,6 @@ const Warehouses = () => {
   const [page, setPage] = useState<number>(1);
   const [total, setTotal] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
-  const [loadingDownload, setLoadingDownload] = useState<boolean>(false);
   const [name, setName] = useState<string>('');
   const nameSearch = useDebounce(name, 500);
   const seachWarehouses = (params: any) => {
@@ -151,36 +148,10 @@ const Warehouses = () => {
     }
   };
 
-  const downloadProviderList = async () => {
-    setLoadingDownload(true);
-    const res = await providerApi.search(name);
-    const { providers } = res?.data?.data;
-    const data = providers.map((x: any) => ({
-      name: x.name,
-      tax_code: x.tax_code,
-      email: x.email,
-      hotline: x.hotline,
-      contact_person: x.contact_person,
-      note: x.note,
-      address: x.address,
-      services: x?.Provider_Services.forEach((item: any) => {
-        return `${item?.Service?.name}, `;
-      }),
-    }));
-    resolveDataExcel(data, 'Danh sách nhà cung cấp', columnTable);
-    setLoadingDownload(false);
-  };
-
   return (
     <div>
       <div className="flex-between-center">
         <div className="title">DANH SÁCH KHO</div>
-        <div className="flex flex-row gap-6">
-          <ExportToExcel
-            callback={downloadProviderList}
-            loading={loadingDownload}
-          />
-        </div>
       </div>
       <Divider />
       <div className="flex justify-between flex-col">

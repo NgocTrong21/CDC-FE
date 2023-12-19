@@ -5,7 +5,7 @@ import ResetPassword from 'containers/ResetPassword';
 import Repair from 'containers/Equipment/Repair';
 import NotFoundPage from 'containers/NotFoundPage';
 import PrivateRoute from 'routes/PrivateRoute';
-import Dashboard from 'containers/Dashboard';
+// import Dashboard from 'containers/Dashboard';
 import List from 'containers/Equipment/Action/List';
 import Detail from 'containers/Equipment/Action/Detail';
 import ImportOne from 'containers/Equipment/Action/ImportOne';
@@ -14,9 +14,6 @@ import UpdateEquipment from 'containers/Equipment/Action/Update';
 import Department from 'containers/Organization/Department';
 import CreateDepartment from 'containers/Organization/Department/create';
 import DetailDepartment from 'containers/Organization/Department/detail';
-import Provider from 'containers/Organization/Provider';
-import CreateProvider from 'containers/Organization/Provider/create';
-import DetailProvider from 'containers/Organization/Provider/detail';
 import User from 'containers/User';
 import CreateUser from 'containers/User/create';
 import DetailUser from 'containers/User/detail';
@@ -296,31 +293,6 @@ const App = () => {
               </PrivateRoute>
             }
           />
-          <Route
-            path="/organization/provider"
-            element={
-              <PrivateRoute permission={permissions.DASHBOARD_READ}>
-                <Provider />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/organization/provider/create"
-            element={
-              <PrivateRoute permission={permissions.DASHBOARD_READ}>
-                <CreateProvider />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/organization/provider/detail/:id"
-            element={
-              <PrivateRoute permission={permissions.DASHBOARD_READ}>
-                <DetailProvider />
-              </PrivateRoute>
-            }
-          />
-
           {/* User Routes */}
           <Route
             path="/user/list_user"
