@@ -1,4 +1,8 @@
-import { DatePicker, Divider, Input, Pagination, Row, Table } from 'antd';
+import {
+  DatePicker, Divider, Input,
+  // Pagination, Row,
+  Table
+} from 'antd';
 import { useState, useEffect, useCallback } from 'react';
 import useDebounce from 'hooks/useDebounce';
 import image from 'assets/image.png';
@@ -14,14 +18,14 @@ import {
 } from 'utils/globalFunc.util';
 import { formatCurrencyVN } from 'utils/validateFunc.util';
 
-const TableFooter = ({ paginationProps }: any) => {
-  return (
-    <Row justify="space-between">
-      <div></div>
-      <Pagination {...paginationProps} />
-    </Row>
-  );
-};
+// const TableFooter = ({ paginationProps }: any) => {
+//   return (
+//     <Row justify="space-between">
+//       <div></div>
+//       <Pagination {...paginationProps} />
+//     </Row>
+//   );
+// };
 
 const ReportSupply = () => {
   const [loadingDownload, setLoadingDownload] = useState<boolean>(false);
@@ -30,7 +34,7 @@ const ReportSupply = () => {
   );
   const [endDate, setEndDate] = useState<any>(moment());
   const [supllies, setSupplies] = useState<any>([]);
-  const [page, setPage] = useState<number>(1);
+  // const [page, setPage] = useState<number>(1);
   const [total, setTotal] = useState<number>(1);
   const [name, setName] = useState<string>('');
   const nameSearch = useDebounce(name, 500);
@@ -46,7 +50,7 @@ const ReportSupply = () => {
           <img
             src={item || image}
             alt="logo"
-            className="w-full  aspect-square object-contain"
+            className="w-full aspect-square object-contain"
           />
         );
       },
@@ -154,17 +158,17 @@ const ReportSupply = () => {
   ];
   const [columnTable, _setColumnTable] = useState<any>(columns);
 
-  const onPaginationChange = (page: number) => {
-    setPage(page);
-  };
+  // const onPaginationChange = (page: number) => {
+  //   setPage(page);
+  // };
 
-  const pagination = {
-    current: page,
-    total: total,
-    pageSize: 10,
-    showTotal: (total: number) => `Tổng cộng: ${total} thiết bị`,
-    onChange: onPaginationChange,
-  };
+  // const pagination = {
+  //   current: page,
+  //   total: total,
+  //   pageSize: 10,
+  //   showTotal: (total: number) => `Tổng cộng: ${total} thiết bị`,
+  //   onChange: onPaginationChange,
+  // };
 
   const handleGetReportSupplies = (start: any, end: any, search: any) => {
     setLoading(true);
@@ -301,12 +305,13 @@ const ReportSupply = () => {
           </div>
         </div>
       </div>
+      <p className='mt-5'>{`Số lượng vật tư: ${total}`}</p>
       <Table
         columns={columnTable.filter((item: any) => item.show)}
         dataSource={supllies}
         className="mt-6 shadow-md"
-        footer={() => <TableFooter paginationProps={pagination} />}
-        pagination={false}
+        // footer={() => <TableFooter paginationProps={pagination} />}
+        // pagination={false}
         loading={loading}
         scroll={{ x: 2000, y: 600 }}
       />
