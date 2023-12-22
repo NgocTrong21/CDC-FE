@@ -1,4 +1,8 @@
-import { DatePicker, Divider, Pagination, Row, Select, Table } from 'antd';
+import {
+  DatePicker, Divider,
+  // Pagination, Row, 
+  Select, Table
+} from 'antd';
 import { useState, useEffect, useCallback } from 'react';
 import supplyApi from 'api/suplly.api';
 import {
@@ -14,14 +18,14 @@ import warehouseApi from 'api/warehouse.api';
 import ExportToExcel from 'components/Excel';
 import { formatCurrencyVN } from 'utils/validateFunc.util';
 
-const TableFooter = ({ paginationProps }: any) => {
-  return (
-    <Row justify="space-between">
-      <div></div>
-      <Pagination {...paginationProps} />
-    </Row>
-  );
-};
+// const TableFooter = ({ paginationProps }: any) => {
+//   return (
+//     <Row justify="space-between">
+//       <div></div>
+//       <Pagination {...paginationProps} />
+//     </Row>
+//   );
+// };
 
 const ReportSupplyByWarehouse = () => {
   const [startDate, setStartDate] = useState<any>(
@@ -29,7 +33,7 @@ const ReportSupplyByWarehouse = () => {
   );
   const [endDate, setEndDate] = useState<any>(moment());
   const [supllies, setSupplies] = useState<any>([]);
-  const [page, setPage] = useState<number>(1);
+  // const [page, setPage] = useState<number>(1);
   const [warehouses, setWarehouses] = useState([]);
   const [loadingDownload, setLoadingDownload] = useState<boolean>(false);
   const [selectedWarehouse, setSelectedWarehouse] = useState<any>(1);
@@ -169,17 +173,17 @@ const ReportSupplyByWarehouse = () => {
   ];
   const [columnTable, _setColumnTable] = useState<any>(columns);
 
-  const onPaginationChange = (page: number) => {
-    setPage(page);
-  };
+  // const onPaginationChange = (page: number) => {
+  //   setPage(page);
+  // };
 
-  const pagination = {
-    current: page,
-    total: total,
-    pageSize: 10,
-    showTotal: (total: number) => `Tổng cộng: ${total} vật tư`,
-    onChange: onPaginationChange,
-  };
+  // const pagination = {
+  //   current: page,
+  //   total: total,
+  //   pageSize: 10,
+  //   showTotal: (total: number) => `Tổng cộng: ${total} vật tư`,
+  //   onChange: onPaginationChange,
+  // };
 
   const handleGetReportSupplies = (
     start: any,
@@ -332,12 +336,13 @@ const ReportSupplyByWarehouse = () => {
           </div>
         </div>
       </div>
+      <p className='mt-5'>{`Số lượng vật tư: ${total}`}</p>
       <Table
         columns={columnTable.filter((item: any) => item.show)}
         dataSource={supllies}
         className="mt-6 shadow-md"
-        footer={() => <TableFooter paginationProps={pagination} />}
-        pagination={false}
+        // footer={() => <TableFooter paginationProps={pagination} />}
+        // pagination={false}
         loading={loading}
         scroll={{ x: 2000, y: 600 }}
       />

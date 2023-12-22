@@ -1,4 +1,8 @@
-import { Divider, Input, Pagination, Row, Table } from 'antd';
+import {
+  Divider, Input,
+  // Pagination, Row, 
+  Table
+} from 'antd';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import warehouseApi from 'api/warehouse.api';
@@ -6,20 +10,20 @@ import image from 'assets/image.png';
 import { formatCurrencyVN } from 'utils/validateFunc.util';
 import supplyApi from 'api/suplly.api';
 import useDebounce from 'hooks/useDebounce';
-const TableFooter = ({ paginationProps }: any) => {
-  return (
-    <Row justify="space-between">
-      <div></div>
-      <Pagination {...paginationProps} />
-    </Row>
-  );
-};
+// const TableFooter = ({ paginationProps }: any) => {
+//   return (
+//     <Row justify="space-between">
+//       <div></div>
+//       <Pagination {...paginationProps} />
+//     </Row>
+//   );
+// };
 const DetailWarehouse = () => {
   const { id } = useParams();
   const [detailWarehouse, setDetailWarehouse] = useState<any>('');
   const [supplies, setSupplies] = useState<any>();
   const [total, setTotal] = useState<number>(1);
-  const [page, setPage] = useState<number>(1);
+  // const [page, setPage] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
   const [name, setName] = useState<string>('');
   const nameSearch = useDebounce(name, 500);
@@ -69,6 +73,7 @@ const DetailWarehouse = () => {
   useEffect(() => {
     getSuppliesList();
   }, [nameSearch]);
+
   const columns: any = [
     {
       title: 'Ảnh đại diện',
@@ -169,24 +174,24 @@ const DetailWarehouse = () => {
         <p>
           {formatCurrencyVN(
             item?.unit_price *
-              item?.Warehouse_Supplies.find(
-                (item: any) => item.warehouse_id === Number(id)
-              )?.quantity
+            item?.Warehouse_Supplies.find(
+              (item: any) => item.warehouse_id === Number(id)
+            )?.quantity
           )}
         </p>
       ),
     },
   ];
-  const onPaginationChange = (page: number) => {
-    setPage(page);
-  };
-  const pagination = {
-    current: page,
-    total: total,
-    pageSize: 10,
-    showTotal: (total: number) => `Tổng cộng: ${total} vật tư`,
-    onChange: onPaginationChange,
-  };
+  // const onPaginationChange = (page: number) => {
+  //   setPage(page);
+  // };
+  // const pagination = {
+  //   current: page,
+  //   total: total,
+  //   pageSize: 10,
+  //   showTotal: (total: number) => `Tổng cộng: ${total} vật tư`,
+  //   onChange: onPaginationChange,
+  // };
   return (
     <div>
       <div className="flex-between-center">
@@ -217,15 +222,17 @@ const DetailWarehouse = () => {
           }}
         />
       </div>
+      <span>{`Số lượng vật tư: ${total}`}</span>
       <Table
         columns={columns.filter((item: any) => item.show)}
         dataSource={supplies}
         className="mt-6 shadow-md"
-        footer={() => <TableFooter paginationProps={pagination} />}
-        pagination={false}
+        // footer={() => <TableFooter paginationProps={pagination} />}
+        // pagination={false}
         scroll={{ x: 1500, y: 600 }}
         loading={loading}
       />
+
     </div>
   );
 };
