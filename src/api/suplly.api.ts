@@ -12,6 +12,11 @@ const supplyApi = {
     const url = `supplies/list?${paramString}`;
     return axiosClient.get(url);
   },
+  listSuppliesByWarehouse(params: any): Promise<CommonResponse> {
+    const paramString = new URLSearchParams(params).toString();
+    const url = `supplies//list_supply_by_warehouse?${paramString}`;
+    return axiosClient.get(url);
+  },
   create(params: object): Promise<CommonResponse> {
     const url = 'supplies/create';
     return axiosClient.post(url, params);

@@ -1,7 +1,8 @@
 import {
-  Divider, Input,
-  // Pagination, Row, 
-  Table
+  Divider,
+  // Input,
+  // Pagination, Row,
+  Table,
 } from 'antd';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -9,7 +10,7 @@ import warehouseApi from 'api/warehouse.api';
 import image from 'assets/image.png';
 import { formatCurrencyVN } from 'utils/validateFunc.util';
 import supplyApi from 'api/suplly.api';
-import useDebounce from 'hooks/useDebounce';
+// import useDebounce from 'hooks/useDebounce';
 // const TableFooter = ({ paginationProps }: any) => {
 //   return (
 //     <Row justify="space-between">
@@ -25,8 +26,8 @@ const DetailWarehouse = () => {
   const [total, setTotal] = useState<number>(1);
   // const [page, setPage] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
-  const [name, setName] = useState<string>('');
-  const nameSearch = useDebounce(name, 500);
+  // const [name, setName] = useState<string>('');
+  // const nameSearch = useDebounce(name, 500);
   useEffect(() => {
     if (id) {
       setLoading(true);
@@ -52,19 +53,19 @@ const DetailWarehouse = () => {
   const getSuppliesList = () => {
     setLoading(true);
     supplyApi
-      .list({
-        name: nameSearch,
+      .listSuppliesByWarehouse({
+        warehouseId: Number(id),
       })
       .then((res: any) => {
         const { success, data } = res.data;
         if (success) {
-          const suppliesByWarehouse = data.supplies.filter((item: any) =>
-            item.Warehouse_Supplies.some(
-              (item: any) => item.warehouse_id === Number(id)
-            )
+          setSupplies(
+            data.supplies.map((item: any) => ({
+              ...item.Supply,
+              quantity: item.quantity,
+            }))
           );
-          setSupplies(suppliesByWarehouse);
-          setTotal(suppliesByWarehouse.length);
+          setTotal(data.count);
         }
       })
       .catch()
@@ -72,17 +73,19 @@ const DetailWarehouse = () => {
   };
   useEffect(() => {
     getSuppliesList();
-  }, [nameSearch]);
+  }, []);
+  console.log(supplies);
 
   const columns: any = [
     {
       title: 'Ảnh đại diện',
       key: 'image',
+      dataIndex: 'image',
       show: true,
       render(item: any) {
         return (
           <img
-            src={item?.Supply?.image || image}
+            src={item || image}
             alt="logo"
             className="w-full  aspect-square object-contain"
           />
@@ -151,18 +154,10 @@ const DetailWarehouse = () => {
     {
       title: 'Số lượng',
       key: 'quantity',
+      dataIndex: 'quantity',
       show: true,
       widthExcel: 20,
       width: 120,
-      render: (item: any) => (
-        <p>
-          {
-            item?.Warehouse_Supplies.find(
-              (item: any) => item.warehouse_id === Number(id)
-            )?.quantity
-          }
-        </p>
-      ),
     },
     {
       title: 'Tổng giá trị',
@@ -171,14 +166,7 @@ const DetailWarehouse = () => {
       widthExcel: 20,
       width: 200,
       render: (item: any) => (
-        <p>
-          {formatCurrencyVN(
-            item?.unit_price *
-            item?.Warehouse_Supplies.find(
-              (item: any) => item.warehouse_id === Number(id)
-            )?.quantity
-          )}
-        </p>
+        <p>{formatCurrencyVN(item?.unit_price * item?.quantity)}</p>
       ),
     },
   ];
@@ -211,7 +199,7 @@ const DetailWarehouse = () => {
         </div>
       </div>
       <div className="title mt-5">Danh sách vật tư trong kho</div>
-      <div className="flex justify-start my-4">
+      {/* <div className="flex justify-start my-4">
         <Input
           placeholder="Tìm kiếm vật tư"
           allowClear
@@ -221,7 +209,7 @@ const DetailWarehouse = () => {
             setName(e.target.value);
           }}
         />
-      </div>
+      </div> */}
       <span>{`Số lượng vật tư: ${total}`}</span>
       <Table
         columns={columns.filter((item: any) => item.show)}
@@ -232,7 +220,6 @@ const DetailWarehouse = () => {
         scroll={{ x: 1500, y: 600 }}
         loading={loading}
       />
-
     </div>
   );
 };
