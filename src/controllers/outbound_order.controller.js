@@ -9,11 +9,13 @@ exports.create = async (req, res) => {
     await db.sequelize.transaction(async (t) => {
       const { data, supplies } = req?.body;
       let outbound_order;
-      const emptyQuantitySupplies = supplies.filter((item) => item.quantity === 0 || !item?.supply_id);
+      const emptyQuantitySupplies = supplies.filter(
+        (item) => item.quantity === 0 || !item?.supply_id
+      );
       if (supplies.length === 0) {
         return errorHandler(res, err.EMPTY_SUPPLIES);
       }
-      if(emptyQuantitySupplies.length > 0) {
+      if (emptyQuantitySupplies.length > 0) {
         return errorHandler(res, err.EMPTY_SUPPLIES);
       }
       if (supplies.length > 0) {
@@ -88,6 +90,7 @@ exports.create = async (req, res) => {
             {
               ...supply,
               outbound_order_id: outbound_order.id,
+              depart_id: data.depart_id,
             },
             { transaction: t }
           );
@@ -141,6 +144,58 @@ exports.accept = async (req, res) => {
             },
             { where: { id: data.id }, transaction: t }
           );
+          // if (outbound_order.type === 1) {
+          //   for (const item of outbound_order.Supply_Outbound_Orders) {
+          //     const isHas = await db.Department_Supply.findOne({
+          //       where: {
+          //         supply_id: item.supply_id,
+          //         department_id: outbound_order.depart_id,
+          //       },
+          //     });
+          //     const isHasWSupply = await db.Warehouse_Supply.findOne({
+          //       where: {
+          //         supply_id: item.supply_id,
+          //         warehouse_id: outbound_order.warehouse_id,
+          //       },
+          //     });
+          //     if (!isHasWSupply) {
+          //       return errorHandler(res, err.SUPPLY_NOT_FOUND);
+          //     } else {
+          //       await db.Warehouse_Supply.update(
+          //         {
+          //           quantity:
+          //             Number(isHasWSupply.quantity) - Number(item.quantity),
+          //         },
+          //         {
+          //           where: {
+          //             id: isHasWSupply.id,
+          //           },
+          //           transaction: t,
+          //         }
+          //       );
+          //     }
+          //     if (!isHas) {
+          //       await db.Department_Supply.create(
+          //         {
+          //           supply_id: item.supply_id,
+          //           quantity: item.quantity,
+          //           department_id: outbound_order.depart_id,
+          //         },
+          //         { transaction: t }
+          //       );
+          //     } else {
+          //       await db.Department_Supply.update(
+          //         { quantity: Number(isHas.quantity) + Number(item.quantity) },
+          //         {
+          //           where: {
+          //             id: isHas.id,
+          //           },
+          //           transaction: t,
+          //         }
+          //       );
+          //     }
+          //   }
+          // } else {
           for (const item of outbound_order.Supply_Outbound_Orders) {
             const isHas = await db.Warehouse_Supply.findOne({
               where: {
@@ -162,6 +217,7 @@ exports.accept = async (req, res) => {
               );
             }
           }
+          // }
         } else if (data.status === "reject") {
           await db.Outbound_Order.update(
             {
@@ -236,11 +292,13 @@ exports.update = async (req, res) => {
   try {
     const { data, supplies } = req.body;
     await db.sequelize.transaction(async (t) => {
-      const emptyQuantitySupplies = supplies.filter((item) => item.quantity === 0 || !item?.supply_id);
+      const emptyQuantitySupplies = supplies.filter(
+        (item) => item.quantity === 0 || !item?.supply_id
+      );
       if (supplies.length === 0) {
         return errorHandler(res, err.EMPTY_SUPPLIES);
       }
-      if(emptyQuantitySupplies.length > 0) {
+      if (emptyQuantitySupplies.length > 0) {
         return errorHandler(res, err.EMPTY_SUPPLIES);
       }
       const isHas = await db.Outbound_Order.findOne({
@@ -286,6 +344,7 @@ exports.update = async (req, res) => {
             {
               ...supply,
               outbound_order_id: isHas.id,
+              depart_id: data.depart_id,
             },
             { transaction: t }
           );
@@ -320,11 +379,12 @@ exports.delete = async (req, res) => {
 
 exports.search = async (req, res) => {
   try {
-    let { limit, page, name, status_id, warehouse_id } = req?.query;
+    let { limit, page, name, status_id, warehouse_id, type } = req?.query;
 
     let filter = {
       status_id,
       warehouse_id,
+      type,
     };
 
     if (name) {
