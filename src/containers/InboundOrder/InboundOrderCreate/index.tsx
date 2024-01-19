@@ -63,7 +63,7 @@ const InboundOrderCreate = () => {
       .then((res: any) => {
         const { success, data } = res.data;
         if (success) {
-          setSupplies(data.supplies);
+          setSupplies(data.supplies.filter((item: any) => item.status === 1));
         }
       })
       .catch();
@@ -162,6 +162,7 @@ const InboundOrderCreate = () => {
               estimated_delivery_date: moment(
                 new Date(data?.estimated_delivery_date)
               ).toISOString(),
+              receive_date: moment(new Date(data?.receive_date)).toISOString(),
               note: data?.note,
               provider: data?.provider,
             },
@@ -208,7 +209,13 @@ const InboundOrderCreate = () => {
             <Typography.Title level={4}>Tạo phiếu nhập</Typography.Title>
             <Row>
               <Space>
-                <Button type="primary" className="rounded-md" htmlType="submit">
+                <Button
+                  type="primary"
+                  className="rounded-md"
+                  onClick={() => {
+                    navigate('/order/inbound_order');
+                  }}
+                >
                   Đóng
                 </Button>
                 <Button
@@ -278,12 +285,22 @@ const InboundOrderCreate = () => {
                 >
                   <Input className="input" />
                 </Form.Item>
-                <Form.Item
-                  label="Ngày dự kiến nhận hàng"
-                  name="estimated_delivery_date"
-                >
-                  <DatePicker className="date" />
-                </Form.Item>
+                <div className="flex gap-5 justify-between">
+                  <Form.Item
+                    className="w-1/2"
+                    label="Ngày nhận hàng dự kiến"
+                    name="estimated_delivery_date"
+                  >
+                    <DatePicker className="date" />
+                  </Form.Item>
+                  <Form.Item
+                    className="w-1/2"
+                    label="Ngày nhận hàng thực tế"
+                    name="receive_date"
+                  >
+                    <DatePicker className="date" />
+                  </Form.Item>
+                </div>
               </Col>
             </Row>
             <Layout>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import bg from 'assets/bg.jpg';
 import { PoweroffOutlined } from '@ant-design/icons';
 import Text from 'antd/lib/typography/Text';
@@ -56,7 +56,7 @@ const Signin: React.FC = () => {
                     { type: 'email', message: 'Định dạng Email không đúng!' }
                   ]}
                 >
-                  <Input className='rounded-lg h-9 border-[#A3ABEB] border-2'/>
+                  <Input className='rounded-lg h-9 border-[#A3ABEB] border-2' />
                 </Form.Item>
 
                 <Form.Item
@@ -67,7 +67,7 @@ const Signin: React.FC = () => {
                     { required: true, message: 'Hãy nhập mật khẩu của bạn!' }
                   ]}
                 >
-                  <Input.Password className='rounded-lg h-9 border-[#A3ABEB] border-2'/>
+                  <Input.Password className='rounded-lg h-9 border-[#A3ABEB] border-2' />
                 </Form.Item>
 
                 {messageLogin && <Alert
@@ -80,10 +80,10 @@ const Signin: React.FC = () => {
                 </Form.Item>
 
                 <Form.Item>
-                  <Button 
-                    type="primary" 
-                    icon={<PoweroffOutlined />} 
-                    loading={isLoading} 
+                  <Button
+                    type="primary"
+                    icon={<PoweroffOutlined />}
+                    loading={isLoading}
                     htmlType="submit"
                     className='rounded-lg h-10 w-[-webkit-fill-available]'
                   >

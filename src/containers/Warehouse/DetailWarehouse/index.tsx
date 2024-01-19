@@ -10,6 +10,7 @@ import warehouseApi from 'api/warehouse.api';
 import image from 'assets/image.png';
 import { formatCurrencyVN } from 'utils/validateFunc.util';
 import supplyApi from 'api/suplly.api';
+import { supply_status } from 'constants/dataFake.constant';
 // import useDebounce from 'hooks/useDebounce';
 // const TableFooter = ({ paginationProps }: any) => {
 //   return (
@@ -116,6 +117,18 @@ const DetailWarehouse = () => {
       show: true,
       widthExcel: 30,
       width: 200,
+    },
+    {
+      title: 'Trạng thái',
+      key: 'status',
+      show: true,
+      width: 150,
+      widthExcel: 30,
+      render: (item: any) => (
+        <p>
+          {supply_status?.find((x: any) => x.value === item?.status)?.label}
+        </p>
+      ),
     },
     {
       title: 'Đơn vị tính',

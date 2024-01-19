@@ -135,6 +135,11 @@ const LayoutSystem = (props: LayoutProps) => {
           '/create_sp',
           permissions.CONSUMABLE_SUPPLY_CREATE
         ),
+        // getItem(
+        //   'Danh sách vật tư theo khoa',
+        //   '/list_sp_depart',
+        //   permissions.CONSUMABLE_SUPPLY_READ
+        // ),
       ]
     ),
     getItem(
@@ -167,9 +172,14 @@ const LayoutSystem = (props: LayoutProps) => {
           permissions.INBOUND_ORDERS_READ
         ),
         getItem(
-          'Quản lý phiếu xuất',
+          'Quản lý phiếu xuất bệnh viện',
           '/outbound_order',
-          permissions.INBOUND_ORDERS_READ
+          permissions.OUTBOUND_ORDERS_READ
+        ),
+        getItem(
+          'Quản lý phiếu xuất nội bộ',
+          '/outbound_order_depart',
+          permissions.OUTBOUND_ORDERS_READ
         ),
       ]
     ),

@@ -64,6 +64,7 @@ const InboundOrderDetail = () => {
             deliver,
             deliver_phone,
             estimated_delivery_date,
+            receive_date,
             note,
           } = data.inbound_order;
           form.setFieldsValue({
@@ -75,9 +76,12 @@ const InboundOrderDetail = () => {
             deliver,
             deliver_phone,
             note,
-            estimated_delivery_date: moment(estimated_delivery_date).format(
-              'DD/MM/YYYY'
-            ),
+            estimated_delivery_date: estimated_delivery_date
+              ? moment(estimated_delivery_date).format('DD/MM/YYYY')
+              : '',
+            receive_date: receive_date
+              ? moment(receive_date).format('DD/MM/YYYY')
+              : '',
           });
           setDataSource(
             data.inbound_order.Supply_Inbound_Orders.map(
@@ -230,12 +234,28 @@ const InboundOrderDetail = () => {
                 <Form.Item label="Số phiếu nhập" name="code">
                   <Input className="input" type="text" disabled />
                 </Form.Item>
-                <Form.Item
+                <div className="flex gap-5 justify-between">
+                  <Form.Item
+                    className="w-1/2"
+                    label="Ngày nhận hàng dự kiến"
+                    name="estimated_delivery_date"
+                  >
+                    <Input className="input" type="text" disabled />
+                  </Form.Item>
+                  <Form.Item
+                    className="w-1/2"
+                    label="Ngày nhận hàng thực tế"
+                    name="receive_date"
+                  >
+                    <Input className="input" type="text" disabled />
+                  </Form.Item>
+                </div>
+                {/* <Form.Item
                   label="Ngày dự kiến nhận hàng"
                   name="estimated_delivery_date"
                 >
                   <Input className="input" disabled />
-                </Form.Item>
+                </Form.Item> */}
               </Col>
             </Row>
             <Layout>

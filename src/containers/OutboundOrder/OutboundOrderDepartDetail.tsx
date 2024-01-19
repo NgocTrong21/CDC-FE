@@ -19,7 +19,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { formatCurrencyVN } from 'utils/validateFunc.util';
 
-const OutboundOrderDetail = () => {
+const OutboundOrderDepartDetail = () => {
   const params = useParams();
   const [form] = Form.useForm();
   const navigate = useNavigate();
@@ -55,9 +55,9 @@ const OutboundOrderDetail = () => {
             receiver,
             receiver_phone,
             estimated_shipping_date,
-            handover_date,
-            actual_shipping_date,
+            department,
             note,
+            actual_shipping_date,
           } = data.outbound_order;
           form.setFieldsValue({
             id,
@@ -67,13 +67,13 @@ const OutboundOrderDetail = () => {
             customer,
             receiver,
             receiver_phone,
+            department,
             note,
             estimated_shipping_date: moment(estimated_shipping_date).format(
               'DD/MM/YYYY'
             ),
             actual_shipping_date:
               moment(actual_shipping_date).format('DD/MM/YYYY'),
-            handover_date: moment(handover_date).format('DD/MM/YYYY'),
           });
           setDataSource(
             data.outbound_order.Supply_Outbound_Orders.map(
@@ -111,7 +111,7 @@ const OutboundOrderDetail = () => {
       .then((res) => {
         const { message, success } = res.data;
         if (success) {
-          navigate('/order/outbound_order');
+          navigate('/order/outbound_order_depart');
           toast.success('Phê duyệt thành công');
         } else {
           toast.error(message || 'Phê duyệt thất bại!');
@@ -139,7 +139,7 @@ const OutboundOrderDetail = () => {
           <Row align="middle" justify="space-between">
             <div className="flex gap-5 items-center">
               <Typography.Title level={4}>
-                Thông tin phiếu xuất bệnh viện
+                Thông tin phiếu xuất nội bộ
               </Typography.Title>
               {handleOrderStatus(form.getFieldsValue()?.status_id)}
             </div>
@@ -167,7 +167,7 @@ const OutboundOrderDetail = () => {
                   type="primary"
                   className="rounded-md"
                   onClick={() => {
-                    navigate('/order/outbound_order');
+                    navigate('/order/outbound_order_depart');
                   }}
                 >
                   Đóng
@@ -200,7 +200,7 @@ const OutboundOrderDetail = () => {
                     </Form.Item>
                   </Col>
                   <Col span={11}>
-                    <Form.Item label="Khách hàng" name="customer">
+                    <Form.Item label="Khoa phòng" name="department">
                       <Input className="input" type="text" disabled />
                     </Form.Item>
                     <Form.Item label="Ghi chú" name="note">
@@ -218,23 +218,16 @@ const OutboundOrderDetail = () => {
                 </Form.Item>
                 <div className="flex gap-5 justify-between">
                   <Form.Item
-                    className="w-1/3"
+                    className="w-1/2"
                     label="Ngày xuất hàng dự kiến"
                     name="estimated_shipping_date"
                   >
                     <Input className="input" disabled />
                   </Form.Item>
                   <Form.Item
-                    className="w-1/3"
+                    className="w-1/2"
                     label="Ngày xuất hàng thực tế"
                     name="actual_shipping_date"
-                  >
-                    <Input className="input" disabled />
-                  </Form.Item>
-                  <Form.Item
-                    className="w-1/3"
-                    label="Ngày bàn giao"
-                    name="handover_date"
                   >
                     <Input className="input" disabled />
                   </Form.Item>
@@ -321,4 +314,4 @@ const OutboundOrderDetail = () => {
   );
 };
 
-export default OutboundOrderDetail;
+export default OutboundOrderDepartDetail;

@@ -17,6 +17,7 @@ import {
   Tooltip,
   Checkbox,
   Popconfirm,
+  Select,
 } from 'antd';
 import useDebounce from 'hooks/useDebounce';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -26,6 +27,7 @@ import { permissions } from 'constants/permission.constant';
 import type { PaginationProps } from 'antd';
 import outboundOrderApi from 'api/outbound_order';
 import moment from 'moment';
+import { note_type } from 'constants/dataFake.constant';
 
 const TableFooter = ({ paginationProps }: any) => {
   return (
@@ -36,7 +38,7 @@ const TableFooter = ({ paginationProps }: any) => {
   );
 };
 
-const OutboundOrderList = () => {
+const OutboundOrderDepartList = () => {
   const navigate = useNavigate();
   const [outboundOrders, setOutboundOrders] = useState<any>();
   const location = useLocation();
@@ -44,6 +46,7 @@ const OutboundOrderList = () => {
   let searchQueryString: string;
   const pathName: any = location?.pathname;
   const [page, setPage] = useState<number>(1);
+  const [type, setType] = useState<number>(1);
   const [limit, setLimit] = useState<number>(10);
   const [total, setTotal] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
@@ -111,9 +114,9 @@ const OutboundOrderList = () => {
       render: (_item: any, record: any) => record.Warehouse.name,
     },
     {
-      title: 'Khách hàng',
-      dataIndex: 'customer',
-      key: 'customer',
+      title: 'Khoa phòng',
+      dataIndex: 'department',
+      key: 'department',
       show: true,
       widthExcel: 30,
       with: 100,
@@ -135,7 +138,7 @@ const OutboundOrderList = () => {
               }`}
             >
               <Tooltip title="Cập nhật phiếu">
-                <Link to={`/order/outbound_order/update/${item.id}`}>
+                <Link to={`/order/outbound_order_depart/update/${item.id}`}>
                   <EditFilled />
                 </Link>
               </Tooltip>
@@ -147,7 +150,7 @@ const OutboundOrderList = () => {
             }`}
           >
             <Tooltip title="Chi tiết phiếu">
-              <Link to={`/order/outbound_order/detail/${item.id}`}>
+              <Link to={`/order/outbound_order_depart/detail/${item.id}`}>
                 <EyeFilled />
               </Link>
             </Tooltip>
@@ -186,7 +189,7 @@ const OutboundOrderList = () => {
         page,
         limit,
         name: nameSearch,
-        type: '0',
+        type,
       })
       .then((res: any) => {
         const { success, data } = res.data;
@@ -200,7 +203,7 @@ const OutboundOrderList = () => {
   };
   useEffect(() => {
     getOutboundOrderList();
-  }, [limit, page, nameSearch]);
+  }, [limit, page, nameSearch, type]);
 
   const onPaginationChange = (page: number) => {
     setPage(page);
@@ -230,7 +233,7 @@ const OutboundOrderList = () => {
   return (
     <div>
       <div className="flex-between-center">
-        <div className="title">DANH SÁCH PHIẾU XUẤT BỆNH VIỆN</div>
+        <div className="title">DANH SÁCH PHIẾU XUẤT NỘI BỘ</div>
       </div>
       <Divider />
       <div className="flex justify-between">
@@ -248,7 +251,7 @@ const OutboundOrderList = () => {
             checkPermission(permissions.OUTBOUND_ORDERS_CREATE) ? '' : 'hidden'
           }`}
           onClick={() => {
-            navigate('/order/outbound_order/import');
+            navigate('/order/outbound_order_depart/import');
           }}
         >
           <PlusCircleFilled />
@@ -273,13 +276,26 @@ const OutboundOrderList = () => {
             ))}
         </div>
       )}
-      <Input
-        placeholder="Tìm kiếm phiếu (nhập số phiếu)"
-        allowClear
-        value={name}
-        className="rounded-lg h-9 border-[#A3ABEB] border-2"
-        onChange={(e) => onChangeSearch(e)}
-      />
+      <div className="flex gap-20 items-center">
+        <Select
+          showSearch
+          placeholder="Loại phiếu"
+          optionFilterProp="children"
+          className="w-52"
+          onChange={(e) => {
+            setType(e);
+          }}
+          options={note_type}
+          value={type}
+        />
+        <Input
+          placeholder="Tìm kiếm phiếu (nhập số phiếu)"
+          allowClear
+          value={name}
+          className="rounded-lg h-9 border-[#A3ABEB] border-2"
+          onChange={(e) => onChangeSearch(e)}
+        />
+      </div>
       <Table
         columns={columnTable.filter((item: any) => item.show)}
         dataSource={outboundOrders}
@@ -293,4 +309,4 @@ const OutboundOrderList = () => {
   );
 };
 
-export default OutboundOrderList;
+export default OutboundOrderDepartList;

@@ -1,5 +1,13 @@
 import { ImportOutlined } from '@ant-design/icons';
-import { Button, DatePicker, Divider, Form, Input, InputNumber, Select } from 'antd';
+import {
+  Button,
+  DatePicker,
+  Divider,
+  Form,
+  Input,
+  InputNumber,
+  Select,
+} from 'antd';
 import { useContext, useState } from 'react';
 import ava from 'assets/image.png';
 import { convertBase64, options } from 'utils/globalFunc.util';
@@ -12,9 +20,7 @@ import { FilterContext } from 'contexts/filter.context';
 const { TextArea } = Input;
 
 const SupplyCreate = () => {
-  const {
-    units
-  } = useContext(FilterContext);
+  const { units } = useContext(FilterContext);
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [selectedImage, setSelectedImage] = useState<any>('');
@@ -38,21 +44,23 @@ const SupplyCreate = () => {
       lot_number: `${values?.lot_number}`,
       image,
     };
-    supplyApi
-      .create(data)
-      .then((res: any) => {
-        const { success, message } = res.data;
-        if (success) {
-          toast.success('Thêm mới vật tư thành công!');
-          setImage('');
-          setSelectedImage('');
-          form.resetFields();
-        } else {
-          toast.error(message || 'Thêm mới vật tư thất bại!');
-        }
-      })
-      .catch()
-      .finally(() => setLoading(false));
+    console.log(data);
+
+    // supplyApi
+    //   .create(data)
+    //   .then((res: any) => {
+    //     const { success, message } = res.data;
+    //     if (success) {
+    //       toast.success('Thêm mới vật tư thành công!');
+    //       setImage('');
+    //       setSelectedImage('');
+    //       form.resetFields();
+    //     } else {
+    //       toast.error(message || 'Thêm mới vật tư thất bại!');
+    //     }
+    //   })
+    //   .catch()
+    //   .finally(() => setLoading(false));
   };
   return (
     <div>
@@ -110,7 +118,12 @@ const SupplyCreate = () => {
             >
               <Input placeholder="Nhập số lô" allowClear className="input" />
             </Form.Item>
-            <Form.Item label="Hạn sử dụng" name="expiration_date">
+            <Form.Item
+              label="Hạn sử dụng"
+              name="expiration_date"
+              required
+              rules={[{ required: true, message: 'Hãy nhập hạn sử dụng!' }]}
+            >
               <DatePicker className="date" />
             </Form.Item>
           </div>
@@ -119,7 +132,7 @@ const SupplyCreate = () => {
               label="Đơn vị tính"
               name="unit"
               required
-              rules={[{ required: false, message: 'Hãy nhập đơn vị tính!' }]}
+              rules={[{ required: true, message: 'Hãy nhập đơn vị tính!' }]}
               className="mb-5"
             >
               <Select
@@ -135,16 +148,19 @@ const SupplyCreate = () => {
                 options={options(units)}
               />
             </Form.Item>
-            <Form.Item label="Đơn giá" name="unit_price" className="mb-5">
+            <Form.Item
+              label="Đơn giá"
+              name="unit_price"
+              className="mb-5"
+              required
+              rules={[{ required: true, message: 'Hãy nhập đơn giá!' }]}
+            >
               <InputNumber
                 min={0}
                 placeholder="Nhập đơn giá vật tư"
-                className='input w-full flex items-center'
+                className="input w-full flex items-center"
                 formatter={(value) => {
-                  return `${value}`.replace(
-                    /\B(?=(\d{3})+(?!\d))/g,
-                    ','
-                  );
+                  return `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                 }}
                 precision={0}
               />
@@ -173,7 +189,11 @@ const SupplyCreate = () => {
             </Form.Item>
           </div>
           <Form.Item>
-            <Button className="button-primary" htmlType="submit" loading={loading}>
+            <Button
+              className="button-primary"
+              htmlType="submit"
+              loading={loading}
+            >
               Thêm
             </Button>
           </Form.Item>

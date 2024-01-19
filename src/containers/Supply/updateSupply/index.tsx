@@ -6,6 +6,7 @@ import {
   Input,
   InputNumber,
   Select,
+  Switch,
 } from 'antd';
 import { useEffect, useState, useContext } from 'react';
 import ava from 'assets/image.png';
@@ -24,6 +25,7 @@ const SupplyUpdate = () => {
   const navigate = useNavigate();
   const { id } = params;
   const [image, setImage] = useState<any>('');
+  const [status, setStatus] = useState<boolean>(false);
   const [selectedImage, setSelectedImage] = useState<any>('');
   const [form] = Form.useForm();
   const [loading, setLoading] = useState<boolean>(false);
@@ -42,6 +44,7 @@ const SupplyUpdate = () => {
       ...values,
       expiration_date: moment(new Date(values?.expiration_date)).toISOString(),
       image,
+      status: status ? 1 : 2,
     };
     supplyApi
       .update(data)
@@ -79,6 +82,7 @@ const SupplyUpdate = () => {
             note,
             image,
           } = data.supply;
+          setStatus(data.supply.status === 1);
           form.setFieldsValue({
             id,
             name,
@@ -153,7 +157,12 @@ const SupplyUpdate = () => {
             >
               <Input placeholder="Nhập số lô" allowClear className="input" />
             </Form.Item>
-            <Form.Item label="Hạn sử dụng" name="expiration_date">
+            <Form.Item
+              label="Hạn sử dụng"
+              name="expiration_date"
+              required
+              rules={[{ required: true, message: 'Hãy nhập hạn sử dụng!' }]}
+            >
               <DatePicker className="date" />
             </Form.Item>
           </div>
@@ -162,7 +171,7 @@ const SupplyUpdate = () => {
               label="Đơn vị tính"
               name="unit"
               required
-              rules={[{ required: false, message: 'Hãy nhập đơn vị tính!' }]}
+              rules={[{ required: true, message: 'Hãy nhập đơn vị tính!' }]}
               className="mb-5"
             >
               <Select
@@ -178,7 +187,12 @@ const SupplyUpdate = () => {
                 options={options(units)}
               />
             </Form.Item>
-            <Form.Item label="Đơn giá" name="unit_price" className="mb-5">
+            <Form.Item
+              label="Đơn giá"
+              name="unit_price"
+              className="mb-5"
+              rules={[{ required: true, message: 'Hãy nhập đơn giá!' }]}
+            >
               <InputNumber
                 min={0}
                 placeholder="Nhập đơn giá vật tư"
@@ -223,6 +237,17 @@ const SupplyUpdate = () => {
           </Form.Item>
         </Form>
         <div className="flex flex-col gap-4 items-center basis-1/4 ">
+          <Form.Item label="Trạng thái" name="status" className="mb-5">
+            <Switch
+              style={{ backgroundColor: status ? 'blue' : 'gray' }}
+              checked={status}
+              onChange={(e) => {
+                setStatus(e);
+              }}
+              checkedChildren="Sử dụng tốt"
+              unCheckedChildren="Hết hạn dùng"
+            />
+          </Form.Item>
           <div className="text-center leading-9 ">Hình ảnh thiết bị</div>
           {selectedImage === '' ? (
             <img
