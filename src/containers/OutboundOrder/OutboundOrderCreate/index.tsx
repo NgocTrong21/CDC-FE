@@ -163,7 +163,7 @@ const OutboundOrderCreate = () => {
               receiver_phone: data?.receiver_phone,
               code: data?.code,
               warehouse_id: data?.warehouse_id,
-              type: 0,
+              type: '0',
               estimated_shipping_date: data?.estimated_shipping_date
                 ? moment(new Date(data?.estimated_shipping_date)).toISOString()
                 : '',

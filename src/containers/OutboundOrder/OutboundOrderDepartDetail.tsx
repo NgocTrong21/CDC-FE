@@ -69,11 +69,12 @@ const OutboundOrderDepartDetail = () => {
             receiver_phone,
             department,
             note,
-            estimated_shipping_date: moment(estimated_shipping_date).format(
-              'DD/MM/YYYY'
-            ),
-            actual_shipping_date:
-              moment(actual_shipping_date).format('DD/MM/YYYY'),
+            estimated_shipping_date: estimated_shipping_date
+              ? moment(estimated_shipping_date).format('DD/MM/YYYY')
+              : '',
+            actual_shipping_date: actual_shipping_date
+              ? moment(actual_shipping_date).format('DD/MM/YYYY')
+              : '',
           });
           setDataSource(
             data.outbound_order.Supply_Outbound_Orders.map(

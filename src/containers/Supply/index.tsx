@@ -35,6 +35,7 @@ import { permissions } from 'constants/permission.constant';
 import { formatCurrencyVN } from 'utils/validateFunc.util';
 import ExportToExcel from 'components/Excel';
 import { supply_status } from 'constants/dataFake.constant';
+import moment from 'moment';
 
 const TableFooter = ({ paginationProps }: any) => {
   return (
@@ -120,6 +121,17 @@ const Suplly = () => {
       widthExcel: 30,
       render: (item: any) => (
         <p>{supply_status?.find((x: any) => x.value === item)?.label}</p>
+      ),
+    },
+    {
+      title: 'Hạn sử dụng',
+      dataIndex: 'expiration_date',
+      key: 'expiration_date',
+      show: true,
+      width: 150,
+      widthExcel: 30,
+      render: (item: any) => (
+        <p>{moment(new Date(item)).format('DD/MM/YYYY')}</p>
       ),
     },
     {

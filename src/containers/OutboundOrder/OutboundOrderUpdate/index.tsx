@@ -18,13 +18,14 @@ import outboundOrderApi from 'api/outbound_order';
 import warehouseApi from 'api/warehouse.api';
 import moment from 'moment';
 import { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { options } from 'utils/globalFunc.util';
 import { formatCurrencyVN } from 'utils/validateFunc.util';
 
 const OutboundOrderUpdate = () => {
   const params = useParams();
+  const navigate = useNavigate();
   const [form] = Form.useForm();
   const { id } = params;
   const count = useRef(1);
@@ -159,9 +160,13 @@ const OutboundOrderUpdate = () => {
             code,
             receiver_phone,
             note,
-            estimated_shipping_date: moment(estimated_shipping_date),
-            actual_shipping_date: moment(actual_shipping_date),
-            handover_date: moment(handover_date),
+            estimated_shipping_date: estimated_shipping_date
+              ? moment(estimated_shipping_date)
+              : '',
+            actual_shipping_date: actual_shipping_date
+              ? moment(actual_shipping_date)
+              : '',
+            handover_date: handover_date ? moment(handover_date) : '',
           });
           setDataSource(
             data.outbound_order.Supply_Outbound_Orders.map(
@@ -245,7 +250,13 @@ const OutboundOrderUpdate = () => {
             </Typography.Title>
             <Row>
               <Space>
-                <Button type="primary" className="rounded-md">
+                <Button
+                  type="primary"
+                  className="rounded-md"
+                  onClick={() => {
+                    navigate('/order/outbound_order');
+                  }}
+                >
                   Đóng
                 </Button>
                 <Button

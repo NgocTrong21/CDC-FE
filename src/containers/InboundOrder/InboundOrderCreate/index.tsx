@@ -250,9 +250,6 @@ const InboundOrderCreate = () => {
                         options={options(warehouses)}
                       />
                     </Form.Item>
-                    <Form.Item label="Nhà cung cấp" name="provider">
-                      <Input className="input" />
-                    </Form.Item>
                     <Form.Item label="Người giao hàng" name="deliver">
                       <Input className="input" />
                     </Form.Item>
@@ -264,11 +261,11 @@ const InboundOrderCreate = () => {
                     </Form.Item>
                   </Col>
                   <Col span={11}>
-                    <Form.Item label="Vị trí kho hàng">
-                      <Input className="input" />
+                    <Form.Item label="Nhà cung cấp" name="provider">
+                      <Input className="input" placeholder="Nhà cung cấp" />
                     </Form.Item>
                     <Form.Item label="Ghi chú" name="note">
-                      <TextArea rows={9} className="textarea" />
+                      <TextArea rows={5} className="textarea" />
                     </Form.Item>
                   </Col>
                 </Row>
@@ -283,7 +280,7 @@ const InboundOrderCreate = () => {
                   required
                   rules={[{ required: true, message: 'Hãy nhập mã phiếu!' }]}
                 >
-                  <Input className="input" />
+                  <Input className="input" placeholder="Mã phiếu nhập" />
                 </Form.Item>
                 <div className="flex gap-5 justify-between">
                   <Form.Item

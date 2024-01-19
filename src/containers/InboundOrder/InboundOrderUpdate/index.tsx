@@ -279,9 +279,6 @@ const InboundOrderUpdate = () => {
                         options={options(warehouses)}
                       />
                     </Form.Item>
-                    <Form.Item label="Nhà cung cấp" name="provider">
-                      <Input className="input" />
-                    </Form.Item>
                     <Form.Item label="Người giao hàng" name="deliver">
                       <Input className="input" />
                     </Form.Item>
@@ -293,11 +290,11 @@ const InboundOrderUpdate = () => {
                     </Form.Item>
                   </Col>
                   <Col span={11}>
-                    <Form.Item label="Vị trí kho hàng">
+                    <Form.Item label="Nhà cung cấp" name="provider">
                       <Input className="input" />
                     </Form.Item>
                     <Form.Item label="Ghi chú" name="note">
-                      <TextArea rows={9} className="textarea" />
+                      <TextArea rows={5} className="textarea" />
                     </Form.Item>
                   </Col>
                 </Row>

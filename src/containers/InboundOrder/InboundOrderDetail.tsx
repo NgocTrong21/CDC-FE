@@ -204,9 +204,6 @@ const InboundOrderDetail = () => {
                     <Form.Item label="Kho hàng" name="warehouse">
                       <Input className="input" type="text" disabled />
                     </Form.Item>
-                    <Form.Item label="Nhà cung cấp" name="provider">
-                      <Input className="input" type="text" disabled />
-                    </Form.Item>
                     <Form.Item label="Người giao hàng" name="deliver">
                       <Input className="input" type="text" disabled />
                     </Form.Item>
@@ -218,11 +215,11 @@ const InboundOrderDetail = () => {
                     </Form.Item>
                   </Col>
                   <Col span={11}>
-                    <Form.Item label="Vị trí kho hàng">
+                    <Form.Item label="Nhà cung cấp" name="provider">
                       <Input className="input" type="text" disabled />
                     </Form.Item>
                     <Form.Item label="Ghi chú" name="note">
-                      <TextArea rows={9} className="textarea" disabled />
+                      <TextArea rows={5} className="textarea" disabled />
                     </Form.Item>
                   </Col>
                 </Row>
