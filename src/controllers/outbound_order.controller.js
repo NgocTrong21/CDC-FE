@@ -8,6 +8,13 @@ exports.create = async (req, res) => {
   try {
     await db.sequelize.transaction(async (t) => {
       const { data, supplies } = req?.body;
+      let inputData = { ...data };
+      for (let i in inputData) {
+        if (!inputData[i]) {
+          delete inputData[i];
+        }
+      }
+      inputData.type = +data.type;
       let outbound_order;
       const emptyQuantitySupplies = supplies.filter(
         (item) => item.quantity === 0 || !item?.supply_id
@@ -35,7 +42,7 @@ exports.create = async (req, res) => {
       }
       const outboundOrderInDB = await db.Outbound_Order.findOne({
         where: {
-          code: data.code,
+          code: inputData.code,
         },
       });
       if (outboundOrderInDB)
@@ -45,7 +52,7 @@ exports.create = async (req, res) => {
         const isHas = await db.Warehouse_Supply.findOne({
           where: {
             supply_id: supply.supply_id,
-            warehouse_id: data.warehouse_id,
+            warehouse_id: inputData.warehouse_id,
           },
         });
         if (isHas.quantity < supply.quantity) {
@@ -57,7 +64,7 @@ exports.create = async (req, res) => {
       }
       if (validate) {
         outbound_order = await db.Outbound_Order.create(
-          { ...data, status_id: 1 },
+          { ...inputData, status_id: 1 },
           {
             transaction: t,
           }
@@ -90,7 +97,7 @@ exports.create = async (req, res) => {
             {
               ...supply,
               outbound_order_id: outbound_order.id,
-              depart_id: data.depart_id,
+              depart_id: inputData.depart_id,
             },
             { transaction: t }
           );
@@ -101,6 +108,7 @@ exports.create = async (req, res) => {
       }
     });
   } catch (error) {
+    console.log(error);
     return errorHandler(res, error);
   }
 };
@@ -292,6 +300,12 @@ exports.update = async (req, res) => {
   try {
     const { data, supplies } = req.body;
     await db.sequelize.transaction(async (t) => {
+      const inputData = { ...data };
+      for (let i in inputData) {
+        if (!inputData[i]) {
+          delete inputData[i];
+        }
+      }
       const emptyQuantitySupplies = supplies.filter(
         (item) => item.quantity === 0 || !item?.supply_id
       );
@@ -302,7 +316,7 @@ exports.update = async (req, res) => {
         return errorHandler(res, err.EMPTY_SUPPLIES);
       }
       const isHas = await db.Outbound_Order.findOne({
-        where: { id: data?.id },
+        where: { id: inputData?.id },
       });
       if (!isHas) return errorHandler(res, err.ORDER_NOT_FOUND);
       let validate = false;
@@ -311,7 +325,7 @@ exports.update = async (req, res) => {
           const isHas = await db.Warehouse_Supply.findOne({
             where: {
               supply_id: supply.supply_id,
-              warehouse_id: data.warehouse_id,
+              warehouse_id: inputData.warehouse_id,
             },
           });
           if (isHas.quantity < supply.quantity) {
@@ -326,25 +340,25 @@ exports.update = async (req, res) => {
       }
       const outboundOrderInDB = await db.Outbound_Order.findAll({
         where: {
-          code: data.code,
+          code: inputData.code,
         },
       });
       if (outboundOrderInDB.length > 1)
         return errorHandler(res, err.OUTBOUND_FIELD_DUPLICATED);
       if (validate) {
-        await db.Outbound_Order.update(data, {
-          where: { id: data?.id },
+        await db.Outbound_Order.update(inputData, {
+          where: { id: inputData?.id },
           transaction: t,
         });
         await db.Supply_Outbound_Order.destroy({
-          where: { outbound_order_id: data?.id },
+          where: { outbound_order_id: inputData?.id },
         });
         for (const supply of supplies) {
           await db.Supply_Outbound_Order.create(
             {
               ...supply,
               outbound_order_id: isHas.id,
-              depart_id: data.depart_id,
+              depart_id: inputData.depart_id,
             },
             { transaction: t }
           );
