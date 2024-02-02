@@ -243,7 +243,7 @@ const OutboundOrderUpdate = () => {
   return (
     <Layout>
       <Form size="middle" layout="vertical" autoComplete="off" form={form}>
-        <Layout>
+        <Layout className="bg-white">
           <Row align="middle" justify="space-between">
             <Typography.Title level={4}>
               Cập nhật phiếu xuất bệnh viện
@@ -271,8 +271,8 @@ const OutboundOrderUpdate = () => {
               </Space>
             </Row>
           </Row>
-          <Layout>
-            <Row justify="space-between">
+          <Layout className="bg-white">
+            <Row justify="space-between" className="my-5">
               <Col span={15}>
                 <Row>
                   <Typography.Title level={5}>Thông tin chung</Typography.Title>
@@ -348,7 +348,7 @@ const OutboundOrderUpdate = () => {
                 </div>
               </Col>
             </Row>
-            <Layout>
+            <Layout className="bg-white">
               <Row justify="space-between" className="mb-5">
                 <Typography.Title level={5}>Danh sách vật tư</Typography.Title>
                 <Space>

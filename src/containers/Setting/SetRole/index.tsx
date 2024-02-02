@@ -15,7 +15,6 @@ interface DataType {
 }
 
 const SetRole = () => {
-
   const navigate = useNavigate();
   const [roles, setRoles] = useState<DataType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -35,19 +34,15 @@ const SetRole = () => {
       title: 'Ngày tạo',
       key: 'createdAt',
       render: (item: any) => (
-        <>
-          { new Date(item.createdAt).toLocaleDateString() }
-        </>
-      )
+        <>{new Date(item.createdAt).toLocaleDateString()}</>
+      ),
     },
     {
       title: 'Ngày cập nhật',
       key: 'updatedAt',
       render: (item: any) => (
-        <>
-          { new Date(item.updatedAt).toLocaleDateString() }
-        </>
-      )
+        <>{new Date(item.updatedAt).toLocaleDateString()}</>
+      ),
     },
     {
       title: 'Tác vụ',
@@ -55,7 +50,9 @@ const SetRole = () => {
       align: 'center',
       render: (item: any) => (
         <>
-          <Link to={`/setting/role/update/${item.name}/${item.id}`}><EditFilled /></Link>
+          <Link to={`/setting/role/update/${item.name}/${item.id}`}>
+            <EditFilled />
+          </Link>
         </>
       ),
     },
@@ -63,52 +60,45 @@ const SetRole = () => {
 
   const getAllRoles = () => {
     setLoading(true);
-    roleApi.list()
+    roleApi
+      .list()
       .then((res: any) => {
         const { success, data } = res.data;
-        if(success) {
+        if (success) {
           setRoles(data.roles);
         }
       })
       .catch()
-      .finally(() => setLoading(false))
-  }
+      .finally(() => setLoading(false));
+  };
 
   useEffect(() => {
     getAllRoles();
-  }, [])
+  }, []);
 
   return (
     <div>
       <div className="flex-between-center">
         <div className="title">PHÂN QUYỀN HỆ THỐNG</div>
-        <div className='flex flex-row gap-6'>
-          <Button
-            className="button_excel"
-            onClick={() => navigate('/setting/role/create')}
-          >
-            <PlusCircleFilled />
-            <div className="font-medium text-md text-[#5B69E6]">Thêm mới</div>
-          </Button>
-        </div>
       </div>
       <Divider />
       <div className="flex justify-between">
         <div></div>
         <div className="flex-between-center gap-4 p-4">
-          <Input
-            placeholder='Tìm kiếm'
-            allowClear
-            className="input"
-          />
+          <Input placeholder="Tìm kiếm" allowClear className="input" />
           <div>
             <FilterFilled />
           </div>
         </div>
       </div>
-      <Table columns={columns} dataSource={roles} className="mt-6 shadow-md" loading={loading}/>
+      <Table
+        columns={columns}
+        dataSource={roles}
+        className="mt-6 shadow-md"
+        loading={loading}
+      />
     </div>
-  )
-}
+  );
+};
 
-export default SetRole
+export default SetRole;

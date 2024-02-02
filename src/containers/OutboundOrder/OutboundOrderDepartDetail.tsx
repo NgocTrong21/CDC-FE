@@ -2,7 +2,6 @@ import {
   Button,
   Col,
   Form,
-  Input,
   Layout,
   Pagination,
   Row,
@@ -10,7 +9,6 @@ import {
   Table,
   Typography,
 } from 'antd';
-import TextArea from 'antd/lib/input/TextArea';
 import outboundOrderApi from 'api/outbound_order';
 import { order_status } from 'constants/dataFake.constant';
 import moment from 'moment';
@@ -20,8 +18,8 @@ import { toast } from 'react-toastify';
 import { formatCurrencyVN } from 'utils/validateFunc.util';
 
 const OutboundOrderDepartDetail = () => {
+  const [outboundData, setOutboundData] = useState<any>({});
   const params = useParams();
-  const [form] = Form.useForm();
   const navigate = useNavigate();
   const { id } = params;
   const { Column } = Table;
@@ -59,7 +57,7 @@ const OutboundOrderDepartDetail = () => {
             note,
             actual_shipping_date,
           } = data.outbound_order;
-          form.setFieldsValue({
+          setOutboundData({
             id,
             warehouse: data.outbound_order.Warehouse.name,
             status_id,
@@ -134,183 +132,156 @@ const OutboundOrderDepartDetail = () => {
     );
   };
   return (
-    <Layout>
-      <Form form={form} size="middle" layout="vertical" autoComplete="off">
-        <Layout>
-          <Row align="middle" justify="space-between">
-            <div className="flex gap-5 items-center">
-              <Typography.Title level={4}>
-                Thông tin phiếu xuất nội bộ
-              </Typography.Title>
-              {handleOrderStatus(form.getFieldsValue()?.status_id)}
-            </div>
-            <Row>
-              <Space>
-                {form.getFieldValue('status_id') === 1 && (
-                  <>
-                    <Button
-                      type="default"
-                      className="button-primary"
-                      onClick={() => handleAccept(id, 'accept')}
-                    >
-                      Phê duyệt
-                    </Button>
-                    <Button
-                      className="rounded-md"
-                      danger
-                      onClick={() => handleAccept(id, 'reject')}
-                    >
-                      Từ chối
-                    </Button>
-                  </>
-                )}
+    <Layout className="bg-white">
+      <Row align="middle" justify="space-between">
+        <div className="flex gap-5 items-center">
+          <Typography.Title level={4}>
+            Thông tin phiếu xuất nội bộ
+          </Typography.Title>
+          {handleOrderStatus(outboundData?.status_id)}
+        </div>
+        <Row>
+          <Space>
+            {outboundData?.status_id === 1 && (
+              <>
                 <Button
-                  type="primary"
-                  className="rounded-md"
-                  onClick={() => {
-                    navigate('/order/outbound_order_depart');
-                  }}
+                  type="default"
+                  className="button-primary"
+                  onClick={() => handleAccept(id, 'accept')}
                 >
-                  Đóng
+                  Phê duyệt
                 </Button>
-              </Space>
-            </Row>
-          </Row>
-          <Layout>
+                <Button
+                  className="rounded-md"
+                  danger
+                  onClick={() => handleAccept(id, 'reject')}
+                >
+                  Từ chối
+                </Button>
+              </>
+            )}
+            <Button
+              type="primary"
+              className="rounded-md"
+              onClick={() => {
+                navigate('/order/outbound_order_depart');
+              }}
+            >
+              Đóng
+            </Button>
+          </Space>
+        </Row>
+      </Row>
+      <Layout className="bg-white">
+        <Row justify="space-between" className="my-6">
+          <Col span={24}>
             <Row justify="space-between">
-              <Col span={15}>
+              <Col span={11}>
                 <Row>
                   <Typography.Title level={5}>Thông tin chung</Typography.Title>
                 </Row>
-                <Row justify="space-between">
-                  <Col span={12}>
-                    <Form.Item className="hidden" name="id">
-                      <Input type="text" disabled />
-                    </Form.Item>
-                    <Form.Item className="hidden" name="status_id">
-                      <Input type="text" disabled />
-                    </Form.Item>
-                    <Form.Item label="Kho hàng" name="warehouse">
-                      <Input className="input" type="text" disabled />
-                    </Form.Item>
-                    <Form.Item label="Người nhận" name="receiver">
-                      <Input className="input" type="text" disabled />
-                    </Form.Item>
-                    <Form.Item label="Liên hệ người nhận" name="receiver_phone">
-                      <Input className="input" type="text" disabled />
-                    </Form.Item>
-                  </Col>
-                  <Col span={11}>
-                    <Form.Item label="Khoa phòng" name="department">
-                      <Input className="input" type="text" disabled />
-                    </Form.Item>
-                    <Form.Item label="Ghi chú" name="note">
-                      <TextArea rows={5} className="textarea" disabled />
-                    </Form.Item>
-                  </Col>
+                <Row gutter={[0, 15]}>
+                  <Col span={8}>Kho hàng</Col>
+                  <Col span={16}>{`${outboundData?.warehouse}` || ''}</Col>
+                  <Col span={8}>Người nhận</Col>
+                  <Col span={16}>{outboundData?.receiver || ''}</Col>
+                  <Col span={8}>Liên hệ người nhận</Col>
+                  <Col span={16}>{outboundData?.receiver_phone || ''}</Col>
+                  <Col span={8}>Ghi chú</Col>
+                  <Col span={16}>{outboundData?.note || ''}</Col>
                 </Row>
               </Col>
-              <Col span={8}>
+              <Col span={12}>
                 <Row>
                   <Typography.Title level={5}>Tài liệu</Typography.Title>
                 </Row>
-                <Form.Item label="Số phiếu nhập" name="code">
-                  <Input className="input" type="text" disabled />
-                </Form.Item>
-                <div className="flex gap-5 justify-between">
-                  <Form.Item
-                    className="w-1/2"
-                    label="Ngày xuất hàng dự kiến"
-                    name="estimated_shipping_date"
-                  >
-                    <Input className="input" disabled />
-                  </Form.Item>
-                  <Form.Item
-                    className="w-1/2"
-                    label="Ngày xuất hàng thực tế"
-                    name="actual_shipping_date"
-                  >
-                    <Input className="input" disabled />
-                  </Form.Item>
-                </div>
+                <Row gutter={[0, 15]}>
+                  <Col span={8}>Số phiếu xuất</Col>
+                  <Col span={16}>{`${outboundData?.code}` || ''}</Col>
+                  <Col span={8}>Ngày xuất hàng dự kiến</Col>
+                  <Col span={16}>
+                    {outboundData?.estimated_shipping_date || ''}
+                  </Col>
+                  <Col span={8}>Ngày xuất hàng thực tế</Col>
+                  <Col span={16}>
+                    {outboundData?.actual_shipping_date || ''}
+                  </Col>
+                </Row>
               </Col>
             </Row>
-            <Layout>
-              <Row justify="space-between" className="mb-5">
-                <Typography.Title level={5}>Danh sách vật tư</Typography.Title>
-              </Row>
-              <Row>
-                <Table
-                  size="large"
-                  className="w-full"
-                  dataSource={dataSourceByPage(dataSource)}
-                  pagination={false}
-                >
-                  <Column
-                    title="Mã vật tư"
-                    dataIndex={'supplierCode'}
-                    key={'supplierCode'}
-                  />
-                  <Column
-                    title="Tên vật tư"
-                    render={(item) => item.supplierName}
-                  />
-                  <Column title="Đơn vị" dataIndex={'unit'} key={'unit'} />
-                  <Column
-                    title="Số lượng đặt hàng"
-                    dataIndex={'orderQuantity'}
-                    key={'orderQuantity'}
-                    width="15%"
-                    render={(value) => <p>{value}</p>}
-                  />
-                  <Column
-                    title="Tồn kho"
-                    dataIndex="stock"
-                    key="stock"
-                    render={(value) => {
-                      return <p>{value}</p>;
-                    }}
-                  />
-                  <Column
-                    title="Đơn giá"
-                    dataIndex="unitPrice"
-                    key="unitPrice"
-                    render={(value) => {
-                      return <p>{formatCurrencyVN(value)}</p>;
-                    }}
-                  />
-                  <Column
-                    title="Tổng giá trị"
-                    dataIndex={'totalValue'}
-                    key={'totalValue'}
-                    render={(value) => <p>{formatCurrencyVN(value)}</p>}
-                  />
-                  <Column
-                    title="Ghi chú"
-                    dataIndex={'description'}
-                    key={'description'}
-                  />
-                </Table>
-                <Row className="w-full mt-5" justify={'end'}>
-                  {dataSource && (
-                    <Pagination
-                      current={currentPage}
-                      pageSize={pageSize}
-                      total={dataSource.length}
-                      showTotal={(total, range) =>
-                        `${range[0]}-${range[1]}  ${total} items`
-                      }
-                      onChange={handleChangePage}
-                      onShowSizeChange={handleChangePage}
-                      showSizeChanger={true}
-                    />
-                  )}
-                </Row>
-              </Row>
-            </Layout>
-          </Layout>
+          </Col>
+        </Row>
+        <Layout className="bg-white">
+          <Row justify="space-between" className="mb-5">
+            <Typography.Title level={5}>Danh sách vật tư</Typography.Title>
+          </Row>
+          <Row>
+            <Table
+              size="large"
+              className="w-full"
+              dataSource={dataSourceByPage(dataSource)}
+              pagination={false}
+            >
+              <Column
+                title="Mã vật tư"
+                dataIndex={'supplierCode'}
+                key={'supplierCode'}
+              />
+              <Column title="Tên vật tư" render={(item) => item.supplierName} />
+              <Column title="Đơn vị" dataIndex={'unit'} key={'unit'} />
+              <Column
+                title="Số lượng đặt hàng"
+                dataIndex={'orderQuantity'}
+                key={'orderQuantity'}
+                width="15%"
+                render={(value) => <p>{value}</p>}
+              />
+              <Column
+                title="Tồn kho"
+                dataIndex="stock"
+                key="stock"
+                render={(value) => {
+                  return <p>{value}</p>;
+                }}
+              />
+              <Column
+                title="Đơn giá"
+                dataIndex="unitPrice"
+                key="unitPrice"
+                render={(value) => {
+                  return <p>{formatCurrencyVN(value)}</p>;
+                }}
+              />
+              <Column
+                title="Tổng giá trị"
+                dataIndex={'totalValue'}
+                key={'totalValue'}
+                render={(value) => <p>{formatCurrencyVN(value)}</p>}
+              />
+              <Column
+                title="Ghi chú"
+                dataIndex={'description'}
+                key={'description'}
+              />
+            </Table>
+            <Row className="w-full mt-5" justify={'end'}>
+              {dataSource && (
+                <Pagination
+                  current={currentPage}
+                  pageSize={pageSize}
+                  total={dataSource.length}
+                  showTotal={(total, range) =>
+                    `${range[0]}-${range[1]}  ${total} items`
+                  }
+                  onChange={handleChangePage}
+                  onShowSizeChange={handleChangePage}
+                  showSizeChanger={true}
+                />
+              )}
+            </Row>
+          </Row>
         </Layout>
-      </Form>
+      </Layout>
     </Layout>
   );
 };

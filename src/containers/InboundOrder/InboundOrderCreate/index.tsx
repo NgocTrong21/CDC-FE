@@ -204,7 +204,7 @@ const InboundOrderCreate = () => {
   return (
     <Layout>
       <Form size="middle" layout="vertical" autoComplete="off" form={form}>
-        <Layout>
+        <Layout className="bg-white">
           <Row align="middle" justify="space-between">
             <Typography.Title level={4}>Tạo phiếu nhập</Typography.Title>
             <Row>
@@ -231,7 +231,7 @@ const InboundOrderCreate = () => {
               </Space>
             </Row>
           </Row>
-          <Layout>
+          <Layout className="bg-white">
             <Row justify="space-between">
               <Col span={15}>
                 <Row>
@@ -300,7 +300,7 @@ const InboundOrderCreate = () => {
                 </div>
               </Col>
             </Row>
-            <Layout>
+            <Layout className="bg-white">
               <Row justify="space-between" className="mb-5">
                 <Typography.Title level={5}>Danh sách vật tư</Typography.Title>
                 <Space>

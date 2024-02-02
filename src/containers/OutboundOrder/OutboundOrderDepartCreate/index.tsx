@@ -1,14 +1,11 @@
-import { AppstoreOutlined, MailOutlined } from '@ant-design/icons';
 import {
   Button,
   Col,
   DatePicker,
-  Divider,
   Form,
   Input,
   InputNumber,
   Layout,
-  Menu,
   Pagination,
   Row,
   Select,
@@ -54,7 +51,6 @@ const OutboundOrderDepartCreate = () => {
   const [warehouses, setWarehouses] = useState([]);
   const [supllies, setSupplies] = useState<any>([]);
   const navigate = useNavigate();
-  // const [selectedType, setSelectedType] = useState<string>('use_note');
   const seachWarehouses = () => {
     warehouseApi
       .search({})
@@ -236,7 +232,7 @@ const OutboundOrderDepartCreate = () => {
   return (
     <Layout>
       <Form size="middle" layout="vertical" autoComplete="off" form={form}>
-        <Layout>
+        <Layout className="bg-white">
           <Row align="middle" justify="space-between">
             <Typography.Title level={4}>Tạo phiếu xuất nội bộ</Typography.Title>
             <Row>
@@ -263,31 +259,8 @@ const OutboundOrderDepartCreate = () => {
               </Space>
             </Row>
           </Row>
-          {/* <Divider />
-          <Row className="mb-5 ml-[-15px]">
-            <Menu
-              mode="horizontal"
-              className="w-fit bg-[#f0f2f5]"
-              items={[
-                {
-                  label: 'Phiếu xuất dùng',
-                  key: 'use_note',
-                  icon: <MailOutlined />,
-                },
-                {
-                  label: 'Phiếu xuất hủy',
-                  key: 'drop_note',
-                  icon: <AppstoreOutlined />,
-                },
-              ]}
-              selectedKeys={[selectedType]}
-              onClick={(e) => {
-                setSelectedType(e.key);
-              }}
-            />
-          </Row> */}
-          <Layout>
-            <Row justify="space-between">
+          <Layout className="bg-white">
+            <Row justify="space-between" className="my-5">
               <Col span={15}>
                 <Row>
                   <Typography.Title level={5}>Thông tin chung</Typography.Title>
@@ -389,7 +362,7 @@ const OutboundOrderDepartCreate = () => {
                 </div>
               </Col>
             </Row>
-            <Layout>
+            <Layout className="bg-white">
               <Row justify="space-between" className="mb-5">
                 <Typography.Title level={5}>Danh sách vật tư</Typography.Title>
                 <Space>

@@ -420,7 +420,7 @@ const UpdateSchedule = () => {
             )}
           </div>
           <div className="flex gap-6">
-            {schedule.schedule_repair_status === 1 &&
+            {schedule.schedule_repair_status !== null &&
               checkPermission(permissions.REPAIR_EQUIPMENT_UPDATE) && (
                 <Form.Item>
                   <Button

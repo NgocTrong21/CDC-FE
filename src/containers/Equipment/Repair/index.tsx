@@ -187,35 +187,39 @@ const Repair = () => {
               </Link>
             </Tooltip>
           </Menu.Item>
-          {checkPermission(permissions.REPAIR_EQUIPMENT_CREATE) && item?.Repairs[0]?.schedule_repair_status === null && (
-            <Menu.Item key="word">
-              <Tooltip title="Tạo phiếu sửa chữa">
-                <Link
-                  to={`/equipment/repair/create_schedule/${item?.id}/${item?.Repairs[0]?.id}`}
-                >
-                  <PlusCircleFilled />
-                </Link>
-              </Tooltip>
-            </Menu.Item>
-          )}
-          {checkPermission(permissions.REPAIR_EQUIPMENT_UPDATE) && item?.Repairs[0]?.schedule_repair_status === 1 && (
-            <Menu.Item key="edit">
-              <Tooltip
-                title={`${checkPermission(permissions.REPAIR_EQUIPMENT_UPDATE)
-                  ? item?.Repairs[0]?.repair_status === null
-                    ? 'Cập nhật phiếu sửa chữa'
-                    : 'Xem phiếu sửa chữa'
-                  : 'Xem phiếu sửa chữa'
+          {checkPermission(permissions.REPAIR_EQUIPMENT_CREATE) &&
+            item?.Repairs[0]?.schedule_repair_status === null && (
+              <Menu.Item key="word">
+                <Tooltip title="Tạo phiếu sửa chữa">
+                  <Link
+                    to={`/equipment/repair/create_schedule/${item?.id}/${item?.Repairs[0]?.id}`}
+                  >
+                    <PlusCircleFilled />
+                  </Link>
+                </Tooltip>
+              </Menu.Item>
+            )}
+          {checkPermission(permissions.REPAIR_EQUIPMENT_UPDATE) &&
+            item?.Repairs[0]?.schedule_repair_status !== null && (
+              <Menu.Item key="edit">
+                <Tooltip
+                  title={`${
+                    checkPermission(permissions.REPAIR_EQUIPMENT_UPDATE)
+                      ? item?.Repairs[0]?.repair_status === 3 ||
+                        item?.Repairs[0]?.repair_status === 4
+                        ? 'Xem phiếu sửa chữa'
+                        : 'Cập nhật phiếu sửa chữa'
+                      : 'Xem phiếu sửa chữa'
                   }`}
-              >
-                <Link
-                  to={`/equipment/repair/update_schedule/${item?.id}/${item?.Repairs[0]?.id}?edit=true`}
                 >
-                  <ToolFilled />
-                </Link>
-              </Tooltip>
-            </Menu.Item>
-          )}
+                  <Link
+                    to={`/equipment/repair/update_schedule/${item?.id}/${item?.Repairs[0]?.id}?edit=true`}
+                  >
+                    <ToolFilled />
+                  </Link>
+                </Tooltip>
+              </Menu.Item>
+            )}
           {(item?.Repairs[0]?.repair_status === 3 ||
             item?.Repairs[0]?.repair_status === 4) &&
             checkPermission(permissions.REPAIR_EQUIPMENT_UPDATE) && (
@@ -357,27 +361,22 @@ const Repair = () => {
         x?.Repairs[0]?.schedule_repair_date &&
         moment(x?.Repairs[0]?.schedule_repair_date).format('DD-MM-YYYY'),
       repair_date:
-        x?.Repairs[0]?.repair_date && moment(x?.Repairs[0]?.repair_date).format('DD-MM-YYYY'),
+        x?.Repairs[0]?.repair_date &&
+        moment(x?.Repairs[0]?.repair_date).format('DD-MM-YYYY'),
       repair_completion_date:
         x?.Repairs[0]?.repair_completion_date &&
         moment(x?.Repairs[0]?.repair_completion_date).format('DD-MM-YYYY'),
       estimated_repair_cost: x?.Repairs[0]?.estimated_repair_cost,
       actual_repair_cost: x?.Repairs[0]?.actual_repair_cost,
     }));
-    resolveDataExcel(
-      data,
-      'Danh sách thiết bị đang báo hỏng',
-      columnTable
-    );
+    resolveDataExcel(data, 'Danh sách thiết bị đang báo hỏng', columnTable);
     setLoadingDownload(false);
   };
 
   return (
     <div>
       <div className="flex-between-center">
-        <div className="title">
-          DANH SÁCH THIẾT BỊ ĐANG BÁO HỎNG
-        </div>
+        <div className="title">DANH SÁCH THIẾT BỊ ĐANG BÁO HỎNG</div>
         <ExportToExcel
           callback={downloadRepairList}
           loading={loadingDownload}

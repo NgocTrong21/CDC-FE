@@ -236,16 +236,7 @@ const OutboundOrderDepartList = () => {
         <div className="title">DANH SÁCH PHIẾU XUẤT NỘI BỘ</div>
       </div>
       <Divider />
-      <div className="flex justify-between">
-        <div
-          className="flex flex-row gap-4 items-center mb-4"
-          onClick={() => setIsShowCustomTable(!isShowCustomTable)}
-        >
-          <SelectOutlined />
-          <div className="font-medium text-center cursor-pointer text-base">
-            Tùy chọn trường hiển thị
-          </div>
-        </div>
+      <div className="flex justify-end mb-5">
         <Button
           className={`button_excel ${
             checkPermission(permissions.OUTBOUND_ORDERS_CREATE) ? '' : 'hidden'

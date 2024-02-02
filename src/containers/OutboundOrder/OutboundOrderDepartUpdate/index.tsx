@@ -250,7 +250,7 @@ const OutboundOrderDepartUpdate = () => {
   return (
     <Layout>
       <Form size="middle" layout="vertical" autoComplete="off" form={form}>
-        <Layout>
+        <Layout className="bg-white">
           <Row align="middle" justify="space-between">
             <Typography.Title level={4}>
               Cập nhật phiếu xuất nội bộ
@@ -278,13 +278,13 @@ const OutboundOrderDepartUpdate = () => {
               </Space>
             </Row>
           </Row>
-          <Layout>
+          <Layout className="bg-white">
             <Row justify="space-between">
               <Col span={15}>
                 <Row>
                   <Typography.Title level={5}>Thông tin chung</Typography.Title>
                 </Row>
-                <Row justify="space-between">
+                <Row justify="space-between" className="my-5">
                   <Col span={12}>
                     <Form.Item className="hidden" name="id">
                       <Input />
@@ -370,7 +370,7 @@ const OutboundOrderDepartUpdate = () => {
                 </div>
               </Col>
             </Row>
-            <Layout>
+            <Layout className="bg-white">
               <Row justify="space-between" className="mb-5">
                 <Typography.Title level={5}>Danh sách vật tư</Typography.Title>
                 <Space>

@@ -231,7 +231,7 @@ const InboundOrderUpdate = () => {
   return (
     <Layout>
       <Form form={form} size="middle" layout="vertical" autoComplete="off">
-        <Layout>
+        <Layout className="bg-white">
           <Row align="middle" justify="space-between">
             <Typography.Title level={4}>Cập nhật phiếu nhập</Typography.Title>
             <Row>
@@ -257,7 +257,7 @@ const InboundOrderUpdate = () => {
               </Space>
             </Row>
           </Row>
-          <Layout>
+          <Layout className="bg-white">
             <Row justify="space-between">
               <Col span={15}>
                 <Row>
@@ -329,7 +329,7 @@ const InboundOrderUpdate = () => {
                 </div>
               </Col>
             </Row>
-            <Layout>
+            <Layout className="bg-white">
               <Row justify="space-between" className="mb-5">
                 <Typography.Title level={5}>Danh sách vật tư</Typography.Title>
                 <Space>
