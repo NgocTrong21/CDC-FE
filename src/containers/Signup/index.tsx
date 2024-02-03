@@ -24,11 +24,16 @@ const Signup: React.FC = () => {
 
   return (
     <>
-      <div className="grid grid-cols-2 w-screen h-screen">
-        <div className="flex flex-col justify-between bg-amber-50">
+      <div
+        className="w-screen h-screen flex justify-center items-center"
+        style={{
+          backgroundImage: `url(${bg})`,
+        }}
+      >
+        <div>
           <div className="flex justify-center items-center flex-col pt-24">
-            <div className="bg-white p-10 rounded-3xl w-96 shadow-2xl">
-              <div className="text-center font-medium text-2xl mb-12">
+            <div className="bg-white p-10 rounded-3xl w-[450px] shadow-2xl">
+              <div className="text-center font-medium text-2xl mb-3">
                 HỆ THỐNG QUẢN LÝ THIẾT BỊ VÀ VẬT TƯ Y TẾ
               </div>
               <Form
@@ -113,14 +118,14 @@ const Signup: React.FC = () => {
               </Form>
             </div>
           </div>
-          <div className="mb-4 ml-4">© 2022 All rights reserved.</div>
+          {/* <div className="mb-4 ml-4">© 2022 All rights reserved.</div> */}
         </div>
-        <div
+        {/* <div
           className="p-12 bg-center bg-no-repeat bg-cover"
           style={{
             backgroundImage: `url(${bg})`,
           }}
-        ></div>
+        ></div> */}
       </div>
     </>
   );

@@ -62,6 +62,11 @@ import EquipmentUnit from 'containers/Category/Equipment_Unit';
 import CreateEquipmentUnit from 'containers/Category/Equipment_Unit/create';
 import DetailEquipmentUnit from 'containers/Category/Equipment_Unit/detail';
 import DetailWarehouse from 'containers/Warehouse/DetailWarehouse';
+import OutboundOrderDepartList from 'containers/OutboundOrder/OutboundOrderDepart';
+import OutboundOrderDepartCreate from 'containers/OutboundOrder/OutboundOrderDepartCreate';
+import OutboundOrderDepartDetail from 'containers/OutboundOrder/OutboundOrderDepartDetail';
+import OutboundOrderDepartUpdate from 'containers/OutboundOrder/OutboundOrderDepartUpdate';
+// import SuppliesByDepart from 'containers/Supply/listByDepart';
 
 const TRACKING_ID = process.env.REACT_APP_TRACKING_ID || '';
 ReactGA.initialize(TRACKING_ID);
@@ -236,6 +241,14 @@ const App = () => {
               </PrivateRoute>
             }
           />
+          {/* <Route
+            path="/supplies/list_sp_depart"
+            element={
+              <PrivateRoute permission={permissions.CONSUMABLE_SUPPLY_READ}>
+                <SuppliesByDepart />
+              </PrivateRoute>
+            }
+          /> */}
           <Route
             path="/supplies/import_excel_sp"
             element={
@@ -491,10 +504,26 @@ const App = () => {
             }
           />
           <Route
+            path="order/outbound_order_depart"
+            element={
+              <PrivateRoute permission={permissions.OUTBOUND_ORDERS_READ}>
+                <OutboundOrderDepartList />
+              </PrivateRoute>
+            }
+          />
+          <Route
             path="order/outbound_order/import"
             element={
               <PrivateRoute permission={permissions.OUTBOUND_ORDERS_CREATE}>
                 <OutboundOrderCreate />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="order/outbound_order_depart/import"
+            element={
+              <PrivateRoute permission={permissions.OUTBOUND_ORDERS_CREATE}>
+                <OutboundOrderDepartCreate />
               </PrivateRoute>
             }
           />
@@ -507,10 +536,26 @@ const App = () => {
             }
           />
           <Route
+            path="order/outbound_order_depart/update/:id"
+            element={
+              <PrivateRoute permission={permissions.OUTBOUND_ORDERS_UPDATE}>
+                <OutboundOrderDepartUpdate />
+              </PrivateRoute>
+            }
+          />
+          <Route
             path="order/outbound_order/detail/:id"
             element={
               <PrivateRoute permission={permissions.OUTBOUND_ORDERS_READ}>
                 <OutboundOrderDetail />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="order/outbound_order_depart/detail/:id"
+            element={
+              <PrivateRoute permission={permissions.OUTBOUND_ORDERS_READ}>
+                <OutboundOrderDepartDetail />
               </PrivateRoute>
             }
           />

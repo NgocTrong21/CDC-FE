@@ -523,9 +523,6 @@ const List = () => {
               )
             }
           />
-          <div>
-            <FilterFilled />
-          </div>
         </div>
       </div>
       <Table

@@ -1,7 +1,9 @@
 import {
-  DatePicker, Divider, Input,
+  DatePicker,
+  Divider,
+  Input,
   // Pagination, Row,
-  Table
+  Table,
 } from 'antd';
 import { useState, useEffect, useCallback } from 'react';
 import useDebounce from 'hooks/useDebounce';
@@ -17,6 +19,7 @@ import {
   getHeadersExcel,
 } from 'utils/globalFunc.util';
 import { formatCurrencyVN } from 'utils/validateFunc.util';
+import { supply_status } from 'constants/dataFake.constant';
 
 // const TableFooter = ({ paginationProps }: any) => {
 //   return (
@@ -79,6 +82,18 @@ const ReportSupply = () => {
       show: true,
       widthExcel: 30,
       width: 200,
+    },
+    {
+      title: 'Trạng thái',
+      key: 'status',
+      show: true,
+      width: 150,
+      widthExcel: 30,
+      render: (item: any) => (
+        <p>
+          {supply_status?.find((x: any) => x.value === item?.status)?.label}
+        </p>
+      ),
     },
     {
       title: 'Đơn vị tính',
@@ -305,7 +320,7 @@ const ReportSupply = () => {
           </div>
         </div>
       </div>
-      <p className='mt-5'>{`Số lượng vật tư: ${total}`}</p>
+      <p className="mt-5">{`Số lượng vật tư: ${total}`}</p>
       <Table
         columns={columnTable.filter((item: any) => item.show)}
         dataSource={supllies}
@@ -313,7 +328,7 @@ const ReportSupply = () => {
         // footer={() => <TableFooter paginationProps={pagination} />}
         // pagination={false}
         loading={loading}
-        scroll={{ x: 2000, y: 600 }}
+        scroll={{ x: 2500, y: 600 }}
       />
     </div>
   );

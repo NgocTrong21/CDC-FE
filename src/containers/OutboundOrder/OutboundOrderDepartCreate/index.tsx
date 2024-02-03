@@ -14,16 +14,18 @@ import {
   Typography,
 } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
-import inboundOrderApi from 'api/inbound_order';
-import supplyApi from 'api/suplly.api';
+import outboundOrderApi from 'api/outbound_order';
 import warehouseApi from 'api/warehouse.api';
+import { note_type } from 'constants/dataFake.constant';
+import { FilterContext } from 'contexts/filter.context';
 import moment from 'moment';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { options } from 'utils/globalFunc.util';
 import { formatCurrencyVN } from 'utils/validateFunc.util';
 
-const InboundOrderCreate = () => {
+const OutboundOrderDepartCreate = () => {
   const count = useRef(1);
   const [form] = Form.useForm();
   const { Column } = Table;
@@ -34,18 +36,21 @@ const InboundOrderCreate = () => {
       supplierName: '',
       orderQuantity: 0,
       unitPrice: 0,
+      stock: 0,
       totalValue: 0,
       description: '',
     },
   ]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [selectedWarehouse, setSelectedWarehouse] = useState<number>();
+  const [typeNote, setTypeNote] = useState<number>();
+  const { departments } = useContext(FilterContext);
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
-  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [warehouses, setWarehouses] = useState([]);
   const [supllies, setSupplies] = useState<any>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-
+  const navigate = useNavigate();
   const seachWarehouses = () => {
     warehouseApi
       .search({})
@@ -57,19 +62,7 @@ const InboundOrderCreate = () => {
       })
       .catch();
   };
-  const getSuppliesList = () => {
-    supplyApi
-      .list({})
-      .then((res: any) => {
-        const { success, data } = res.data;
-        if (success) {
-          setSupplies(data.supplies.filter((item: any) => item.status === 1));
-        }
-      })
-      .catch();
-  };
   useEffect(() => {
-    getSuppliesList();
     seachWarehouses();
   }, []);
 
@@ -83,6 +76,7 @@ const InboundOrderCreate = () => {
       unitPrice: 0,
       totalValue: 0,
       description: '',
+      stock: 0,
     };
     setDataSource([...dataSource, defaultValue]);
   };
@@ -124,20 +118,24 @@ const InboundOrderCreate = () => {
         unitPrice: selectedItem?.unit_price,
         description: selectedItem?.note,
         unit: selectedItem?.Equipment_Unit?.name,
+        stock: selectedItem?.quantity,
       });
 
       setDataSource(listData);
     }
   };
-
-  const handleChangeOrderQuantity = (
-    value: number,
-    index: number,
-    record: any
-  ) => {
+  const handleSetSupplies = (warehouseId: number) => {
+    setSelectedWarehouse(warehouseId);
+  };
+  const handleChangeOrderQuantity = (value: number, index: number) => {
     const actualIndex = (currentPage - 1) * pageSize + index;
     const listData = [...dataSource];
-    const orderQuantity = value || 0;
+    let orderQuantity;
+    if (value > 0) {
+      orderQuantity = value;
+    } else {
+      orderQuantity = 0;
+    }
     const unitValue = listData[actualIndex]?.unitPrice as number;
     const totalValue = orderQuantity * unitValue || 0;
     listData[actualIndex] = {
@@ -152,19 +150,28 @@ const InboundOrderCreate = () => {
       await form.validateFields();
       if (data) {
         setLoading(true);
-        inboundOrderApi
+        outboundOrderApi
           .create({
             data: {
+              receiver: data?.receiver,
+              receiver_phone: data?.receiver_phone,
               code: data?.code,
-              deliver: data?.deliver,
-              deliver_phone: data?.deliver_phone,
               warehouse_id: data?.warehouse_id,
-              estimated_delivery_date: moment(
-                new Date(data?.estimated_delivery_date)
-              ).toISOString(),
-              receive_date: moment(new Date(data?.receive_date)).toISOString(),
+              depart_id: data?.department_id,
+              department: (
+                departments.find(
+                  (item: any) => item.id === data?.department_id
+                ) as any
+              )?.name,
+              type: data?.type,
+              estimated_shipping_date: data?.estimated_shipping_date
+                ? moment(new Date(data?.estimated_shipping_date)).toISOString()
+                : '',
+              actual_shipping_date: data?.actual_shipping_date
+                ? moment(new Date(data?.actual_shipping_date)).toISOString()
+                : '',
               note: data?.note,
-              provider: data?.provider,
+              customer: data?.customer,
             },
             supplies: dataSource?.map((item: any) => ({
               supply_id: item?.id,
@@ -172,48 +179,69 @@ const InboundOrderCreate = () => {
             })),
           })
           .then((res) => {
-            setLoading(false);
-            const { success, message } = res.data;
+            const { message, success } = res.data;
             if (success) {
-              navigate('/order/inbound_order');
-              toast.success('Tạo đơn nhập thành công');
+              navigate('/order/outbound_order_depart');
+              toast.success('Tạo phiếu xuất thành công');
             } else {
-              toast.error(message || 'Tạo đơn nhập thất bại!');
+              toast.error(message || 'Tạo phiếu xuất thất bại');
             }
           })
-          .catch(() => {
-            setLoading(false);
-            toast.error('Tạo đơn nhập thất bại!');
-          });
+          .catch((error) => {
+            toast.error(error.response.data.message);
+          })
+          .finally(() => setLoading(false));
       }
     } catch (error) {}
   };
-  const options = (array: any) => {
-    return (
-      array?.length > 0 &&
-      array?.map((item: any) => {
-        let o: any = {};
-        o.value = item?.id;
-        o.label = `${item?.code || ''}${
-          item?.lot_number ? `(${item?.lot_number})` : ''
-        } - ${item?.name}`;
-        return o;
-      })
-    );
-  };
+  useEffect(() => {
+    if (selectedWarehouse && typeNote) {
+      warehouseApi
+        .suppliesByWarehouse(selectedWarehouse)
+        .then((res: any) => {
+          const { success, data } = res.data;
+          if (success) {
+            const dataSupplies = data.supplies
+              .filter(
+                (item: any) =>
+                  item.quantity > 0 && item.Supply.status === +typeNote
+              )
+              .map((item: any) => ({
+                ...item.Supply,
+                quantity: item.quantity,
+              }));
+            count.current = 1;
+            setDataSource([
+              {
+                key: count.current,
+                supplierCode: '',
+                supplierName: '',
+                orderQuantity: 0,
+                unitPrice: 0,
+                stock: 0,
+                totalValue: 0,
+                description: '',
+              },
+            ]);
+            setSupplies(dataSupplies);
+          }
+        })
+        .catch();
+    }
+  }, [selectedWarehouse, typeNote]);
   return (
     <Layout>
       <Form size="middle" layout="vertical" autoComplete="off" form={form}>
         <Layout className="bg-white">
           <Row align="middle" justify="space-between">
-            <Typography.Title level={4}>Tạo phiếu nhập</Typography.Title>
+            <Typography.Title level={4}>Tạo phiếu xuất nội bộ</Typography.Title>
             <Row>
               <Space>
                 <Button
                   type="primary"
                   className="rounded-md"
                   onClick={() => {
-                    navigate('/order/inbound_order');
+                    navigate('/order/outbound_order_depart');
                   }}
                 >
                   Đóng
@@ -232,7 +260,7 @@ const InboundOrderCreate = () => {
             </Row>
           </Row>
           <Layout className="bg-white">
-            <Row justify="space-between">
+            <Row justify="space-between" className="my-5">
               <Col span={15}>
                 <Row>
                   <Typography.Title level={5}>Thông tin chung</Typography.Title>
@@ -248,21 +276,41 @@ const InboundOrderCreate = () => {
                       <Select
                         placeholder="Kho hàng"
                         options={options(warehouses)}
+                        onSelect={handleSetSupplies}
                       />
                     </Form.Item>
-                    <Form.Item label="Người giao hàng" name="deliver">
+                    <Form.Item label="Người nhận" name="receiver">
                       <Input className="input" />
                     </Form.Item>
-                    <Form.Item
-                      label="Liên hệ người giao hàng"
-                      name="deliver_phone"
-                    >
+                    <Form.Item label="Liên hệ người nhận" name="receiver_phone">
                       <Input className="input" />
                     </Form.Item>
                   </Col>
                   <Col span={11}>
-                    <Form.Item label="Nhà cung cấp" name="provider">
-                      <Input className="input" placeholder="Nhà cung cấp" />
+                    <Form.Item
+                      label="Khoa - Phòng"
+                      name="department_id"
+                      className="mb-5"
+                      required
+                      rules={[
+                        {
+                          required: true,
+                          message: 'Hãy chọn khoa phòng!',
+                        },
+                      ]}
+                    >
+                      <Select
+                        showSearch
+                        placeholder="Chọn khoa phòng"
+                        optionFilterProp="children"
+                        allowClear
+                        filterOption={(input, option) =>
+                          (option!.label as unknown as string)
+                            .toLowerCase()
+                            .includes(input.toLowerCase())
+                        }
+                        options={options(departments)}
+                      />
                     </Form.Item>
                     <Form.Item label="Ghi chú" name="note">
                       <TextArea rows={5} className="textarea" />
@@ -275,27 +323,41 @@ const InboundOrderCreate = () => {
                   <Typography.Title level={5}>Tài liệu</Typography.Title>
                 </Row>
                 <Form.Item
-                  label="Mã phiếu nhập"
+                  label="Mã phiếu xuất"
                   name="code"
                   required
                   rules={[{ required: true, message: 'Hãy nhập mã phiếu!' }]}
                 >
-                  <Input className="input" placeholder="Mã phiếu nhập" />
+                  <Input className="input" placeholder="Mã phiếu" />
+                </Form.Item>
+                <Form.Item
+                  label="Loại phiếu xuất"
+                  name="type"
+                  required
+                  rules={[{ required: true, message: 'Hãy chọn loại phiếu!' }]}
+                >
+                  <Select
+                    placeholder="Loại phiếu"
+                    options={note_type}
+                    onSelect={(e) => {
+                      setTypeNote(e);
+                    }}
+                  />
                 </Form.Item>
                 <div className="flex gap-5 justify-between">
                   <Form.Item
                     className="w-1/2"
-                    label="Ngày nhận hàng dự kiến"
-                    name="estimated_delivery_date"
+                    label="Ngày xuất hàng dự kiến"
+                    name="estimated_shipping_date"
                   >
-                    <DatePicker className="date" />
+                    <DatePicker className="date" placeholder="Chọn ngày" />
                   </Form.Item>
                   <Form.Item
                     className="w-1/2"
-                    label="Ngày nhận hàng thực tế"
-                    name="receive_date"
+                    label="Ngày xuất hàng thực tế"
+                    name="actual_shipping_date"
                   >
-                    <DatePicker className="date" />
+                    <DatePicker className="date" placeholder="Chọn ngày" />
                   </Form.Item>
                 </div>
               </Col>
@@ -352,13 +414,13 @@ const InboundOrderCreate = () => {
                     title="Tên vật tư"
                     dataIndex={'supplierName'}
                     key={'supplierName'}
-                    width="20%"
                     render={(_item, record: any, index) => {
                       return (
                         <Form.Item
                           style={{
                             margin: 'auto',
                           }}
+                          name={`supplierName${record?.key}`}
                         >
                           <Select
                             showSearch
@@ -379,23 +441,19 @@ const InboundOrderCreate = () => {
                   />
                   <Column title="Đơn vị" dataIndex={'unit'} key={'unit'} />
                   <Column
-                    title="Số lượng đặt hàng"
+                    title="Số lượng xuất"
                     dataIndex={'orderQuantity'}
                     key={'orderQuantity'}
-                    width="10%"
-                    render={(value, record, index) => (
+                    width="15%"
+                    render={(value, _record, index) => (
                       <InputNumber
-                        style={{
-                          width: 'w-full',
-                        }}
-                        min={1}
+                        className="w-full"
                         onBlur={(e) => {
                           handleChangeOrderQuantity(
                             Math.round(
                               parseFloat(e.target.value.replaceAll(',', ''))
                             ) as unknown as number,
-                            index,
-                            record
+                            index
                           );
                         }}
                         formatter={(value) => {
@@ -404,15 +462,24 @@ const InboundOrderCreate = () => {
                             ','
                           );
                         }}
+                        value={value}
                         precision={0}
                       />
                     )}
                   />
                   <Column
+                    title="Tồn kho"
+                    dataIndex="stock"
+                    key="stock"
+                    render={(value) => {
+                      return <p>{value}</p>;
+                    }}
+                  />
+                  <Column
                     title="Đơn giá"
                     dataIndex="unitPrice"
                     key="unitPrice"
-                    render={(value) => {
+                    render={(value, _record) => {
                       return <p>{formatCurrencyVN(value)}</p>;
                     }}
                   />
@@ -452,4 +519,4 @@ const InboundOrderCreate = () => {
   );
 };
 
-export default InboundOrderCreate;
+export default OutboundOrderDepartCreate;

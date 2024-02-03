@@ -18,13 +18,14 @@ import outboundOrderApi from 'api/outbound_order';
 import warehouseApi from 'api/warehouse.api';
 import moment from 'moment';
 import { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { options } from 'utils/globalFunc.util';
 import { formatCurrencyVN } from 'utils/validateFunc.util';
 
 const OutboundOrderUpdate = () => {
   const params = useParams();
+  const navigate = useNavigate();
   const [form] = Form.useForm();
   const { id } = params;
   const count = useRef(1);
@@ -86,9 +87,15 @@ const OutboundOrderUpdate = () => {
               receiver_phone: data?.receiver_phone,
               code: data?.code,
               warehouse_id: data?.warehouse_id,
-              estimated_shipping_date: moment(
-                new Date(data?.estimated_shipping_date)
-              ).toISOString(),
+              estimated_shipping_date: data?.estimated_shipping_date
+                ? moment(new Date(data?.estimated_shipping_date)).toISOString()
+                : '',
+              actual_shipping_date: data?.actual_shipping_date
+                ? moment(new Date(data?.actual_shipping_date)).toISOString()
+                : '',
+              handover_date: data?.handover_date
+                ? moment(new Date(data?.handover_date)).toISOString()
+                : '',
               note: data?.note,
               customer: data?.customer,
             },
@@ -142,6 +149,8 @@ const OutboundOrderUpdate = () => {
             receiver_phone,
             estimated_shipping_date,
             note,
+            handover_date,
+            actual_shipping_date,
           } = data.outbound_order;
           form.setFieldsValue({
             id,
@@ -151,7 +160,13 @@ const OutboundOrderUpdate = () => {
             code,
             receiver_phone,
             note,
-            estimated_shipping_date: moment(estimated_shipping_date),
+            estimated_shipping_date: estimated_shipping_date
+              ? moment(estimated_shipping_date)
+              : '',
+            actual_shipping_date: actual_shipping_date
+              ? moment(actual_shipping_date)
+              : '',
+            handover_date: handover_date ? moment(handover_date) : '',
           });
           setDataSource(
             data.outbound_order.Supply_Outbound_Orders.map(
@@ -228,12 +243,20 @@ const OutboundOrderUpdate = () => {
   return (
     <Layout>
       <Form size="middle" layout="vertical" autoComplete="off" form={form}>
-        <Layout>
+        <Layout className="bg-white">
           <Row align="middle" justify="space-between">
-            <Typography.Title level={4}>Cập nhật phiếu xuất</Typography.Title>
+            <Typography.Title level={4}>
+              Cập nhật phiếu xuất bệnh viện
+            </Typography.Title>
             <Row>
               <Space>
-                <Button type="primary" className="rounded-md">
+                <Button
+                  type="primary"
+                  className="rounded-md"
+                  onClick={() => {
+                    navigate('/order/outbound_order');
+                  }}
+                >
                   Đóng
                 </Button>
                 <Button
@@ -248,8 +271,8 @@ const OutboundOrderUpdate = () => {
               </Space>
             </Row>
           </Row>
-          <Layout>
-            <Row justify="space-between">
+          <Layout className="bg-white">
+            <Row justify="space-between" className="my-5">
               <Col span={15}>
                 <Row>
                   <Typography.Title level={5}>Thông tin chung</Typography.Title>
@@ -271,9 +294,6 @@ const OutboundOrderUpdate = () => {
                         onChange={handleSetSupplies}
                       />
                     </Form.Item>
-                    <Form.Item label="Khách hàng" name="customer">
-                      <Input className="input" />
-                    </Form.Item>
                     <Form.Item label="Người nhận" name="receiver">
                       <Input className="input" />
                     </Form.Item>
@@ -282,11 +302,11 @@ const OutboundOrderUpdate = () => {
                     </Form.Item>
                   </Col>
                   <Col span={11}>
-                    <Form.Item label="Vị trí kho hàng">
+                    <Form.Item label="Khách hàng" name="customer">
                       <Input className="input" />
                     </Form.Item>
                     <Form.Item label="Ghi chú" name="note">
-                      <TextArea rows={9} className="textarea" />
+                      <TextArea rows={5} className="textarea" />
                     </Form.Item>
                   </Col>
                 </Row>
@@ -303,15 +323,32 @@ const OutboundOrderUpdate = () => {
                 >
                   <Input className="input" />
                 </Form.Item>
-                <Form.Item
-                  label="Ngày dự kiến xuất hàng"
-                  name="estimated_shipping_date"
-                >
-                  <DatePicker className="date" />
-                </Form.Item>
+                <div className="flex gap-5 justify-between">
+                  <Form.Item
+                    className="w-1/3"
+                    label="Ngày xuất hàng dự kiến"
+                    name="estimated_shipping_date"
+                  >
+                    <DatePicker className="date" />
+                  </Form.Item>
+                  <Form.Item
+                    className="w-1/3"
+                    label="Ngày xuất hàng thực tế"
+                    name="actual_shipping_date"
+                  >
+                    <DatePicker className="date" />
+                  </Form.Item>
+                  <Form.Item
+                    className="w-1/3"
+                    label="Ngày bàn giao"
+                    name="handover_date"
+                  >
+                    <DatePicker className="date" />
+                  </Form.Item>
+                </div>
               </Col>
             </Row>
-            <Layout>
+            <Layout className="bg-white">
               <Row justify="space-between" className="mb-5">
                 <Typography.Title level={5}>Danh sách vật tư</Typography.Title>
                 <Space>

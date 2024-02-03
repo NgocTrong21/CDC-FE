@@ -90,6 +90,7 @@ const InboundOrderUpdate = () => {
               estimated_delivery_date: moment(
                 new Date(data?.estimated_delivery_date)
               ).toISOString(),
+              receive_date: moment(new Date(data?.receive_date)).toISOString(),
               note: data?.note,
               provider: data?.provider,
             },
@@ -132,7 +133,7 @@ const InboundOrderUpdate = () => {
       .then((res: any) => {
         const { success, data } = res.data;
         if (success) {
-          setSupplies(data.supplies);
+          setSupplies(data.supplies.filter((item: any) => item.status === 1));
         }
       })
       .catch();
@@ -151,6 +152,7 @@ const InboundOrderUpdate = () => {
             deliver,
             deliver_phone,
             estimated_delivery_date,
+            receive_date,
             note,
           } = data.inbound_order;
           form.setFieldsValue({
@@ -161,7 +163,10 @@ const InboundOrderUpdate = () => {
             code,
             deliver_phone,
             note,
-            estimated_delivery_date: moment(estimated_delivery_date),
+            estimated_delivery_date: estimated_delivery_date
+              ? moment(estimated_delivery_date)
+              : '',
+            receive_date: receive_date ? moment(receive_date) : '',
           });
           setDataSource(
             data.inbound_order.Supply_Inbound_Orders.map(
@@ -226,7 +231,7 @@ const InboundOrderUpdate = () => {
   return (
     <Layout>
       <Form form={form} size="middle" layout="vertical" autoComplete="off">
-        <Layout>
+        <Layout className="bg-white">
           <Row align="middle" justify="space-between">
             <Typography.Title level={4}>Cập nhật phiếu nhập</Typography.Title>
             <Row>
@@ -252,7 +257,7 @@ const InboundOrderUpdate = () => {
               </Space>
             </Row>
           </Row>
-          <Layout>
+          <Layout className="bg-white">
             <Row justify="space-between">
               <Col span={15}>
                 <Row>
@@ -274,9 +279,6 @@ const InboundOrderUpdate = () => {
                         options={options(warehouses)}
                       />
                     </Form.Item>
-                    <Form.Item label="Nhà cung cấp" name="provider">
-                      <Input className="input" />
-                    </Form.Item>
                     <Form.Item label="Người giao hàng" name="deliver">
                       <Input className="input" />
                     </Form.Item>
@@ -288,11 +290,11 @@ const InboundOrderUpdate = () => {
                     </Form.Item>
                   </Col>
                   <Col span={11}>
-                    <Form.Item label="Vị trí kho hàng">
+                    <Form.Item label="Nhà cung cấp" name="provider">
                       <Input className="input" />
                     </Form.Item>
                     <Form.Item label="Ghi chú" name="note">
-                      <TextArea rows={9} className="textarea" />
+                      <TextArea rows={5} className="textarea" />
                     </Form.Item>
                   </Col>
                 </Row>
@@ -309,15 +311,25 @@ const InboundOrderUpdate = () => {
                 >
                   <Input className="input" />
                 </Form.Item>
-                <Form.Item
-                  label="Ngày dự kiến nhận hàng"
-                  name="estimated_delivery_date"
-                >
-                  <DatePicker className="date" />
-                </Form.Item>
+                <div className="flex gap-5 justify-between">
+                  <Form.Item
+                    className="w-1/2"
+                    label="Ngày nhận hàng dự kiến"
+                    name="estimated_delivery_date"
+                  >
+                    <DatePicker className="date" />
+                  </Form.Item>
+                  <Form.Item
+                    className="w-1/2"
+                    label="Ngày nhận hàng thực tế"
+                    name="receive_date"
+                  >
+                    <DatePicker className="date" />
+                  </Form.Item>
+                </div>
               </Col>
             </Row>
-            <Layout>
+            <Layout className="bg-white">
               <Row justify="space-between" className="mb-5">
                 <Typography.Title level={5}>Danh sách vật tư</Typography.Title>
                 <Space>

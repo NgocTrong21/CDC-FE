@@ -17,6 +17,16 @@ const supplyApi = {
     const url = `supplies//list_supply_by_warehouse?${paramString}`;
     return axiosClient.get(url);
   },
+  listByDepart(params: any): Promise<CommonResponse> {
+    for (let i in params) {
+      if (!params[i]) {
+        delete params[i];
+      }
+    }
+    const paramString = new URLSearchParams(params).toString();
+    const url = `supplies/list_by_depart?${paramString}`;
+    return axiosClient.get(url);
+  },
   create(params: object): Promise<CommonResponse> {
     const url = 'supplies/create';
     return axiosClient.post(url, params);

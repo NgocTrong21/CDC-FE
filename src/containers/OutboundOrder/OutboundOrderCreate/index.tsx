@@ -163,9 +163,16 @@ const OutboundOrderCreate = () => {
               receiver_phone: data?.receiver_phone,
               code: data?.code,
               warehouse_id: data?.warehouse_id,
-              estimated_shipping_date: moment(
-                new Date(data?.estimated_shipping_date)
-              ).toISOString(),
+              type: '0',
+              estimated_shipping_date: data?.estimated_shipping_date
+                ? moment(new Date(data?.estimated_shipping_date)).toISOString()
+                : '',
+              actual_shipping_date: data?.actual_shipping_date
+                ? moment(new Date(data?.actual_shipping_date)).toISOString()
+                : '',
+              handover_date: data?.handover_date
+                ? moment(new Date(data?.handover_date)).toISOString()
+                : '',
               note: data?.note,
               customer: data?.customer,
             },
@@ -188,17 +195,25 @@ const OutboundOrderCreate = () => {
           })
           .finally(() => setLoading(false));
       }
-    } catch (error) { }
+    } catch (error) {}
   };
   return (
     <Layout>
       <Form size="middle" layout="vertical" autoComplete="off" form={form}>
-        <Layout>
+        <Layout className="bg-white">
           <Row align="middle" justify="space-between">
-            <Typography.Title level={4}>Tạo phiếu xuất</Typography.Title>
+            <Typography.Title level={4}>
+              Tạo phiếu xuất bệnh viện
+            </Typography.Title>
             <Row>
               <Space>
-                <Button type="primary" className="rounded-md">
+                <Button
+                  type="primary"
+                  className="rounded-md"
+                  onClick={() => {
+                    navigate('/order/outbound_order');
+                  }}
+                >
                   Đóng
                 </Button>
                 <Button
@@ -214,8 +229,8 @@ const OutboundOrderCreate = () => {
               </Space>
             </Row>
           </Row>
-          <Layout>
-            <Row justify="space-between">
+          <Layout className="bg-white">
+            <Row justify="space-between" className="my-5">
               <Col span={15}>
                 <Row>
                   <Typography.Title level={5}>Thông tin chung</Typography.Title>
@@ -234,9 +249,6 @@ const OutboundOrderCreate = () => {
                         onSelect={handleSetSupplies}
                       />
                     </Form.Item>
-                    <Form.Item label="Khách hàng" name="customer">
-                      <Input className="input" />
-                    </Form.Item>
                     <Form.Item label="Người nhận" name="receiver">
                       <Input className="input" />
                     </Form.Item>
@@ -245,11 +257,11 @@ const OutboundOrderCreate = () => {
                     </Form.Item>
                   </Col>
                   <Col span={11}>
-                    <Form.Item label="Vị trí kho hàng">
+                    <Form.Item label="Khách hàng" name="customer">
                       <Input className="input" />
                     </Form.Item>
                     <Form.Item label="Ghi chú" name="note">
-                      <TextArea rows={9} className="textarea" />
+                      <TextArea rows={5} className="textarea" />
                     </Form.Item>
                   </Col>
                 </Row>
@@ -266,15 +278,32 @@ const OutboundOrderCreate = () => {
                 >
                   <Input className="input" />
                 </Form.Item>
-                <Form.Item
-                  label="Ngày dự kiến xuất hàng"
-                  name="estimated_shipping_date"
-                >
-                  <DatePicker className="date" />
-                </Form.Item>
+                <div className="flex gap-5 justify-between">
+                  <Form.Item
+                    className="w-1/3"
+                    label="Ngày xuất hàng dự kiến"
+                    name="estimated_shipping_date"
+                  >
+                    <DatePicker className="date" />
+                  </Form.Item>
+                  <Form.Item
+                    className="w-1/3"
+                    label="Ngày xuất hàng thực tế"
+                    name="actual_shipping_date"
+                  >
+                    <DatePicker className="date" />
+                  </Form.Item>
+                  <Form.Item
+                    className="w-1/3"
+                    label="Ngày bàn giao"
+                    name="handover_date"
+                  >
+                    <DatePicker className="date" />
+                  </Form.Item>
+                </div>
               </Col>
             </Row>
-            <Layout>
+            <Layout className="bg-white">
               <Row justify="space-between" className="mb-5">
                 <Typography.Title level={5}>Danh sách vật tư</Typography.Title>
                 <Space>

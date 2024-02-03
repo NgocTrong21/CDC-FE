@@ -135,6 +135,11 @@ const LayoutSystem = (props: LayoutProps) => {
           '/create_sp',
           permissions.CONSUMABLE_SUPPLY_CREATE
         ),
+        // getItem(
+        //   'Danh sách vật tư theo khoa',
+        //   '/list_sp_depart',
+        //   permissions.CONSUMABLE_SUPPLY_READ
+        // ),
       ]
     ),
     getItem(
@@ -167,9 +172,14 @@ const LayoutSystem = (props: LayoutProps) => {
           permissions.INBOUND_ORDERS_READ
         ),
         getItem(
-          'Quản lý phiếu xuất',
+          'Quản lý phiếu xuất bệnh viện',
           '/outbound_order',
-          permissions.INBOUND_ORDERS_READ
+          permissions.OUTBOUND_ORDERS_READ
+        ),
+        getItem(
+          'Quản lý phiếu xuất nội bộ',
+          '/outbound_order_depart',
+          permissions.OUTBOUND_ORDERS_READ
         ),
       ]
     ),
@@ -313,30 +323,62 @@ const LayoutSystem = (props: LayoutProps) => {
 
   return (
     <Layout>
-      <Header className="bg-white  px-4  flex flex-row items-center justify-between ">
-        {React.createElement(
-          collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
-          {
-            className: 'trigger menu-icon p-[10px]',
-            onClick: () => {
-              setCollapsed(!collapsed);
-            },
-          }
-        )}
-        <div
-          className="flex flex-row items-center cursor-pointer  "
-          onClick={() => navigate('/equipment/list_eq')}
+      <Layout className="min-h-screen">
+        <Sider
+          trigger={null}
+          collapsed={collapsed}
+          width="250px"
+          className="bg-[#001529]"
+          collapsedWidth={72}
         >
-          <Space>
-            <img src={logo} alt="logo" className="logo" />
-            <div className="font-medium text-base ">
-              <h2>Quản lý thiết bị và vật tư y tế CDC HP DEMO</h2>
+          <div className="flex items-center justify-center h-20 gap-5 rounded-lg p-2">
+            {!collapsed ? (
+              <div className="w-full flex items-center gap-5 p-2 rounded-lg bg-[#ffffff29]">
+                <img src={logo} alt="logo" className="h-10 " />
+                <h2 className="font-medium text-base text-white">
+                  CDC HP DEMO
+                </h2>
+              </div>
+            ) : (
+              <img src={logo} alt="logo" className="h-10 " />
+            )}
+          </div>
+          <Menu
+            mode="inline"
+            onClick={onClick}
+            defaultSelectedKeys={[`/${pathName[2]}`]}
+            defaultOpenKeys={[`/${pathName[1]}`]}
+            items={items}
+            triggerSubMenuAction="click"
+            className="font-medium"
+            theme="dark"
+          />
+        </Sider>
+        <Layout>
+          <Header className="bg-[#f0f2f5]  px-4  flex flex-row items-center justify-between">
+            {React.createElement(
+              collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
+              {
+                className: 'trigger menu-icon p-[10px]',
+                onClick: () => {
+                  setCollapsed(!collapsed);
+                },
+              }
+            )}
+            <div
+              className="flex flex-row items-center cursor-pointer  "
+              onClick={() => navigate('/equipment/list_eq')}
+            >
+              <Space>
+                <img src={logo} alt="logo" className="logo" />
+                <div className="font-medium text-base ">
+                  <h2>Quản lý thiết bị và vật tư y tế CDC HP DEMO</h2>
+                </div>
+              </Space>
             </div>
-          </Space>
-        </div>
-        <Space className="h-[40px] flex flex-row items-center">
-          {/* notifications */}
-          {/* <Dropdown
+            <Space className="h-[40px] flex flex-row items-center">
+              {/* notifications */}
+              {/* <Dropdown
             overlay={menu}
             placement="bottomRight"
             arrow
@@ -351,83 +393,64 @@ const LayoutSystem = (props: LayoutProps) => {
             </Badge>
           </Dropdown> */}
 
-          {/* Avatar */}
-          <Dropdown
-            trigger={['click']}
-            arrow
-            className="trigger items-center flex flex-row h-[40px] "
-            overlay={
-              <Menu className="rounded-lg">
-                <Menu.Item key="profile">
-                  <Link to="/profile">Tài khoản</Link>
-                </Menu.Item>
-                <Menu.Item key="change_password">
-                  <Row onClick={() => setShowChangePasswordModal(true)}>
-                    Thay đổi mật khẩu
-                  </Row>
-                </Menu.Item>
-                <Menu.Item key="signout" onClick={handleLogout}>
-                  Đăng xuất
-                </Menu.Item>
-              </Menu>
-            }
-            placement="bottomRight"
-          >
-            <Space>
-              <Avatar
-                src={image}
-                icon={<UserOutlined />}
-                className="w-[40px] h-[40px] flex flex-row place-content-center"
-              />
+              {/* Avatar */}
+              <Dropdown
+                trigger={['click']}
+                arrow
+                className="trigger items-center flex flex-row h-[40px] "
+                overlay={
+                  <Menu className="rounded-lg">
+                    <Menu.Item key="profile">
+                      <Link to="/profile">Tài khoản</Link>
+                    </Menu.Item>
+                    <Menu.Item key="change_password">
+                      <Row onClick={() => setShowChangePasswordModal(true)}>
+                        Thay đổi mật khẩu
+                      </Row>
+                    </Menu.Item>
+                    <Menu.Item key="signout" onClick={handleLogout}>
+                      Đăng xuất
+                    </Menu.Item>
+                  </Menu>
+                }
+                placement="bottomRight"
+              >
+                <Space>
+                  <Avatar
+                    src={image}
+                    icon={<UserOutlined />}
+                    className="w-[40px] h-[40px] flex flex-row place-content-center"
+                  />
 
-              <div className="h-[40px] flex flex-row items-center">
-                {user?.name || user?.email}
-              </div>
-              <DownOutlined className=" flex flex-row " />
+                  <div className="h-[40px] flex flex-row items-center">
+                    {user?.name || user?.email}
+                  </div>
+                  <DownOutlined className=" flex flex-row " />
+                </Space>
+              </Dropdown>
             </Space>
-          </Dropdown>
-        </Space>
-      </Header>
-      <Layout className="min-h-screen">
-        <Sider
-          trigger={null}
-          collapsed={collapsed}
-          width="250px"
-          className="bg-white  p  "
-          collapsedWidth={72}
-        >
-          <Menu
-            mode="inline"
-            onClick={onClick}
-            defaultSelectedKeys={[`/${pathName[2]}`]}
-            defaultOpenKeys={[`/${pathName[1]}`]}
-            items={items}
-            triggerSubMenuAction="click"
-            className="font-medium "
-          />
-        </Sider>
-        <Layout>
+          </Header>
           <Content
             style={{
               margin: '24px 16px',
             }}
           >
             <div
-              className="site-layout-background"
+              className="bg-white rounded-lg"
               style={{
-                maxWidth: '1600px',
-                margin: '0 auto',
+                // maxWidth: '1600px',
+                // margin: '0 auto',
                 padding: 20,
               }}
             >
               {props.children}
             </div>
           </Content>
-          <Footer>
+          {/* <Footer>
             <div className="text-base font-medium">
               Copyright © 2023 iBME HUST
             </div>
-          </Footer>
+          </Footer> */}
         </Layout>
       </Layout>
 

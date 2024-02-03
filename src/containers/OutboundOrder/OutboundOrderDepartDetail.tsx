@@ -1,6 +1,7 @@
 import {
   Button,
   Col,
+  Form,
   Layout,
   Pagination,
   Row,
@@ -8,23 +9,19 @@ import {
   Table,
   Typography,
 } from 'antd';
-import inboundOrderApi from 'api/inbound_order';
+import outboundOrderApi from 'api/outbound_order';
 import { order_status } from 'constants/dataFake.constant';
-import { permissions } from 'constants/permission.constant';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { getCurrentUser } from 'utils/globalFunc.util';
 import { formatCurrencyVN } from 'utils/validateFunc.util';
 
-const InboundOrderDetail = () => {
+const OutboundOrderDepartDetail = () => {
+  const [outboundData, setOutboundData] = useState<any>({});
   const params = useParams();
   const navigate = useNavigate();
   const { id } = params;
-  const [loading, setLoading] = useState<boolean>(false);
-  const [inboundData, setInboundData] = useState<any>({});
-  const [loadingReject, setLoadingReject] = useState<boolean>(false);
   const { Column } = Table;
   const [dataSource, setDataSource] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -32,11 +29,6 @@ const InboundOrderDetail = () => {
   const handleChangePage = (page: number, size: number) => {
     setCurrentPage(page);
     setPageSize(size);
-  };
-  const checkPermission = (permission: number) => {
-    const current_user: any = getCurrentUser();
-    const permissions = current_user?.Role?.Role_Permissions;
-    return permissions?.find((item: any) => item.permission_id === permission);
   };
   const dataSourceByPage = (dataSourceInput: any) => {
     if (dataSourceInput && dataSourceInput?.length > 0) {
@@ -47,8 +39,8 @@ const InboundOrderDetail = () => {
       return [];
     }
   };
-  const getDetailInboundOrder = (id: any) => {
-    inboundOrderApi
+  const getDetailOutboundOrder = (id: any) => {
+    outboundOrderApi
       .detail(id)
       .then((res: any) => {
         const { success, data } = res.data;
@@ -57,31 +49,33 @@ const InboundOrderDetail = () => {
             id,
             code,
             status_id,
-            provider,
-            deliver,
-            deliver_phone,
-            estimated_delivery_date,
-            receive_date,
+            customer,
+            receiver,
+            receiver_phone,
+            estimated_shipping_date,
+            department,
             note,
-          } = data.inbound_order;
-          setInboundData({
+            actual_shipping_date,
+          } = data.outbound_order;
+          setOutboundData({
             id,
-            warehouse: data.inbound_order.Warehouse.name,
+            warehouse: data.outbound_order.Warehouse.name,
             status_id,
             code,
-            provider,
-            deliver,
-            deliver_phone,
+            customer,
+            receiver,
+            receiver_phone,
+            department,
             note,
-            estimated_delivery_date: estimated_delivery_date
-              ? moment(estimated_delivery_date).format('DD/MM/YYYY')
+            estimated_shipping_date: estimated_shipping_date
+              ? moment(estimated_shipping_date).format('DD/MM/YYYY')
               : '',
-            receive_date: receive_date
-              ? moment(receive_date).format('DD/MM/YYYY')
+            actual_shipping_date: actual_shipping_date
+              ? moment(actual_shipping_date).format('DD/MM/YYYY')
               : '',
           });
           setDataSource(
-            data.inbound_order.Supply_Inbound_Orders.map(
+            data.outbound_order.Supply_Outbound_Orders.map(
               (item: any, index: any) => ({
                 key: index,
                 supplierId: item.Supply?.id,
@@ -92,6 +86,7 @@ const InboundOrderDetail = () => {
                 unit: item.Supply?.Equipment_Unit?.name,
                 totalValue: item.quantity * item.Supply?.unit_price || 0,
                 description: item.Supply?.note,
+                stock: item?.stock,
               })
             )
           );
@@ -101,30 +96,28 @@ const InboundOrderDetail = () => {
   };
 
   useEffect(() => {
-    getDetailInboundOrder(id);
+    getDetailOutboundOrder(id);
   }, [id]);
 
   const handleAccept = (id: any, type: string) => {
-    if (type === 'accept') {
-      setLoading(true);
-    } else {
-      setLoadingReject(true);
-    }
-    inboundOrderApi
+    outboundOrderApi
       .accept({
         data: {
           id,
           status: type,
         },
       })
-      .then(() => {
-        setLoading(false);
-        toast.success('Phê duyệt thành công');
-        navigate('/order/inbound_order');
+      .then((res) => {
+        const { message, success } = res.data;
+        if (success) {
+          navigate('/order/outbound_order_depart');
+          toast.success('Phê duyệt thành công');
+        } else {
+          toast.error(message || 'Phê duyệt thất bại!');
+        }
       })
-      .catch(() => {
-        setLoading(false);
-        toast.error('Phê duyệt thất bại!');
+      .catch((error) => {
+        toast.error(error.response.data.message || 'Phê duyệt thất bại!');
       });
   };
   const handleOrderStatus = (status: any = 0) => {
@@ -142,37 +135,36 @@ const InboundOrderDetail = () => {
     <Layout className="bg-white">
       <Row align="middle" justify="space-between">
         <div className="flex gap-5 items-center">
-          <Typography.Title level={4}>Thông tin phiếu nhập</Typography.Title>
-          {handleOrderStatus(inboundData?.status_id)}
+          <Typography.Title level={4}>
+            Thông tin phiếu xuất nội bộ
+          </Typography.Title>
+          {handleOrderStatus(outboundData?.status_id)}
         </div>
         <Row>
           <Space>
-            {checkPermission(permissions.APPROVE_ORDERS) &&
-              inboundData?.status_id === 1 && (
-                <>
-                  <Button
-                    type="default"
-                    className="button-primary"
-                    onClick={() => handleAccept(id, 'accept')}
-                    loading={loading}
-                  >
-                    Phê duyệt
-                  </Button>
-                  <Button
-                    className="rounded-md"
-                    danger
-                    onClick={() => handleAccept(id, 'reject')}
-                    loading={loadingReject}
-                  >
-                    Từ chối
-                  </Button>
-                </>
-              )}
+            {outboundData?.status_id === 1 && (
+              <>
+                <Button
+                  type="default"
+                  className="button-primary"
+                  onClick={() => handleAccept(id, 'accept')}
+                >
+                  Phê duyệt
+                </Button>
+                <Button
+                  className="rounded-md"
+                  danger
+                  onClick={() => handleAccept(id, 'reject')}
+                >
+                  Từ chối
+                </Button>
+              </>
+            )}
             <Button
               type="primary"
               className="rounded-md"
               onClick={() => {
-                navigate('/order/inbound_order');
+                navigate('/order/outbound_order_depart');
               }}
             >
               Đóng
@@ -190,13 +182,13 @@ const InboundOrderDetail = () => {
                 </Row>
                 <Row gutter={[0, 15]}>
                   <Col span={8}>Kho hàng</Col>
-                  <Col span={16}>{`${inboundData?.warehouse}` || ''}</Col>
-                  <Col span={8}>Người giao hàng</Col>
-                  <Col span={16}>{inboundData?.deliver || ''}</Col>
-                  <Col span={8}>Liên hệ người giao hàng</Col>
-                  <Col span={16}>{inboundData?.deliver_phone || ''}</Col>
+                  <Col span={16}>{`${outboundData?.warehouse}` || ''}</Col>
+                  <Col span={8}>Người nhận</Col>
+                  <Col span={16}>{outboundData?.receiver || ''}</Col>
+                  <Col span={8}>Liên hệ người nhận</Col>
+                  <Col span={16}>{outboundData?.receiver_phone || ''}</Col>
                   <Col span={8}>Ghi chú</Col>
-                  <Col span={16}>{inboundData?.note || ''}</Col>
+                  <Col span={16}>{outboundData?.note || ''}</Col>
                 </Row>
               </Col>
               <Col span={12}>
@@ -204,14 +196,16 @@ const InboundOrderDetail = () => {
                   <Typography.Title level={5}>Tài liệu</Typography.Title>
                 </Row>
                 <Row gutter={[0, 15]}>
-                  <Col span={8}>Số phiếu nhập</Col>
-                  <Col span={16}>{`${inboundData?.code}` || ''}</Col>
-                  <Col span={8}>Ngày nhận hàng dự kiến</Col>
+                  <Col span={8}>Số phiếu xuất</Col>
+                  <Col span={16}>{`${outboundData?.code}` || ''}</Col>
+                  <Col span={8}>Ngày xuất hàng dự kiến</Col>
                   <Col span={16}>
-                    {inboundData?.estimated_delivery_date || ''}
+                    {outboundData?.estimated_shipping_date || ''}
                   </Col>
-                  <Col span={8}>Ngày nhận hàng thực tế</Col>
-                  <Col span={16}>{inboundData?.receive_date || ''}</Col>
+                  <Col span={8}>Ngày xuất hàng thực tế</Col>
+                  <Col span={16}>
+                    {outboundData?.actual_shipping_date || ''}
+                  </Col>
                 </Row>
               </Col>
             </Row>
@@ -239,8 +233,16 @@ const InboundOrderDetail = () => {
                 title="Số lượng đặt hàng"
                 dataIndex={'orderQuantity'}
                 key={'orderQuantity'}
-                width="20%"
+                width="15%"
                 render={(value) => <p>{value}</p>}
+              />
+              <Column
+                title="Tồn kho"
+                dataIndex="stock"
+                key="stock"
+                render={(value) => {
+                  return <p>{value}</p>;
+                }}
               />
               <Column
                 title="Đơn giá"
@@ -284,4 +286,4 @@ const InboundOrderDetail = () => {
   );
 };
 
-export default InboundOrderDetail;
+export default OutboundOrderDepartDetail;
