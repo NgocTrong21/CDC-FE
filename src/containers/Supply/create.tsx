@@ -43,24 +43,24 @@ const SupplyCreate = () => {
       expiration_date: moment(new Date(values?.expiration_date)).toISOString(),
       lot_number: `${values?.lot_number}`,
       image,
+      active: 1,
+      status: 1,
     };
-    console.log(data);
-
-    // supplyApi
-    //   .create(data)
-    //   .then((res: any) => {
-    //     const { success, message } = res.data;
-    //     if (success) {
-    //       toast.success('Thêm mới vật tư thành công!');
-    //       setImage('');
-    //       setSelectedImage('');
-    //       form.resetFields();
-    //     } else {
-    //       toast.error(message || 'Thêm mới vật tư thất bại!');
-    //     }
-    //   })
-    //   .catch()
-    //   .finally(() => setLoading(false));
+    supplyApi
+      .create(data)
+      .then((res: any) => {
+        const { success, message } = res.data;
+        if (success) {
+          toast.success('Thêm mới vật tư thành công!');
+          setImage('');
+          setSelectedImage('');
+          form.resetFields();
+        } else {
+          toast.error(message || 'Thêm mới vật tư thất bại!');
+        }
+      })
+      .catch()
+      .finally(() => setLoading(false));
   };
   return (
     <div>

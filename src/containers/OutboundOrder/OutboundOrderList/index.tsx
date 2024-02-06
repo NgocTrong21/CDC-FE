@@ -233,7 +233,14 @@ const OutboundOrderList = () => {
         <div className="title">DANH SÁCH PHIẾU XUẤT BỆNH VIỆN</div>
       </div>
       <Divider />
-      <div className="flex justify-end mb-5">
+      <div className="flex gap-10">
+        <Input
+          placeholder="Tìm kiếm phiếu (nhập số phiếu)"
+          allowClear
+          value={name}
+          className="rounded-lg h-9 border-[#A3ABEB] border-2"
+          onChange={(e) => onChangeSearch(e)}
+        />
         <Button
           className={`button_excel ${
             checkPermission(permissions.OUTBOUND_ORDERS_CREATE) ? '' : 'hidden'
@@ -264,13 +271,7 @@ const OutboundOrderList = () => {
             ))}
         </div>
       )}
-      <Input
-        placeholder="Tìm kiếm phiếu (nhập số phiếu)"
-        allowClear
-        value={name}
-        className="rounded-lg h-9 border-[#A3ABEB] border-2"
-        onChange={(e) => onChangeSearch(e)}
-      />
+
       <Table
         columns={columnTable.filter((item: any) => item.show)}
         dataSource={outboundOrders}

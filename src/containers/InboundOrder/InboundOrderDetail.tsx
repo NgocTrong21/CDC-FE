@@ -239,13 +239,13 @@ const InboundOrderDetail = () => {
                 title="Số lượng đặt hàng"
                 dataIndex={'orderQuantity'}
                 key={'orderQuantity'}
-                width="20%"
                 render={(value) => <p>{value}</p>}
               />
               <Column
                 title="Đơn giá"
                 dataIndex="unitPrice"
                 key="unitPrice"
+                width="15%"
                 render={(value) => {
                   return <p>{formatCurrencyVN(value)}</p>;
                 }}
@@ -254,6 +254,7 @@ const InboundOrderDetail = () => {
                 title="Tổng giá trị"
                 dataIndex={'totalValue'}
                 key={'totalValue'}
+                width="15%"
                 render={(value) => <p>{formatCurrencyVN(value)}</p>}
               />
               <Column
