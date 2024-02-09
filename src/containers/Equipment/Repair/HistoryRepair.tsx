@@ -108,27 +108,20 @@ const HistoryRepair = () => {
       show: true,
       widthExcel: 25,
     },
-    {
-      title: 'Tình trạng thiết bị',
-      key: 'repair_status',
-      show: true,
-      widthExcel: 25,
-      render: (item: any) => <>{item?.Repair_Status?.name}</>,
-    },
-    {
-      title: 'Tác vụ',
-      key: 'action',
-      show: checkRoleApproveRepair(),
-      render: (item: any) => (
-        <Tooltip title="Chi tiết phiếu sửa chữa">
-          <Link
-            to={`/equipment/repair/update_schedule/${id}/${item.id}?edit=false`}
-          >
-            <EyeFilled />
-          </Link>
-        </Tooltip>
-      ),
-    },
+    // {
+    //   title: 'Tác vụ',
+    //   key: 'action',
+    //   show: checkRoleApproveRepair(),
+    //   render: (item: any) => (
+    //     <Tooltip title="Chi tiết phiếu sửa chữa">
+    //       <Link
+    //         to={`/equipment/repair/update_schedule/${id}/${item.id}?edit=false`}
+    //       >
+    //         <EyeFilled />
+    //       </Link>
+    //     </Tooltip>
+    //   ),
+    // },
   ];
   const [columnTable, setColumnTable] = useState<any>(columns);
 

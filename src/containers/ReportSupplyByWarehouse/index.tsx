@@ -187,7 +187,7 @@ const ReportSupplyByWarehouse = () => {
       ),
     },
   ];
-  const [columnTable, _setColumnTable] = useState<any>(columns);
+  const columnTable = columns;
 
   // const onPaginationChange = (page: number) => {
   //   setPage(page);

@@ -161,7 +161,7 @@ const OutboundOrderCreate = () => {
             data: {
               receiver: data?.receiver,
               receiver_phone: data?.receiver_phone,
-              code: data?.code,
+              code: data?.code?.trim(),
               warehouse_id: data?.warehouse_id,
               type: '0',
               estimated_shipping_date: data?.estimated_shipping_date
@@ -278,23 +278,23 @@ const OutboundOrderCreate = () => {
                 >
                   <Input className="input" />
                 </Form.Item>
-                <div className="flex gap-5 justify-between">
+                <div className="flex gap-x-5 flex-wrap">
                   <Form.Item
-                    className="w-1/3"
+                    className="w-40"
                     label="Ngày xuất hàng dự kiến"
                     name="estimated_shipping_date"
                   >
                     <DatePicker className="date" />
                   </Form.Item>
                   <Form.Item
-                    className="w-1/3"
+                    className="w-40"
                     label="Ngày xuất hàng thực tế"
                     name="actual_shipping_date"
                   >
                     <DatePicker className="date" />
                   </Form.Item>
                   <Form.Item
-                    className="w-1/3"
+                    className="w-40"
                     label="Ngày bàn giao"
                     name="handover_date"
                   >

@@ -172,9 +172,6 @@ const Warehouses = () => {
             className="rounded-lg h-9 border-[#A3ABEB] border-2"
             onChange={(e) => onChangeSearch(e)}
           />
-          <div>
-            <FilterFilled />
-          </div>
         </div>
       </div>
       <Table

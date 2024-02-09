@@ -67,11 +67,11 @@ const ModalReHandover = (props: any) => {
     if (equipment && equipment.repair_status) {
       if (equipment.repair_status === 3) {
         form.setFieldsValue({
-          status_id: 1,
+          status: 'Sửa được, hoạt động bình thường',
         });
       } else {
         form.setFieldsValue({
-          status_id: 4,
+          status: 'Không sửa được, chờ thanh lý',
         });
       }
     }
@@ -85,14 +85,8 @@ const ModalReHandover = (props: any) => {
       footer={null}
     >
       <Form form={form} layout="vertical" size="large" onFinish={reHandover}>
-        <Form.Item name="status_id" label="Trạng thái thiết bị">
-          <Select
-            showSearch
-            placeholder="Chọn trạng thái"
-            allowClear
-            options={repaired_status}
-            disabled
-          />
+        <Form.Item name="status" label="Trạng thái thiết bị">
+          <Input className="input" disabled />
         </Form.Item>
         {/* <Form.Item
           className="fileUploadInput"
