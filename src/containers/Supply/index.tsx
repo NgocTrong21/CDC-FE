@@ -332,6 +332,7 @@ const Suplly = () => {
             className="input w-1/2"
             onChange={(e) => {
               setName(e.target.value);
+              setPage(1);
             }}
           />
         </div>

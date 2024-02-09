@@ -1,4 +1,12 @@
-import { Button, DatePicker, Divider, Form, Input, InputNumber, Select } from 'antd';
+import {
+  Button,
+  DatePicker,
+  Divider,
+  Form,
+  Input,
+  InputNumber,
+  Select,
+} from 'antd';
 import { useContext, useEffect, useState } from 'react';
 import ava from 'assets/image.png';
 import { convertBase64 } from 'utils/globalFunc.util';
@@ -11,8 +19,7 @@ import Loading from 'components/Loading';
 const { TextArea } = Input;
 
 const UpdateEquipment = () => {
-  const { statuses, departments, units } =
-    useContext(FilterContext);
+  const { statuses, departments, units } = useContext(FilterContext);
 
   const options = (array: any) => {
     return array?.map((item: any) => {
@@ -97,10 +104,12 @@ const UpdateEquipment = () => {
           toast.success('Cập nhật thiết bị thành công');
           navigate(`/equipment/detail/${equipment.id}`);
         } else {
-          toast.error('Cập nhật thiết bị thất bại');
+          toast.error(res.data.message || 'Cập nhật thiết bị thất bại');
         }
       })
-      .catch()
+      .catch((error) => {
+        toast.error(error.message || 'Cập nhật thiết bị thất bại');
+      })
       .finally(() => setLoadingUpdate(false));
   };
 
@@ -203,22 +212,14 @@ const UpdateEquipment = () => {
                   className="input"
                 />
               </Form.Item>
-              <Form.Item
-                label="Model"
-                name="model"
-                className="mb-5"
-              >
+              <Form.Item label="Model" name="model" className="mb-5">
                 <Input
                   placeholder="Nhập model của thiết bị"
                   allowClear
                   className="input"
                 />
               </Form.Item>
-              <Form.Item
-                label="Serial"
-                name="serial"
-                className="mb-5"
-              >
+              <Form.Item label="Serial" name="serial" className="mb-5">
                 <Input
                   placeholder="Nhập serial của thiết bị"
                   allowClear
@@ -277,12 +278,9 @@ const UpdateEquipment = () => {
                 <InputNumber
                   min={0}
                   placeholder="Nhập giá trị thiết bị"
-                  className='input w-full flex items-center'
+                  className="input w-full flex items-center"
                   formatter={(value) => {
-                    return `${value}`.replace(
-                      /\B(?=(\d{3})+(?!\d))/g,
-                      ','
-                    );
+                    return `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                   }}
                   precision={0}
                 />
@@ -295,13 +293,10 @@ const UpdateEquipment = () => {
                 <InputNumber
                   min={0}
                   max={100}
-                  className='input w-full flex items-center'
-                  placeholder='Nhập khấu hao'
+                  className="input w-full flex items-center"
+                  placeholder="Nhập khấu hao"
                   formatter={(value) => {
-                    return `${value}`.replace(
-                      /\B(?=(\d{3})+(?!\d))/g,
-                      ','
-                    );
+                    return `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                   }}
                   precision={0}
                 />
@@ -314,12 +309,9 @@ const UpdateEquipment = () => {
                 <InputNumber
                   min={0}
                   placeholder="Nhập giá trị còn lại"
-                  className='input w-full flex items-center'
+                  className="input w-full flex items-center"
                   formatter={(value) => {
-                    return `${value}`.replace(
-                      /\B(?=(\d{3})+(?!\d))/g,
-                      ','
-                    );
+                    return `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                   }}
                   precision={0}
                 />
@@ -349,8 +341,7 @@ const UpdateEquipment = () => {
                 <DatePicker className="textarea" placeholder="Chọn ngày" />
               </Form.Item>
             </div>
-            <div className="grid grid-cols-3 gap-5">
-            </div>
+            <div className="grid grid-cols-3 gap-5"></div>
             <div className="grid grid-cols-1 gap-5">
               <Form.Item label="Ghi chú" name="note" className="mb-5">
                 <TextArea placeholder="Ghi chứ" rows={4} className="textarea" />

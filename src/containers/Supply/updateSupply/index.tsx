@@ -26,6 +26,7 @@ const SupplyUpdate = () => {
   const { id } = params;
   const [image, setImage] = useState<any>('');
   const [status, setStatus] = useState<boolean>(false);
+  const [active, setActive] = useState<number>(1);
   const [selectedImage, setSelectedImage] = useState<any>('');
   const [form] = Form.useForm();
   const [loading, setLoading] = useState<boolean>(false);
@@ -83,6 +84,7 @@ const SupplyUpdate = () => {
             image,
           } = data.supply;
           setStatus(data.supply.status === 1);
+          setActive(data.supply.active);
           form.setFieldsValue({
             id,
             name,
@@ -146,6 +148,7 @@ const SupplyUpdate = () => {
                 placeholder="Nhập mã vật tư"
                 allowClear
                 className="input"
+                disabled={active === 2}
               />
             </Form.Item>
             <Form.Item
@@ -155,7 +158,12 @@ const SupplyUpdate = () => {
               required
               rules={[{ required: true, message: 'Hãy nhập số lô!' }]}
             >
-              <Input placeholder="Nhập số lô" allowClear className="input" />
+              <Input
+                placeholder="Nhập số lô"
+                allowClear
+                className="input"
+                disabled={active === 2}
+              />
             </Form.Item>
             <Form.Item
               label="Hạn sử dụng"
@@ -163,7 +171,7 @@ const SupplyUpdate = () => {
               required
               rules={[{ required: true, message: 'Hãy nhập hạn sử dụng!' }]}
             >
-              <DatePicker className="date" />
+              <DatePicker className="date" disabled={active === 2} />
             </Form.Item>
           </div>
           <div className="grid grid-cols-3 gap-5">
@@ -185,6 +193,7 @@ const SupplyUpdate = () => {
                     .includes(input.toLowerCase())
                 }
                 options={options(units)}
+                disabled={active === 2}
               />
             </Form.Item>
             <Form.Item
@@ -201,6 +210,7 @@ const SupplyUpdate = () => {
                   return `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                 }}
                 precision={0}
+                disabled={active === 2}
               />
             </Form.Item>
             <Form.Item

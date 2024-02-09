@@ -183,6 +183,8 @@ const OutboundOrderDepartDetail = () => {
                 <Row gutter={[0, 15]}>
                   <Col span={8}>Kho hàng</Col>
                   <Col span={16}>{`${outboundData?.warehouse}` || ''}</Col>
+                  <Col span={8}>Khoa phòng</Col>
+                  <Col span={16}>{outboundData?.department || ''}</Col>
                   <Col span={8}>Người nhận</Col>
                   <Col span={16}>{outboundData?.receiver || ''}</Col>
                   <Col span={8}>Liên hệ người nhận</Col>
@@ -236,14 +238,16 @@ const OutboundOrderDepartDetail = () => {
                 width="15%"
                 render={(value) => <p>{value}</p>}
               />
-              <Column
-                title="Tồn kho"
-                dataIndex="stock"
-                key="stock"
-                render={(value) => {
-                  return <p>{value}</p>;
-                }}
-              />
+              {outboundData.status_id !== 2 && (
+                <Column
+                  title="Tồn kho"
+                  dataIndex="stock"
+                  key="stock"
+                  render={(value) => {
+                    return <p>{value}</p>;
+                  }}
+                />
+              )}
               <Column
                 title="Đơn giá"
                 dataIndex="unitPrice"

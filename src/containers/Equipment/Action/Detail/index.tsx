@@ -124,7 +124,7 @@ const Detail = () => {
     {
       title: 'Nhà cung cấp',
       key: 'provider',
-      dataIndex: "provider",
+      dataIndex: 'provider',
     },
     {
       title: 'Tình trạng thiết bị',
@@ -386,13 +386,15 @@ const Detail = () => {
   const data: DataType[] = [
     {
       key_1: 'Khoa - Phòng',
-      value_1: `${equipment?.Department?.name ? equipment.Department?.name : ''
-        }`,
+      value_1: `${
+        equipment?.Department?.name ? equipment.Department?.name : ''
+      }`,
       key_2: 'Trạng thái',
-      value_2: `${equipment?.Equipment_Status?.name
-        ? equipment.Equipment_Status?.name
-        : ''
-        }`,
+      value_2: `${
+        equipment?.Equipment_Status?.name
+          ? equipment.Equipment_Status?.name
+          : ''
+      }`,
     },
     {
       key_1: 'Model',
@@ -404,52 +406,60 @@ const Detail = () => {
       key_1: 'Năm sử dụng',
       value_1: `${equipment?.year_in_use ? equipment?.year_in_use : ''}`,
       key_2: 'Số hiệu TSCĐ',
-      value_2: `${equipment?.fixed_asset_number ? equipment?.fixed_asset_number : ''
-        }`,
+      value_2: `${
+        equipment?.fixed_asset_number ? equipment?.fixed_asset_number : ''
+      }`,
     },
 
     {
       key_1: 'Đơn vị tính',
-      value_1: `${equipment?.Equipment_Unit?.name ? equipment?.Equipment_Unit?.name : ''}`,
+      value_1: `${
+        equipment?.Equipment_Unit?.name ? equipment?.Equipment_Unit?.name : ''
+      }`,
       key_2: 'Thành tiền',
-      value_2: `${equipment?.initial_value ? formatCurrency(equipment?.initial_value) : ''
-        }`,
+      value_2: `${
+        equipment?.initial_value ? formatCurrency(equipment?.initial_value) : ''
+      }`,
     },
     {
       key_1: 'Khấu hao hàng năm',
-      value_1: `${equipment?.annual_depreciation
-        ? equipment?.annual_depreciation + '%'
-        : ''
-        }`,
+      value_1: `${
+        equipment?.annual_depreciation
+          ? equipment?.annual_depreciation + '%'
+          : ''
+      }`,
       key_2: 'Giá trị còn lại',
-      value_2: `${equipment?.residual_value
-        ? formatCurrency(equipment?.residual_value)
-        : ''
-        }`,
+      value_2: `${
+        equipment?.residual_value
+          ? formatCurrency(equipment?.residual_value)
+          : ''
+      }`,
     },
     {
       key_1: 'Nước sản xuất',
-      value_1: `${equipment?.manufacturing_country_id
-        ? equipment?.manufacturing_country_id
-        : ''
-        }`,
+      value_1: `${
+        equipment?.manufacturing_country_id
+          ? equipment?.manufacturing_country_id
+          : ''
+      }`,
       key_2: 'Ghi chú',
       value_2: `${equipment?.note ? equipment.note : ''}`,
     },
     {
-      key_1: 'Ngày tạo',
-      value_1: `${moment(equipment?.createdAt).format('HH:mm:ss DD/MM/YYYY')}`,
+      key_1: 'Năm sản xuất',
+      value_1: equipment.year_of_manufacture,
       key_2: 'Ngày bàn giao',
-      value_2: `${equipment.handover_date !== null
-        ? moment(equipment.handover_date).format('HH:mm:ss DD/MM/YYYY')
-        : ''
-        }`,
+      value_2: `${
+        equipment.handover_date !== null
+          ? moment(equipment.handover_date).format('HH:mm:ss DD/MM/YYYY')
+          : ''
+      }`,
     },
     {
-      key_1: 'Ngày cập nhật gần nhất',
-      value_1: `${moment(equipment?.updatedAt).format('HH:mm:ss DD/MM/YYYY')}`,
-      key_2: '',
-      value_2: ``,
+      key_1: 'Ngày tạo',
+      value_1: `${moment(equipment?.createdAt).format('HH:mm:ss DD/MM/YYYY')}`,
+      key_2: 'Ngày cập nhật gần nhất',
+      value_2: `${moment(equipment?.updatedAt).format('HH:mm:ss DD/MM/YYYY')}`,
     },
   ];
 
@@ -463,10 +473,11 @@ const Detail = () => {
             <div className="font-medium text-md text-[#5B69E6]">Xuất PDF</div>
           </Button> */}
           <Button
-            className={`${checkPermission(permissions.EQUIPMENT_UPDATE)
-              ? 'button_excel'
-              : 'hidden'
-              }`}
+            className={`${
+              checkPermission(permissions.EQUIPMENT_UPDATE)
+                ? 'button_excel'
+                : 'hidden'
+            }`}
             onClick={() => navigate(`/equipment/update/${equipment.id}`)}
           >
             <EditFilled />

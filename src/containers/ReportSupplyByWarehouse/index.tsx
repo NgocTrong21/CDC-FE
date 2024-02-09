@@ -37,6 +37,7 @@ const ReportSupplyByWarehouse = () => {
   const [endDate, setEndDate] = useState<any>(moment());
   const [supllies, setSupplies] = useState<any>([]);
   // const [page, setPage] = useState<number>(1);
+  const [status, setStatus] = useState<any>();
   const [warehouses, setWarehouses] = useState([]);
   const [loadingDownload, setLoadingDownload] = useState<boolean>(false);
   const [selectedWarehouse, setSelectedWarehouse] = useState<any>(1);
@@ -186,7 +187,7 @@ const ReportSupplyByWarehouse = () => {
       ),
     },
   ];
-  const [columnTable, _setColumnTable] = useState<any>(columns);
+  const columnTable = columns;
 
   // const onPaginationChange = (page: number) => {
   //   setPage(page);
@@ -217,8 +218,17 @@ const ReportSupplyByWarehouse = () => {
       .then((res: any) => {
         const { success, data } = res.data;
         if (success) {
-          setSupplies(data.result);
-          setTotal(data.count);
+          const supplyData = data.result;
+          if (status) {
+            const supplies = supplyData.filter(
+              (item: any) => item.status === status
+            );
+            setSupplies(supplies);
+            setTotal(supplies.length);
+          } else {
+            setSupplies(supplyData);
+            setTotal(data.count);
+          }
         }
       })
       .catch()
@@ -226,7 +236,7 @@ const ReportSupplyByWarehouse = () => {
   };
   useEffect(() => {
     handleGetReportSupplies(startDate, endDate, selectedWarehouse);
-  }, [startDate, endDate, selectedWarehouse]);
+  }, [startDate, endDate, selectedWarehouse, status]);
   const handleSetSupplies = (data: any) => {
     setSelectedWarehouse(data);
   };
@@ -276,13 +286,15 @@ const ReportSupplyByWarehouse = () => {
       code: x.code,
       lot_number: x.lot_number,
       name: x.name,
-      unit: x.unit,
+      unit: x.Equipment_Unit?.name || '',
       unit_price: `${x?.unit_price}`
         .replace(/\./, '.')
         .replace(/\B(?=(\d{3})+(?!\d))/g, ','),
       provider: x?.provider,
       manufacturing_country: x?.manufacturing_country,
       begin_quantity: x.begin_quantity,
+      status:
+        supply_status.find((item) => item.value === x.status)?.label || '',
       inbound_quantity: x.inbound_quantity,
       outbound_quantity: x.outbound_quantity,
       end_quantity: x.end_quantity,
@@ -322,7 +334,24 @@ const ReportSupplyByWarehouse = () => {
       <Divider />
       <div className="flex justify-between flex-col">
         <div className="flex justify-between">
-          <div className="w-[500px]">
+          <div className="w-[300px] flex gap-6 items-center">
+            <Select
+              showSearch
+              placeholder="Trạng thái"
+              optionFilterProp="children"
+              onChange={(value: any) => {
+                setStatus(value);
+              }}
+              allowClear
+              filterOption={(input, option) =>
+                (option!.label as unknown as string)
+                  .toLowerCase()
+                  .includes(input.toLowerCase())
+              }
+              className="select-custom w-56"
+              options={supply_status}
+              value={status}
+            />
             <Select
               className="w-full"
               placeholder="Kho hàng"

@@ -218,8 +218,8 @@ const exportToExcelReport = async (
     let rowWarehouseName = addRow(
       ws,
       [
-        `MÃ KHO: ${(warehouse as string).toUpperCase()} - TÊN KHO: ${(
-          codewarehouse as string
+        `MÃ KHO: ${(codewarehouse as string).toUpperCase()} - TÊN KHO: ${(
+          warehouse  as string
         ).toUpperCase()}`,
       ],
       desctriptionContent

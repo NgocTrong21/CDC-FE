@@ -236,7 +236,25 @@ const OutboundOrderDepartList = () => {
         <div className="title">DANH SÁCH PHIẾU XUẤT NỘI BỘ</div>
       </div>
       <Divider />
-      <div className="flex justify-end mb-5">
+      <div className="flex gap-10 mb-5 items-center">
+        <Select
+          showSearch
+          placeholder="Loại phiếu"
+          optionFilterProp="children"
+          className="w-52"
+          onChange={(e) => {
+            setType(e);
+          }}
+          options={note_type}
+          value={type}
+        />
+        <Input
+          placeholder="Tìm kiếm phiếu (nhập số phiếu)"
+          allowClear
+          value={name}
+          className="rounded-lg h-9 border-[#A3ABEB] border-2"
+          onChange={(e) => onChangeSearch(e)}
+        />
         <Button
           className={`button_excel ${
             checkPermission(permissions.OUTBOUND_ORDERS_CREATE) ? '' : 'hidden'
@@ -267,26 +285,6 @@ const OutboundOrderDepartList = () => {
             ))}
         </div>
       )}
-      <div className="flex gap-20 items-center">
-        <Select
-          showSearch
-          placeholder="Loại phiếu"
-          optionFilterProp="children"
-          className="w-52"
-          onChange={(e) => {
-            setType(e);
-          }}
-          options={note_type}
-          value={type}
-        />
-        <Input
-          placeholder="Tìm kiếm phiếu (nhập số phiếu)"
-          allowClear
-          value={name}
-          className="rounded-lg h-9 border-[#A3ABEB] border-2"
-          onChange={(e) => onChangeSearch(e)}
-        />
-      </div>
       <Table
         columns={columnTable.filter((item: any) => item.show)}
         dataSource={outboundOrders}

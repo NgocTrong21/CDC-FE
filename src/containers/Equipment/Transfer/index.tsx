@@ -187,29 +187,29 @@ const Transfer = () => {
     getList();
   }, [nameSearch, page, limit]);
 
-  const downloadTransferList = async () => {
-    setLoadingDownload(true);
-    const res = await equipmentTransferApi.search({ name: nameSearch });
-    const { equipments } = res?.data?.data;
-    const data = equipments.map((x: any) => ({
-      name: x.name,
-      code: x.code,
-      model: x.model,
-      serial: x.serial,
-      department: x.Department?.name,
-    }));
-    resolveDataExcel(data, 'Danh sách điều chuyển thiết bị', columnTable);
-    setLoadingDownload(false);
-  };
+  // const downloadTransferList = async () => {
+  //   setLoadingDownload(true);
+  //   const res = await equipmentTransferApi.search({ name: nameSearch });
+  //   const { equipments } = res?.data?.data;
+  //   const data = equipments.map((x: any) => ({
+  //     name: x.name,
+  //     code: x.code,
+  //     model: x.model,
+  //     serial: x.serial,
+  //     department: x.Department?.name,
+  //   }));
+  //   resolveDataExcel(data, 'Danh sách điều chuyển thiết bị', columnTable);
+  //   setLoadingDownload(false);
+  // };
 
   return (
     <div>
       <div className="flex-between-center">
         <div className="title">DANH SÁCH ĐIỀU CHUYỂN THIẾT BỊ</div>
-        <ExportToExcel
+        {/* <ExportToExcel
           callback={downloadTransferList}
           loading={loadingDownload}
-        />
+        /> */}
       </div>
       <Divider />
       <div className="flex justify-between flex-col">

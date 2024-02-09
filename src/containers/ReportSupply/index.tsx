@@ -2,6 +2,7 @@ import {
   DatePicker,
   Divider,
   Input,
+  Select,
   // Pagination, Row,
   Table,
 } from 'antd';
@@ -17,6 +18,7 @@ import {
   getDataExcel,
   getFields,
   getHeadersExcel,
+  options,
 } from 'utils/globalFunc.util';
 import { formatCurrencyVN } from 'utils/validateFunc.util';
 import { supply_status } from 'constants/dataFake.constant';
@@ -37,6 +39,7 @@ const ReportSupply = () => {
   );
   const [endDate, setEndDate] = useState<any>(moment());
   const [supllies, setSupplies] = useState<any>([]);
+  const [status, setStatus] = useState<any>();
   // const [page, setPage] = useState<number>(1);
   const [total, setTotal] = useState<number>(1);
   const [name, setName] = useState<string>('');
@@ -171,19 +174,7 @@ const ReportSupply = () => {
       ),
     },
   ];
-  const [columnTable, _setColumnTable] = useState<any>(columns);
-
-  // const onPaginationChange = (page: number) => {
-  //   setPage(page);
-  // };
-
-  // const pagination = {
-  //   current: page,
-  //   total: total,
-  //   pageSize: 10,
-  //   showTotal: (total: number) => `Tổng cộng: ${total} thiết bị`,
-  //   onChange: onPaginationChange,
-  // };
+  const columnTable = columns;
 
   const handleGetReportSupplies = (start: any, end: any, search: any) => {
     setLoading(true);
@@ -199,8 +190,16 @@ const ReportSupply = () => {
         const { success, data } = res.data;
         if (success) {
           const supplyData = data.result;
-          setSupplies(supplyData);
-          setTotal(data.count);
+          if (status) {
+            const supplies = supplyData.filter(
+              (item: any) => item.status === status
+            );
+            setSupplies(supplies);
+            setTotal(supplies.length);
+          } else {
+            setSupplies(supplyData);
+            setTotal(data.count);
+          }
         }
       })
       .catch()
@@ -208,7 +207,7 @@ const ReportSupply = () => {
   };
   useEffect(() => {
     handleGetReportSupplies(startDate, endDate, nameSearch);
-  }, [startDate, endDate, nameSearch]);
+  }, [startDate, endDate, nameSearch, status]);
   const handleSearchSupply = (value: string) => {
     setName(value);
   };
@@ -253,10 +252,12 @@ const ReportSupply = () => {
       code: x.code,
       lot_number: x.lot_number,
       name: x.name,
-      unit: x.unit,
+      unit: x.Equipment_Unit?.name || '',
       unit_price: x?.unit_price,
       provider: x?.provider,
       department: x?.Department?.name,
+      status:
+        supply_status.find((item) => item.value === x.status)?.label || '',
       manufacturing_country: x?.manufacturing_country,
       begin_quantity: x.begin_quantity,
       inbound_quantity: x.inbound_quantity,
@@ -289,7 +290,24 @@ const ReportSupply = () => {
       <Divider />
       <div className="flex justify-between flex-col">
         <div className="flex justify-between">
-          <div className="w-1/3">
+          <div className="w-1/3 flex gap-5 items-center">
+            <Select
+              showSearch
+              placeholder="Trạng thái"
+              optionFilterProp="children"
+              onChange={(value: any) => {
+                setStatus(value);
+              }}
+              allowClear
+              filterOption={(input, option) =>
+                (option!.label as unknown as string)
+                  .toLowerCase()
+                  .includes(input.toLowerCase())
+              }
+              className="select-custom w-56"
+              options={supply_status}
+              value={status}
+            />
             <Input
               placeholder="Tìm kiếm vật tư"
               allowClear

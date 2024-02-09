@@ -14,6 +14,7 @@ import equipmentApi from 'api/equipment.api';
 import { toast } from 'react-toastify';
 import { FilterContext } from 'contexts/filter.context';
 import moment from 'moment';
+import { useNavigate } from 'react-router-dom';
 
 const { TextArea } = Input;
 
@@ -24,6 +25,7 @@ const ImportOne = () => {
   const [image, setImage] = useState<any>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [dataChange, setDataChange] = useState<any>({});
+  const navigate = useNavigate();
   const handleChangeImg = async (e: any) => {
     let file = e.target.files[0];
     if (file) {
@@ -56,6 +58,7 @@ const ImportOne = () => {
           setImage('');
           setSelectedImage('');
           form.resetFields();
+          navigate('/equipment/list_eq');
         } else {
           toast.error(message);
         }
