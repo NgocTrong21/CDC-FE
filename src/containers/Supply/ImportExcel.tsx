@@ -10,9 +10,7 @@ import { FilterContext } from 'contexts/filter.context';
 const ImportSupplyByExcel = () => {
   const [form] = Form.useForm();
   const [data, setData] = useState<any>([]);
-  const {
-    units
-  } = useContext(FilterContext);
+  const { units } = useContext(FilterContext);
 
   const onFinish = () => {
     supplyApi
@@ -61,7 +59,11 @@ const ImportSupplyByExcel = () => {
           const expiration_date = new Date(
             (workSheet[`D${i}`]?.v - (25567 + 2)) * 86400000
           ).valueOf();
-          const unit = (units.find((item: any) => item?.name === workSheet[`E${i}`]?.v) as any)?.id;
+          const unit = (
+            units.find(
+              (item: any) => item?.name === workSheet[`E${i}`]?.v
+            ) as any
+          )?.id;
           const unit_price = workSheet[`F${i}`]?.v;
           const manufacturing_country = workSheet[`G${i}`]?.v;
           const provider = workSheet[`H${i}`]?.v;
@@ -75,7 +77,8 @@ const ImportSupplyByExcel = () => {
             unit_price,
             manufacturing_country,
             provider,
-            note
+            note,
+            status: 1,
           });
         }
         setData(newWorkSheet);

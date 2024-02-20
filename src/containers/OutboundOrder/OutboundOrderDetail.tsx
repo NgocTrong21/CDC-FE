@@ -82,6 +82,7 @@ const OutboundOrderDetail = () => {
                 supplierId: item.Supply?.id,
                 supplierCode: item.Supply?.code || '',
                 supplierName: item.Supply?.name,
+                lot_number: item.Supply?.lot_number,
                 orderQuantity: item.quantity,
                 unitPrice: item.Supply?.unit_price,
                 unit: item.Supply?.Equipment_Unit?.name,
@@ -231,6 +232,11 @@ const OutboundOrderDetail = () => {
                 title="Mã vật tư"
                 dataIndex={'supplierCode'}
                 key={'supplierCode'}
+              />
+              <Column
+                title="Số lô"
+                dataIndex={'lot_number'}
+                key={'lot_number'}
               />
               <Column title="Tên vật tư" render={(item) => item.supplierName} />
               <Column title="Đơn vị" dataIndex={'unit'} key={'unit'} />
