@@ -40,17 +40,13 @@ import { formatCurrencyVN } from 'utils/validateFunc.util';
 const TableFooter = ({ paginationProps }: any) => {
   return (
     <Row justify="space-between">
-      <div></div>
       <Pagination {...paginationProps} />
     </Row>
   );
 };
 
 const Repair = () => {
-  const { statuses, departments } = useContext(FilterContext);
-  const newStatus = statuses?.filter(
-    (item: any) => item?.id === 4 || item?.id === 5
-  );
+  const { departments } = useContext(FilterContext);
   const isHasRole: boolean = checkRoleFromData();
 
   const columns: any = [
@@ -413,20 +409,6 @@ const Repair = () => {
       <div className="flex justify-between">
         <div></div>
         <div className="flex-between-center gap-4 p-4">
-          <Select
-            showSearch
-            placeholder="Tất cả Trạng thái"
-            optionFilterProp="children"
-            onChange={(value: any) => onChangeSelect('status_id', value)}
-            allowClear
-            filterOption={(input, option) =>
-              (option!.label as unknown as string)
-                .toLowerCase()
-                .includes(input.toLowerCase())
-            }
-            options={options(newStatus)}
-            className="select-custom"
-          />
           {isHasRole && (
             <Select
               showSearch

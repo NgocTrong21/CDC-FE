@@ -274,10 +274,7 @@ const DetailLiquidation = () => {
               </Button>
             </Form.Item>
             <Form.Item>
-              <Button
-                onClick={() => setShowApproveLiquidationModal(false)}
-                className="button-primary"
-              >
+              <Button onClick={() => setShowApproveLiquidationModal(false)}>
                 Đóng
               </Button>
             </Form.Item>

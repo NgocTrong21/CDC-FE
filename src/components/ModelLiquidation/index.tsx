@@ -7,7 +7,8 @@ import { toast } from 'react-toastify';
 import { convertBase64 } from 'utils/globalFunc.util';
 
 const ModelLiquidation = (props: any) => {
-  const { showLiquidationModal, setShowLiquidationModal, equipment, callback } = props;
+  const { showLiquidationModal, setShowLiquidationModal, equipment, callback } =
+    props;
   const { TextArea } = Input;
   const [form] = Form.useForm();
   const [loading, setLoading] = useState<boolean>(false);
@@ -44,27 +45,30 @@ const ModelLiquidation = (props: any) => {
   const liquidationEquipment = (values: any) => {
     const data = {
       ...values,
-      liquidation_date: moment(new Date(values?.liquidation_date)).toISOString(),
+      liquidation_date: moment(
+        new Date(values?.liquidation_date)
+      ).toISOString(),
       liquidation_status: 0,
       file,
       isEdit: 0,
     };
-    setLoading(true)
-    equipmentLiquidation.createLiquidationNote(data)
+    setLoading(true);
+    equipmentLiquidation
+      .createLiquidationNote(data)
       .then((res: any) => {
         const { success } = res?.data;
         if (success) {
-          toast.success("Tạo phiếu thanh lý thành công");
+          toast.success('Tạo phiếu thanh lý thành công');
           callback();
         } else {
-          toast.error("Tạo phiếu thanh lý thất bại")
+          toast.error('Tạo phiếu thanh lý thất bại');
         }
       })
       .catch()
       .finally(() => {
         setShowLiquidationModal();
         setLoading(false);
-      })
+      });
   };
 
   return (
@@ -141,12 +145,7 @@ const ModelLiquidation = (props: any) => {
             </Button>
           </Form.Item>
           <Form.Item>
-            <Button
-              onClick={() => setShowLiquidationModal(false)}
-              className="button-primary"
-            >
-              Đóng
-            </Button>
+            <Button onClick={() => setShowLiquidationModal(false)}>Đóng</Button>
           </Form.Item>
         </div>
       </Form>

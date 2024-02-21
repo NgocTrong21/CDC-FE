@@ -144,7 +144,7 @@ const EquipmentUnit = () => {
         <div className="title">DANH SÁCH ĐƠN VỊ TÍNH</div>
         <div className="flex flex-row gap-6">
           <Button
-            className="flex-center text-slate-900 gap-2 rounded-3xl border-[#5B69E6] border-2"
+            className="button_excel"
             onClick={() => navigate('/category/unit/create')}
           >
             <PlusCircleFilled />

@@ -8,7 +8,8 @@ import { toast } from 'react-toastify';
 import { convertBase64, options } from 'utils/globalFunc.util';
 
 const ModalHandover = (props: any) => {
-  const { showHandoverModal, setShowHandoverModal, callback, dataHandover } = props;
+  const { showHandoverModal, setShowHandoverModal, callback, dataHandover } =
+    props;
 
   const { TextArea } = Input;
   const { departments } = useContext(FilterContext);
@@ -154,17 +155,16 @@ const ModalHandover = (props: any) => {
         <Form.Item name="handover_create_id" className="hidden"></Form.Item>
         <div className="flex flex-row justify-end gap-4">
           <Form.Item>
-            <Button htmlType="submit" loading={loading} className="button-primary">
+            <Button
+              htmlType="submit"
+              loading={loading}
+              className="button-primary"
+            >
               Xác nhận
             </Button>
           </Form.Item>
           <Form.Item>
-            <Button
-              onClick={() => setShowHandoverModal(false)}
-              className="button-primary"
-            >
-              Đóng
-            </Button>
+            <Button onClick={() => setShowHandoverModal(false)}>Đóng</Button>
           </Form.Item>
         </div>
       </Form>

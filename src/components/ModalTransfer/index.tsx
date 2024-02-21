@@ -41,7 +41,7 @@ const ModalTransfer = (props: any) => {
       from_department: dataTransfer.from_department_name,
       from_department_id: dataTransfer?.from_department_id,
       transfer_create_user_id: dataTransfer?.create_user_id,
-      transfer_create_user: dataTransfer?.create_user
+      transfer_create_user: dataTransfer?.create_user,
     });
   }, [dataTransfer]);
 
@@ -51,7 +51,7 @@ const ModalTransfer = (props: any) => {
       transfer_date: moment(new Date(values?.transfer_date)).toISOString(),
       transfer_status: 0,
       isEdit: 0,
-      file
+      file,
     };
     setLoading(true);
     equipmentTransferApi
@@ -138,7 +138,7 @@ const ModalTransfer = (props: any) => {
         </Form.Item>
         <Form.Item
           name="transfer_create_user_id"
-          className='hidden'
+          className="hidden"
         ></Form.Item>
         <Form.Item label="Cán bộ lập biên bản" name="transfer_create_user">
           <Input className="input" disabled />
@@ -154,12 +154,7 @@ const ModalTransfer = (props: any) => {
             </Button>
           </Form.Item>
           <Form.Item>
-            <Button
-              onClick={() => setShowTransferModal(false)}
-              className="button-primary"
-            >
-              Đóng
-            </Button>
+            <Button onClick={() => setShowTransferModal(false)}>Đóng</Button>
           </Form.Item>
         </div>
       </Form>
