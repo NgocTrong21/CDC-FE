@@ -1,22 +1,21 @@
-import { Button, Form, Input, Modal, Radio } from 'antd'
+import { Button, Form, Input, Modal, Radio } from 'antd';
 import equipmentTransferApi from 'api/equipment_transfer.api';
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 
 const ModalTransferApprove = (props: any) => {
-
   const {
     showTransferApproveModal,
     setShowTransferApproveModal,
     dataTransfer,
-    callback
+    callback,
   } = props;
 
   const [form] = Form.useForm();
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    if(Object.keys(dataTransfer).length === 0) return;
+    if (Object.keys(dataTransfer).length === 0) return;
     form.setFieldsValue({
       // id: dataTransfer?.id,
       equipment_id: dataTransfer?.equipment_id,
@@ -27,27 +26,30 @@ const ModalTransferApprove = (props: any) => {
       to_department_id: dataTransfer?.to_department_id,
       from_department: dataTransfer?.from_department,
       to_department: dataTransfer?.to_department,
-    })
-  }, [dataTransfer])
+    });
+  }, [dataTransfer]);
 
   const handleApproverTransfer = (values: any) => {
     let data = { ...values };
     setLoading(true);
-    equipmentTransferApi.approveTransferReport(data)
+    equipmentTransferApi
+      .approveTransferReport(data)
       .then((res: any) => {
         const { success } = res.data;
         if (success) {
           setShowTransferApproveModal();
           form.resetFields();
           callback();
-          toast.success("Hoàn tất quy trình điều chuyển");
+          toast.success('Hoàn tất quy trình điều chuyển');
         } else {
-          toast.error("Quy trình điều chuyển có gặp sự cố. Vui lòng kiểm tra lại")
+          toast.error(
+            'Quy trình điều chuyển có gặp sự cố. Vui lòng kiểm tra lại'
+          );
         }
       })
       .catch()
-      .finally(() => setLoading(false))
-  }
+      .finally(() => setLoading(false));
+  };
 
   return (
     <Modal
@@ -63,25 +65,31 @@ const ModalTransferApprove = (props: any) => {
         onFinish={handleApproverTransfer}
       >
         <Form.Item style={{ display: 'none' }}></Form.Item>
-        <Form.Item name='equipment_id' style={{ display: 'none' }}></Form.Item>
-        <Form.Item name='from_department_id' style={{ display: 'none' }}></Form.Item>
-        <Form.Item name='to_department_id' style={{ display: 'none' }}></Form.Item>
-        <Form.Item name='equipment_name' label='Tên thiết bị'>
-          <Input className='input' disabled />
+        <Form.Item name="equipment_id" style={{ display: 'none' }}></Form.Item>
+        <Form.Item
+          name="from_department_id"
+          style={{ display: 'none' }}
+        ></Form.Item>
+        <Form.Item
+          name="to_department_id"
+          style={{ display: 'none' }}
+        ></Form.Item>
+        <Form.Item name="equipment_name" label="Tên thiết bị">
+          <Input className="input" disabled />
         </Form.Item>
-        <Form.Item name='from_department' label='Khoa phòng hiện tại'>
-          <Input className='input' disabled />
+        <Form.Item name="from_department" label="Khoa phòng hiện tại">
+          <Input className="input" disabled />
         </Form.Item>
-        <Form.Item name='to_department' label='Khoa phòng điều chuyển'>
-          <Input className='input' disabled />
+        <Form.Item name="to_department" label="Khoa phòng điều chuyển">
+          <Input className="input" disabled />
         </Form.Item>
-        <Form.Item name='approver_id' style={{ display: 'none' }}></Form.Item>
-        <Form.Item label='Người phê duyệt' name='approver_name'>
-          <Input disabled className='input' />
+        <Form.Item name="approver_id" style={{ display: 'none' }}></Form.Item>
+        <Form.Item label="Người phê duyệt" name="approver_name">
+          <Input disabled className="input" />
         </Form.Item>
         <Form.Item
-          label='Trạng thái phê duyệt'
-          name='transfer_status'
+          label="Trạng thái phê duyệt"
+          name="transfer_status"
           required
           rules={[{ required: true, message: 'Hãy chọn mục này!' }]}
         >
@@ -90,17 +98,23 @@ const ModalTransferApprove = (props: any) => {
             <Radio value={2}>Không đồng ý</Radio>
           </Radio.Group>
         </Form.Item>
-        <div className='flex flex-row justify-end gap-4'>
+        <div className="flex flex-row justify-end gap-4">
           <Form.Item>
-            <Button htmlType="submit" className='button-primary' loading={loading}>Xác nhận</Button>
+            <Button
+              htmlType="submit"
+              className="button-primary"
+              loading={loading}
+            >
+              Xác nhận
+            </Button>
           </Form.Item>
           <Form.Item>
-            <Button onClick={setShowTransferApproveModal} className='button-primary'>Đóng</Button>
+            <Button onClick={setShowTransferApproveModal}>Đóng</Button>
           </Form.Item>
         </div>
       </Form>
     </Modal>
-  )
-}
+  );
+};
 
-export default ModalTransferApprove
+export default ModalTransferApprove;

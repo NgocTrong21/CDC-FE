@@ -36,15 +36,15 @@ const Signin: React.FC = () => {
   return (
     <>
       <div
-        className="flex w-screen h-screen justify-center items-center"
+        className="flex w-screen h-screen justify-center items-center bg-cover bg-center"
         style={{
           backgroundImage: `url(${bg})`,
         }}
       >
         <div className="flex justify-center items-center flex-col">
           <div className="bg-white p-10 rounded-3xl w-[450px] shadow-2xl">
-            <div className="text-center font-medium text-2xl mb-3">
-              HỆ THỐNG QUẢN LÝ THIẾT BỊ VÀ VẬT TƯ Y TẾ CDC
+            <div className="text-center font-medium text-2xl mb-10 leading-10">
+              HỆ THỐNG QUẢN LÝ THIẾT BỊ VÀ VẬT TƯ Y TẾ CDC HẢI PHÒNG
             </div>
             <Form
               name="signin-form"
@@ -56,7 +56,7 @@ const Signin: React.FC = () => {
               layout="vertical"
               size="large"
             >
-              <h1>Đăng nhập</h1>
+              <h1 className="font-bold text-lg">Đăng nhập</h1>
               <Form.Item
                 label="Email"
                 name="email"
@@ -79,27 +79,25 @@ const Signin: React.FC = () => {
                 <Input.Password className="rounded-lg h-9 border-[#A3ABEB] border-2" />
               </Form.Item>
               {messageLogin && <Alert message={messageLogin} type="error" />}
-              <Form.Item>
-                <Text>
-                  <Link to="/reset_password">Quên mật khẩu</Link>
-                </Text>
-              </Form.Item>
-              <Form.Item>
+              {/* <Form.Item> */}
+              <Text className="flex justify-end">
+                <Link to="/reset_password">Quên mật khẩu</Link>
+              </Text>
+              {/* </Form.Item> */}
+              <Form.Item className="mt-5">
                 <Button
                   type="primary"
                   icon={<PoweroffOutlined />}
                   loading={isLoading}
                   htmlType="submit"
-                  className="rounded-lg h-10 w-[-webkit-fill-available]"
+                  className="rounded-lg h-10 flex items-center justify-center w-[-webkit-fill-available]"
                 >
                   Đăng nhập
                 </Button>
               </Form.Item>
-              <Form.Item>
-                <Text>
-                  <Link to="/signup">Đăng ký</Link> nếu bạn chưa có tài khoản{' '}
-                </Text>
-              </Form.Item>
+              <Text className="flex justify-center gap-2">
+                <Link to="/signup">Đăng ký</Link> nếu bạn chưa có tài khoản{' '}
+              </Text>
             </Form>
           </div>
         </div>

@@ -12,16 +12,16 @@ const ResetPassword: React.FC = () => {
   return (
     <>
       <div
-        className="w-screen h-screen flex justify-center items-center"
+        className="w-screen h-screen flex justify-center items-center bg-cover bg-center"
         style={{
           backgroundImage: `url(${bg})`,
         }}
       >
         <div className="flex flex-col justify-between">
           <div className="flex justify-center items-center flex-col pt-24">
-            <div className="bg-white p-10 rounded-3xl w-96 shadow-2xl">
-              <div className="text-center font-medium text-2xl mb-12">
-                HỆ THỐNG QUẢN LÝ THIẾT BỊ VÀ VẬT TƯ Y TẾ
+            <div className="bg-white p-10 rounded-3xl w-[450px] shadow-2xl">
+              <div className="text-center font-medium text-2xl mb-12 leading-10">
+                HỆ THỐNG QUẢN LÝ THIẾT BỊ VÀ VẬT TƯ Y TẾ CDC HẢI PHÒNG
               </div>
               <FormInput
                 title="Email"

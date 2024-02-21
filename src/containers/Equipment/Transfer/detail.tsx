@@ -291,10 +291,7 @@ const DetailTransfer = () => {
               </Button>
             </Form.Item>
             <Form.Item>
-              <Button
-                onClick={() => setShowApproveTransferModal(false)}
-                className="button-primary"
-              >
+              <Button onClick={() => setShowApproveTransferModal(false)}>
                 Đóng
               </Button>
             </Form.Item>

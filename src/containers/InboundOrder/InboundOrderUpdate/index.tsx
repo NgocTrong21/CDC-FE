@@ -237,8 +237,6 @@ const InboundOrderUpdate = () => {
             <Row>
               <Space>
                 <Button
-                  type="primary"
-                  className="rounded-md"
                   onClick={() => {
                     navigate('/order/inbound_order');
                   }}

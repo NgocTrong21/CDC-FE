@@ -25,7 +25,7 @@ const Signup: React.FC = () => {
   return (
     <>
       <div
-        className="w-screen h-screen flex justify-center items-center"
+        className="w-screen h-screen flex justify-center items-center bg-cover bg-center"
         style={{
           backgroundImage: `url(${bg})`,
         }}
@@ -33,8 +33,8 @@ const Signup: React.FC = () => {
         <div>
           <div className="flex justify-center items-center flex-col pt-24">
             <div className="bg-white p-10 rounded-3xl w-[450px] shadow-2xl">
-              <div className="text-center font-medium text-2xl mb-3">
-                HỆ THỐNG QUẢN LÝ THIẾT BỊ VÀ VẬT TƯ Y TẾ
+              <div className="text-center font-medium text-2xl mb-10 leading-10">
+                HỆ THỐNG QUẢN LÝ THIẾT BỊ VÀ VẬT TƯ Y TẾ CDC HẢI PHÒNG
               </div>
               <Form
                 name="signin-form"
@@ -46,7 +46,7 @@ const Signup: React.FC = () => {
                 layout="vertical"
                 size="large"
               >
-                <h1>Đăng kí</h1>
+                <h1 className="font-bold text-lg">Đăng ký</h1>
                 <Form.Item
                   label="Email"
                   name="email"
@@ -104,17 +104,14 @@ const Signup: React.FC = () => {
                     icon={<PoweroffOutlined />}
                     loading={isLoading}
                     htmlType="submit"
-                    className="rounded-lg h-10 w-[-webkit-fill-available] mt-4"
+                    className="flex items-center justify-center rounded-lg h-10 w-[-webkit-fill-available] mt-4"
                   >
-                    Đăng kí
+                    Đăng ký
                   </Button>
                 </Form.Item>
-
-                <Form.Item>
-                  <Text>
-                    <Link to="/">Đăng nhập</Link> nếu bạn đã có tài khoản{' '}
-                  </Text>
-                </Form.Item>
+                <Text className="flex justify-center gap-2">
+                  <Link to="/">Đăng nhập</Link> nếu bạn đã có tài khoản{' '}
+                </Text>
               </Form>
             </div>
           </div>

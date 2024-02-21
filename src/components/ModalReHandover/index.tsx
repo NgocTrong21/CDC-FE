@@ -31,9 +31,8 @@ const ModalReHandover = (props: any) => {
   //   }
   // };
 
-  const reHandover = (values: any) => {
+  const reHandover = () => {
     const data = {
-      ...values,
       id: equipment?.repair_id,
       equipment_id: equipment?.id,
       equipment_name: equipment?.name,
@@ -42,8 +41,8 @@ const ModalReHandover = (props: any) => {
       // brokenFile,
       // repairFile,
       user_id: currentUser.id,
+      status_id: equipment.repair_status === 3 ? 1 : 4,
     };
-
     setLoading(true);
     equipmentRepairApi
       .reHandover(data)
@@ -67,11 +66,11 @@ const ModalReHandover = (props: any) => {
     if (equipment && equipment.repair_status) {
       if (equipment.repair_status === 3) {
         form.setFieldsValue({
-          status: 'Sửa được, hoạt động bình thường',
+          labelStatus: 'Sửa được, hoạt động bình thường',
         });
       } else {
         form.setFieldsValue({
-          status: 'Không sửa được, chờ thanh lý',
+          labelStatus: 'Không sửa được, chờ thanh lý',
         });
       }
     }
@@ -85,7 +84,7 @@ const ModalReHandover = (props: any) => {
       footer={null}
     >
       <Form form={form} layout="vertical" size="large" onFinish={reHandover}>
-        <Form.Item name="status" label="Trạng thái thiết bị">
+        <Form.Item name="labelStatus" label="Trạng thái thiết bị">
           <Input className="input" disabled />
         </Form.Item>
         {/* <Form.Item
@@ -119,9 +118,7 @@ const ModalReHandover = (props: any) => {
             </Button>
           </Form.Item>
           <Form.Item>
-            <Button onClick={setShowReHandoverModal} className="button-primary">
-              Đóng
-            </Button>
+            <Button onClick={setShowReHandoverModal}>Đóng</Button>
           </Form.Item>
         </div>
       </Form>

@@ -289,7 +289,7 @@ const Suplly = () => {
             loading={loadingDownload}
           />
           <Button
-            className="flex-center text-slate-900 gap-2 rounded-3xl border-[#5B69E6] border-2"
+            className="button_excel"
             onClick={() => navigate('/supplies/import_excel_sp')}
           >
             <ImportOutlined />

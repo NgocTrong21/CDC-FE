@@ -80,12 +80,7 @@ const ModalChangePassword = (props: any) => {
             </Button>
           </Form.Item>
           <Form.Item>
-            <Button
-              onClick={setShowChangePasswordModal}
-              className="button-primary"
-            >
-              Đóng
-            </Button>
+            <Button onClick={setShowChangePasswordModal}>Đóng</Button>
           </Form.Item>
         </div>
       </Form>
