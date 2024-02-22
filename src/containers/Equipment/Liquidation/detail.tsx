@@ -260,9 +260,9 @@ const DetailLiquidation = () => {
               <Radio value={2}>Từ chối</Radio>
             </Radio.Group>
           </Form.Item>
-          <Form.Item label="Ghi chú" name="liquidation_note">
+          {/* <Form.Item label="Ghi chú" name="liquidation_note">
             <TextArea placeholder="Nhập ghi chú" className="input" />
-          </Form.Item>
+          </Form.Item> */}
           <div className="flex flex-row justify-end gap-4">
             <Form.Item>
               <Button

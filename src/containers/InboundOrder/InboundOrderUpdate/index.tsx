@@ -84,7 +84,7 @@ const InboundOrderUpdate = () => {
             data: {
               id: data.id,
               deliver: data?.deliver,
-              code: data?.code,
+              code: data?.code?.trim(),
               warehouse_id: data?.warehouse_id,
               deliver_phone: data?.deliver_phone,
               estimated_delivery_date: moment(

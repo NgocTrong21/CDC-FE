@@ -27,7 +27,10 @@ import { permissions } from 'constants/permission.constant';
 import type { PaginationProps } from 'antd';
 import outboundOrderApi from 'api/outbound_order';
 import moment from 'moment';
-import { note_type } from 'constants/dataFake.constant';
+import {
+  inbound_outbound_status,
+  note_type,
+} from 'constants/dataFake.constant';
 
 const TableFooter = ({ paginationProps }: any) => {
   return (
@@ -53,7 +56,7 @@ const OutboundOrderDepartList = () => {
   const [name, setName] = useState<string>('');
   const nameSearch = useDebounce(name, 500);
   const [isShowCustomTable, setIsShowCustomTable] = useState<boolean>(false);
-
+  const [status, setStatus] = useState<any>();
   const onShowSizeChange: PaginationProps['onShowSizeChange'] = (
     _current,
     pageSize
@@ -190,6 +193,7 @@ const OutboundOrderDepartList = () => {
         limit,
         name: nameSearch,
         type,
+        status_id: status,
       })
       .then((res: any) => {
         const { success, data } = res.data;
@@ -203,7 +207,7 @@ const OutboundOrderDepartList = () => {
   };
   useEffect(() => {
     getOutboundOrderList();
-  }, [limit, page, nameSearch, type]);
+  }, [limit, page, nameSearch, type, status]);
 
   const onPaginationChange = (page: number) => {
     setPage(page);
@@ -237,17 +241,36 @@ const OutboundOrderDepartList = () => {
       </div>
       <Divider />
       <div className="flex gap-10 mb-5 items-center">
-        <Select
-          showSearch
-          placeholder="Loại phiếu"
-          optionFilterProp="children"
-          className="w-52"
-          onChange={(e) => {
-            setType(e);
-          }}
-          options={note_type}
-          value={type}
-        />
+        <div className="flex gap-5">
+          <Select
+            showSearch
+            placeholder="Loại phiếu"
+            optionFilterProp="children"
+            className="w-52"
+            onChange={(e) => {
+              setType(e);
+            }}
+            options={note_type}
+            value={type}
+          />
+          <Select
+            showSearch
+            placeholder="Trạng thái"
+            optionFilterProp="children"
+            onChange={(value: any) => {
+              setStatus(value);
+            }}
+            allowClear
+            filterOption={(input, option) =>
+              (option!.label as unknown as string)
+                .toLowerCase()
+                .includes(input.toLowerCase())
+            }
+            className="select-custom w-56"
+            options={inbound_outbound_status}
+            // value={status}
+          />
+        </div>
         <Input
           placeholder="Tìm kiếm phiếu (nhập số phiếu)"
           allowClear

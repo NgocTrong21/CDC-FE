@@ -41,7 +41,9 @@ const SupplyCreate = () => {
     let data = {
       ...values,
       expiration_date: moment(new Date(values?.expiration_date)).toISOString(),
-      lot_number: `${values?.lot_number}`,
+      name: values.name.trim() || '',
+      code: values.code.trim() || '',
+      lot_number: values?.lot_number.trim() || '',
       image,
       active: 1,
       status: 1,

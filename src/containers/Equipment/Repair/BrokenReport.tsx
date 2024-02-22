@@ -56,13 +56,13 @@ const BrokenReport = () => {
             report_status: data?.equipment?.report_status,
             broken_report_date: moment(
               data?.equipment?.broken_report_date
-            ).format('hh:mm:ss, DD-MM-YYYY'),
+            ).format('h:mm a, DD-MM-YYYY'),
             reporting_person: data?.equipment?.reporting_user?.name,
             reporting_person_id: data?.equipment?.reporting_user?.id,
             approve_broken_report_date: data?.equipment
               ?.approve_broken_report_date
               ? moment(data?.equipment?.approve_broken_report_date).format(
-                  'hh:mm:ss, DD-MM-YYYY'
+                  'h:mm a, DD-MM-YYYY'
                 )
               : moment(new Date()).format('DD-MM-YYYY'),
             approve_report_person_id:

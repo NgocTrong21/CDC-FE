@@ -162,8 +162,6 @@ const OutboundOrderDepartDetail = () => {
               </>
             )}
             <Button
-              type="primary"
-              className="rounded-md"
               onClick={() => {
                 navigate('/order/outbound_order_depart');
               }}

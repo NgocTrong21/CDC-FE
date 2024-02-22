@@ -155,7 +155,7 @@ const InboundOrderCreate = () => {
         inboundOrderApi
           .create({
             data: {
-              code: data?.code,
+              code: data?.code?.trim() || '',
               deliver: data?.deliver,
               deliver_phone: data?.deliver_phone,
               warehouse_id: data?.warehouse_id,
