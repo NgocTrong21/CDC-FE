@@ -99,6 +99,17 @@ const ReportSupply = () => {
       ),
     },
     {
+      title: 'Hạn sử dụng',
+      dataIndex: 'expiration_date',
+      key: 'expiration_date',
+      show: true,
+      width: 150,
+      widthExcel: 30,
+      render: (item: any) => (
+        <p>{moment(new Date(item)).format('DD/MM/YYYY')}</p>
+      ),
+    },
+    {
       title: 'Đơn vị tính',
       key: 'unit',
       show: true,
@@ -259,6 +270,9 @@ const ReportSupply = () => {
       status:
         supply_status.find((item) => item.value === x.status)?.label || '',
       manufacturing_country: x?.manufacturing_country,
+      expiration_date: moment(new Date(x?.expiration_date)).format(
+        'DD/MM/YYYY'
+      ),
       begin_quantity: x.begin_quantity,
       inbound_quantity: x.inbound_quantity,
       outbound_quantity: x.outbound_quantity,

@@ -95,8 +95,11 @@ const Liquidation = () => {
       render: (item: any) => {
         return (
           <>
-            {item?.Liquidations?.length > 0 ?
-              moment(item?.Liquidations[0]?.liquidation_date).format('DD-MM-YYYY') : ''}
+            {item?.Liquidations?.length > 0
+              ? moment(item?.Liquidations[0]?.liquidation_date).format(
+                  'DD-MM-YYYY'
+                )
+              : ''}
           </>
         );
       },
@@ -108,9 +111,7 @@ const Liquidation = () => {
       widthExcel: 30,
       render: (item: any) => {
         return (
-          <>
-            {handleReportStatus(item?.Liquidations[0]?.liquidation_status)}
-          </>
+          <>{handleReportStatus(item?.Liquidations[0]?.liquidation_status)}</>
         );
       },
     },
@@ -130,12 +131,13 @@ const Liquidation = () => {
           {item?.Liquidations?.length > 0 ? (
             <Menu.Item
               key="liquidation_detail"
-              className={`${checkPermission(permissions.LIQUIDATION_EQUIPMENT_READ)
-                ? ''
-                : 'hidden'
-                }`}
+              className={`${
+                checkPermission(permissions.LIQUIDATION_EQUIPMENT_READ)
+                  ? ''
+                  : 'hidden'
+              }`}
             >
-              <Tooltip title="Phiếu yêu cầu thanh lý">
+              <Tooltip title="Yêu cầu thanh lý">
                 <Link
                   to={`/equipment/liquidation/detail/${item?.id}/${item?.Liquidations[0]?.id}`}
                 >
@@ -146,12 +148,13 @@ const Liquidation = () => {
           ) : (
             <Menu.Item
               key="liquidation_create"
-              className={`${checkPermission(permissions.LIQUIDATION_EQUIPMENT_CREATE)
-                ? ''
-                : 'hidden'
-                }`}
+              className={`${
+                checkPermission(permissions.LIQUIDATION_EQUIPMENT_CREATE)
+                  ? ''
+                  : 'hidden'
+              }`}
             >
-              <Tooltip title="Tạo phiếu yêu cầu thanh lý">
+              <Tooltip title="Tạo yêu cầu thanh lý">
                 <PlusCircleFilled onClick={() => setLiquidationFields(item)} />
               </Tooltip>
             </Menu.Item>
@@ -225,7 +228,7 @@ const Liquidation = () => {
   const getListUnusedEquipment = () => {
     setLoading(true);
     equipmentLiquidationApi
-      .getListUnusedEquipment({ page, name, department, limit })
+      .getListUnusedEquipment({ page, name, department_id: department, limit })
       .then((res: any) => {
         const { success, data } = res.data;
         if (success) {

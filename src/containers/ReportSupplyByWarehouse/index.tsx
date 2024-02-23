@@ -112,6 +112,17 @@ const ReportSupplyByWarehouse = () => {
       ),
     },
     {
+      title: 'Hạn sử dụng',
+      dataIndex: 'expiration_date',
+      key: 'expiration_date',
+      show: true,
+      width: 150,
+      widthExcel: 30,
+      render: (item: any) => (
+        <p>{moment(new Date(item)).format('DD/MM/YYYY')}</p>
+      ),
+    },
+    {
       title: 'Đơn vị tính',
       key: 'unit',
       show: true,
@@ -292,6 +303,9 @@ const ReportSupplyByWarehouse = () => {
         .replace(/\B(?=(\d{3})+(?!\d))/g, ','),
       provider: x?.provider,
       manufacturing_country: x?.manufacturing_country,
+      expiration_date: moment(new Date(x?.expiration_date)).format(
+        'DD/MM/YYYY'
+      ),
       begin_quantity: x.begin_quantity,
       status:
         supply_status.find((item) => item.value === x.status)?.label || '',

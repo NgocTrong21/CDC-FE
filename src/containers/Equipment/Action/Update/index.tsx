@@ -139,14 +139,13 @@ const UpdateEquipment = () => {
             <Form.Item name="id" className="mb-5 hidden ">
               <Input className="input" />
             </Form.Item>
-
-            <div className="grid grid-cols-3 gap-5">
+            <div className="flex justify-between gap-5">
               <Form.Item
                 label="Tên thiết bị"
                 name="name"
                 required
                 rules={[{ required: true, message: 'Hãy nhập tên thiết bị!' }]}
-                className="mb-5"
+                className="mb-5 w-1/2"
               >
                 <Input
                   placeholder="Nhập tên thiết bị"
@@ -154,44 +153,14 @@ const UpdateEquipment = () => {
                   className="input"
                 />
               </Form.Item>
-              <Form.Item
-                label="Khoa - Phòng"
-                name="department_id"
-                className="mb-5"
-              >
-                <Select
-                  showSearch
-                  placeholder="Chọn khoa phòng"
-                  optionFilterProp="children"
-                  allowClear
-                  filterOption={(input, option) =>
-                    (option!.label as unknown as string)
-                      .toLowerCase()
-                      .includes(input.toLowerCase())
-                  }
-                  options={options(departments)}
-                  disabled
-                />
-              </Form.Item>
-              <Form.Item
-                label="Trạng thái thiết bị"
-                name="status_id"
-                className="mb-5"
-              >
-                <Select
-                  showSearch
-                  placeholder="Chọn trạng thái thiết bị"
-                  optionFilterProp="children"
-                  allowClear
-                  filterOption={(input, option) =>
-                    (option!.label as unknown as string)
-                      .toLowerCase()
-                      .includes(input.toLowerCase())
-                  }
-                  options={options(statuses)}
-                  disabled
-                />
-              </Form.Item>
+              <div className="flex gap-20">
+                <Form.Item label="Khoa - Phòng" className="mb-5 w-fit">
+                  <p className="text-lg">{equipment?.Department?.name}</p>
+                </Form.Item>
+                <Form.Item label="Trạng thái thiết bị" className="mb-5 w-fit">
+                  <p className="text-lg">{equipment?.Equipment_Status?.name}</p>
+                </Form.Item>
+              </div>
             </div>
             <div className="grid grid-cols-4 gap-5">
               <Form.Item
@@ -247,7 +216,7 @@ const UpdateEquipment = () => {
                 />
               </Form.Item>
             </div>
-            <div className="grid grid-cols-4 gap-5">
+            <div className="grid grid-cols-4 gap-x-5">
               <Form.Item
                 label="Năm sử dụng"
                 name="year_in_use"

@@ -90,16 +90,16 @@ const LayoutSystem = (props: LayoutProps) => {
       <ClusterOutlined style={{ fontSize: '20px' }} />,
       [
         getItem('Danh sách thiết bị', '/list_eq', permissions.EQUIPMENT_READ),
-        getItem(
-          'Nhập thiết bị đơn lẻ',
-          '/import_one_eq',
-          permissions.EQUIPMENT_CREATE
-        ),
-        getItem(
-          'Nhập thiết bị bằng Excel',
-          '/import_excel_eq',
-          permissions.EQUIPMENT_CREATE
-        ),
+        // getItem(
+        //   'Nhập thiết bị đơn lẻ',
+        //   '/import_one_eq',
+        //   permissions.EQUIPMENT_CREATE
+        // ),
+        // getItem(
+        //   'Nhập thiết bị bằng Excel',
+        //   '/import_excel_eq',
+        //   permissions.EQUIPMENT_CREATE
+        // ),
         getItem('Sửa chữa', '/repair', permissions.REPAIR_EQUIPMENT_READ),
         getItem(
           'Điều chuyển thiết bị',

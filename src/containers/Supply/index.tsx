@@ -269,11 +269,16 @@ const Suplly = () => {
     setLoadingDownload(true);
     const data = supllies.map((x: any) => ({
       code: x.code,
-      lot_numbe: x.lot_number,
+      lot_number: x.lot_number,
       name: x.name,
       unit: x?.Equipment_Unit?.name,
       unit_price: x?.unit_price,
       provider: x?.provider,
+      expiration_date: moment(new Date(x?.expiration_date)).format(
+        'DD/MM/YYYY'
+      ),
+      status: supply_status?.find((item: any) => item.value === x?.status)
+        ?.label,
       manufacturing_country: x?.manufacturing_country,
     }));
     resolveDataExcel(data, 'Danh sách vật tư', columnTable);

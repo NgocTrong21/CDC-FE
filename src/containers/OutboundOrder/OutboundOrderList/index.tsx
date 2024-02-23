@@ -17,6 +17,7 @@ import {
   Tooltip,
   Checkbox,
   Popconfirm,
+  Select,
 } from 'antd';
 import useDebounce from 'hooks/useDebounce';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -26,6 +27,7 @@ import { permissions } from 'constants/permission.constant';
 import type { PaginationProps } from 'antd';
 import outboundOrderApi from 'api/outbound_order';
 import moment from 'moment';
+import { inbound_outbound_status } from 'constants/dataFake.constant';
 
 const TableFooter = ({ paginationProps }: any) => {
   return (
@@ -50,7 +52,7 @@ const OutboundOrderList = () => {
   const [name, setName] = useState<string>('');
   const nameSearch = useDebounce(name, 500);
   const [isShowCustomTable, setIsShowCustomTable] = useState<boolean>(false);
-
+  const [status, setStatus] = useState<any>();
   const onShowSizeChange: PaginationProps['onShowSizeChange'] = (
     _current,
     pageSize
@@ -187,6 +189,7 @@ const OutboundOrderList = () => {
         limit,
         name: nameSearch,
         type: '0',
+        status_id: status,
       })
       .then((res: any) => {
         const { success, data } = res.data;
@@ -200,7 +203,7 @@ const OutboundOrderList = () => {
   };
   useEffect(() => {
     getOutboundOrderList();
-  }, [limit, page, nameSearch]);
+  }, [limit, page, nameSearch, status]);
 
   const onPaginationChange = (page: number) => {
     setPage(page);
@@ -233,7 +236,23 @@ const OutboundOrderList = () => {
         <div className="title">DANH SÁCH PHIẾU XUẤT BỆNH VIỆN</div>
       </div>
       <Divider />
-      <div className="flex gap-10">
+      <div className="flex gap-10 items-center">
+        <Select
+          showSearch
+          placeholder="Trạng thái"
+          optionFilterProp="children"
+          onChange={(value: any) => {
+            setStatus(value);
+          }}
+          allowClear
+          filterOption={(input, option) =>
+            (option!.label as unknown as string)
+              .toLowerCase()
+              .includes(input.toLowerCase())
+          }
+          className="select-custom w-56"
+          options={inbound_outbound_status}
+        />
         <Input
           placeholder="Tìm kiếm phiếu (nhập số phiếu)"
           allowClear

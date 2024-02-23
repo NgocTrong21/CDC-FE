@@ -113,6 +113,7 @@ const OutboundOrderDepartUpdate = () => {
             const { message, success } = res.data;
             if (success) {
               toast.success('Cập nhật phiếu nhập thành công');
+              navigate('/order/outbound_order_depart');
             } else {
               toast.error(message || 'Cập nhật phiếu nhập thất bại!');
             }

@@ -1,5 +1,10 @@
 import { useEffect, useState } from 'react';
-import { DeleteFilled, EditFilled, EyeFilled, PlusCircleFilled } from '@ant-design/icons';
+import {
+  DeleteFilled,
+  EditFilled,
+  EyeFilled,
+  PlusCircleFilled,
+} from '@ant-design/icons';
 import {
   Button,
   Divider,
@@ -10,6 +15,7 @@ import {
   Pagination,
   Tooltip,
   Popconfirm,
+  Select,
 } from 'antd';
 import useDebounce from 'hooks/useDebounce';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -19,6 +25,7 @@ import { permissions } from 'constants/permission.constant';
 import type { PaginationProps } from 'antd';
 import inboundOrderApi from 'api/inbound_order';
 import moment from 'moment';
+import { inbound_outbound_status } from 'constants/dataFake.constant';
 
 const TableFooter = ({ paginationProps }: any) => {
   return (
@@ -42,6 +49,7 @@ const InboundOrderList = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [name, setName] = useState<string>('');
   const nameSearch = useDebounce(name, 500);
+  const [status, setStatus] = useState<any>();
 
   const onShowSizeChange: PaginationProps['onShowSizeChange'] = (
     current,
@@ -56,6 +64,7 @@ const InboundOrderList = () => {
         page,
         limit,
         name: nameSearch,
+        status_id: status,
       })
       .then((res: any) => {
         const { success, data } = res.data;
@@ -69,7 +78,7 @@ const InboundOrderList = () => {
   };
   useEffect(() => {
     getInboundOrderList();
-  }, [limit, page, nameSearch]);
+  }, [limit, page, nameSearch, status]);
   const columns: any = [
     {
       title: 'Số phiếu',
@@ -127,10 +136,11 @@ const InboundOrderList = () => {
           {item?.status_id === 1 && (
             <Menu.Item
               key="update_equipment"
-              className={`${checkPermission(permissions.INBOUND_ORDERS_UPDATE)
-                ? ''
-                : 'hidden'
-                }`}
+              className={`${
+                checkPermission(permissions.INBOUND_ORDERS_UPDATE)
+                  ? ''
+                  : 'hidden'
+              }`}
             >
               <Tooltip title="Cập nhật phiếu">
                 <Link to={`/order/inbound_order/update/${item.id}`}>
@@ -140,8 +150,9 @@ const InboundOrderList = () => {
             </Menu.Item>
           )}
           <Menu.Item
-            className={`${checkPermission(permissions.INBOUND_ORDERS_READ) ? '' : 'hidden'
-              }`}
+            className={`${
+              checkPermission(permissions.INBOUND_ORDERS_READ) ? '' : 'hidden'
+            }`}
           >
             <Tooltip title="Chi tiết phiếu">
               <Link to={`/order/inbound_order/detail/${item.id}`}>
@@ -149,17 +160,20 @@ const InboundOrderList = () => {
               </Link>
             </Tooltip>
           </Menu.Item>
-          {
-            (item?.status_id === 1 || item?.status_id === 3) && <Menu.Item
+          {(item?.status_id === 1 || item?.status_id === 3) && (
+            <Menu.Item
               key="delete"
-              className={`${checkPermission(permissions.INBOUND_ORDERS_DELETE) ? '' : 'hidden'
-                }`}
+              className={`${
+                checkPermission(permissions.INBOUND_ORDERS_DELETE)
+                  ? ''
+                  : 'hidden'
+              }`}
             >
               <Tooltip title="Xóa phiếu">
                 <Popconfirm
                   title="Bạn muốn xóa phiếu này?"
                   onConfirm={() => {
-                    handleDelete(item.id)
+                    handleDelete(item.id);
                   }}
                   okText="Xóa"
                   cancelText="Hủy"
@@ -167,7 +181,8 @@ const InboundOrderList = () => {
                   <DeleteFilled />
                 </Popconfirm>
               </Tooltip>
-            </Menu.Item>}
+            </Menu.Item>
+          )}
         </Menu>
       ),
     },
@@ -219,16 +234,23 @@ const InboundOrderList = () => {
         <div className="title">DANH SÁCH PHIẾU NHẬP</div>
       </div>
       <Divider />
-      <div className="flex gap-10">
-        {/* <div
-          className="flex flex-row gap-4 items-center mb-4"
-          onClick={() => setIsShowCustomTable(!isShowCustomTable)}
-        >
-          <SelectOutlined />
-          <div className="font-medium text-center cursor-pointer text-base">
-            Tùy chọn trường hiển thị
-          </div>
-        </div> */}
+      <div className="flex items-center gap-10">
+        <Select
+          showSearch
+          placeholder="Trạng thái"
+          optionFilterProp="children"
+          onChange={(value: any) => {
+            setStatus(value);
+          }}
+          allowClear
+          filterOption={(input, option) =>
+            (option!.label as unknown as string)
+              .toLowerCase()
+              .includes(input.toLowerCase())
+          }
+          className="select-custom w-56"
+          options={inbound_outbound_status}
+        />
         <Input
           placeholder="Tìm kiếm phiếu (nhập số phiếu)"
           allowClear
@@ -237,8 +259,9 @@ const InboundOrderList = () => {
           onChange={(e) => onChangeSearch(e)}
         />
         <Button
-          className={`button_excel ${checkPermission(permissions.INBOUND_ORDERS_CREATE) ? '' : 'hidden'
-            }`}
+          className={`button_excel ${
+            checkPermission(permissions.INBOUND_ORDERS_CREATE) ? '' : 'hidden'
+          }`}
           onClick={() => {
             navigate('/order/inbound_order/import');
           }}

@@ -78,12 +78,12 @@ const CreateSchedule = () => {
       .then((res: any) => {
         const { success } = res?.data;
         if (success) {
-          toast.success('Tạo phiếu sửa chữa thành công!');
+          toast.success('Tạo lịch sửa chữa thành công!');
           navigate(`/equipment/repair/update_schedule/${id}/${repair_id}`);
           increaseCount();
           getAllNotifications();
         } else {
-          toast.error('Tạo phiếu sửa chữa thất bại!');
+          toast.error('Tạo lịch sửa chữa thất bại!');
         }
       })
       .catch()
@@ -92,7 +92,7 @@ const CreateSchedule = () => {
 
   return (
     <div>
-      <div className="title text-center">TẠO PHIẾU SỬA CHỮA THIẾT BỊ</div>
+      <div className="title text-center">TẠO LỊCH SỬA CHỮA THIẾT BỊ</div>
       <Divider />
       <div>
         <Form

@@ -115,11 +115,11 @@ const DetailLiquidation = () => {
         if (success) {
           detailLiquidation();
           setShowApproveLiquidationModal(false);
-          toast.success('Phê duyệt phiếu thanh lý thành công!');
+          toast.success('Phê duyệt yêu cầu thanh lý thành công!');
           increaseCount();
           getAllNotifications();
         } else {
-          toast.error('Phê duyệt phiếu thanh lý thất bại!');
+          toast.error('Phê duyệt yêu cầu thanh lý thất bại!');
         }
       })
       .catch()
@@ -142,11 +142,11 @@ const DetailLiquidation = () => {
         const { success } = res.data;
         if (success) {
           detailLiquidation();
-          toast.success('Cập nhật phiếu thanh lý thành công!');
+          toast.success('Cập nhật yêu cầu thanh lý thành công!');
           increaseCount();
           getAllNotifications();
         } else {
-          toast.error('Cập nhật phiếu thanh lý thất bại!');
+          toast.error('Cập nhật yêu cầu thanh lý thất bại!');
         }
       })
       .catch()
@@ -158,7 +158,7 @@ const DetailLiquidation = () => {
   ) : (
     <div>
       <div className="title flex gap-3">
-        PHIẾU THANH LÝ
+        YÊU CẦU THANH LÝ
         {/* (
         <span className="italic">Mã phiếu: {equipment?.code}</span>) ___{' '} */}
         {handleLiquidationStatus(equipment?.liquidation_status)}
@@ -192,7 +192,7 @@ const DetailLiquidation = () => {
         </div>
         <div className="grid grid-cols-2 gap-5">
           <Form.Item name="create_user_id" className="hidden"></Form.Item>
-          <Form.Item label="Người tạo phiếu thanh lý" name="create_user">
+          <Form.Item label="Người tạo yêu cầu thanh lý" name="create_user">
             <Input disabled className="input" />
           </Form.Item>
           <Form.Item label="Người phê duyệt" name="approver">
@@ -238,7 +238,7 @@ const DetailLiquidation = () => {
         )}
       </Form>
       <Modal
-        title="Phê duyệt phiếu thanh lý thiết bị"
+        title="Phê duyệt yêu cầu thanh lý thiết bị"
         open={showApproveLiquidationModal}
         onCancel={() => setShowApproveLiquidationModal(false)}
         footer={null}
@@ -260,9 +260,9 @@ const DetailLiquidation = () => {
               <Radio value={2}>Từ chối</Radio>
             </Radio.Group>
           </Form.Item>
-          <Form.Item label="Ghi chú" name="liquidation_note">
+          {/* <Form.Item label="Ghi chú" name="liquidation_note">
             <TextArea placeholder="Nhập ghi chú" className="input" />
-          </Form.Item>
+          </Form.Item> */}
           <div className="flex flex-row justify-end gap-4">
             <Form.Item>
               <Button

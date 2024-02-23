@@ -43,6 +43,9 @@ const SupplyUpdate = () => {
     setLoading(true);
     let data = {
       ...values,
+      name: values.name.trim() || '',
+      code: values.code.trim() || '',
+      lot_number: values.lot_number.trim() || '',
       expiration_date: moment(new Date(values?.expiration_date)).toISOString(),
       image,
       status: status ? 1 : 2,

@@ -11,8 +11,11 @@ const ProtectedRoute = ({ children }: ProtectedProps) => {
   return isLoggin ? (
     <LayoutSystem>{children}</LayoutSystem>
   ) : (
-    <Navigate to="/signin" />
+    <Navigate to="/" />
   );
 };
 
 export default ProtectedRoute;
+function getLocalToken(): boolean {
+  throw new Error('Function not implemented.');
+}

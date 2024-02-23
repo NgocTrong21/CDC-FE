@@ -207,7 +207,7 @@ const EmailConfig = () => {
         <div className="grid grid-cols-2 gap-20">
           <div>
             <div className="font-medium text-base">
-              Tiếp nhận phiếu báo hỏng thiết bị(trước phê duyệt)
+              Tiếp nhận yêu cầu báo hỏng thiết bị(trước phê duyệt)
             </div>
             <Table
               columns={handleColumms(requestBroken, setRequestBroken)}
@@ -219,7 +219,7 @@ const EmailConfig = () => {
           </div>
           <div>
             <div className="font-medium text-base">
-              Tiếp nhận phiếu báo hỏng thiết bị(sau phê duyệt)
+              Tiếp nhận yêu cầu báo hỏng thiết bị(sau phê duyệt)
             </div>
             <Table
               columns={handleColumms(approveBroken, setApproveBroken)}

@@ -56,13 +56,13 @@ const BrokenReport = () => {
             report_status: data?.equipment?.report_status,
             broken_report_date: moment(
               data?.equipment?.broken_report_date
-            ).format('hh:mm:ss, DD-MM-YYYY'),
+            ).format('h:mm a, DD-MM-YYYY'),
             reporting_person: data?.equipment?.reporting_user?.name,
             reporting_person_id: data?.equipment?.reporting_user?.id,
             approve_broken_report_date: data?.equipment
               ?.approve_broken_report_date
               ? moment(data?.equipment?.approve_broken_report_date).format(
-                  'hh:mm:ss, DD-MM-YYYY'
+                  'h:mm a, DD-MM-YYYY'
                 )
               : moment(new Date()).format('DD-MM-YYYY'),
             approve_report_person_id:
@@ -101,11 +101,11 @@ const BrokenReport = () => {
         const { success } = res.data;
         if (success) {
           getBrokenReport();
-          toast.success('Cập nhật phiếu báo hỏng thành công!');
+          toast.success('Cập nhật yêu cầu báo hỏng thành công!');
           increaseCount();
           getAllNotifications();
         } else {
-          toast.error('Cập nhật phiếu báo hỏng thất bại!');
+          toast.error('Cập nhật yêu cầu báo hỏng thất bại!');
         }
       })
       .catch()
@@ -117,7 +117,7 @@ const BrokenReport = () => {
   ) : (
     <div>
       <div className="title">
-        PHIẾU BÁO HỎNG
+        YÊU CẦU BÁO HỎNG
         {/* (<span className="italic">Mã phiếu: {equipment?.code}</span>) ___{' '} */}
         {/* {handleReportStatus(equipment?.report_status)} */}
       </div>

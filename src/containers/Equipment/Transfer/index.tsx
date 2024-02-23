@@ -120,7 +120,7 @@ const Transfer = () => {
             </Tooltip>
           </Menu.Item>
           <Menu.Item key="transfer">
-            <Tooltip title="Phiếu yêu cầu điều chuyển">
+            <Tooltip title="Yêu cầu điều chuyển">
               <Link
                 to={`/equipment/transfer/detail/${item?.id}/${item?.Transfers[0]?.id}`}
               >

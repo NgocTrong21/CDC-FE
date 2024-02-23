@@ -152,7 +152,7 @@ const InboundOrderDetail = () => {
               inboundData?.status_id === 1 && (
                 <>
                   <Button
-                    type="default"
+                    // type="default"
                     className="button-primary"
                     onClick={() => handleAccept(id, 'accept')}
                     loading={loading}
@@ -170,8 +170,6 @@ const InboundOrderDetail = () => {
                 </>
               )}
             <Button
-              type="primary"
-              className="rounded-md"
               onClick={() => {
                 navigate('/order/inbound_order');
               }}

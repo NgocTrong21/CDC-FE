@@ -86,3 +86,18 @@ export const order_status = [
     label: 'Hủy yêu cầu',
   },
 ];
+
+export const inbound_outbound_status = [
+  {
+    value: 1,
+    label: 'Chờ duyệt',
+  },
+  {
+    value: 2,
+    label: 'Chấp nhận',
+  },
+  {
+    value: 3,
+    label: 'Từ chối',
+  },
+];

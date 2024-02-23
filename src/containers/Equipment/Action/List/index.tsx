@@ -7,6 +7,7 @@ import {
   FilterFilled,
   ImportOutlined,
   RetweetOutlined,
+  PlusCircleFilled,
 } from '@ant-design/icons';
 import {
   Button,
@@ -453,6 +454,7 @@ const List = () => {
     resolveDataExcel(data, 'Danh sách thiết bị', columnTable);
     setLoadingDownload(false);
   };
+  console.log(checkPermission(permissions.EQUIPMENT_CREATE));
 
   return (
     <div>
@@ -463,20 +465,22 @@ const List = () => {
             callback={downloadEquipmentList}
             loading={loadingDownload}
           />
-          <Button
-            className="button_excel"
-            onClick={() => navigate('/equipment/import_excel_eq')}
-          >
-            <ImportOutlined />
-            <div className="font-medium text-md text-[#5B69E6]">
-              Nhập thiết bị từ Excel
-            </div>
-          </Button>
+          {checkPermission(permissions.EQUIPMENT_CREATE) && (
+            <Button
+              className={`button_excel`}
+              onClick={() => navigate('/equipment/import_excel_eq')}
+            >
+              <ImportOutlined />
+              <div className="font-medium text-md text-[#5B69E6]">
+                Nhập thiết bị từ Excel
+              </div>
+            </Button>
+          )}
         </div>
       </div>
       <Divider />
       <div className="flex justify-between flex-col">
-        <div className="flex-between-center gap-4 p-4">
+        <div className="flex-between-center gap-4 py-4">
           <Select
             showSearch
             placeholder="Tất cả Trạng thái"
@@ -523,6 +527,19 @@ const List = () => {
               )
             }
           />
+          {checkPermission(permissions.EQUIPMENT_CREATE) && (
+            <Button
+              className="button_excel"
+              onClick={() => {
+                navigate('/equipment/import_one_eq');
+              }}
+            >
+              <PlusCircleFilled />
+              <div className="font-medium text-md text-[#5B69E6]">
+                Thêm mới thiết bị
+              </div>
+            </Button>
+          )}
         </div>
       </div>
       <Table
