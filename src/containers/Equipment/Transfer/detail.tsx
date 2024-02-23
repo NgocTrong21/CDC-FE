@@ -117,11 +117,11 @@ const DetailTransfer = () => {
         if (success) {
           detailTransfer();
           setShowApproveTransferModal(false);
-          toast.success('Phê duyệt phiếu điều chuyển thành công!');
+          toast.success('Phê duyệt điều chuyển thành công!');
           increaseCount();
           getAllNotifications();
         } else {
-          toast.error('Phê duyệt phiếu điều chuyển thất bại!');
+          toast.error('Phê duyệt điều chuyển thất bại!');
         }
       })
       .catch()
@@ -158,7 +158,7 @@ const DetailTransfer = () => {
   ) : (
     <div>
       <div className="title flex gap-2">
-        PHIẾU ĐIỀU CHUYỂN
+        ĐIỀU CHUYỂN
         {/* (<span className="italic">Mã phiếu: {equipment?.code}</span>) ___{' '} */}
         {handleTransferStatus(equipment?.transfer_status)}
       </div>
@@ -207,7 +207,7 @@ const DetailTransfer = () => {
             className="hidden"
           ></Form.Item>
           <Form.Item
-            label="Người tạo phiếu điều chuyển"
+            label="Người tạo yêu cầu điều chuyển"
             name="transfer_create_user"
           >
             <Input disabled className="input" />
@@ -255,7 +255,7 @@ const DetailTransfer = () => {
         )} */}
       </Form>
       <Modal
-        title="Phê duyệt phiếu điều chuyển thiết bị"
+        title="Phê duyệt điều chuyển thiết bị"
         open={showApproveTransferModal}
         onCancel={() => setShowApproveTransferModal(false)}
         footer={null}

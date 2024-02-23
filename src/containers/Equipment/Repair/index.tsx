@@ -186,7 +186,7 @@ const Repair = () => {
           {checkPermission(permissions.REPAIR_EQUIPMENT_CREATE) &&
             item?.Repairs[0]?.schedule_repair_status === null && (
               <Menu.Item key="word">
-                <Tooltip title="Tạo phiếu sửa chữa">
+                <Tooltip title="Tạo lịch sửa chữa">
                   <Link
                     to={`/equipment/repair/create_schedule/${item?.id}/${item?.Repairs[0]?.id}`}
                   >
@@ -203,9 +203,9 @@ const Repair = () => {
                     checkPermission(permissions.REPAIR_EQUIPMENT_UPDATE)
                       ? item?.Repairs[0]?.repair_status === 3 ||
                         item?.Repairs[0]?.repair_status === 4
-                        ? 'Xem phiếu sửa chữa'
-                        : 'Cập nhật phiếu sửa chữa'
-                      : 'Xem phiếu sửa chữa'
+                        ? 'Xem sửa chữa'
+                        : 'Cập nhật sửa chữa'
+                      : 'Xem sửa chữa'
                   }`}
                 >
                   <Link

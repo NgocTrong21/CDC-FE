@@ -235,15 +235,6 @@ const InboundOrderList = () => {
       </div>
       <Divider />
       <div className="flex items-center gap-10">
-        {/* <div
-          className="flex flex-row gap-4 items-center mb-4"
-          onClick={() => setIsShowCustomTable(!isShowCustomTable)}
-        >
-          <SelectOutlined />
-          <div className="font-medium text-center cursor-pointer text-base">
-            Tùy chọn trường hiển thị
-          </div>
-        </div> */}
         <Select
           showSearch
           placeholder="Trạng thái"

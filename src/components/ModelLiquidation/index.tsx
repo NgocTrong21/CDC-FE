@@ -58,10 +58,10 @@ const ModelLiquidation = (props: any) => {
       .then((res: any) => {
         const { success } = res?.data;
         if (success) {
-          toast.success('Tạo phiếu thanh lý thành công');
+          toast.success('Tạo yêu cầu thanh lý thành công');
           callback();
         } else {
-          toast.error('Tạo phiếu thanh lý thất bại');
+          toast.error('Tạo yêu cầu thanh lý thất bại');
         }
       })
       .catch()
@@ -73,7 +73,7 @@ const ModelLiquidation = (props: any) => {
 
   return (
     <Modal
-      title="Phiếu đề nghị thanh lý thiết bị"
+      title="Yêu cầu thanh lý thiết bị"
       open={showLiquidationModal}
       onCancel={setShowLiquidationModal}
       footer={null}
@@ -119,7 +119,7 @@ const ModelLiquidation = (props: any) => {
           name="create_user_id"
           style={{ display: 'none' }}
         ></Form.Item>
-        <Form.Item label="Người tạo phiếu">
+        <Form.Item label="Người tạo">
           <Input value={user?.name} className="input" disabled />
         </Form.Item>
         <Form.Item

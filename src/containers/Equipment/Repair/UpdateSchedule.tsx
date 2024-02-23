@@ -172,12 +172,12 @@ const UpdateSchedule = () => {
       .then((res: any) => {
         const { success } = res?.data;
         if (success) {
-          toast.success('Cập nhật phiếu sửa chữa thành công!');
+          toast.success('Cập nhật sửa chữa thành công!');
           getRepairSchedule();
           increaseCount();
           getAllNotifications();
         } else {
-          toast.error('Cập nhật phiếu sửa chữa thất bại!');
+          toast.error('Cập nhậ sửa chữa thất bại!');
         }
       })
       .catch()
@@ -252,15 +252,15 @@ const UpdateSchedule = () => {
     <div>
       <div className="title text-center">{`${
         query?.edit === 'true' ? 'CẬP NHẬT' : ''
-      } PHIẾU SỬA CHỮA THIẾT BỊ`}</div>
+      } YÊU CẦU SỬA CHỮA THIẾT BỊ`}</div>
       <Divider />
       <div>
         <div className="title">
           <div className="flex items-center gap-2">
-            PHIẾU SỬA CHỮA
+            YÊU CẦU SỬA CHỮA
             {/* (<span className="italic">Mã phiếu: {schedule?.code}</span>) ___{' '} */}
             {/* {handleScheduleRepairStatus(schedule?.schedule_repair_status)} */}
-            <Tooltip title="Chi tiết phiếu báo hỏng">
+            <Tooltip title="Chi tiết yêu cầu báo hỏng">
               <ExclamationCircleFilled
                 className="text-red-600"
                 onClick={() => setShowBrokenReportModal(true)}
@@ -408,7 +408,7 @@ const UpdateSchedule = () => {
           </div>
           <div className="grid grid-cols-3 gap-5">
             <Form.Item
-              label="Người lập phiếu sửa chữa"
+              label="Người lập lịch sửa chữa"
               name="schedule_create_user_name"
             >
               <Input className="input" disabled />

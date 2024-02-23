@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import bg from 'assets/bg.jpg';
 import { PoweroffOutlined } from '@ant-design/icons';
 import Text from 'antd/lib/typography/Text';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   authActions,
   LoginPayLoad,
@@ -12,15 +12,20 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { Alert, Button, Input, Form } from 'antd';
 import ReactGA from 'react-ga';
+import { ACCESS_TOKEN } from 'constants/auth.constant';
 
 const Signin: React.FC = () => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const isLoading = useSelector(selectIsLoading);
   const messageLogin = useSelector(selectMessageLogin);
-
+  const navigate = useNavigate();
   useEffect(() => {
     ReactGA.pageview(window.location.pathname + window.location.search);
+    const isLoggin: boolean = Boolean(localStorage.getItem(ACCESS_TOKEN));
+    if (isLoggin) {
+      navigate('/equipment/list_eq');
+    }
   }, []);
 
   const handleLogin = (values: LoginPayLoad) => {

@@ -10,7 +10,6 @@ import { Link, useParams } from 'react-router-dom';
 import { resolveDataExcel } from 'utils/globalFunc.util';
 
 const HistoryLiquidation = () => {
-
   const param: any = useParams();
   const { id } = param;
   const [equipment, setEquipment] = useState<any>({});
@@ -54,14 +53,14 @@ const HistoryLiquidation = () => {
       render: (item: any) => <>{item?.to_department?.name}</>,
     },
     {
-      title: 'Cán bộ lập phiếu',
+      title: 'Cán bộ tạo yêu cầu',
       key: 'transfer_create_user',
       show: true,
       widthExcel: 25,
       render: (item: any) => <>{item?.transfer_create_user?.name}</>,
     },
     {
-      title: 'Cán bộ phê duyệt phiếu phiếu',
+      title: 'Cán bộ phê duyệt',
       key: 'transfer_approver',
       show: true,
       widthExcel: 25,
@@ -84,7 +83,7 @@ const HistoryLiquidation = () => {
       key: 'action',
       show: true,
       render: (item: any) => (
-        <Tooltip title="Chi tiết phiếu điều chuyển">
+        <Tooltip title="Chi tiết điều chuyển">
           <Link
             to={`/equipment/transfer/detail/${id}/${item.id}?edit=${false}`}
           >

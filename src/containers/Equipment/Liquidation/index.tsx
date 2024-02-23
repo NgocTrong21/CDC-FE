@@ -137,7 +137,7 @@ const Liquidation = () => {
                   : 'hidden'
               }`}
             >
-              <Tooltip title="Phiếu yêu cầu thanh lý">
+              <Tooltip title="Yêu cầu thanh lý">
                 <Link
                   to={`/equipment/liquidation/detail/${item?.id}/${item?.Liquidations[0]?.id}`}
                 >
@@ -154,7 +154,7 @@ const Liquidation = () => {
                   : 'hidden'
               }`}
             >
-              <Tooltip title="Tạo phiếu yêu cầu thanh lý">
+              <Tooltip title="Tạo yêu cầu thanh lý">
                 <PlusCircleFilled onClick={() => setLiquidationFields(item)} />
               </Tooltip>
             </Menu.Item>

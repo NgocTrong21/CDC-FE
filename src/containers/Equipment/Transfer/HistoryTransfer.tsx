@@ -53,14 +53,14 @@ const HistoryTransfer = () => {
       render: (item: any) => <>{item?.to_department?.name}</>,
     },
     {
-      title: 'Cán bộ lập phiếu',
+      title: 'Cán bộ tạo yêu cầu',
       key: 'transfer_create_user',
       show: true,
       widthExcel: 25,
       render: (item: any) => <>{item?.transfer_create_user?.name}</>,
     },
     {
-      title: 'Cán bộ phê duyệt phiếu phiếu',
+      title: 'Cán bộ phê duyệt',
       key: 'transfer_approver',
       show: true,
       widthExcel: 25,
@@ -83,7 +83,7 @@ const HistoryTransfer = () => {
       key: 'action',
       show: true,
       render: (item: any) => (
-        <Tooltip title="Chi tiết phiếu điều chuyển">
+        <Tooltip title="Chi tiết điều chuyển">
           <Link
             to={`/equipment/transfer/detail/${id}/${item.id}?edit=${false}`}
           >

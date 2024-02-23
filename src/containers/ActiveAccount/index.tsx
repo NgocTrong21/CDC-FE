@@ -24,7 +24,7 @@ const ActiveAccount = () => {
       .catch((error: any) => {
         toast.success('Kích hoạt tài khoản thất bại!');
       })
-      .finally(() => navigate('/signin'));
+      .finally(() => navigate('/'));
   };
 
   useEffect(() => {

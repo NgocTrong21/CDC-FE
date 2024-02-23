@@ -101,11 +101,11 @@ const BrokenReport = () => {
         const { success } = res.data;
         if (success) {
           getBrokenReport();
-          toast.success('Cập nhật phiếu báo hỏng thành công!');
+          toast.success('Cập nhật yêu cầu báo hỏng thành công!');
           increaseCount();
           getAllNotifications();
         } else {
-          toast.error('Cập nhật phiếu báo hỏng thất bại!');
+          toast.error('Cập nhật yêu cầu báo hỏng thất bại!');
         }
       })
       .catch()
@@ -117,7 +117,7 @@ const BrokenReport = () => {
   ) : (
     <div>
       <div className="title">
-        PHIẾU BÁO HỎNG
+        YÊU CẦU BÁO HỎNG
         {/* (<span className="italic">Mã phiếu: {equipment?.code}</span>) ___{' '} */}
         {/* {handleReportStatus(equipment?.report_status)} */}
       </div>
